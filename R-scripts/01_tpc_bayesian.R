@@ -17,6 +17,9 @@ library(truncnorm)
 library(bayesTPC)
 library(cowplot)
 library(tidyverse)
+library(growthrates) #one of the methods I'll use to estimate r
+
+###########################################################################################
 
 # Importing, interrogating, and re-arranging the data
 
@@ -40,6 +43,7 @@ for (i in c(5,10)){
 }
 #Looks good!
 
+###########################################################################################
 
 # Let's look at a few plots!
 
@@ -54,15 +58,178 @@ for (i in 1:2){
 
 #OK, the plots look fine!
 
+###########################################################################################
+
 # We need to calculate the growth rate here first. This will be on our y-axis. For each population at each T,
 # We need a measurement for replicate (ie. we are collapsing the temporal axis)
 # I imagine we take a measurement of growth during the exponential phase here?
 
 #OK, I want to try fitting growth rate a couple of ways
 
+#Let's isolate data for a single Chlamy population at a single temperature. We'll try to 
+#estimate growth and fit TPC's for that dataset before we scale up.
+
+df3_34<-subset(mat[[3]],mat[[3]]$temperature==34)
+ggplot(aes(x = days, y = RFU), data=df3_34) + geom_point()
+
+# I believe for the spline fitting, all 0's must be removed, and there is an NA row at the end with days=0.
+df3_34<-subset(df3_34, df3_34$days!=0)
+
+#Let's do this for mat[[3]] as well
+
+###########################################################################################
+
 #1. nls
 
+###########################################################################################
+
 #2. growthrate package
+
+# I am running the following code according to the following tutorial:
+# https://tpetzoldt.github.io/growthrates/doc/Introduction.html#easy-linear-method
+
+# We are going to try a logistic growth model
+
+p     <- c(y0 = 0.01, mumax = 10, K = 600)
+lower <- c(y0 = 1e-6, mumax = 0,   K = 0)
+upper <- c(y0 = 0.05, mumax = 25,   K = 1200)
+
+gr_test <- fit_growthmodel(FUN = grow_logistic, p = p, df3_34$days, df3_34$RFU,
+                        lower = lower, upper = upper)
+
+coef(gr_test)
+plot(gr_test)
+#mumax 8.14, fitting for all data I believe (e.g not factoring in replication)
+
+#Let's try fitting nonparametric smoothing splines to the data
+
+spl_test <- fit_spline(df3_34$RFU, df3_34$days)
+
+par(mfrow = c(1, 2))
+plot(spl_test, log = "y")
+plot(spl_test)
+
+coef(spl_test)
+# this gives highly different results (mumax of 0.020261) — not sure why, need to think about this.
+
+# For now, let's try to fit logarithmic growth curves to all of the temperatures for the 3rd population
+
+p     <- c(y0 = 0.01, mumax = 5, K = 600)
+lower <- c(y0 = 1e-6, mumax = 0,   K = 0)
+upper <- c(y0 = 0.05, mumax = 25,   K = 1200)
+
+## fit growth models to all data for Pop 3
+
+grt_pop3 <- all_growthmodels(
+  RFU ~ grow_logistic(days, parms) | temperature,
+  data = mat[[3]], p = p, lower = lower, ncores = 2)
+
+coef(grt_pop3)
+par(mfrow = c(2, 3))
+plot(grt_pop3)
+
+# This is obviously not fitting the data for 10C or 40 C. I suspect the latter is caused by it being a negative slope.
+
+df3_10<-subset(mat[[3]], mat[[3]]$temperature==10)
+
+gr_test10 <- fit_growthmodel(FUN = grow_logistic, p = p, df3_10$days, df3_10$RFU,
+                           lower = lower, upper = upper)
+
+coef(gr_test10)
+plot(gr_test10)
+
+# That actually fits it fine...
+
+str(mat[[3]])
+
+#OK I think the issue is temperature is coded here as an integer, but we need it as a factor.
+# Let's create another column
+
+for (i in 1:15){
+  mat[[i]]$temp<-as.factor(mat[[i]]$temperature)
+}
+
+grt_pop3.1 <- all_growthmodels(
+  RFU ~ grow_logistic(days, parms) | temp, # temperature is a factor now
+  data = mat[[3]], p = p, lower = lower, ncores = 2)
+
+coef(grt_pop3.1)
+par(mfrow = c(2, 3))
+plot(grt_pop3.1)
+
+#Still not working! I'm just going to do it manually, but first let's see what's happening with the 40 C group
+
+df3_40<-subset(mat[[3]], mat[[3]]$temperature==40)
+
+gr_test40 <- fit_growthmodel(FUN = grow_logistic, p = p, df3_40$days, df3_40$RFU,
+                             lower = lower, upper = upper)
+
+coef(gr_test40)
+plot(gr_test40)
+
+# I think the issue is our bounds on mumax, upper and lower.
+
+p2     <- c(y0 = 0.01, mumax = -5, K = 50)
+lower2 <- c(y0 = 1e-6, mumax = -25,   K = 0)
+upper2 <- c(y0 = 0.05, mumax = 25,   K = 100)
+
+gr_test40.1 <- fit_growthmodel(FUN = grow_logistic, p = p, df3_40$days, df3_40$RFU,
+                             lower = lower2, upper = upper)
+
+coef(gr_test40.1)
+plot(gr_test40.1)
+
+#OK, for loop incoming. We'll print the results and plot them all together
+
+par(mfrow = c(2, 3))
+
+pop3_mu<- matrix(vector(), 0, 4, dimnames=list(c(), c('temp', 'y0', 'mumax', 'K')))
+
+
+for (t in c(10,16,22,28,34,40)){
+  df<-subset(mat[[3]], mat[[3]]$temperature==t)
+  log_gr <- fit_growthmodel(FUN = grow_logistic, p = p, df$days, df$RFU,
+                               lower = lower, upper = upper)
+  
+  coef(log_gr)
+  plot(log_gr)
+  
+  coef<-as.vector(c(t, coef(log_gr)[1:3]))
+  pop3_mu<-rbind(pop3_mu, coef)
+}
+
+pop3_mu
+
+# Aside from t = 40, for which the results are obviously bonkers, I think this looks OK.
+
+# Let's practice fitting a TPC to this data (setting my for t40 to 0)?
+pop3_mu[6,3]<-0
+
+#OK, let's plot this relationship
+par(mfrow = c(1, 1))
+plot(mumax~temp, data=pop3_mu)
+
+#list of models that can be implemented in bayes_TPC
+get_models()
+
+# Let's try a couple - ratkowsky, weibull, gaussian, and briere
+
+get_formula("ratkowsky")
+get_default_priors("ratkowsky")
+
+# bayes_TPC can only work with Trait and Temp headers.
+
+df.3.gr<-list(Trait = pop3_mu[,3], Temp=pop3_mu[,1])
+
+Pop3_gr_rat <- b_TPC(data = df.3.gr, ## data
+                    model = 'ratkowsky', ## model to fit
+                    niter = 11000, ## total iterations
+                    burn = 1000, ## number of burn in samples
+                    samplerType = 'AF_slice', ## slice sampler
+) 
+
+###########################################################################################
+
 
 #3. brms (bayesian)
 
