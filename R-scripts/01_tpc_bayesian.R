@@ -127,6 +127,8 @@ for (t in c(10,16,22,28,34,40)){
 
 # Yep, they are!
 
+ggplot(aes(x=temp, y=r), data=pop3_r) + geom_point()
+
 ###########################################################################################
 
 #2. growthrate package
@@ -424,6 +426,24 @@ bri3.3 <- nls_multstart(Trait ~ a*Temp*(Temp - Tmin)*(Tmax - Temp)^(1/b),
 
 # Let's start by calculating growth rates using brms, like we did with nls
 
-#Let's consider which model of TPC to fit
-get_models()
+brm3.34 <- brm(logRFU~days,
+               data=df3_34,
+               family=gaussian())
 
+summary(brm3.34) # Excellent, very close to the nls/lm data! Automatically fits an intercept
+plot(brm3.34)
+
+# Ok, let's fit this for all of the temperatures
+
+pop3_br<- matrix(vector(), 0, 2, dimnames=list(c(), c('temp', 'r')))
+
+for (t in c(10,16,22,28,34,40)){
+  df<-subset(mat[[3]], mat[[3]]$temperature==t)
+  brm_r <- brm(logRFU~days, data=df)
+  
+  fit<-as.data.frame(brm3.34$fit)
+  coef<-as.vector(c(t, mean(fit$b_days)))
+  pop3_br<-rbind(pop3_br, coef)
+}
+
+brm3.34$fit
