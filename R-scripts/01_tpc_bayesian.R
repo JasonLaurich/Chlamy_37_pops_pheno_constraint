@@ -18,6 +18,8 @@ library(bayesTPC)
 library(cowplot)
 library(tidyverse)
 library(growthrates) #one of the methods I'll use to estimate r
+library(brms)
+library(nls.multstart)
 
 ###########################################################################################
 
@@ -227,6 +229,91 @@ Pop3_gr_rat <- b_TPC(data = df.3.gr, ## data
                     burn = 1000, ## number of burn in samples
                     samplerType = 'AF_slice', ## slice sampler
 ) 
+
+summary(Pop3_gr_rat)
+
+s1<-as.data.frame(Pop3_gr_rat$samples)
+par(mfrow=c(2,2))
+for(i in 1:4) acf(s1[,i], lag.max=50, main="", ylab = paste("ACF: ", names(s1)[i], sep=""))
+plot(s1$T_max)
+
+ppo_plot(Pop3_gr_rat, burn = 1000)
+
+# I don't know what all this model structure is about (for example the slice sampler)
+# Let's simplify!
+
+Pop3_gr_rat.1 <- b_TPC(data = df.3.gr, ## data
+                     model = 'ratkowsky', ## model to fit
+                     niter = 11000, ## total iterations
+                     burn = 1000, ## number of burn in samples
+                     samplerType = 'RW', ## slice sampler,
+                     thin = 100 #This should thin the model by recording data every 10 observations
+) 
+
+summary(Pop3_gr_rat.1)
+s1.1<-as.data.frame(Pop3_gr_rat$samples)
+
+Pop3_gr_rat$mcmc$getWAIC()
+Pop3_gr_rat.1$mcmc$getWAIC()
+
+head(s1)
+
+plot(Pop3_gr_rat)
+
+
+get_formula("gaussian")
+get_default_priors("gaussian")
+
+Pop3_gr_gau <- b_TPC(data = df.3.gr, ## data
+                     model = 'gaussian', ## model to fit
+                     niter = 11000, ## total iterations
+                     burn = 1000, ## number of burn in samples
+) 
+
+summary(Pop3_gr_gau)
+par(mfrow=c(1,1))
+
+s2<-as.data.frame(Pop3_gr_gau$samples)
+plot(s2$T_opt)
+plot(s2$rmax)
+# This is not working. The model is not fitting properly
+
+# I'm not liking this bayes_TPC. It seems glitchy or maybe not fully fleshed out.
+# Thinning isn't working, and the documentation isn't 100% of the way there. 
+
+# I feel like it might be better to just fit this in nls and brms as classic non-linear models
+
+# Do I need a package? Or can I do it manually?
+
+#nls?
+
+# OK so I am going to organize this as a testing/learning oppurtunity for me. If I understand nls, it basically
+# enables fitting models (linear or not) to data using least squares regression. The twist is the explicit modelling
+# of mathematical formulae, with terms that are then fit using the data. I'm going to try this gradually.
+
+#1. Fit a linear regression to the Pop 3 data
+
+plot(Trait~Temp, data=df.3.gr)
+
+lm3 <- nls(Trait ~ m*Temp + b, #slope term is m, b is intercept
+           start = list(m = 0.2, b = 0.5),
+           data = df.3.gr) 
+
+summary(lm3)
+abline(a = 2.26774, b = 0.06799)
+
+#OK, cool! That seems like the basic idea.
+# Now the challenge is obviously expanding the complexity of that - account for inflection points (e.g. when T < x, do this...)
+# and non-linear fits. 
+# I don't know how to do that, but will figure it out.
+
+
+
+elisa_mod2 <-
+  nls(density ~ phi_1 / (1 + exp((phi_2 - log(pconc)) / phi_3)),
+      data = elisa_assay,
+      start = list(phi_1 = 2, phi_2 = 1, phi_3 = 1))
+
 
 ###########################################################################################
 
