@@ -20,6 +20,7 @@ library(tidyverse)
 library(growthrates) #one of the methods I'll use to estimate r
 library(brms)
 library(nls.multstart)
+library(rTPC)
 
 ###########################################################################################
 
@@ -305,14 +306,73 @@ abline(a = 2.26774, b = 0.06799)
 #OK, cool! That seems like the basic idea.
 # Now the challenge is obviously expanding the complexity of that - account for inflection points (e.g. when T < x, do this...)
 # and non-linear fits. 
-# I don't know how to do that, but will figure it out.
+# I don't know how to do that, but I will figure it out!
+
+#2. Let's try a simple model. The briere one seems like a good starting point!
+
+bri3 <- nls (Trait ~ q*Temp*(Temp - Tmin)*sqrt((Tmax > Tmin)*abs(Tmax-Temp))*(Tmax>Temp)*(Temp>Tmin), 
+             start = list(q = 0.5, Tmax = 32, Tmin = 5),
+             data= df.3.gr)
+
+bri3.1 <- nls (Trait ~ q*Temp*(Temp - Tmin)*sqrt((Tmax > Tmin)*abs(Tmax-Temp))*(Tmax>Temp)*(Temp>Tmin), 
+               start = list(q = 0.2, Tmax = 35, Tmin = 10),
+               data=df.3.gr)
+
+# Neither is working. Try the nl_multstart option?
+
+start_vals <- get_start_vals(df.3.gr$Temp, df.3.gr$Trait, model_name = 'briere2_1999')
+
+bri3.2 <- nls_multstart(Trait~briere2_1999(temp = Temp, Tmin, Tmax, a, b),
+                     data = df.3.gr,
+                     iter = c(4,4,4,4),
+                     start_lower = start_vals - 10,
+                     start_upper = start_vals + 10,
+                     lower = get_lower_lims(df.3.gr$Temp, df.3.gr$Trait, model_name = 'briere2_1999'),
+                     upper = get_upper_lims(df.3.gr$Temp, df.3.gr$Trait, model_name = 'briere2_1999'),
+                     supp_errors = 'Y',
+                     convergence_count = F)
+
+summary(bri3.2)
+
+#Let's get the predictions and store them for plotting!
+preds <- data.frame(Temp = seq(min(df.3.gr$Temp), max(df.3.gr$Temp), length.out = 100))
+preds <- broom::augment(bri3.2, newdata = preds)
+
+df3gr<-as.data.frame(df.3.gr)
+
+ggplot(preds) + geom_point(aes(Temp, Trait), df3gr) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_bw()
+
+# OK wow, that is a TPC! Look at me go
+
+#So, could we have fitted this without using any of nls_multstart's under the hood mechanics?
+
+#Back to the model specified by bayes_TPC? It's too different than what nls fit.
+#Let's try replicating the nls_multstart model specification, and plug in what we know for the parameters...
+
+bri4 <- nls (Trait ~ a*Temp*(Temp - Tmin)*(Tmax - T)^(1/b), 
+             start = list(a = 4.007e-03, b = 2.500e+00, Tmax = 4.000e+01 , Tmin = 4.499e+00),
+             data= df3gr)
+
+# So it won't fit... why? 'Error in nlsModel(formula, mf, start, wts, scaleOffset = scOff, nDcentral = nDcntr) : 
+# singular gradient matrix at initial parameter estimates''?
+
+# But it will work in multstart, from which I pulled these parameter estimates...
+# Let's try crossing nlsmultstart and this last nls model
+
+# This should work then, if this equation adequately reflects the Briere function wrapper?
+
+bri3.3 <- nls_multstart(Trait ~ a*Temp*(Temp - Tmin)*(Tmax - Temp)^(1/b),
+                        data = df.3.gr,
+                        iter = c(4,4,4,4),
+                        start_lower = start_vals - 10,
+                        start_upper = start_vals + 10,
+                        lower = get_lower_lims(df.3.gr$Temp, df.3.gr$Trait, model_name = 'briere2_1999'),
+                        upper = get_upper_lims(df.3.gr$Temp, df.3.gr$Trait, model_name = 'briere2_1999'),
+                        supp_errors = 'Y',
+                        convergence_count = F)
 
 
-
-elisa_mod2 <-
-  nls(density ~ phi_1 / (1 + exp((phi_2 - log(pconc)) / phi_3)),
-      data = elisa_assay,
-      start = list(phi_1 = 2, phi_2 = 1, phi_3 = 1))
 
 
 ###########################################################################################
