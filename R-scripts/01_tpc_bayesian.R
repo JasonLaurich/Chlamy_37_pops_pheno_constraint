@@ -84,6 +84,49 @@ df3_34<-subset(df3_34, df3_34$days!=0)
 
 #1. nls
 
+#OK, because we know that the data were taken during the exponential growth phase, we should be able to just
+# fit a slope to the logged data to estimate r, no?
+
+df3_34$logRFU<-log(df3_34$RFU)
+ggplot(aes(x=days, y=logRFU), data=df3_34) + geom_point()
+
+loglin<-lm(logRFU~days, data=df3_34)
+summary(loglin)
+#gives me an r of 2.87134
+#IS THIS PER CAPITA? No right?
+
+grtnls<- nls(logRFU~ m*days + b,
+             data=df3_34)
+
+summary(grtnls) # Does the exact same thing! Not surprisingly.
+
+#Let's loop this through my various temperatures here
+mat[[3]]$logRFU<-log(mat[[3]]$RFU)
+
+pop3_r<- matrix(vector(), 0, 2, dimnames=list(c(), c('temp', 'r')))
+
+for (t in c(10,16,22,28,34,40)){
+  df<-subset(mat[[3]], mat[[3]]$temperature==t)
+  lm_gr <- lm(logRFU~days, data=df)
+  
+  coef<-as.vector(c(t, lm_gr$coefficients[2]))
+  pop3_r<-rbind(pop3_r, coef)
+}
+
+#With nls should be the same
+pop3_r2<- matrix(vector(), 0, 2, dimnames=list(c(), c('temp', 'r')))
+
+for (t in c(10,16,22,28,34,40)){
+  df<-subset(mat[[3]], mat[[3]]$temperature==t)
+  lm_nls <- nls(logRFU~r*days + b, data=df)
+  
+  par<-as.data.frame(lm_nls$m$getPars())
+  coef<-as.vector(c(t, par[1,1]))
+  pop3_r2<-rbind(pop3_r2, coef)
+}
+
+# Yep, they are!
+
 ###########################################################################################
 
 #2. growthrate package
@@ -377,8 +420,9 @@ bri3.3 <- nls_multstart(Trait ~ a*Temp*(Temp - Tmin)*(Tmax - Temp)^(1/b),
 
 ###########################################################################################
 
-
 #3. brms (bayesian)
+
+# Let's start by calculating growth rates using brms, like we did with nls
 
 #Let's consider which model of TPC to fit
 get_models()
