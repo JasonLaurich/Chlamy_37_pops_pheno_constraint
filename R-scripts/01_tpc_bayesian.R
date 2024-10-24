@@ -277,6 +277,20 @@ Pop3_gr_rat <- b_TPC(data = df.3.gr, ## data
 ) 
 
 summary(Pop3_gr_rat)
+posterior_samples <- as.mcmc(Pop3_gr_rat)
+postest<-as.data.frame(posterior_samples$samples)
+plot(postest$T_max)
+
+Pop3_gr_rat2 <- b_TPC(
+  data = df.3.gr, 
+  model = 'ratkowsky', 
+  niter = 11000, 
+  burn = 1000, 
+  thin = 10,  # Keep every 10th sample
+  samplerType = 'AF_slice'
+)
+
+summary(Pop3_gr_rat2)
 
 s1<-as.data.frame(Pop3_gr_rat$samples)
 par(mfrow=c(2,2))
@@ -458,64 +472,28 @@ plot(brm_lin)
 plot(conditional_effects(brm_lin), points=T)
 #Ok obviousyl that is terrible, but... it worked!
 
-priorbri <- prior(normal(5,10), nlpar="Tmin") +
-  prior(normal(35,10), nlpar="Tmax") +
+priorbri <- prior(normal(0,5), nlpar="Tmin") +
+  prior(normal(35,5), nlpar="Tmax") +
   prior(normal(0,1), nlpar ="a") +
-  prior(normal(2.5, 2), nlpar= "b")
+  prior(normal(2.5, 0.1), nlpar= "b")
 
 priorbri.1 <- prior(normal(10,2), nlpar="Tmin") +
   prior(normal(10,2), nlpar="Tmax") +
   prior(normal(10,2), nlpar ="a") +
   prior(normal(10,2), nlpar= "b")
 
-brm_bri <- brm(bf(r ~ a*temp*(temp - Tmin)*(Tmax - temp)^(1/b), Tmax + Tmin + a + b ~ 1, nl = T),
-               data = pop3_br, prior = priorbri.1)
+brm_bri <- brm(bf(r ~ a*temp*(temp - Tmin)*(Tmax - temp)^(1/b), Tmax ~ 1, Tmin ~1, a ~ 1, b ~ 1, nl = T),
+               data = pop3_br, family = gaussian(), prior = priorbri)
 
-summary(brm_bri)
+priorbri.1 <- prior(normal(0,5), nlpar="Tmin") +
+  prior(normal(35,5), nlpar="Tmax") +
+  prior(normal(0,1), nlpar ="a")
 
+brm_bri.1 <- brm(bf(r ~ a*temp*(temp - Tmin)*(Tmax - temp)^(1/2), Tmax ~ 1, Tmin ~1, a ~ 1, nl = T),
+               data = pop3_br, family = gaussian(), prior = priorbri.1)
 
-prior1 <- prior(normal(1, 2), nlpar = "a") +
-  prior(normal(0, 2), nlpar = "b")
+summary(brm_bri.1)
 
-fit1 <- brm(bf(r ~ a * exp(b * temp), a + b ~ 1, nl = TRUE),
-            data = pop3_br, prior = prior1)
+plot(conditional_effects(brm_bri.1, effects = "temp"))
 
-summary(fit1)
-
-#Let's try in jags, using the code Joey worked on in the Anopheles-rate-summation project
-# https://github.com/JoeyBernhardt/anopheles-rate-summation/blob/master/AnalysisDemo.R
-
-##### MCMC Settings
-# Number of posterior distribution elements = [(ni - nb) / nt ] * nc = [ (25000 - 5000) / 8 ] * 3 = 7500
-ni <- 25000 # number of iterations in each chain
-nb <- 5000 # number of 'burn in' iterations to discard
-nt <- 8 # thinning rate - jags saves every nt iterations in each chain
-nc <- 3 # number of chains
-
-##### Derived Quantity Settings
-Temp.xs <- seq(0, 45, 0.1) # temperature gradient to calculate derived quantities over
-N.Temp.xs <-length(Temp.xs)
-
-#####  inits Function
-inits<-function(){list(
-  cf.q = 0.01,
-  cf.Tm = 35,
-  cf.T0 = 5,
-  cf.sigma = rlnorm(1))}
-
-#####  Parameters to Estimate
-parameters <- c("cf.q", "cf.T0", "cf.Tm","cf.sigma", "z.trait.mu.pred")
-
-##### Organize Data for JAGS
-pop3_br<-as.data.frame(pop3_br)
-
-trait <- pop3_br$r
-N.obs <- length(pop3_br$r)
-temp <- pop3_br$temp
-
-##### Bundle Data
-jag.data <- list(trait = trait, N.obs = N.obs, temp = temp, Temp.xs = Temp.xs, N.Temp.xs = N.Temp.xs)
-
-##### Run JAGS - **select correct model file** - Briere function, truncated normal distribution
-model_bite_rate_constant <- jags(data=jag.data, inits=inits, parameters.to.save=parameters, model.file="briere.txt",
-                                 n.thin=nt, n.chains=nc, n.burnin=nb, n.iter=ni, DIC=T, working.directory=getwd())
+#OK, Jags (https://github.com/JoeyBernhardt/anopheles-rate-summation/blob/master/AnalysisDemo.R) seems promising. I'm going to run some jags tomorrow.
