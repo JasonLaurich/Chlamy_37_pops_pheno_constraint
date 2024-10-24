@@ -395,7 +395,7 @@ ggplot(preds) + geom_point(aes(Temp, Trait), df3gr) +
 #Back to the model specified by bayes_TPC? It's too different than what nls fit.
 #Let's try replicating the nls_multstart model specification, and plug in what we know for the parameters...
 
-bri4 <- nls (Trait ~ a*Temp*(Temp - Tmin)*(Tmax - T)^(1/b), 
+bri4 <- nls (Trait ~ a*Temp*(Temp - Tmin)*(Tmax - Temp)^(1/b), 
              start = list(a = 4.007e-03, b = 2.500e+00, Tmax = 4.000e+01 , Tmin = 4.499e+00),
              data= df3gr)
 
@@ -408,12 +408,12 @@ bri4 <- nls (Trait ~ a*Temp*(Temp - Tmin)*(Tmax - T)^(1/b),
 # This should work then, if this equation adequately reflects the Briere function wrapper?
 
 bri3.3 <- nls_multstart(Trait ~ a*Temp*(Temp - Tmin)*(Tmax - Temp)^(1/b),
-                        data = df.3.gr,
+                        data = df3gr,
                         iter = c(4,4,4,4),
                         start_lower = start_vals - 10,
                         start_upper = start_vals + 10,
-                        lower = get_lower_lims(df.3.gr$Temp, df.3.gr$Trait, model_name = 'briere2_1999'),
-                        upper = get_upper_lims(df.3.gr$Temp, df.3.gr$Trait, model_name = 'briere2_1999'),
+                        lower = get_lower_lims(df3gr$Temp, df3gr$Trait, model_name = 'briere2_1999'), # try putting in computed values
+                        upper = get_upper_lims(df3gr$Temp, df3gr$Trait, model_name = 'briere2_1999'),
                         supp_errors = 'Y',
                         convergence_count = F)
 
@@ -441,9 +441,81 @@ for (t in c(10,16,22,28,34,40)){
   df<-subset(mat[[3]], mat[[3]]$temperature==t)
   brm_r <- brm(logRFU~days, data=df)
   
-  fit<-as.data.frame(brm3.34$fit)
+  fit<-as.data.frame(brm_r$fit)
   coef<-as.vector(c(t, mean(fit$b_days)))
   pop3_br<-rbind(pop3_br, coef)
 }
 
-brm3.34$fit
+# I feel like this takes forever, may as well just fit the growth curves with lm or nls
+# Very similar results to nls, which is must faster.
+
+#Once again, let's try fitting a simple linear model to the data, as we did with nls
+
+brm_lin <- brm(r ~ temp, data = pop3_br, family = gaussian())
+
+summary(brm_lin)
+plot(brm_lin)
+plot(conditional_effects(brm_lin), points=T)
+#Ok obviousyl that is terrible, but... it worked!
+
+priorbri <- prior(normal(5,10), nlpar="Tmin") +
+  prior(normal(35,10), nlpar="Tmax") +
+  prior(normal(0,1), nlpar ="a") +
+  prior(normal(2.5, 2), nlpar= "b")
+
+priorbri.1 <- prior(normal(10,2), nlpar="Tmin") +
+  prior(normal(10,2), nlpar="Tmax") +
+  prior(normal(10,2), nlpar ="a") +
+  prior(normal(10,2), nlpar= "b")
+
+brm_bri <- brm(bf(r ~ a*temp*(temp - Tmin)*(Tmax - temp)^(1/b), Tmax + Tmin + a + b ~ 1, nl = T),
+               data = pop3_br, prior = priorbri.1)
+
+summary(brm_bri)
+
+
+prior1 <- prior(normal(1, 2), nlpar = "a") +
+  prior(normal(0, 2), nlpar = "b")
+
+fit1 <- brm(bf(r ~ a * exp(b * temp), a + b ~ 1, nl = TRUE),
+            data = pop3_br, prior = prior1)
+
+summary(fit1)
+
+#Let's try in jags, using the code Joey worked on in the Anopheles-rate-summation project
+# https://github.com/JoeyBernhardt/anopheles-rate-summation/blob/master/AnalysisDemo.R
+
+##### MCMC Settings
+# Number of posterior distribution elements = [(ni - nb) / nt ] * nc = [ (25000 - 5000) / 8 ] * 3 = 7500
+ni <- 25000 # number of iterations in each chain
+nb <- 5000 # number of 'burn in' iterations to discard
+nt <- 8 # thinning rate - jags saves every nt iterations in each chain
+nc <- 3 # number of chains
+
+##### Derived Quantity Settings
+Temp.xs <- seq(0, 45, 0.1) # temperature gradient to calculate derived quantities over
+N.Temp.xs <-length(Temp.xs)
+
+#####  inits Function
+inits<-function(){list(
+  cf.q = 0.01,
+  cf.Tm = 35,
+  cf.T0 = 5,
+  cf.sigma = rlnorm(1))}
+
+#####  Parameters to Estimate
+parameters <- c("cf.q", "cf.T0", "cf.Tm","cf.sigma", "z.trait.mu.pred")
+
+##### Organize Data for JAGS
+pop3_br<-as.data.frame(pop3_br)
+
+trait <- pop3_br$r
+N.obs <- length(pop3_br$r)
+temp <- pop3_br$temp
+
+##### Bundle Data
+jag.data <- list(trait = trait, N.obs = N.obs, temp = temp, Temp.xs = Temp.xs, N.Temp.xs = N.Temp.xs)
+
+##### Run JAGS - **select correct model file** - Briere function, truncated normal distribution
+model_bite_rate_constant <- jags(data=jag.data, inits=inits, parameters.to.save=parameters, model.file="briere.txt",
+                                 n.thin=nt, n.chains=nc, n.burnin=nb, n.iter=ni, DIC=T, working.directory=getwd())
