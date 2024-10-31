@@ -4,7 +4,7 @@
 ################################################################################################################
 
 # This script will upload Chlamydomonas growth (RFU) data, fit logarithmic growth curves to extract estimates of r
-# for each of 37 populations at each of 6 temperatures, then fit TPCs to the data using nls and bayesian methods
+# for each of 37 populations at each of 6 temperatures.
 
 ######################### Upload packages ###################################
 
@@ -39,6 +39,8 @@ str(df.exp)
 df.exp$days <- df.exp$days + 0.00000001 # Can't have 0s
 
 df.exp$logRFU <- log(df.exp$RFU) # Let's take the natural logarithm of RFU so we can fit an easy logarithmic growth curve.
+
+df.exp$well.ID<-as.factor(df.exp$well_plate) # For well-level replication
 
 ######################### Estimate maximum growth rate, r ###################
 
@@ -228,7 +230,53 @@ df.r.sum<-cbind(df.r.sum, r.log.cln, SE.r.log.cln, K.r.log.cln, SE.K.r.log.cln)
 # For B, I want to estimate R both (1) at the 1st spike, and (2) during the declining phase as she did
 # I actually think I want to threshold based on RFU, not days. So for example, exclude points after RFUs drop below ~25% of peak values.
 
+# OK, working with the exponential growth data. I want to fit simple linear models to logged data and fit logarithmic growth curves
+# to see how these approaches compare. 
 
+# Storage vectors
+r.exp.ln <- vector()
+SE.r.exp.ln <- vector()
+
+r.exp.log <- vector()
+SE.r.exp.log <- vector()
+K.exp.log <- vector()
+SE.K.exp.log <- vector()
+
+#OK, now we are going to loop
+
+for (i in pop){ #population
+  for (t in tmp){ # temperature
+    
+    df.it <- subset(df.exp, df.exp$temperature==t & df.exp$pop==i) # get the dataset
+    df.it <- droplevels(df.it) # drop superfluous levels (to isolate well replicate IDs within each population and temperature)
+    
+    for (w in 1:length(levels(df.it$well.ID))){
+      
+      df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == w)
+      
+      ln_lin <- lm(logRFU ~ days,  #fit the model
+                             data = df.it.wl)
+      
+      r.exp.ln <- c(r.exp.ln, summary(ln_lin)$coefficients[2,1])
+      SE.r.exp.ln <- c(SE.r.exp.ln, summary(ln_lin)$coefficients[2,2])
+      
+      log_exp <- nls_multstart(RFU ~ K / (1 + ((K - N.0) / N.0) * exp(-r * days)),  #changed to N.0 because N0 is in the dataframe
+                             data = df.it.wl,
+                             start_lower = c(K = max(df.it.wl$RFU)*0.75, N.0 = 1, r = 0.2), 
+                             start_upper = c(K = max(df.it.wl$RFU)*1.25, N.0 = 50, r = 3.5),   
+                             iter = 500,
+                             supp_errors = 'Y',
+                             control = nls.control(maxiter = 200))
+      
+      r.exp.log <- c(r.exp.log, summary(log_exp)$parameters[3,1])
+      SE.r.exp.log <- c(SE.r.exp.log, summary(log_exp)$parameters[3,2])
+      K.exp.log <- c(K.exp.log, summary(log_exp)$parameters[1,1])
+      SE.K.exp.log <- c(SE.K.exp.log, summary(log_exp)$parameters[1,2])
+    }
+  }
+}
+
+df.r.sum<-cbind(df.r.sum, r.exp.ln, SE.r.exp.ln, r.exp.log, SE.r.exp.log, K.exp.log, SE.K.exp.log)
 
 ######################### Fit TPCs using nls ################################
 
