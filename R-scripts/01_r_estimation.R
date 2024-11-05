@@ -38,7 +38,7 @@ str(df.exp)
 
 df.exp$days <- df.exp$days + 0.00000001 # Can't have 0s
 
-df.exp$logRFU <- log(df.exp$RFU) # Let's take the natural logarithm of RFU so we can fit an easy logarithmic growth curve.
+df.exp$logRFU <- log(df.exp$RFU + 0.001) # Let's take the natural logarithm of RFU so we can fit an easy logarithmic growth curve.
 
 df.exp$well.ID<-as.factor(df.exp$well_plate) # For well-level replication
 
@@ -142,22 +142,18 @@ well.rep <- vector() # data storage, this ID vector will be specified inside the
 
 # Create vectors for model estimates
 r.log <- vector()
-SE.r.log <- vector()
-K.r.log <- vector()
-SE.K.r.log <- vector()
+#SE.r.log <- vector()
+#K.r.log <- vector()
+#SE.K.r.log <- vector()
 
-#for (i in pop){
-#  pops <- c(pops, rep(i,6))
-#}
-
-df.r.sum<-as.data.frame(cbind(pops,temp,well.rep, r.log, SE.r.log, K.r.log, SE.K.r.log)) # empty table with no values.
+df.r.sum<-as.data.frame(cbind(pops,temp,well.rep, r.log)) # empty table with no values.
 
 # For extra fits we will add over time, we will instead initiate a vector and cbind them later.
 
 r.log.cln <- vector()
-SE.r.log.cln <- vector()
-K.r.log.cln <- vector()
-SE.K.r.log.cln <- vector()
+#SE.r.log.cln <- vector()
+#K.r.log.cln <- vector()
+#SE.K.r.log.cln <- vector()
 
 #OK, now we are going to loop
 
@@ -180,7 +176,7 @@ for (i in pop){ #population
                              control = nls.control(maxiter = 200))
       
       # Add data to our summary table
-      df.r.sum[nrow(df.r.sum) + 1,] = list(df.it.wl[1,9], df.it.wl[1,11], levels(df.it.wl$well.ID)[w], summary(log_r)$parameters[3,1], summary(log_r)$parameters[3,2], summary(log_r)$parameters[1,1], summary(log_r)$parameters[1,2])
+      df.r.sum[nrow(df.r.sum) + 1,] = list(df.it.wl[1,9], df.it.wl[1,11], levels(df.it.wl$well.ID)[w], summary(log_r)$parameters[3,1])
       
       df.it.wl$residuals <- residuals(log_r) # Get the residuals so we can filter out wonky data. This is especially important here
       # Because high T growth curves spike super fast, then drops off (death?)
@@ -200,14 +196,14 @@ for (i in pop){ #population
                                  control = nls.control(maxiter = 200))
       
       r.log.cln <- c(r.log.cln, summary(log_r_cln)$parameters[3,1])
-      SE.r.log.cln <- c(SE.r.log.cln, summary(log_r_cln)$parameters[3,2])
-      K.r.log.cln <- c(K.r.log.cln, summary(log_r_cln)$parameters[1,1])
-      SE.K.r.log.cln <- c(SE.K.r.log.cln, summary(log_r_cln)$parameters[1,2])
+      #SE.r.log.cln <- c(SE.r.log.cln, summary(log_r_cln)$parameters[3,2])
+      #K.r.log.cln <- c(K.r.log.cln, summary(log_r_cln)$parameters[1,1])
+      #SE.K.r.log.cln <- c(SE.K.r.log.cln, summary(log_r_cln)$parameters[1,2])
     }
   }
 }
 
-df.r.sum<-cbind(df.r.sum, r.log.cln, SE.r.log.cln, K.r.log.cln, SE.K.r.log.cln)
+df.r.sum<-cbind(df.r.sum, r.log.cln)
 # Without even graphing things, we can see that the problem is including data where populations are crashing after they have peaked.
 # We would need to trim this data off, say by adding a 10% time buffer zone after the highest r has been recorded for each population.
 # This is probably what Joey did to generate the exponential growth data. 
@@ -235,12 +231,7 @@ df.r.sum<-cbind(df.r.sum, r.log.cln, SE.r.log.cln, K.r.log.cln, SE.K.r.log.cln)
 
 # Storage vectors
 r.exp.ln <- vector()
-SE.r.exp.ln <- vector()
-
-r.exp.log <- vector()
-SE.r.exp.log <- vector()
-K.exp.log <- vector()
-SE.K.exp.log <- vector()
+#SE.r.exp.ln <- vector()
 
 #OK, now we are going to loop
 
@@ -254,32 +245,96 @@ for (i in pop){ #population
       
       df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == w)
       
-      ln_lin <- lm(logRFU ~ days,  #fit the model
+      ln_lin <- lm(logRFU ~ days,  #fit simple linear model
                              data = df.it.wl)
       
       r.exp.ln <- c(r.exp.ln, summary(ln_lin)$coefficients[2,1])
-      SE.r.exp.ln <- c(SE.r.exp.ln, summary(ln_lin)$coefficients[2,2])
-      
-      log_exp <- nls_multstart(RFU ~ K / (1 + ((K - N.0) / N.0) * exp(-r * days)),  #changed to N.0 because N0 is in the dataframe
-                             data = df.it.wl,
-                             start_lower = c(K = max(df.it.wl$RFU)*0.75, N.0 = 1, r = 0.2), 
-                             start_upper = c(K = max(df.it.wl$RFU)*1.25, N.0 = 50, r = 3.5),   
-                             iter = 500,
-                             supp_errors = 'Y',
-                             control = nls.control(maxiter = 200))
-      
-      r.exp.log <- c(r.exp.log, summary(log_exp)$parameters[3,1])
-      SE.r.exp.log <- c(SE.r.exp.log, summary(log_exp)$parameters[3,2])
-      K.exp.log <- c(K.exp.log, summary(log_exp)$parameters[1,1])
-      SE.K.exp.log <- c(SE.K.exp.log, summary(log_exp)$parameters[1,2])
+      #SE.r.exp.ln <- c(SE.r.exp.ln, summary(ln_lin)$coefficients[2,2])
     }
   }
 }
 
-df.r.sum<-cbind(df.r.sum, r.exp.ln, SE.r.exp.ln, r.exp.log, SE.r.exp.log, K.exp.log, SE.K.exp.log)
+df.r.sum<-cbind(df.r.sum, r.exp.ln)
 
-######################### Fit TPCs using nls ################################
+# Logistic growth models will not work for the 40C group in the exp dataset. This is due to the fact that there
+# are only ~3 data points for each time series, which are either decreasing or flat.
 
+r.exp.log <- vector()
+#SE.r.exp.log <- vector()
+#K.exp.log <- vector()
+#SE.K.exp.log <- vector()
 
+for (i in pop){ #population
+  for (t in tmp){ # temperature
+    
+    df.it <- subset(df.exp, df.exp$temperature==t & df.exp$pop==i) # get the dataset
+    df.it <- droplevels(df.it) # drop superfluous levels (to isolate well replicate IDs within each population and temperature)
+    
+    for (w in 1:length(levels(df.it$well.ID))){
+      
+      df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == w)
+      
+      if (t!=40){
+        
+        log_exp <- nls_multstart(RFU ~ K / (1 + ((K - N.0) / N.0) * exp(-r * days)),  #changed to N.0 because N0 is in the dataframe
+                                 data = df.it.wl,
+                                 start_lower = c(K = max(df.it.wl$RFU)*0.75, N.0 = 1, r = 0.2), 
+                                 start_upper = c(K = max(df.it.wl$RFU)*1.25, N.0 = 50, r = 3.5),   
+                                 iter = 500,
+                                 supp_errors = 'Y',
+                                 control = nls.control(maxiter = 200))
+        
+        r.exp.log <- c(r.exp.log, summary(log_exp)$parameters[3,1])
+        #SE.r.exp.log <- c(SE.r.exp.log, summary(log_exp)$parameters[3,2])
+        #K.exp.log <- c(K.exp.log, summary(log_exp)$parameters[1,1])
+        #SE.K.exp.log <- c(SE.K.exp.log, summary(log_exp)$parameters[1,2]) 
+        
+        }else {
+          r.exp.log <- c(r.exp.log, NA)
+          #SE.r.exp.log <- c(SE.r.exp.log, NA)
+          #K.exp.log <- c(K.exp.log, NA)
+          #SE.K.exp.log <- c(SE.K.exp.log, NA)
+        }
+    }
+  }
+}
 
-######################### Fit TPCs using JAGS ###############################
+df.r.sum<-cbind(df.r.sum, r.exp.log)
+
+# So I think for all of the non-40s, I like the fitting of logarithmic growth curves best.
+# For the 40's, I guess we will now work with the ascending and descending phase?
+
+# So for the 40C data, we'll fit logarithmic growth curves and linear regressions to the early data (days < 1), but we'll
+# threshold based on max RFU count. 
+
+# This will not give me enough datapoints to fit a logarithmic growth curve, so I think I'll just estimate r based on a linear 
+# regression of logged RFU count
+
+r.40.ln <- vector()
+
+for (i in pop){ #population
+  for (t in tmp){ # temperature
+    
+    df.it <- subset(df.exp, df.exp$temperature==t & df.exp$pop==i) # get the dataset
+    df.it <- droplevels(df.it) # drop superfluous levels (to isolate well replicate IDs within each population and temperature)
+    
+    for (w in 1:length(levels(df.it$well.ID))){
+      
+      df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == w)
+      
+      if (t==40){
+        
+        ln_r_40 <- lm(logRFU~days, data=df.i.wl)
+        
+        r.40.ln <- c(r.40.ln, summary(ln_r_40)$coefficients[2,1])
+        
+      }else {
+        r.40.ln <- c(r.40.ln, NA)
+      }
+    }
+  }
+}
+
+df.r.sum<-cbind(df.r.sum, r.40.ln)
+
+write_csv(df.r.sum, "data-processed/pop_well_r_estimates.csv")
