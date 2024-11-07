@@ -3,7 +3,7 @@
 
 ################################################################################################################
 
-# This script will upload Chlamydomonas growth (RFU) data, fit logarithmic growth curves to extract estimates of r
+# This script will upload Chlamydomonas growth (RFU) data, fit logistic growth curves to extract estimates of r
 # for each of 37 populations at each of 6 temperatures.
 
 ######################### Upload packages ###################################
@@ -11,6 +11,8 @@
 library(cowplot)
 library(tidyverse)
 library(nls.multstart)
+library(MuMIn) #AICc
+library(patchwork)
 
 ######################### Upload and transform data #########################
 
@@ -18,15 +20,16 @@ df <- read.csv("data-processed/chlamee-acute-rfu-time.csv")
 head(df) #RFU is density, days is time, temperature is temperature
 str(df)
 
-df$pop <- as.factor(df$population)
+df<-df[,-c(1,2,4,5,6,8,13)]
+
+df$pop.fac <- as.factor(df$population)
+df$pop.num <- as.numeric(df$pop.fac)
 df<-subset(df,df$temperature!=20)
 
-df$days <- df$days + 0.00000001 # Can't have 0s
+df$days <- df$days + 0.001 # Can't have 0s
+df$logRFU <- log(df$RFU + 0.001) # Let's take the natural logarithm of RFU so we can fit an easy logistic growth curve.
 
-str(df) # 38 populations?
-levels(df$pop) # I don't recognize the cc1629 group, but we'll keep it for now
-
-df$logRFU <- log(df$RFU) # Let's take the natural logarithm of RFU so we can fit an easy logarithmic growth curve.
+levels(df$pop.fac) # I don't recognize the cc1629 group, but we'll keep it for now
 
 df.rep <- subset(df, df$plate_type == "repeat") # We're going to work only with repeat data (this is most of the well_plates) which I'll use as replicates. 
 df.rep$well.ID<-as.factor(df.rep$well_plate)
@@ -36,22 +39,30 @@ df.rep$well.ID<-as.factor(df.rep$well_plate)
 df.exp <- read.csv("data-processed/chlamee-acute-exponential.csv")
 str(df.exp)
 
-df.exp$days <- df.exp$days + 0.00000001 # Can't have 0s
+df.exp$days <- df.exp$days + 0.001 # Can't have 0s
+df.exp$logRFU <- log(df.exp$RFU + 0.001) # Let's take the natural logarithm of RFU so we can fit an easy logistic growth curve.
 
-df.exp$logRFU <- log(df.exp$RFU + 0.001) # Let's take the natural logarithm of RFU so we can fit an easy logarithmic growth curve.
+df.exp<-df.exp[,-c(1,2,4,5,6,8,13,17,18)]
 
 df.exp$well.ID<-as.factor(df.exp$well_plate) # For well-level replication
+df.exp$pop.fac <- as.factor(df.exp$population)
+df.exp$pop.num <- as.numeric(df.exp$pop.fac)
+
+# Split df.rep and df.exp by population
+mat.rep <- split(df.rep, df.rep$pop.num)  # Each element is a data frame for one population in df.rep
+mat.exp <- split(df.exp, df.exp$pop.num)  # Each element is a data frame for one population in df.exp
+
 
 ######################### Estimate maximum growth rate, r ###################
 
-# We're going to start by fitting a logarithmic growth function to the data for one population as a proof of concept,
+# We're going to start by fitting a logistic growth function to the data for one population as a proof of concept,
 # then we will loop it through to calculate r.
 
 #OK, I want to add in estimates for different wells. These should be treated like replicates, and it looks like there are ~ 4 for each pop x T.
 # I think the column I want to sort by here is well_plate - for each 'well' there are repeat and single types? 
 # What does repeat/single signify?
 
-df.it <- subset(df.rep, df.rep$temperature==28 & df.rep$pop==3)
+df.it <- subset(mat.rep[[3]], temperature==28)
 df.it <- droplevels(df.it)
 
 df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == 1)
@@ -125,43 +136,35 @@ ggplot() +
        y = "RFU") +
   theme_cowplot()
 
-AIC(log_tst,log_tst_cln) #The residual-cleaned model looks better and fits better.
+AICc(log_tst,log_tst_cln) #The residual-cleaned model looks better and fits better.
 
 summary(log_tst_cln) # K is roughly the same (1764.5 to 1758.6), as is r (3.1628 to 3.182), but the cleaned model fits better.
 
 # OK, so now we want to write a looping function.
 # Create a dataframe to store growth information for each population at each temperature.
-# We'll want to record estimates for K and r (with SEs)
 
-pop <- as.vector(unique(df$pop)) # for looping through population
 tmp <- as.vector(as.numeric(as.character(unique(df$temperature)))) # for looping through temperatures
+ord.tmp<- sort(tmp)
 
-temp <- vector() # data storage
-pops <- vector() # data storage
-well.rep <- vector() # data storage, this ID vector will be specified inside the loop.
-
-# Create vectors for model estimates
-r.log <- vector()
-#SE.r.log <- vector()
-#K.r.log <- vector()
-#SE.K.r.log <- vector()
-
-df.r.sum<-as.data.frame(cbind(pops,temp,well.rep, r.log)) # empty table with no values.
+df.r.sum <- data.frame( # dataframe for storage
+  population = character(),
+  population.number = numeric(),
+  temperature = numeric(),
+  well.ID = character(),
+  r.log = numeric()
+)
 
 # For extra fits we will add over time, we will instead initiate a vector and cbind them later.
 
 r.log.cln <- vector()
-#SE.r.log.cln <- vector()
-#K.r.log.cln <- vector()
-#SE.K.r.log.cln <- vector()
 
 #OK, now we are going to loop
 
-for (i in pop){ #population
-  for (t in tmp){ # temperature
+for (i in 1:38){ #population
+  for (t in ord.tmp){ # temperature
     
-    df.it <- subset(df.rep, df.rep$temperature==t & df.rep$pop==i) # get the dataset
-    df.it <- droplevels(df.it) # drop superfluous levels (to isolate well replicate IDs within each population and temperature)
+    df.it <- subset(mat.rep[[i]], temperature==t)
+    df.it <- droplevels(df.it) # Drop unused levels to isolate well replicate IDs at given t
     
     for (w in 1:length(levels(df.it$well.ID))){
       
@@ -176,7 +179,13 @@ for (i in pop){ #population
                              control = nls.control(maxiter = 200))
       
       # Add data to our summary table
-      df.r.sum[nrow(df.r.sum) + 1,] = list(df.it.wl[1,9], df.it.wl[1,11], levels(df.it.wl$well.ID)[w], summary(log_r)$parameters[3,1])
+      df.r.sum <- rbind(df.r.sum, data.frame(
+        population = df.it.wl$pop.fac[1],             # Population as factor
+        population.number = df.it.wl$pop.num[1],      # Numeric population number
+        temperature = df.it.wl$temperature[1],        # Temperature
+        well.ID = df.it.wl$well.ID[1],                # Well ID (assuming one well ID per subset)
+        r.log = summary(log_r)$parameters[3,1]        # The calculated r.log value
+      ))
       
       df.it.wl$residuals <- residuals(log_r) # Get the residuals so we can filter out wonky data. This is especially important here
       # Because high T growth curves spike super fast, then drops off (death?)
@@ -196,14 +205,12 @@ for (i in pop){ #population
                                  control = nls.control(maxiter = 200))
       
       r.log.cln <- c(r.log.cln, summary(log_r_cln)$parameters[3,1])
-      #SE.r.log.cln <- c(SE.r.log.cln, summary(log_r_cln)$parameters[3,2])
-      #K.r.log.cln <- c(K.r.log.cln, summary(log_r_cln)$parameters[1,1])
-      #SE.K.r.log.cln <- c(SE.K.r.log.cln, summary(log_r_cln)$parameters[1,2])
     }
   }
 }
 
-df.r.sum<-cbind(df.r.sum, r.log.cln)
+df.r.sum$r.log.cln <- r.log.cln
+
 # Without even graphing things, we can see that the problem is including data where populations are crashing after they have peaked.
 # We would need to trim this data off, say by adding a 10% time buffer zone after the highest r has been recorded for each population.
 # This is probably what Joey did to generate the exponential growth data. 
@@ -226,20 +233,19 @@ df.r.sum<-cbind(df.r.sum, r.log.cln)
 # For B, I want to estimate R both (1) at the 1st spike, and (2) during the declining phase as she did
 # I actually think I want to threshold based on RFU, not days. So for example, exclude points after RFUs drop below ~25% of peak values.
 
-# OK, working with the exponential growth data. I want to fit simple linear models to logged data and fit logarithmic growth curves
+# OK, working with the exponential growth data. I want to fit simple linear models to logged data and fit logistic growth curves
 # to see how these approaches compare. 
 
 # Storage vectors
 r.exp.ln <- vector()
-#SE.r.exp.ln <- vector()
 
 #OK, now we are going to loop
 
-for (i in pop){ #population
-  for (t in tmp){ # temperature
+for (i in 1:38){ #population
+  for (t in ord.tmp){ # temperature
     
-    df.it <- subset(df.exp, df.exp$temperature==t & df.exp$pop==i) # get the dataset
-    df.it <- droplevels(df.it) # drop superfluous levels (to isolate well replicate IDs within each population and temperature)
+    df.it <- subset(mat.exp[[i]], temperature==t)
+    df.it <- droplevels(df.it) # Drop unused levels to isolate well replicate IDs at given t
     
     for (w in 1:length(levels(df.it$well.ID))){
       
@@ -249,26 +255,22 @@ for (i in pop){ #population
                              data = df.it.wl)
       
       r.exp.ln <- c(r.exp.ln, summary(ln_lin)$coefficients[2,1])
-      #SE.r.exp.ln <- c(SE.r.exp.ln, summary(ln_lin)$coefficients[2,2])
     }
   }
 }
 
-df.r.sum<-cbind(df.r.sum, r.exp.ln)
+df.r.sum$r.exp.ln <- r.exp.ln
 
 # Logistic growth models will not work for the 40C group in the exp dataset. This is due to the fact that there
 # are only ~3 data points for each time series, which are either decreasing or flat.
 
 r.exp.log <- vector()
-#SE.r.exp.log <- vector()
-#K.exp.log <- vector()
-#SE.K.exp.log <- vector()
 
-for (i in pop){ #population
-  for (t in tmp){ # temperature
+for (i in 1:38){ #population
+  for (t in ord.tmp){ # temperature
     
-    df.it <- subset(df.exp, df.exp$temperature==t & df.exp$pop==i) # get the dataset
-    df.it <- droplevels(df.it) # drop superfluous levels (to isolate well replicate IDs within each population and temperature)
+    df.it <- subset(mat.exp[[i]], temperature==t)
+    df.it <- droplevels(df.it) # Drop unused levels to isolate well replicate IDs at given t
     
     for (w in 1:length(levels(df.it$well.ID))){
       
@@ -285,56 +287,512 @@ for (i in pop){ #population
                                  control = nls.control(maxiter = 200))
         
         r.exp.log <- c(r.exp.log, summary(log_exp)$parameters[3,1])
-        #SE.r.exp.log <- c(SE.r.exp.log, summary(log_exp)$parameters[3,2])
-        #K.exp.log <- c(K.exp.log, summary(log_exp)$parameters[1,1])
-        #SE.K.exp.log <- c(SE.K.exp.log, summary(log_exp)$parameters[1,2]) 
         
         }else {
           r.exp.log <- c(r.exp.log, NA)
-          #SE.r.exp.log <- c(SE.r.exp.log, NA)
-          #K.exp.log <- c(K.exp.log, NA)
-          #SE.K.exp.log <- c(SE.K.exp.log, NA)
         }
     }
   }
 }
 
-df.r.sum<-cbind(df.r.sum, r.exp.log)
+df.r.sum$r.exp.log <- r.exp.log
 
-# So I think for all of the non-40s, I like the fitting of logarithmic growth curves best.
+# So I think for all of the non-40s, I like the fitting of logistic growth curves best.
 # For the 40's, I guess we will now work with the ascending and descending phase?
 
-# So for the 40C data, we'll fit logarithmic growth curves and linear regressions to the early data (days < 1), but we'll
+# So for the 40C data, we'll fit logistic growth curves and linear regressions to the early data (days < 1), but we'll
 # threshold based on max RFU count. 
 
-# This will not give me enough datapoints to fit a logarithmic growth curve, so I think I'll just estimate r based on a linear 
+# This will not give me enough datapoints to fit a logistic growth curve, so I think I'll just estimate r based on a linear 
 # regression of logged RFU count
 
-r.40.ln <- vector()
+r.40.ln.early <- vector()
+r.40.ln.full <- vector()
 
-for (i in pop){ #population
-  for (t in tmp){ # temperature
+for (i in 1:38){ #population
+  for (t in ord.tmp){ # temperature
     
-    df.it <- subset(df.exp, df.exp$temperature==t & df.exp$pop==i) # get the dataset
-    df.it <- droplevels(df.it) # drop superfluous levels (to isolate well replicate IDs within each population and temperature)
+    df.it <- subset(mat.rep[[i]], temperature==t)
+    df.it <- droplevels(df.it) # Drop unused levels to isolate well replicate IDs at given t
     
     for (w in 1:length(levels(df.it$well.ID))){
       
       df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == w)
       
       if (t==40){
+      
+        df.it.wl.early <- subset(df.it.wl, df.it.wl$days <= df.it.wl$days[which.max(df.it.wl$RFU)])
         
-        ln_r_40 <- lm(logRFU~days, data=df.i.wl)
+        ln_r_40_early <- lm(logRFU~days, data=df.it.wl.early) # Constrain data to early, increasing phase.
         
-        r.40.ln <- c(r.40.ln, summary(ln_r_40)$coefficients[2,1])
+        r.40.ln.early <- c(r.40.ln.early, summary(ln_r_40_early)$coefficients[2,1])
+        
+        ln_r_40_full <- lm(logRFU~days, data=df.it.wl) # Fit to the whole dataset (linear regression)
+        
+        r.40.ln.full <- c(r.40.ln.full, summary(ln_r_40_full)$coefficients[2,1])
         
       }else {
-        r.40.ln <- c(r.40.ln, NA)
+        
+        r.40.ln.early <- c(r.40.ln.early, NA)
+        
+        ln_r_40_full <- lm(logRFU~days, data=df.it.wl) # Fit to the whole dataset (linear regression)
+        
+        r.40.ln.full <- c(r.40.ln.full, summary(ln_r_40_full)$coefficients[2,1])
+        
       }
     }
   }
 }
 
-df.r.sum<-cbind(df.r.sum, r.40.ln)
+df.r.sum$r.40.ln.early <- r.40.ln.early
+df.r.sum$r.40.ln.full <- r.40.ln.full
 
-write_csv(df.r.sum, "data-processed/pop_well_r_estimates.csv")
+write_csv(df.r.sum, "data-processed/01_pop_well_r_estimates.csv")
+
+# OK, now for 3 populations, let's fit and plot models for all growth estimation approaches. Let's plot the raw data and model
+# fits, and compare models using AIC.
+
+pops<-names(mat.rep)
+ran <- sample(pops, 3, replace = F) #Let's randomly select 3 populations to do a full modelling and plotting markup here. 
+
+aic.results <- data.frame( # Build a dataframe to hold key information for each temperature, well, and model
+  population.fac = character(),
+  population.num = numeric(),
+  temperature = numeric(),
+  well.ID = character(),
+  model = character(),
+  AIC = numeric()
+  )
+
+AIC <- vector() # for storing additional aic scores which we will cbind to the original dataframe. 
+
+pred.df.mod1 <- data.frame( # Dataframe to store fitted data for the first model
+  population.fac = character(),
+  population.num = numeric(),
+  temperature = numeric(),
+  well.ID = character(),
+  smt.days = numeric(),
+  fit.RFU = numeric()
+)
+
+pred.df.mod2 <- data.frame( # Dataframe to store fitted data for the second model
+  population.fac = character(),
+  population.num = numeric(),
+  temperature = numeric(),
+  well.ID = character(),
+  smt.days = numeric(),
+  fit.RFU = numeric()
+)
+
+
+for (i in ran){
+  
+  for (t in tmp){
+    
+    df.it <- subset(mat.rep[[i]], temperature==t)
+    df.it <- droplevels(df.it) # Drop unused levels to isolate well replicate IDs at given t
+    
+    for (w in 1:length(levels(df.it$well.ID))){
+      
+      df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == w)
+      
+      # OK, a sequence of days against which we will extract predicted model fits.
+      smt.days <- seq(min(df.it.wl$days, na.rm = TRUE), max(df.it.wl$days, na.rm = TRUE), length.out = 500)
+      
+      # Fit model 1: logistic growth model
+      log_r <- nls_multstart(RFU ~ K / (1 + ((K - N0) / N0) * exp(-r * days)),  #fit the model
+                             data = df.it.wl,
+                             start_lower = c(K = max(df.it.wl$RFU)*0.75, N0 = 1, r = 0.2), 
+                             start_upper = c(K = max(df.it.wl$RFU)*1.25, N0 = 50, r = 3.5),   
+                             iter = 500,
+                             supp_errors = 'Y',
+                             control = nls.control(maxiter = 200))
+      
+      # Store model 1 AIC
+      aic.results <- rbind(aic.results, data.frame(
+        population.fac = df.it.wl$pop.fac[1],
+        population.num = i,
+        temperature = t,
+        well.ID = unique(df.it.wl$well.ID),
+        model = "Model 1 (Logistic)",
+        AIC = AICc(log_r)
+      ))
+      
+      # Predict fitted RFU values for Model 1 and store
+      fit.RFU.mod1 <- predict(log_r, newdata = data.frame(days = smt.days))
+      pred.df.mod1 <- rbind(pred.df.mod1, data.frame(
+        population.fac = df.it.wl$pop.fac[1],
+        population.num = i,
+        temperature = t,
+        well.ID = unique(df.it.wl$well.ID),
+        smt.days = smt.days,
+        fit.RFU = fit.RFU.mod1
+      ))
+      
+      # Threshold based on residuals
+      df.it.wl$residuals <- residuals(log_r)
+      res.lim <- 2 * sd(df.it.wl$residuals)
+      df.cln <- subset(df.it.wl, abs(residuals) < res.lim)
+      
+      # Now we'll refit the logistic model without the outliers
+      
+      log_r_cln <- nls_multstart(RFU ~ K / (1 + ((K - N0) / N0) * exp(-r * days)),  
+                                 data = df.cln,
+                                 start_lower = c(K = max(df.cln$RFU)*0.75, N0 = 1, r = 0.2),  
+                                 start_upper = c(K = max(df.cln$RFU)*1.25, N0 = 50, r = 3.5),  
+                                 iter = 500,
+                                 supp_errors = 'Y',
+                                 control = nls.control(maxiter = 200))
+      
+      # Store model 2 AIC. We'll need a separate 2 column data frame which we can cbind after
+      AIC <- c(AIC, AICc(log_r_cln))
+      
+      # Predict fitted RFU values for Model 2 and store
+      fit.RFU.mod2 <- predict(log_r_cln, newdata = data.frame(days = smt.days))
+      pred.df.mod2 <- rbind(pred.df.mod2, data.frame(
+        population.fac = df.it.wl$pop.fac[1],
+        population.num = i,
+        temperature = t,
+        well.ID = unique(df.it.wl$well.ID),
+        smt.days = smt.days,
+        fit.RFU = fit.RFU.mod2
+      ))
+      
+    }
+  }
+}
+
+aic.results$model2 <- rep("Model 2 (Trimmed logistic)", nrow(aic.results))
+aic.results$AIC2 <- AIC
+
+# OK, now we are going to fit linear models to the growth data from the exponential phase, storing fitted data and AIC values
+
+pred.df.mod3 <- data.frame( # Dataframe to store fitted data for the third model
+  population.fac = character(),
+  population.num = numeric(),
+  temperature = numeric(),
+  well.ID = character(),
+  smt.days = numeric(),
+  fit.RFU = numeric()
+)
+
+AIC3 <- vector()
+
+for (i in ran){
+  
+  for (t in tmp){
+    
+    df.it <- subset(mat.exp[[i]], temperature==t) # sort by t and pop
+    df.it <- droplevels(df.it) # drop levels
+    
+    for (w in 1:length(levels(df.it$well.ID))){
+      
+      df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == w)
+      
+      # OK, a sequence of days against which we will extract predicted model fits.
+      smt.days <- seq(min(df.it.wl$days, na.rm = TRUE), max(df.it.wl$days, na.rm = TRUE), length.out = 500)
+      
+      # Fit model 3: linear growth model on logged data
+      ln_lin <- lm(logRFU ~ days,  #fit simple linear model
+                   data = df.it.wl)
+      
+      # Store model 3 AIC
+      AIC3 <- c(AIC3, AICc(ln_lin))
+      
+      # Predict fitted RFU values for Model 3 and store
+      fit.RFU.mod3 <- predict(ln_lin, newdata = data.frame(days = smt.days))
+      pred.df.mod3 <- rbind(pred.df.mod3, data.frame(
+        population.fac = df.it.wl$pop.fac[1],
+        population.num = i,
+        temperature = t,
+        well.ID = unique(df.it.wl$well.ID),
+        smt.days = smt.days,
+        fit.RFU = fit.RFU.mod3
+      ))
+      
+    }
+  }
+}
+
+aic.results$model3 <- rep("Model 3 (Linear logged)", nrow(aic.results))
+aic.results$AIC3 <- AIC3
+
+# Now I'm going to fit the 4th model (logistic growth curve on data limited to the exponential growth period) to all <40C data
+
+pred.df.mod4 <- data.frame( # Dataframe to store fitted data for the fourth model
+  population.fac = character(),
+  population.num = numeric(),
+  temperature = numeric(),
+  well.ID = character(),
+  smt.days = numeric(),
+  fit.RFU = numeric()
+)
+
+AIC4 <- vector()
+
+for (i in ran){
+  
+  for (t in tmp){
+    
+    df.it <- subset(mat.exp[[i]], temperature==t) # sort by t and pop
+    df.it <- droplevels(df.it) # drop levels
+    
+    for (w in 1:length(levels(df.it$well.ID))){
+      
+      df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == w)
+      
+      if (t!=40){
+        
+        # OK, a sequence of days against which we will extract predicted model fits.
+        smt.days <- seq(min(df.it.wl$days, na.rm = TRUE), max(df.it.wl$days, na.rm = TRUE), length.out = 500)
+        
+        log_exp <- nls_multstart(RFU ~ K / (1 + ((K - N.0) / N.0) * exp(-r * days)),  #changed to N.0 because N0 is in the dataframe
+                                 data = df.it.wl,
+                                 start_lower = c(K = max(df.it.wl$RFU)*0.75, N.0 = 1, r = 0.2), 
+                                 start_upper = c(K = max(df.it.wl$RFU)*1.25, N.0 = 50, r = 3.5),   
+                                 iter = 500,
+                                 supp_errors = 'Y',
+                                 control = nls.control(maxiter = 200))
+        
+        # Store model 4 AIC.
+        AIC4 <- c(AIC4, AICc(log_exp))
+        
+        # Predict fitted RFU values for Model 4 and store
+        fit.RFU.mod4 <- predict(log_exp, newdata = data.frame(days = smt.days))
+        pred.df.mod4 <- rbind(pred.df.mod4, data.frame(
+          population.fac = df.it.wl$pop.fac[1],
+          population.num = i,
+          temperature = t,
+          well.ID = unique(df.it.wl$well.ID),
+          smt.days = smt.days,
+          fit.RFU = fit.RFU.mod4
+        ))
+        
+        
+      }else {
+        
+        AIC4 <- c(AIC4, NA) # Won't work for t == 40
+        
+        pred.df.mod4 <- rbind(pred.df.mod4, data.frame(
+          population.fac = df.it.wl$pop.fac[1],
+          population.num = i,
+          temperature = t,
+          well.ID = unique(df.it.wl$well.ID),
+          smt.days = NA,
+          fit.RFU = NA
+        ))
+
+      }
+    }
+  }
+}
+
+aic.results$model4 <- rep("Model 4 (Logistic growth, exponential phase)", nrow(aic.results))
+aic.results$AIC4 <- AIC4
+
+# OK now we'll run the 5th model, which fits lineral models to logged data for only the acsending portion of the 40C treatments.
+
+pred.df.mod5 <- data.frame( # Dataframe to store fitted data for the fifth model
+  population.fac = character(),
+  population.num = numeric(),
+  temperature = numeric(),
+  well.ID = character(),
+  smt.days = numeric(),
+  fit.RFU = numeric()
+)
+
+AIC5 <- vector()
+
+for (i in ran){
+  
+  for (t in tmp){
+    
+    df.it <- subset(mat.rep[[i]], temperature==t) # sort by t and pop
+    df.it <- droplevels(df.it) # drop levels
+    
+    for (w in 1:length(levels(df.it$well.ID))){
+      
+      if (t==40){
+        
+        df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == w)
+        
+        df.it.wl.early <- subset(df.it.wl, df.it.wl$days <= df.it.wl$days[which.max(df.it.wl$RFU)])
+        
+        smt.days <- seq(min(df.it.wl.early$days, na.rm = TRUE), max(df.it.wl.early$days, na.rm = TRUE), length.out = 500)
+        
+        ln_r_40_early <- lm(logRFU~days, data=df.it.wl.early) # Constrain data to early, increasing phase.
+        
+        # Store model 5 AIC.
+        AIC5 <- c(AIC5, AICc(ln_r_40_early))
+        
+        # Predict fitted RFU values for Model 5 and store
+        fit.RFU.mod5 <- predict(ln_r_40_early, newdata = data.frame(days = smt.days))
+        pred.df.mod5 <- rbind(pred.df.mod5, data.frame(
+          population.fac = df.it.wl$pop.fac[1],
+          population.num = i,
+          temperature = t,
+          well.ID = unique(df.it.wl$well.ID),
+          smt.days = smt.days,
+          fit.RFU = fit.RFU.mod5
+        ))
+        
+      }else {
+        
+        AIC5 <- c(AIC5, NA) # Don't use for other temperatures
+        
+        pred.df.mod5 <- rbind(pred.df.mod5, data.frame(
+          population.fac = df.it.wl$pop.fac[1],
+          population.num = i,
+          temperature = t,
+          well.ID = unique(df.it.wl$well.ID),
+          smt.days = NA,
+          fit.RFU = NA
+        ))
+        
+      }
+    }
+  }
+}
+
+aic.results$model5 <- rep("Model 5 (Log linear, early phase, 40C)", nrow(aic.results))
+aic.results$AIC5 <- AIC5
+
+# OK, onto the sixth and final model! Just fitting a logged linear regression to the full dataset for all temperatures.
+
+pred.df.mod6 <- data.frame( # Dataframe to store fitted data for the sixth model
+  population.fac = character(),
+  population.num = numeric(),
+  temperature = numeric(),
+  well.ID = character(),
+  smt.days = numeric(),
+  fit.RFU = numeric()
+)
+
+AIC6 <- vector()
+
+for (i in ran){
+  
+  for (t in tmp){
+    
+    df.it <- subset(mat.rep[[i]], temperature==t)
+    df.it <- droplevels(df.it) # drop levels
+    
+    for (w in 1:length(levels(df.it$well.ID))){
+      
+      df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == w)
+      
+      # OK, a sequence of days against which we will extract predicted model fits.
+      smt.days <- seq(min(df.it.wl$days, na.rm = TRUE), max(df.it.wl$days, na.rm = TRUE), length.out = 500)
+      
+      # Fit model 6: linear growth model on logged data across the full range
+      ln_lin <- lm(logRFU ~ days,  #fit simple linear model
+                   data = df.it.wl)
+      
+      # Store model 6 AIC
+      AIC6 <- c(AIC6, AICc(ln_lin))
+      
+      # Predict fitted RFU values for Model 6 and store
+      fit.RFU.mod6 <- predict(ln_lin, newdata = data.frame(days = smt.days))
+      pred.df.mod6 <- rbind(pred.df.mod6, data.frame(
+        population.fac = df.it.wl$pop.fac[1],
+        population.num = i,
+        temperature = t,
+        well.ID = unique(df.it.wl$well.ID),
+        smt.days = smt.days,
+        fit.RFU = fit.RFU.mod6
+      ))
+      
+    }
+  }
+}
+
+aic.results$model6 <- rep("Model 6 (Linear logged, full data)", nrow(aic.results))
+aic.results$AIC6 <- AIC6
+
+write_csv(aic.results, "data-processed/02_sample_aic_results_r_estimation.csv") # AIC table for model comparison.
+
+# OK, now we want to generate some summary figures to see how these various models are fitting the data.
+
+# Add a column for each model to identify it in the combined data frame
+pred.df.mod1$model <- "Model 1"
+pred.df.mod2$model <- "Model 2"
+pred.df.mod3$model <- "Model 3"
+pred.df.mod4$model <- "Model 4"
+pred.df.mod5$model <- "Model 5"
+pred.df.mod6$model <- "Model 6"
+
+# Combine all predictions into a single dataframe for plotting
+combined_preds <- rbind(pred.df.mod1, pred.df.mod2, pred.df.mod3, pred.df.mod4, pred.df.mod5, pred.df.mod6)
+
+# OK, we're going to start generating plots. Let's go for population 1 of the 3
+
+df.1 <- subset(df.rep, df.rep$pop==ran[1])
+df.1.exp <- subset(df.exp, df.exp$pop==ran[1])
+
+for (t in tmp) {
+  df.raw <- subset(df.1, temperature == t)
+  df.raw <- droplevels(df.raw) # drop levels
+  assign(paste0("df.raw.", t), df.raw)
+  
+  df.exp.raw <- subset(df.1.exp, temperature == t)
+  df.exp.raw <- droplevels(df.exp.raw) # drop levels
+  assign(paste0("df.exp.raw.", t), df.raw)
+  
+}
+
+ord.tmp <- sort(tmp)
+
+# Function to generate plots with model-specific raw data, y-axis, and data frame
+generate_model_plot <- function(t, model_num) {
+  # Select the appropriate raw data frame and y-axis variable based on the model number
+  if (model_num %in% c(1, 2)) {
+    df.raw <- get(paste0("df.raw.", t))  # Use df.raw for models 1 and 2
+    y_var <- "RFU"
+  } else if (model_num == 4) {
+    df.raw <- get(paste0("df.exp.raw.", t))  # Use df.exp.raw for model 4
+    y_var <- "RFU"
+  } else if (model_num == 3) {
+    df.raw <- get(paste0("df.exp.raw.", t))  # Use df.exp.raw for model 3
+    y_var <- "logRFU"
+  } else if (model_num %in% c(5, 6)) {
+    df.raw <- get(paste0("df.raw.", t))  # Use df.raw for models 5 and 6
+    y_var <- "logRFU"
+  }
+  
+  # Retrieve the complete predictive data frame for the model
+  df.pred <- get(paste0("pred.df.mod", model_num))
+  
+  # Subset predictions based on the current temperature `t`
+  df.pred <- subset(df.pred, temperature == t)
+  df.pred$well.ID <- factor(df.pred$well.ID, levels = unique(df.pred$well.ID))
+  
+  # Create the plot with the correct raw data, y-axis, and predictions
+  p <- ggplot() +
+    geom_point(data = df.raw, aes(x = days, y = !!sym(y_var), color = well.ID), alpha = 0.5) +
+    geom_line(data = df.pred, aes(x = smt.days, y = fit.RFU, color = well.ID)) +
+    labs(title = paste("Temperature:", t, "- Model", model_num),
+         x = "Days",
+         y = y_var) +  # Adjust label based on y-axis variable
+    theme_minimal() +
+    theme(legend.position = "none")
+  
+  return(p)
+}
+
+# Initialize lists to store plots for each model
+plot_list_mod1 <- list()
+plot_list_mod2 <- list()
+plot_list_mod3 <- list()
+plot_list_mod4 <- list()
+plot_list_mod5 <- list()
+plot_list_mod6 <- list()
+
+# Generate and store plots for each model
+for (t in ord.tmp) {
+  plot_list_mod1[[paste0("plot_", t)]] <- generate_model_plot(t, model_num = 1)
+  plot_list_mod2[[paste0("plot_", t)]] <- generate_model_plot(t, model_num = 2)
+  plot_list_mod3[[paste0("plot_", t)]] <- generate_model_plot(t, model_num = 3)
+  plot_list_mod4[[paste0("plot_", t)]] <- generate_model_plot(t, model_num = 4)
+  plot_list_mod5[[paste0("plot_", t)]] <- generate_model_plot(t, model_num = 5)
+  plot_list_mod6[[paste0("plot_", t)]] <- generate_model_plot(t, model_num = 6)
+}
