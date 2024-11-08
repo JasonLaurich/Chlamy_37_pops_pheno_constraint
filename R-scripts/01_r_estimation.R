@@ -12,7 +12,7 @@ library(cowplot)
 library(tidyverse)
 library(nls.multstart)
 library(MuMIn) #AICc
-library(patchwork)
+library(gridExtra)
 
 ######################### Upload and transform data #########################
 
@@ -711,88 +711,75 @@ aic.results$AIC6 <- AIC6
 
 write_csv(aic.results, "data-processed/02_sample_aic_results_r_estimation.csv") # AIC table for model comparison.
 
+#############################################
+
 # OK, now we want to generate some summary figures to see how these various models are fitting the data.
 
-# Add a column for each model to identify it in the combined data frame
-pred.df.mod1$model <- "Model 1"
-pred.df.mod2$model <- "Model 2"
-pred.df.mod3$model <- "Model 3"
-pred.df.mod4$model <- "Model 4"
-pred.df.mod5$model <- "Model 5"
-pred.df.mod6$model <- "Model 6"
+# Set the output directory
+output_dir <- "figures" 
 
-# Combine all predictions into a single dataframe for plotting
-combined_preds <- rbind(pred.df.mod1, pred.df.mod2, pred.df.mod3, pred.df.mod4, pred.df.mod5, pred.df.mod6)
-
-# OK, we're going to start generating plots. Let's go for population 1 of the 3
-
-df.1 <- subset(df.rep, df.rep$pop==ran[1])
-df.1.exp <- subset(df.exp, df.exp$pop==ran[1])
-
-for (t in tmp) {
-  df.raw <- subset(df.1, temperature == t)
-  df.raw <- droplevels(df.raw) # drop levels
-  assign(paste0("df.raw.", t), df.raw)
-  
-  df.exp.raw <- subset(df.1.exp, temperature == t)
-  df.exp.raw <- droplevels(df.exp.raw) # drop levels
-  assign(paste0("df.exp.raw.", t), df.raw)
-  
-}
-
-ord.tmp <- sort(tmp)
-
-# Function to generate plots with model-specific raw data, y-axis, and data frame
-generate_model_plot <- function(t, model_num) {
-  # Select the appropriate raw data frame and y-axis variable based on the model number
-  if (model_num %in% c(1, 2)) {
-    df.raw <- get(paste0("df.raw.", t))  # Use df.raw for models 1 and 2
-    y_var <- "RFU"
-  } else if (model_num == 4) {
-    df.raw <- get(paste0("df.exp.raw.", t))  # Use df.exp.raw for model 4
-    y_var <- "RFU"
-  } else if (model_num == 3) {
-    df.raw <- get(paste0("df.exp.raw.", t))  # Use df.exp.raw for model 3
-    y_var <- "logRFU"
-  } else if (model_num %in% c(5, 6)) {
-    df.raw <- get(paste0("df.raw.", t))  # Use df.raw for models 5 and 6
-    y_var <- "logRFU"
+# Function to generate each model-temperature plot
+generate_model_plot <- function(i, t, model_num) {
+  # Select the appropriate raw data source (mat.rep or mat.exp) based on the model number
+  if (model_num %in% c(1, 2, 5, 6)) {
+    df.raw <- subset(mat.rep[[i]], temperature == t)  # Use mat.rep for models 1, 2, 5, and 6
+  } else if (model_num %in% c(3, 4)) {
+    df.raw <- subset(mat.exp[[i]], temperature == t)  # Use mat.exp for models 3 and 4
   }
+  
+  # Set y-axis variable based on whether the data should be logged
+  y_var <- if (model_num %in% c(3, 5, 6)) "logRFU" else "RFU"
   
   # Retrieve the complete predictive data frame for the model
   df.pred <- get(paste0("pred.df.mod", model_num))
   
-  # Subset predictions based on the current temperature `t`
-  df.pred <- subset(df.pred, temperature == t)
+  # Subset predictions based on the current temperature `t` and population `i`
+  df.pred <- subset(df.pred, temperature == t & population.num == i)
   df.pred$well.ID <- factor(df.pred$well.ID, levels = unique(df.pred$well.ID))
   
-  # Create the plot with the correct raw data, y-axis, and predictions
-  p <- ggplot() +
-    geom_point(data = df.raw, aes(x = days, y = !!sym(y_var), color = well.ID), alpha = 0.5) +
-    geom_line(data = df.pred, aes(x = smt.days, y = fit.RFU, color = well.ID)) +
-    labs(title = paste("Temperature:", t, "- Model", model_num),
-         x = "Days",
-         y = y_var) +  # Adjust label based on y-axis variable
-    theme_minimal() +
-    theme(legend.position = "none")
+  # Skip specific model-temperature combinations by creating blank plots
+  if ((model_num == 4 && t == 40) || (model_num == 5 && t != 40)) {
+    return(ggplot() + theme_void())
+  } else {
+    # Generate the actual plot
+    return(ggplot() +
+             geom_point(data = df.raw, aes(x = days, y = !!sym(y_var), color = well.ID), alpha = 0.5) +
+             geom_line(data = df.pred, aes(x = smt.days, y = fit.RFU, color = well.ID)) +
+             labs(title = paste("Temperature:", t, "- Model", model_num), x = "Days", y = y_var) +
+             theme_minimal() +
+             theme(legend.position = "none"))
+  }
+}
+
+# Function to arrange the 6x6 grid and save as PDF for each population
+generate_and_save_plot <- function(i, population_label) {
+  plot_list <- list()
+  for (model_num in 1:6) {
+    for (t in ord.tmp) {
+      plot_list[[paste0("model", model_num, "_temp", t)]] <- generate_model_plot(i, t, model_num)
+    }
+  }
   
-  return(p)
+  # Arrange the plots in a 6x6 grid
+  combined_plot <- arrangeGrob(
+    grobs = plot_list,
+    nrow = 6,
+    ncol = 6,
+    top = paste("Population:", population_label)
+  )
+  
+  # Save the plot as PDF in the specified directory
+  ggsave(
+    filename = file.path(output_dir, paste0("01_pop", population_label, "_ex_r_modfits.pdf")),
+    plot = combined_plot,
+    width = 16,
+    height = 12
+  )
 }
 
-# Initialize lists to store plots for each model
-plot_list_mod1 <- list()
-plot_list_mod2 <- list()
-plot_list_mod3 <- list()
-plot_list_mod4 <- list()
-plot_list_mod5 <- list()
-plot_list_mod6 <- list()
-
-# Generate and store plots for each model
-for (t in ord.tmp) {
-  plot_list_mod1[[paste0("plot_", t)]] <- generate_model_plot(t, model_num = 1)
-  plot_list_mod2[[paste0("plot_", t)]] <- generate_model_plot(t, model_num = 2)
-  plot_list_mod3[[paste0("plot_", t)]] <- generate_model_plot(t, model_num = 3)
-  plot_list_mod4[[paste0("plot_", t)]] <- generate_model_plot(t, model_num = 4)
-  plot_list_mod5[[paste0("plot_", t)]] <- generate_model_plot(t, model_num = 5)
-  plot_list_mod6[[paste0("plot_", t)]] <- generate_model_plot(t, model_num = 6)
+# Loop over the selected populations to create and save each PDF
+for (i in ran) {
+  population_label <- as.character(unique(mat.rep[[i]]$pop.fac)[1])  # Get character label for current population
+  generate_and_save_plot(i, population_label)
 }
+
