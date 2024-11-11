@@ -171,8 +171,8 @@ for (i in 25:48) {
   img_path <- file.path(output_dir, paste0("plot_", i, ".png"))
   img <- readPNG(img_path)
   
-  # Convert to a rasterGrob
-  image_grobs_2[[i]] <- rasterGrob(img, interpolate = TRUE)
+  # Convert to a rasterGrob and add it to the list with adjusted index
+  image_grobs_2[[i - 24]] <- rasterGrob(img, interpolate = TRUE)
 }
 
 image_grobs_3 <- list()
@@ -181,8 +181,8 @@ for (i in 49:72) {
   img_path <- file.path(output_dir, paste0("plot_", i, ".png"))
   img <- readPNG(img_path)
   
-  # Convert to a rasterGrob
-  image_grobs_3[[i]] <- rasterGrob(img, interpolate = TRUE)
+  # Convert to a rasterGrob and add it to the list with adjusted index
+  image_grobs_3[[i - 48]] <- rasterGrob(img, interpolate = TRUE)
 }
 
 # Arrange the images in a grid
@@ -191,3 +191,19 @@ grid.arrange(grobs = image_grobs_1, ncol = 4, nrow = 6, top = "Population 5")
 grid.arrange(grobs = image_grobs_2, ncol = 4, nrow = 6, top = "Population 27")
 
 grid.arrange(grobs = image_grobs_2, ncol = 4, nrow = 6, top = "Population 30")
+
+grid_plot <- grid.arrange(grobs = image_grobs_1, ncol = 4, nrow = 6, top = "Population 5")
+pdf("figures/02_Population5_growthTools.pdf", width = 14, height = 10)  # Adjust width and height as necessary
+grid.draw(grid_plot)
+dev.off()  # 
+
+grid_plot <- grid.arrange(grobs = image_grobs_2, ncol = 4, nrow = 6, top = "Population 27")
+pdf("figures/02_Population27_growthTools.pdf", width = 14, height = 10)  # Adjust width and height as necessary
+grid.draw(grid_plot)
+dev.off()  # 
+
+grid_plot <- grid.arrange(grobs = image_grobs_3, ncol = 4, nrow = 6, top = "Population 30")
+pdf("figures/02_Population30_growthTools.pdf", width = 14, height = 10)  # Adjust width and height as necessary
+grid.draw(grid_plot)
+dev.off()  #
+
