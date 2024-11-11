@@ -6,13 +6,17 @@
 
 ############# Packages #####################
 
-remotes::install_github("ctkremer/mleTools")
-remotes::install_github("ctkremer/growthTools")
+#remotes::install_github("ctkremer/mleTools")
+#remotes::install_github("ctkremer/growthTools")
 
 library(growthTools)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
+library(gridExtra)
+library(grid)
+library(png)
+library(cowplot)
 
 ############# Upload and examine data
 
@@ -58,3 +62,132 @@ res$best.se
   # 1. best.model - are they all the same? Except for T = 40?
   # 2. best.slope and best.se, obviously!
   # 3. We are not going to want to plot anything yet, we'll likely do this for a couple of populations later.
+
+################# Fit models and extract r from all populations and treatments ################
+
+# I have a strong suspicion that this approach won't fit our 40 C data, but I'll try
+
+tmp <- as.vector(as.numeric(as.character(unique(df$temperature)))) # for looping through temperatures
+ord.tmp<- sort(tmp)
+
+df.r.gt <- data.frame( # dataframe for storage
+  population = character(),
+  population.number = numeric(),
+  temperature = numeric(),
+  well.ID = character(),
+  r.gt = numeric(),
+  r.best.model = character()
+)
+
+# Use the same looping structure as the 01_r_estimation file.
+
+for (i in 1:38){ #population
+  for (t in ord.tmp){ # temperature
+    
+    df.it <- subset(mat.rep[[i]], temperature==t)
+    df.it <- droplevels(df.it) # Drop unused levels to isolate well replicate IDs at given t
+    
+    for (w in 1:length(levels(df.it$well.ID))){
+      
+      df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == w)
+      
+      res<-get.growth.rate(df.it.wl$days, df.it.wl$logRFU, plot.best.Q = F)
+      
+      # Add data to our summary table
+      df.r.gt <- rbind(df.r.gt, data.frame(
+        population = df.it.wl$pop.fac[1],             # Population as factor
+        population.number = df.it.wl$pop.num[1],      # Numeric population number
+        temperature = df.it.wl$temperature[1],        # Temperature
+        well.ID = df.it.wl$well.ID[1],                # Well ID (assuming one well ID per subset)
+        r.gt =  res$best.slope,                        # The calculated r value (slope) from the best model
+        r.best.model = res$best.model                 # The model that fit the data best
+      ))
+      
+    }
+  }
+}
+
+# OK, that actually worked for 40 C even, and the data looks good. Let's save the file and generate some summary plots to discuss.
+
+write.csv(df.r.gt, "data-processed/03_r_growthtools.csv") # Save r estimates and other info
+
+# randomly select 3 populations
+pops<-names(mat.rep)
+ran <- sample(pops, 3, replace = F)
+
+plot.list <- list()
+
+for (i in ran){ #population
+  
+  for (t in ord.tmp){ # temperature
+    
+    df.it <- subset(mat.rep[[i]], temperature==t)
+    df.it <- droplevels(df.it) # Drop unused levels to isolate well replicate IDs at given t
+    
+    for (w in 1:length(levels(df.it$well.ID))){
+      
+      df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == w)
+      
+      res<-get.growth.rate(df.it.wl$days, df.it.wl$logRFU, plot.best.Q = T, id = paste("Pop:", df.it.wl$pop.fac[1], "Temp:", t, "Well:", w))
+      
+      p <- recordPlot()
+      plot.list[[paste0("Pop", df.it.wl$pop.fac[1], "_temp", t, "_well", w)]] <- p
+    
+    }
+  }
+}
+
+output_dir <- "figures"
+
+# Save the first 10 recorded plots from plot.list as PNG files
+for (i in 1:72) {
+  # Specify the file path
+  file_path <- file.path(output_dir, paste0("plot_", i, ".png"))
+  
+  # Open a PNG device
+  png(filename = file_path, width = 800, height = 600)
+  
+  # Replay the recorded plot to the device
+  replayPlot(plot.list[[i]])
+  
+  # Close the device
+  dev.off()
+}
+
+# Load saved PNGs into a list of rasterGrob objects for grid arrangement
+image_grobs_1 <- list()
+for (i in 1:24) {
+  # Load the image
+  img_path <- file.path(output_dir, paste0("plot_", i, ".png"))
+  img <- readPNG(img_path)
+  
+  # Convert to a rasterGrob
+  image_grobs_1[[i]] <- rasterGrob(img, interpolate = TRUE)
+}
+
+image_grobs_2 <- list()
+for (i in 25:48) {
+  # Load the image
+  img_path <- file.path(output_dir, paste0("plot_", i, ".png"))
+  img <- readPNG(img_path)
+  
+  # Convert to a rasterGrob
+  image_grobs_2[[i]] <- rasterGrob(img, interpolate = TRUE)
+}
+
+image_grobs_3 <- list()
+for (i in 49:72) {
+  # Load the image
+  img_path <- file.path(output_dir, paste0("plot_", i, ".png"))
+  img <- readPNG(img_path)
+  
+  # Convert to a rasterGrob
+  image_grobs_3[[i]] <- rasterGrob(img, interpolate = TRUE)
+}
+
+# Arrange the images in a grid
+grid.arrange(grobs = image_grobs_1, ncol = 4, nrow = 6, top = "Population 5")
+
+grid.arrange(grobs = image_grobs_2, ncol = 4, nrow = 6, top = "Population 27")
+
+grid.arrange(grobs = image_grobs_2, ncol = 4, nrow = 6, top = "Population 30")

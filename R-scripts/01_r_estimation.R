@@ -348,7 +348,7 @@ for (i in 1:38){ #population
 df.r.sum$r.40.ln.early <- r.40.ln.early
 df.r.sum$r.40.ln.full <- r.40.ln.full
 
-write_csv(df.r.sum, "data-processed/01_pop_well_r_estimates.csv")
+write.csv(df.r.sum, "data-processed/01_pop_well_r_estimates.csv")
 
 # OK, now for 3 populations, let's fit and plot models for all growth estimation approaches. Let's plot the raw data and model
 # fits, and compare models using AIC.
@@ -710,7 +710,7 @@ for (i in ran){
 aic.results$model6 <- rep("Model 6 (Linear logged, full data)", nrow(aic.results))
 aic.results$AIC6 <- AIC6
 
-write_csv(aic.results, "data-processed/02_sample_aic_results_r_estimation.csv") # AIC table for model comparison.
+write.csv(aic.results, "data-processed/02_sample_aic_results_r_estimation.csv") # AIC table for model comparison.
 
 #############################################
 
