@@ -13,6 +13,7 @@ library(tidyverse)
 library(nls.multstart)
 library(MuMIn) #AICc
 library(gridExtra)
+library(ggplot2)
 
 ######################### Upload and transform data #########################
 
