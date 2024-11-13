@@ -12,6 +12,7 @@ library(tidyr)
 library(cowplot)
 library(ggplot2)
 library(dplyr)
+library(MuMIn) #AICc
 
 ############# Upload and examine data #######################
 
@@ -56,9 +57,9 @@ i <- sample(1:38, 1)
 df.i <- subset(mat.gt[[i]])
 df.i <- droplevels(df.i) 
 
-# Briere model in nls.multstart
-
 # We'll start with nls.multstart
+
+# Briere
 
 start.vals.briere <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'briere2_1999')
 
@@ -77,6 +78,67 @@ preds <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out
 preds <- broom::augment(bri_nls, newdata = preds)
 
 ggplot(preds) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic()
+
+summary(bri_nls)
+AICc(bri_nls)
+
+# Let's try calculating other parameters from this fitted curve. 
+# For now, I'll just use this predicted data curve and extract estimates from there?
+
+Topt <- preds$Temp[which.max(preds$.fitted)]
+rmax <- max(preds$.fitted, na.rm = T)
+Tbr <- diff(range(preds$Temp[preds$.fitted >= rmax / 2], na.rm = TRUE)) # Thermal breadth
+# Ea seems harder to do, will look into later...
+
+# Let's try the Boatman one as well.
+
+start.vals.boatman <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'boatman_2017')
+
+boat_nls <- nls_multstart(r.gt~boatman_2017(temp = Temp, rmax, tmin, tmax, a, b),
+                                    data = df.i,
+                                    iter = c(4,4,4,4,4),
+                                    start_lower = start.vals.boatman - 10,
+                                    start_upper = start.vals.boatman + 10,
+                                    lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'boatman_2017'),
+                                    upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'boatman_2017'),
+                                    supp_errors = 'Y',
+                                    convergence_count = FALSE)
+
+summary(boat_nls)
+AICc(boat_nls)
+
+preds.boat <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.boat <- broom::augment(boat_nls, newdata = preds.boat)
+
+ggplot(preds.boat) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic()
+
+Topt.boat <- preds.boat$Temp[which.max(preds.boat$.fitted)]
+Tbr.boat <- diff(range(preds.boat$Temp[preds.boat$.fitted >= rmax / 2], na.rm = TRUE)) # Thermal breadth
+
+# Let's finish with the Deutsch model for now.
+
+start.vals.deut <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'deutsch_2008')
+
+deut_nls <- nls_multstart(r.gt ~ deutsch_2008(temp = Temp, rmax, topt, ctmax, a),
+  data = df.i,
+  iter = c(4, 4, 4, 4), 
+  start_lower = start.vals.deut - 10,
+  start_upper = start.vals.deut + 10,
+  lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'deutsch_2008'),
+  upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'deutsch_2008'),
+  supp_errors = 'Y',
+  convergence_count = FALSE
+)
+
+summary(deut_nls)
+AICc(deut_nls)
+
+preds.deut <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.deut <- broom::augment(deut_nls, newdata = preds.deut)
+
+ggplot(preds.deut) + geom_point(aes(Temp, r.gt), df.i) +
   geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic()
 
 ############# Loop through entire dataset ################
