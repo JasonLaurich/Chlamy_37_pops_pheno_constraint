@@ -158,19 +158,6 @@ nc <- 5 # number of chains
 Temp.xs <- seq(0, 45, 0.1) # temperature gradient to calculate derived quantities over
 N.Temp.xs <-length(Temp.xs)
 
-# Briere settings - initial values tighter than priors, incorporate variation across chains.
-
-# inits function
-inits<-function(){list(
-  cf.q = runif( 1, 0.01, 0.1),
-  cf.Tm = runif(1, 35, 45),
-  cf.T0 = runif(1, 0, 10),
-  cf.sigma = rlnorm(1, log(1), 0.5)
-  )
-}
-
-parameters <- c("cf.q", "cf.T0", "cf.Tm","cf.sigma", "r.pred") # estimate these, will depend based on model
-
 # identify traits for jags
 trait <- df.i$r.gt
 N.obs <- length(trait)
@@ -178,8 +165,21 @@ temp <- df.i$Temp
 
 jag.data <- list(trait = trait, N.obs = N.obs, temp = temp, Temp.xs = Temp.xs, N.Temp.xs = N.Temp.xs)
 
+# Briere settings - initial values tighter than priors, incorporate variation across chains.
+
+# inits function
+inits.bri<-function(){list(
+  cf.q = runif( 1, 0.01, 0.1),
+  cf.Tm = runif(1, 35, 45),
+  cf.T0 = runif(1, 0, 10),
+  cf.sigma = rlnorm(1, log(1), 0.5)
+  )
+}
+
+parameters.bri <- c("cf.q", "cf.T0", "cf.Tm","cf.sigma", "r.pred") # estimate these, will depend based on model
+
 # jags MCMC, Briere function
-bri_jag <- jags(data=jag.data, inits=inits, parameters.to.save=parameters, model.file="briere.txt",
+bri_jag <- jags(data=jag.data, inits=inits.bri, parameters.to.save=parameters.bri, model.file="briere.txt",
                                  n.thin=nt, n.chains=nc, n.burnin=nb, n.iter=ni, DIC=T, working.directory=getwd())
 
 bri_jag$BUGSoutput$summary[1:5,] # Get estimates
@@ -192,6 +192,150 @@ plot(trait ~ jitter(Temp, 0.5), xlim = c(0, 45), data = df.i,
 lines(bri_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "2.5%"] ~ Temp.xs, lty = 2)
 lines(bri_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "97.5%"] ~ Temp.xs, lty = 2)
 lines(bri_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "mean"] ~ Temp.xs)
+
+# Let's try the Boatman model
+
+# inits function
+inits.boat<-function(){list(
+  rmax = runif(1, 1.5, 6.5),
+  tmin = runif(1, 0, 10),
+  tmax = runif(1, 35, 45),
+  a = runif( 1, 0.01, 0.1),
+  b = runif( 1, 0.01, 0.1),
+  sigma = rlnorm(1, log(1), 0.5)
+)
+}
+
+parameters.boat <- c("rmax", "tmin", "tmax", "a", "b", "sigma", "r.pred") # estimate these, will depend based on model
+
+# jags MCMC, Boatman function
+boat_jag <- jags(data=jag.data, inits=inits.boat, parameters.to.save=parameters.boat, model.file="boatman.txt",
+                n.thin=nt, n.chains=nc, n.burnin=nb, n.iter=ni, DIC=T, working.directory=getwd())
+
+boat_jag$BUGSoutput$summary[1:5,] # Get estimates
+mcmcplot(boat_jag) # Evaluate model performance
+boat_jag$BUGSoutput$DIC # DIC
+
+# plot!
+plot(trait ~ jitter(Temp, 0.5), xlim = c(0, 45), data = df.i, 
+     ylab = "Growth rate", xlab = expression(paste("Temperature (",degree,"C)")))
+lines(boat_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "2.5%"] ~ Temp.xs, lty = 2)
+lines(boat_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "97.5%"] ~ Temp.xs, lty = 2)
+lines(boat_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "mean"] ~ Temp.xs)
+
+# That is not working great! We'll revisit this, but let's try the Deutsch for now:
+
+# Initial values for the Deutsch model
+inits.deut <- function() {
+  list(
+    rmax = runif(1, 1, 10),        # Random initial guess for rmax within prior range
+    topt = runif(1, 20, 35),       # Initial guess for topt within a plausible range
+    ctmax = runif(1, 36, 50),      # Initial guess for ctmax within a plausible range
+    a = runif(1, 0.1, 5),          # Initial guess for a
+    sigma = rlnorm(1, log(1), 0.5) # Initial guess for sigma using log-normal distribution
+  )
+}
+
+# Parameters to save for Deutsch model
+parameters.deut <- c("rmax", "topt", "ctmax", "a", "sigma", "r.pred")
+
+# jags MCMC, Deutsch function
+deut_jag <- jags(data=jag.data, inits=inits.deut, parameters.to.save=parameters.deut, model.file="deutsch.txt",
+                 n.thin=nt, n.chains=nc, n.burnin=nb, n.iter=ni, DIC=T, working.directory=getwd())
+
+deut_jag$BUGSoutput$summary[1:5,] # Get estimates
+mcmcplot(deut_jag) # Evaluate model performance
+deut_jag$BUGSoutput$DIC # DIC
+
+# plot!
+plot(trait ~ jitter(Temp, 0.5), xlim = c(0, 45), data = df.i, 
+     ylab = "Growth rate", xlab = expression(paste("Temperature (",degree,"C)")))
+lines(deut_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "2.5%"] ~ Temp.xs, lty = 2)
+lines(deut_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "97.5%"] ~ Temp.xs, lty = 2)
+lines(deut_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "mean"] ~ Temp.xs)
+
+# Also doesn't work well, possibly due to conditionality, and Topt, Tmax overlapping.
+
+inits.sharpe <- function() {
+  list(
+    r_tref = runif(1, 1, 5),           # Initial rate at standard reference temperature
+    e = runif(1, 0.5, 1.5),            # Activation energy (eV)
+    el = runif(1, 1, 4),               # Low-temperature deactivation energy
+    tl = runif(1, 10, 30),             # Temperature for low-temp 1/2 activity suppression
+    eh = runif(1, 1, 4),               # High-temperature deactivation energy
+    th = runif(1, 30, 50),             # Temperature for high-temp 1/2 activity suppression
+    sigma = rlnorm(1, log(1), 0.5)     # Initial guess for sigma
+  )
+}
+
+parameters.sharpe <- c("r_tref", "e", "el", "tl", "eh", "th", "sigma", "r.pred")
+
+tref <- 20  # define tref
+
+jag.data2 <- list(trait = trait, N.obs = N.obs, temp = temp, Temp.xs = Temp.xs, N.Temp.xs = N.Temp.xs, tref = tref)
+
+
+sharpe_jag <- jags(
+  data = jag.data2,
+  inits = inits.sharpe,
+  parameters.to.save = parameters.sharpe,
+  model.file = "sharpe.txt",
+  n.thin = nt,
+  n.chains = nc,
+  n.burnin = nb,
+  n.iter = ni,
+  DIC = TRUE,
+  working.directory = getwd()
+)
+
+sharpe_jag$BUGSoutput$summary[1:5,] # Get estimates
+mcmcplot(sharpe_jag) # Evaluate model performance
+sharpe_jag$BUGSoutput$DIC # DIC
+
+# plot!
+plot(trait ~ jitter(Temp, 0.5), xlim = c(0, 45), data = df.i, 
+     ylab = "Growth rate", xlab = expression(paste("Temperature (",degree,"C)")))
+lines(sharpe_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "2.5%"] ~ Temp.xs, lty = 2)
+lines(sharpe_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "97.5%"] ~ Temp.xs, lty = 2)
+lines(sharpe_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "mean"] ~ Temp.xs)
+
+# OK, we're going to try the quadratic function
+
+# Initial values for the Quadratic model
+inits.quad <- function() {
+  list(
+    cf.q = runif(1, 0.01, 0.1),    # Coefficient for the quadratic term
+    cf.T0 = runif(1, 5, 15),       # Lower temperature threshold
+    cf.Tm = runif(1, 35, 45),      # Upper temperature threshold
+    cf.sigma = rlnorm(1, log(1), 0.5) # Variability in data around the mean
+  )
+}
+
+parameters.quad <- c("cf.q", "cf.T0", "cf.Tm", "cf.sigma", "r.pred")
+
+quad_jag <- jags(
+  data = jag.data,                # Data bundled for JAGS
+  inits = inits.quad,         # Initial values function
+  parameters.to.save = parameters.quad, # Parameters to monitor
+  model.file = "quad.txt",    # JAGS model file
+  n.thin = nt,
+  n.chains = nc,
+  n.burnin = nb,
+  n.iter = ni,
+  DIC = TRUE,
+  working.directory = getwd()
+)
+
+quad_jag$BUGSoutput$summary[1:5,] # Get estimates
+mcmcplot(quad_jag) # Evaluate model performance
+quad_jag$BUGSoutput$DIC # DIC
+
+# plot!
+plot(trait ~ jitter(Temp, 0.5), xlim = c(0, 45), data = df.i, 
+     ylab = "Growth rate", xlab = expression(paste("Temperature (",degree,"C)")))
+lines(quad_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "2.5%"] ~ Temp.xs, lty = 2)
+lines(quad_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "97.5%"] ~ Temp.xs, lty = 2)
+lines(quad_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "mean"] ~ Temp.xs)
 
 ############# Loop through entire dataset ################
 
