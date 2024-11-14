@@ -59,7 +59,71 @@ i <- sample(1:38, 1)
 df.i <- subset(mat.gt[[i]])
 df.i <- droplevels(df.i) 
 
-# We'll start with nls.multstart
+# We'll start with nls.multstart, and do them all.
+
+# I'm going to create a dataframe to store model AICc scores, and a list for the plots
+model.AICc <- data.frame(
+  model = character(),
+  AICc = numeric(),
+  stringsAsFactors = FALSE
+)
+
+nls.plot.list <- list()
+
+# Beta
+
+start.vals.beta <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'beta_2012')
+
+beta_nls <- nls_multstart(r.gt~beta_2012(temp = Temp, a, b, c, d, e),
+                         data = df.i,
+                         iter = c(4,4,4,4,4),
+                         start_lower = start.vals.beta - 10,
+                         start_upper = start.vals.beta + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'beta_2012'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'beta_2012'),
+                         supp_errors = 'Y',
+                         convergence_count = F)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Beta", AICc = AICc(beta_nls)))
+
+preds.beta <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.beta <- broom::augment(beta_nls, newdata = preds.beta)
+
+beta_plot <- ggplot(preds.beta) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Beta')
+
+nls.plot.list[['beta']] <- beta_plot # store the plot
+
+summary(beta_nls)
+
+# Boatman
+
+start.vals.boatman <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'boatman_2017')
+
+boat_nls <- nls_multstart(r.gt~boatman_2017(temp = Temp, rmax, tmin, tmax, a, b),
+                          data = df.i,
+                          iter = c(4,4,4,4,4),
+                          start_lower = start.vals.boatman - 10,
+                          start_upper = start.vals.boatman + 10,
+                          lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'boatman_2017'),
+                          upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'boatman_2017'),
+                          supp_errors = 'Y',
+                          convergence_count = FALSE)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Boatman", AICc = AICc(boat_nls)))
+
+summary(boat_nls)
+
+preds.boat <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.boat <- broom::augment(boat_nls, newdata = preds.boat)
+
+boat_plot <- ggplot(preds.boat) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() + ggtitle('Boatman')
+
+Topt.boat <- preds.boat$Temp[which.max(preds.boat$.fitted)]
+Tbr.boat <- diff(range(preds.boat$Temp[preds.boat$.fitted >= rmax / 2], na.rm = TRUE)) # Thermal breadth
+
+nls.plot.list[['boatman']] <- boat_plot # store the plot
 
 # Briere
 
@@ -75,15 +139,17 @@ bri_nls <- nls_multstart(r.gt~briere2_1999(temp = Temp, Tmin, Tmax, a, b),
                         supp_errors = 'Y',
                         convergence_count = F)
 
-#Let's try plotting this
-preds <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
-preds <- broom::augment(bri_nls, newdata = preds)
+model.AICc <- rbind(model.AICc, data.frame(model = "Briere", AICc = AICc(bri_nls)))
 
-ggplot(preds) + geom_point(aes(Temp, r.gt), df.i) +
-  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic()
+preds.bri <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.bri <- broom::augment(bri_nls, newdata = preds.bri)
+
+bri_plot <- ggplot(preds.bri) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() + ggtitle('Briere')
+
+nls.plot.list[['briere']] <- bri_plot # store the plot
 
 summary(bri_nls)
-AICc(bri_nls)
 
 # Let's try calculating other parameters from this fitted curve. 
 # For now, I'll just use this predicted data curve and extract estimates from there?
@@ -93,33 +159,34 @@ rmax <- max(preds$.fitted, na.rm = T)
 Tbr <- diff(range(preds$Temp[preds$.fitted >= rmax / 2], na.rm = TRUE)) # Thermal breadth
 # Ea seems harder to do, will look into later...
 
-# Let's try the Boatman one as well.
+# Delong
 
-start.vals.boatman <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'boatman_2017')
+start.vals.delong <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'delong_2017')
+start.vals.delong <- c(c = 0.1, eb = 1, ef = 1, tm = 30, ehc = 1)  # Above didn't work, trying this
 
-boat_nls <- nls_multstart(r.gt~boatman_2017(temp = Temp, rmax, tmin, tmax, a, b),
-                                    data = df.i,
-                                    iter = c(4,4,4,4,4),
-                                    start_lower = start.vals.boatman - 10,
-                                    start_upper = start.vals.boatman + 10,
-                                    lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'boatman_2017'),
-                                    upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'boatman_2017'),
-                                    supp_errors = 'Y',
-                                    convergence_count = FALSE)
+del_nls <- nls_multstart(r.gt~delong_2017(temp = Temp, c, eb, ef, tm, ehc),
+                         data = df.i,
+                         iter = c(4,4,4,4,4),
+                         start_lower = start.vals.delong - 10,
+                         start_upper = start.vals.delong + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'delong_2017'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'delong_2017'),
+                         supp_errors = 'Y',
+                         convergence_count = F)
 
-summary(boat_nls)
-AICc(boat_nls)
+model.AICc <- rbind(model.AICc, data.frame(model = "Delong", AICc = AICc(del_nls)))
 
-preds.boat <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
-preds.boat <- broom::augment(boat_nls, newdata = preds.boat)
+preds.del <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.del <- broom::augment(del_nls, newdata = preds.del)
 
-ggplot(preds.boat) + geom_point(aes(Temp, r.gt), df.i) +
-  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic()
+del_plot <- ggplot(preds.del) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() + ggtitle('Delong')
 
-Topt.boat <- preds.boat$Temp[which.max(preds.boat$.fitted)]
-Tbr.boat <- diff(range(preds.boat$Temp[preds.boat$.fitted >= rmax / 2], na.rm = TRUE)) # Thermal breadth
+nls.plot.list[['delong']] <- del_plot # store the plot
 
-# Let's finish with the Deutsch model for now.
+summary(del_nls)
+
+# Deutsch
 
 start.vals.deut <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'deutsch_2008')
 
@@ -135,13 +202,236 @@ deut_nls <- nls_multstart(r.gt ~ deutsch_2008(temp = Temp, rmax, topt, ctmax, a)
 )
 
 summary(deut_nls)
-AICc(deut_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Deutsch", AICc = AICc(deut_nls)))
 
 preds.deut <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
 preds.deut <- broom::augment(deut_nls, newdata = preds.deut)
 
-ggplot(preds.deut) + geom_point(aes(Temp, r.gt), df.i) +
-  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic()
+deut_plot <- ggplot(preds.deut) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Deutsch') + ylim(-3,5)
+
+nls.plot.list[['deutsch']] <- deut_plot # store the plot
+
+# Flinn
+
+start.vals.flinn <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'flinn_1991')
+
+flinn_nls <- nls_multstart(r.gt ~ flinn_1991(temp = Temp, a, b, c),
+                          data = df.i,
+                          iter = c(4, 4, 4), 
+                          start_lower = start.vals.flinn - 10,
+                          start_upper = start.vals.flinn + 10,
+                          lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'flinn_1991'),
+                          upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'flinn_1991'),
+                          supp_errors = 'Y',
+                          convergence_count = FALSE
+)
+
+summary(flinn_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Flinn", AICc = AICc(flinn_nls)))
+
+preds.flinn <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.flinn <- broom::augment(flinn_nls, newdata = preds.flinn)
+
+flinn_plot <- ggplot(preds.flinn) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Flinn')
+
+nls.plot.list[['flinn']] <- flinn_plot # store the plot
+
+# Gaussian
+
+start.vals.gaus <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'gaussian_1987')
+
+gaus_nls <- nls_multstart(r.gt ~ gaussian_1987(temp = Temp, rmax, topt, a),
+                           data = df.i,
+                           iter = c(4, 4, 4), 
+                           start_lower = start.vals.gaus - 10,
+                           start_upper = start.vals.gaus + 10,
+                           lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'gaussian_1987'),
+                           upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'gaussian_1987'),
+                           supp_errors = 'Y',
+                           convergence_count = FALSE
+)
+
+summary(gaus_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Gaussian", AICc = AICc(gaus_nls)))
+
+preds.gaus <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.gaus <- broom::augment(gaus_nls, newdata = preds.gaus)
+
+gaus_plot <- ggplot(preds.gaus) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Gaussian')
+
+nls.plot.list[['gaussian']] <- gaus_plot # store the plot
+
+# Hinshelwood
+
+start.vals.hin <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'hinshelwood_1947')
+
+hin_nls <- nls_multstart(r.gt ~ hinshelwood_1947(temp = Temp, a, e, b, eh),
+                          data = df.i,
+                          iter = c(4, 4, 4, 4), 
+                          start_lower = start.vals.hin - 10,
+                          start_upper = start.vals.hin + 10,
+                          lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'hinshelwood_1947'),
+                          upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'hinshelwood_1947'),
+                          supp_errors = 'Y',
+                          convergence_count = FALSE
+)
+
+summary(hin_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Hinshelwood", AICc = AICc(hin_nls)))
+
+preds.hin <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.hin <- broom::augment(hin_nls, newdata = preds.hin)
+
+hin_plot <- ggplot(preds.hin) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Hinshelwood')
+
+nls.plot.list[['hinshelwood']] <- hin_plot # store the plot
+
+# Joehnk
+
+start.vals.joe <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'joehnk_2008')
+
+
+joe_nls <- nls_multstart(r.gt ~ joehnk_2008(temp = Temp, rmax, topt, a, b, c),
+                         data = df.i,
+                         iter = c(4, 4, 4, 4, 4), 
+                         start_lower = start.vals.joe - 10,
+                         start_upper = start.vals.joe + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'joehnk_2008'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'joehnk_2008'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+summary(joe_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Joehnk", AICc = AICc(joe_nls)))
+
+preds.joe <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.joe <- broom::augment(joe_nls, newdata = preds.joe)
+
+joe_plot <- ggplot(preds.joe) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Joenhk') +ylim(-3,5)
+
+nls.plot.list[['Joenhk']] <- joe_plot # store the plot
+
+# Johnson-Lewis
+
+start.vals.john <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'johnsonlewin_1946')
+start.vals.john[is.na(start.vals.john)] <- 0
+upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'johnsonlewin_1946') # Need to do manually, r0 infinite
+upper[upper == Inf] <- 10
+
+john_nls <- nls_multstart(r.gt ~ johnsonlewin_1946(temp = Temp, r0, e, eh, topt),
+                         data = df.i,
+                         iter = c(4, 4, 4, 4), 
+                         start_lower = start.vals.john - 10,
+                         start_upper = start.vals.john + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'johnsonlewin_1946'),
+                         upper = upper,
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+summary(john_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Johnson-Lewis", AICc = AICc(john_nls)))
+
+preds.john <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.john <- broom::augment(john_nls, newdata = preds.john)
+
+john_plot <- ggplot(preds.john) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Johnson-Lewis')
+
+nls.plot.list[['Johnson-Lewis']] <- john_plot # store the plot
+
+# Kamykowski
+
+start.vals.kam <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'kamykowski_1985')
+
+kam_nls <- nls_multstart(r.gt ~ kamykowski_1985(temp = Temp, tmin, tmax, a, b, c),
+                         data = df.i,
+                         iter = c(4, 4, 4, 4, 4), 
+                         start_lower = start.vals.kam - 10,
+                         start_upper = start.vals.kam + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'kamykowski_1985'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'kamykowski_1985'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+summary(kam_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Kamykowski", AICc = AICc(kam_nls)))
+
+preds.kam <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.kam <- broom::augment(kam_nls, newdata = preds.kam)
+
+kam_plot <- ggplot(preds.kam) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Kamykowski') +ylim (-3,5)
+
+nls.plot.list[['Kamykowski']] <- kam_plot # store the plot
+
+# Lactin 2
+
+start.vals.lac <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'lactin2_1995')
+
+lac_nls <- nls_multstart(r.gt ~ lactin2_1995(temp = Temp, a, b, tmax, delta_t),
+                         data = df.i,
+                         iter = c(4, 4, 4, 4), 
+                         start_lower = start.vals.lac - 10,
+                         start_upper = start.vals.lac + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'lactin2_1995'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'lactin2_1995'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+summary(lac_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Lactin2", AICc = AICc(lac_nls)))
+
+preds.lac <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.lac <- broom::augment(lac_nls, newdata = preds.lac)
+
+lac_plot <- ggplot(preds.lac) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Lactin 2') +ylim(-3,5)
+
+nls.plot.list[['Lactin 2']] <- lac_plot # store the plot
+
+# LRF
+
+start.vals.lrf <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'lrf_1991')
+
+lrf_nls <- nls_multstart(r.gt ~ lrf_1991(temp = Temp, a, b, tmax, delta_t),
+                         data = df.i,
+                         iter = c(4, 4, 4, 4), 
+                         start_lower = start.vals.lrf - 10,
+                         start_upper = start.vals.lrf + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'lrf_1991'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'lrf_1991'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+summary(lrf_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "LRF", AICc = AICc(lrf_nls)))
+
+preds.lrf <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.lrf <- broom::augment(lrf_nls, newdata = preds.lrf)
+
+lrf_plot <- ggplot(preds.lrf) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('LRF') +ylim(-3,5)
+
+nls.plot.list[['LRF']] <- lrf_plot # store the plot
 
 # OK so no we are going to try fitting these same 3 models using R2jags, which will fit Bayesian TPCs
 # This model framework (see https://github.com/JoeyBernhardt/anopheles-rate-summation/blob/master/AnalysisDemo.R)
@@ -340,4 +630,4 @@ lines(quad_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "mean"] ~ Temp.xs)
 ############# Loop through entire dataset ################
 
 
-############# Figure generation and file export ########################
+############# Figure generation and file export #######################
