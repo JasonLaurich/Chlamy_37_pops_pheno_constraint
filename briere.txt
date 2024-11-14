@@ -3,7 +3,7 @@ model{
     ## Priors
     cf.q ~ dunif(0, 1)
     cf.T0 ~ dunif(0, 20)
-    cf.Tm ~ dunif(28, 45)
+    cf.Tm ~ dunif(25, 50)
     cf.sigma ~ dunif(0, 1000)
     cf.tau <- 1 / (cf.sigma * cf.sigma)
     
@@ -15,7 +15,7 @@ model{
     
     ## Derived Quantities and Predictions
     for(i in 1:N.Temp.xs){
-    z.trait.mu.pred[i] <- cf.q * Temp.xs[i] * (Temp.xs[i] - cf.T0) * sqrt((cf.Tm - Temp.xs[i]) * (cf.Tm > Temp.xs[i])) * (cf.T0 < Temp.xs[i])
+    r.pred[i] <- cf.q * Temp.xs[i] * (Temp.xs[i] - cf.T0) * sqrt((cf.Tm - Temp.xs[i]) * (cf.Tm > Temp.xs[i])) * (cf.T0 < Temp.xs[i])
     }
     
     }

@@ -13,6 +13,8 @@ library(cowplot)
 library(ggplot2)
 library(dplyr)
 library(MuMIn) #AICc
+library(R2jags) # Fits Bayesian models
+library(mcmcplots) # Diagnostic plots for fits
 
 ############# Upload and examine data #######################
 
@@ -140,6 +142,56 @@ preds.deut <- broom::augment(deut_nls, newdata = preds.deut)
 
 ggplot(preds.deut) + geom_point(aes(Temp, r.gt), df.i) +
   geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic()
+
+# OK so no we are going to try fitting these same 3 models using R2jags, which will fit Bayesian TPCs
+# This model framework (see https://github.com/JoeyBernhardt/anopheles-rate-summation/blob/master/AnalysisDemo.R)
+# is predicated on text files (e.g. briere.txt) that specify model structure and parameters. New ones must be
+# made and saved in the directory before calling them when fitting the TPCs themselves. 
+
+# Let's set up our MCMC model settings
+ni <- 55000 # iterations / chain
+nb <- 5000 # burn in periods for each chain
+nt <- 50 # thinning interval : (55,000 - 5,000) / 50 = 1000 posterior estimates / chain
+nc <- 5 # number of chains
+
+# Temperature gradient across which to measure r
+Temp.xs <- seq(0, 45, 0.1) # temperature gradient to calculate derived quantities over
+N.Temp.xs <-length(Temp.xs)
+
+# Briere settings - initial values tighter than priors, incorporate variation across chains.
+
+# inits function
+inits<-function(){list(
+  cf.q = runif( 1, 0.01, 0.1),
+  cf.Tm = runif(1, 35, 45),
+  cf.T0 = runif(1, 0, 10),
+  cf.sigma = rlnorm(1, log(1), 0.5)
+  )
+}
+
+parameters <- c("cf.q", "cf.T0", "cf.Tm","cf.sigma", "r.pred") # estimate these, will depend based on model
+
+# identify traits for jags
+trait <- df.i$r.gt
+N.obs <- length(trait)
+temp <- df.i$Temp
+
+jag.data <- list(trait = trait, N.obs = N.obs, temp = temp, Temp.xs = Temp.xs, N.Temp.xs = N.Temp.xs)
+
+# jags MCMC, Briere function
+bri_jag <- jags(data=jag.data, inits=inits, parameters.to.save=parameters, model.file="briere.txt",
+                                 n.thin=nt, n.chains=nc, n.burnin=nb, n.iter=ni, DIC=T, working.directory=getwd())
+
+bri_jag$BUGSoutput$summary[1:5,] # Get estimates
+mcmcplot(bri_jag) # Evaluate model performance
+bri_jag$BUGSoutput$DIC # DIC
+
+# plot!
+plot(trait ~ jitter(Temp, 0.5), xlim = c(0, 45), data = df.i, 
+     ylab = "Growth rate", xlab = expression(paste("Temperature (",degree,"C)")))
+lines(bri_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "2.5%"] ~ Temp.xs, lty = 2)
+lines(bri_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "97.5%"] ~ Temp.xs, lty = 2)
+lines(bri_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "mean"] ~ Temp.xs)
 
 ############# Loop through entire dataset ################
 
