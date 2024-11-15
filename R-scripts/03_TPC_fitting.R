@@ -410,7 +410,7 @@ nls.plot.list[['Lactin 2']] <- lac_plot # store the plot
 
 start.vals.lrf <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'lrf_1991')
 
-lrf_nls <- nls_multstart(r.gt ~ lrf_1991(temp = Temp, a, b, tmax, delta_t),
+lrf_nls <- nls_multstart(r.gt ~ lrf_1991(temp = Temp, rmax, topt, tmin, tmax),
                          data = df.i,
                          iter = c(4, 4, 4, 4), 
                          start_lower = start.vals.lrf - 10,
@@ -432,6 +432,293 @@ lrf_plot <- ggplot(preds.lrf) + geom_point(aes(Temp, r.gt), df.i) +
   geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('LRF') +ylim(-3,5)
 
 nls.plot.list[['LRF']] <- lrf_plot # store the plot
+
+# Modified Gaussian
+
+start.vals.mod <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'modifiedgaussian_2006')
+
+mod_nls <- nls_multstart(r.gt ~ modifiedgaussian_2006(temp = Temp, rmax, topt, a, b),
+                         data = df.i,
+                         iter = c(4, 4, 4, 4), 
+                         start_lower = start.vals.mod - 10,
+                         start_upper = start.vals.mod + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'modifiedgaussian_2006'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'modifiedgaussian_2006'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+summary(mod_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "ModifiedGaussian", AICc = AICc(mod_nls)))
+
+preds.mod <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.mod <- broom::augment(mod_nls, newdata = preds.mod)
+
+mod_plot <- ggplot(preds.mod) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('ModifiedGaussian') +ylim(-3,5)
+
+nls.plot.list[['ModifiedGaussian']] <- mod_plot # store the plot
+
+# Oneill
+
+start.vals.onl <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'oneill_1972')
+
+onl_nls <- nls_multstart(r.gt ~ oneill_1972(temp = Temp, rmax, ctmax, topt, q10),
+                         data = df.i,
+                         iter = c(4, 4, 4, 4), 
+                         start_lower = start.vals.onl - 10,
+                         start_upper = start.vals.onl + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'oneill_1972'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'oneill_1972'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+summary(onl_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "ONeill", AICc = AICc(onl_nls)))
+
+preds.onl <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.onl <- broom::augment(onl_nls, newdata = preds.onl)
+
+onl_plot <- ggplot(preds.onl) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('ONeill') +ylim(-3,5)
+
+nls.plot.list[['ONeill']] <- onl_plot # store the plot
+
+# Pawar
+
+start.vals.paw <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'pawar_2018')
+start.vals.paw <- c(r_tref = 1.5, e = 0.7, eh = 1.5, topt = 34)  # Manually set, troublesome NA
+
+tref <- 15
+
+paw_nls <- nls_multstart(r.gt ~ pawar_2018(temp = Temp, r_tref, e, eh, topt, tref = tref),
+                         data = df.i,
+                         iter = c(4, 4, 4, 4), 
+                         start_lower = c(r_tref = 1.5, e = 0.6, eh = 1.0, topt = 30),  # Example bounds
+                         start_upper = c(r_tref = 3.0, e = 1.0, eh = 2.5, topt = 40),
+                         lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'pawar_2018'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'pawar_2018'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+# I'm skipping Pawar for now, having trouble fitting it.
+
+# Quadratic
+
+start.vals.quad <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'quadratic_2008')
+
+quad_nls <- nls_multstart(r.gt ~ quadratic_2008(temp = Temp, a, b, c),
+                         data = df.i,
+                         iter = c(4, 4, 4), 
+                         start_lower = start.vals.quad - 10,
+                         start_upper = start.vals.quad + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'quadratic_2008'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'quadratic_2008'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+summary(quad_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Quadratic", AICc = AICc(quad_nls)))
+
+preds.quad <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.quad <- broom::augment(quad_nls, newdata = preds.quad)
+
+quad_plot <- ggplot(preds.quad) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Quadratic') +ylim(-3,5)
+
+nls.plot.list[['Quadratic']] <- quad_plot # store the plot
+
+# Ratkowsky
+
+start.vals.rat <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'ratkowsky_1983')
+
+rat_nls <- nls_multstart(r.gt ~ ratkowsky_1983(temp = Temp, tmin, tmax, a, b),
+                          data = df.i,
+                          iter = c(4, 4, 4, 4), 
+                          start_lower = start.vals.rat - 10,
+                          start_upper = start.vals.rat + 10,
+                          lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'ratkowsky_1983'),
+                          upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'ratkowsky_1983'),
+                          supp_errors = 'Y',
+                          convergence_count = FALSE
+)
+
+summary(rat_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Ratkowsky", AICc = AICc(rat_nls)))
+
+preds.rat <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.rat <- broom::augment(rat_nls, newdata = preds.rat)
+
+rat_plot <- ggplot(preds.rat) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Ratkowsky') +ylim(-3,5)
+
+nls.plot.list[['Ratkowsky']] <- rat_plot # store the plot
+
+# Rezende
+
+start.vals.rez <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'rezende_2019')
+
+rez_nls <- nls_multstart(r.gt ~ rezende_2019(temp = Temp, q10, a, b, c),
+                         data = df.i,
+                         iter = c(4, 4, 4, 4), 
+                         start_lower = start.vals.rez - 10,
+                         start_upper = start.vals.rez + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'rezende_2019'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'rezende_2019'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+summary(rez_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Rezende", AICc = AICc(rez_nls)))
+
+preds.rez <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.rez <- broom::augment(rez_nls, newdata = preds.rez)
+
+rez_plot <- ggplot(preds.rez) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Rezende') +ylim(-3,5)
+
+nls.plot.list[['Rezende']] <- rez_plot # store the plot
+
+# Sharpe-Schoolfield Full
+
+start.vals.ss <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'sharpeschoolfull_1981')
+start.vals.ss <- c(r_tref = 1.5, e = 0.7, el = 0.1, tl =10, eh =0.1, th = 37)  # Manually set, troublesome NA
+
+
+ss_nls <- nls_multstart(r.gt ~ sharpeschoolfull_1981(temp = Temp, r_tref, e, el, tl, eh, th, tref = 20),
+                         data = df.i,
+                         iter = c(4, 4, 4, 4, 4, 4), 
+                         start_lower = start.vals.ss - 10,
+                         start_upper = start.vals.ss + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'sharpeschoolfull_1981'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'sharpeschoolfull_1981'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+summary(ss_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Sharpe-Schoolfield", AICc = AICc(ss_nls)))
+
+preds.ss <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.ss <- broom::augment(ss_nls, newdata = preds.ss)
+
+ss_plot <- ggplot(preds.ss) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Sharpe-Schoolfield') +ylim(-3,5)
+
+nls.plot.list[['Sharpe-Schoolfield']] <- ss_plot # store the plot
+
+# Spain
+
+start.vals.spn <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'spain_1982')
+
+spn_nls <- nls_multstart(r.gt ~ spain_1982(temp = Temp, a, b, c, r0),
+                         data = df.i,
+                         iter = c(4, 4, 4, 4), 
+                         start_lower = start.vals.spn - 10,
+                         start_upper = start.vals.spn + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'spain_1982'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'spain_1982'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+summary(spn_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Spain", AICc = AICc(spn_nls)))
+
+preds.spn <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.spn <- broom::augment(spn_nls, newdata = preds.spn)
+
+spn_plot <- ggplot(preds.spn) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Spain') +ylim(-3,5)
+
+nls.plot.list[['Spain']] <- spn_plot # store the plot
+
+# Thomas 2012
+
+start.vals.th1 <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'thomas_2012')
+
+th1_nls <- nls_multstart(r.gt ~ thomas_2012(temp = Temp, a, b, c, topt),
+                         data = df.i,
+                         iter = c(4, 4, 4, 4), 
+                         start_lower = start.vals.th1 - 10,
+                         start_upper = start.vals.th1 + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'thomas_2012'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'thomas_2012'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+summary(th1_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Thomas2012", AICc = AICc(th1_nls)))
+
+preds.th1 <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.th1 <- broom::augment(th1_nls, newdata = preds.th1)
+
+th1_plot <- ggplot(preds.th1) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Thomas2012') +ylim(-3,5)
+
+nls.plot.list[['Thomas2012']] <- th1_plot # store the plot
+
+# Thomas 2017
+
+start.vals.th2 <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'thomas_2017')
+
+th2_nls <- nls_multstart(r.gt ~ thomas_2017(temp = Temp, a, b, c, d, e),
+                         data = df.i,
+                         iter = c(4, 4, 4, 4, 4), 
+                         start_lower = start.vals.th2 - 10,
+                         start_upper = start.vals.th2 + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'thomas_2017'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'thomas_2017'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+# Not sure if this model is appropriate - I don't have mortality data!
+
+# Weibull, last one
+
+start.vals.wei <- get_start_vals(df.i$Temp, df.i$r.gt, model_name = 'weibull_1995')
+
+wei_nls <- nls_multstart(r.gt ~ weibull_1995(temp = Temp, a, topt, b, c),
+                         data = df.i,
+                         iter = c(4, 4, 4, 4), 
+                         start_lower = start.vals.wei - 10,
+                         start_upper = start.vals.wei + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.gt, model_name = 'weibull_1995'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.gt, model_name = 'weibull_1995'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+summary(wei_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Weibull", AICc = AICc(wei_nls)))
+
+preds.wei <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.wei <- broom::augment(wei_nls, newdata = preds.wei)
+
+wei_plot <- ggplot(preds.wei) + geom_point(aes(Temp, r.gt), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Weibull') +ylim(-3,5)
+
+nls.plot.list[['Weibull']] <- wei_plot # store the plot
+
+write.csv(model.AICc, "data-processed/04_rTPC_modelcomparison_population7.csv") # Save r estimates and other info
+
+mod_grid<- plot_grid(plotlist = nls.plot.list, ncol = 6)
+ggsave("figures/03_rTPC_modelcomparison_pop7.pdf", plot = mod_grid, width = 24, height = 16)
 
 # OK so no we are going to try fitting these same 3 models using R2jags, which will fit Bayesian TPCs
 # This model framework (see https://github.com/JoeyBernhardt/anopheles-rate-summation/blob/master/AnalysisDemo.R)
