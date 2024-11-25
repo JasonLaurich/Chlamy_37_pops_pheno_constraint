@@ -85,6 +85,7 @@ for (t in t.series){ # This first loop will calculate the slopes for my first ex
     }
   }
   
+  
   # OK so we now have (in s) an indicator of when we should be thresholding growth data to limit it to the exponential phase.
   # This will work with ln.slopes AND t.series (because we excluded the t_0 data point from it)
   
@@ -113,6 +114,23 @@ for (t in t.series){ # This first loop will calculate the slopes for my first ex
   
 } # OK this is looking great! Let's try to loop this through all of my populations now.
 
+# But first, for the 40 C data, we will have to use a different approach. 
+
+df.it <- subset(mat.rep[[6]], temperature==40) # For one population and temperature, let's explore the model
+df.it <- droplevels(df.it)
+
+df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == 1)
+
+# I think for now, we will just exclude data after that immediate growth spike that is not of biological interest
+
+df.it.wl.late <- df.it.wl[df.it.wl$days > df.it.wl$days[which.max(df.it.wl$RFU)], ] # Do this based on the time point associated with max RFUs
+
+r_ln <- lm(logRFU~days, data= df.it.wl.late)
+
+summary(r_ln)
+
+# OK now onto looping! We'll start with the non 40 C data. 
+
 df.r.exp <- data.frame( # Initializing a dataframe to store the results for each well, pop, and temperature
   population = character(),
   population.number = numeric(),
@@ -120,3 +138,122 @@ df.r.exp <- data.frame( # Initializing a dataframe to store the results for each
   well.ID = character(),
   r.exp = numeric()
 )
+
+# Need to exclude 40 C data!
+
+df.rep.34 <- subset(df.rep, df.rep$temperature!=40)
+mat.rep.34 <- split(df.rep.34, df.rep.34$pop.num)  # Each element is a data frame for one population in df.rep
+
+tmp <- as.vector(as.numeric(as.character(unique(df.rep.34$temperature)))) # for looping through temperatures
+ord.tmp<- sort(tmp)
+
+for (i in 1:length(mat.rep.34)){ # Looping through all of the populations
+  
+  for (t in ord.tmp){ # and all of the temperatures
+    
+    df.it <- subset(mat.rep.34[[i]], temperature==t)
+    df.it <- droplevels(df.it) # Drop unused levels to isolate well replicate IDs at given t
+    
+    for (w in 1:length(levels(df.it$well.ID))){
+      
+      df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == w)
+      
+      t.series <- unique(df.it.wl$days) # Re-initialize this internally - we will only save summary data for each unique pop x T x well combo
+      t.series <- t.series[-1] # Trim off the first entry to make tracking easier.
+      
+      ln.slopes <- c() # Re-initialize this too!
+      
+      for (t in t.series){
+        
+        df.it.wl.sl <- df.it.wl[df.it.wl$days <= t, ] # Subset the data to exclude time points above our window
+        
+        ln_slope <- lm(logRFU~days, data = df.it.wl.sl)
+        
+        ln.slopes <- c(ln.slopes, summary(ln_slope)$coefficients[2,1])
+        
+      } # So now we have our slopes for each well.ID x Pop x T level
+      
+      for (s in 1:(length(ln.slopes) - 1)) { # Loop through slopes to find when the drop-off exceeds 5%
+        
+        if (ln.slopes[s] != 0) { # Check for valid denominator to avoid division by zero
+          percent.chg <- (ln.slopes[s] - ln.slopes[s + 1]) / ln.slopes[s]
+          
+          # Check if the percent change exceeds the threshold
+          if (percent.chg >= 0.05) {
+            break  # Exit loop when condition is met
+          }
+        }
+      } # Now I have s!
+        
+        df.it.wl.th <- df.it.wl[df.it.wl$days <= t.series[s], ] # Get the thresholded data according to our sliding window approach
+        
+        r_exp <- nls_multstart(RFU ~ N0 * exp(r*days),  # Exponential growth model (N0 is in our dataframe)
+                               data = df.it.wl.th,
+                               start_lower = c(r = 0.2), 
+                               start_upper = c(r = 4.5),   
+                               iter = 500,
+                               supp_errors = 'Y',
+                               control = nls.control(maxiter = 200))
+        
+        if (is.null(r_exp)){
+          
+          df.r.exp <- rbind(df.r.exp, data.frame(
+            population = df.it.wl.th$pop.fac[1],          
+            population.number = df.it.wl$pop.num[1],      
+            temperature = df.it.wl$temperature[1],        
+            well.ID = df.it.wl$well.ID[1],                
+            r.exp = NA        
+          ))
+          
+        }else{
+          # Add data to our summary table
+          df.r.exp <- rbind(df.r.exp, data.frame(
+            population = df.it.wl.th$pop.fac[1],          # Population as factor
+            population.number = df.it.wl$pop.num[1],      # Numeric population number
+            temperature = df.it.wl$temperature[1],        # Temperature
+            well.ID = df.it.wl$well.ID[1],                # Well ID (assuming one well ID per subset)
+            r.exp = summary(r_exp)$parameters[1,1]        # The calculated r.exp value
+          ))
+
+        }
+      
+    }
+    
+  }
+  
+}
+
+# Now we are going to work with the 40C data
+
+df.rep.40 <- subset(df.rep, df.rep$temperature==40)
+mat.rep.40 <- split(df.rep.40, df.rep.40$pop.num)  # Each element is a data frame for one population in df.rep
+
+for (i in 1:length(mat.rep.40)){
+  
+  df.i <- subset(mat.rep.40[[i]])
+  df.i <- droplevels(df.i) # Drop unused levels to isolate well replicate IDs
+  
+  for (w in 1:length(levels(df.i$well.ID))){
+    
+    df.i.wl <- subset(df.i, as.numeric(df.i$well.ID) == w)
+    
+    df.i.wl.late <- df.i.wl[df.i.wl$days > df.i.wl$days[which.max(df.i.wl$RFU)], ] # Do this based on the time point associated with max RFUs
+    
+    r_ln <- lm(logRFU~days, data= df.i.wl.late)
+    
+    df.r.exp <- rbind(df.r.exp, data.frame(
+      population = df.i.wl.late$pop.fac[1],             # Population as factor
+      population.number = df.i.wl.late$pop.num[1],      # Numeric population number
+      temperature = df.i.wl.late$temperature[1],        # Temperature
+      well.ID = df.i.wl.late$well.ID[1],                # Well ID (assuming one well ID per subset)
+      r.exp = summary(r_ln)$coefficients[2,1]           # The calculated r.exp value
+    ))
+    
+  }
+  
+}
+
+# OK I've got my summary table! Let's save it then move on to plotting this out for a few randomly selected populations.
+write.csv(df.r.exp, "data-processed/05_final_r_estimates.csv")
+
+  
