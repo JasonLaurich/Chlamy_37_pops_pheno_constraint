@@ -50,3 +50,41 @@ df.rep <- df.rep %>% # Recombine this with our dataframe
 
 mat.rep <- split(df.rep, df.rep$pop.num)  # Each element is a data frame for one population in df.rep
 
+############## Data exploration #####################
+
+df.it <- subset(mat.rep[[6]], temperature==34) # For one population and temperature, let's explore the model
+df.it <- droplevels(df.it)
+
+df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == 1)
+
+head(df.it.wl)
+
+t.series <- unique(df.it.wl$days) # First, we identify the string of unique days.
+t.0 <- t.series[1] # Get the starting point
+t.series <- t.series[-1] # Ok so this is what we will loop through! t.0 will always be the starting point, but the end point will change
+
+ln.slopes <- c() # Store the logged linear slopes for each sliding window, from an lm
+sl.direct <- c() # Store the directly calculated (rise/run)
+
+for (t in t.series){ # This first loop will calculate the slopes for my first explorative population.
+  
+  df.it.wl.sl <- df.it.wl[df.it.wl$days <= t, ] # Subset the data to exclude time points above our window
+  
+  ln_slope <- lm(logRFU~days, data = df.it.wl.sl)
+  
+  ln.slopes <- c(ln.slopes, summary(ln_slope)$coefficients[2,1])
+  
+  slope <- (df.it.wl.sl$logRFU[nrow(df.it.wl.sl)] - df.it.wl.sl$logRFU[1])/(df.it.wl.sl$days[nrow(df.it.wl.sl)] - df.it.wl.sl$days[1])
+  sl.direct <- c(sl.direct, slope)
+  
+  for (s in 1:(length(ln.slopes) - 1)) { # Now we will loop through the ln.slopes vector to find when the slope decreases by more than 5%
+    
+    percent.chg <- (ln.slopes[s] - ln.slopes[s + 1]) / ln.slopes[s]
+    if (percent.chg >= 0.05) {
+      break  # Exit loop when condition is met. s will store the final time point data!
+    }
+  }
+  
+  # OK so we now have (in s) an indicator of when we should be thresholding growth data to limit it to the exponential phase.
+  # This will work with ln.slopes AND t.series (because we excluded the t_0 data point from it)
+}
