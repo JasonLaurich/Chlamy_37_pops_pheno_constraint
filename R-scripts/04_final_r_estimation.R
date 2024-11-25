@@ -87,4 +87,36 @@ for (t in t.series){ # This first loop will calculate the slopes for my first ex
   
   # OK so we now have (in s) an indicator of when we should be thresholding growth data to limit it to the exponential phase.
   # This will work with ln.slopes AND t.series (because we excluded the t_0 data point from it)
-}
+  
+  df.it.wl.th <- df.it.wl[df.it.wl$days <= t.series[s], ] # Get the thresholded data according to our sliding window approach
+  
+  r_exp <- nls_multstart(RFU ~ N0 * exp(r*days),  # Exponential growth model (N0 is in our dataframe)
+                           data = df.it.wl.th,
+                           start_lower = c(r = 0.2), 
+                           start_upper = c(r = 4.5),   
+                           iter = 500,
+                           supp_errors = 'Y',
+                           control = nls.control(maxiter = 200))
+  
+  summary(r_exp) # Looks good!
+  
+  pred.time <- seq(min(df.it.wl.th$days), max(df.it.wl.th$days), length.out = 100) # Let's plot this
+  preds <- data.frame(days = pred.time)
+  preds$RFU.pred <- predict(r_exp, newdata = preds)
+  
+  ggplot(df.it.wl.th, aes(x = days, y = RFU)) + # Plot observed and fitted data
+    geom_point(color = "blue", size = 2) +
+    geom_line(data = preds, aes(x = days, y = RFU.pred), color = "red", size = 1) +
+    labs(title = "Exponential growth curve, Pop 16, Well B05_71, T 34C",
+         x = "Days",
+         y = "RFU")
+  
+} # OK this is looking great! Let's try to loop this through all of my populations now.
+
+df.r.exp <- data.frame( # Initializing a dataframe to store the results for each well, pop, and temperature
+  population = character(),
+  population.number = numeric(),
+  temperature = numeric(),
+  well.ID = character(),
+  r.exp = numeric()
+)
