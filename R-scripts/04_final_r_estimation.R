@@ -52,10 +52,10 @@ mat.rep <- split(df.rep, df.rep$pop.num)  # Each element is a data frame for one
 
 ############## Data exploration #####################
 
-df.it <- subset(mat.rep[[6]], temperature==34) # For one population and temperature, let's explore the model
+df.it <- subset(mat.rep[[1]], temperature==10) # For one population and temperature, let's explore the model
 df.it <- droplevels(df.it)
 
-df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == 1)
+df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == 4)
 
 head(df.it.wl)
 
@@ -77,42 +77,46 @@ for (t in t.series){ # This first loop will calculate the slopes for my first ex
   slope <- (df.it.wl.sl$logRFU[nrow(df.it.wl.sl)] - df.it.wl.sl$logRFU[1])/(df.it.wl.sl$days[nrow(df.it.wl.sl)] - df.it.wl.sl$days[1])
   sl.direct <- c(sl.direct, slope)
   
-  for (s in 1:(length(ln.slopes) - 1)) { # Now we will loop through the ln.slopes vector to find when the slope decreases by more than 5%
+}
+
+s <- length(ln.slopes) # Initialize the default to the final number, in case we don't see a drop off. 
+  
+for (r in 1:(length(ln.slopes) - 1)) { # Now we will loop through the ln.slopes vector to find when the slope decreases by more than 5%
     
-    percent.chg <- (ln.slopes[s] - ln.slopes[s + 1]) / ln.slopes[s]
-    if (percent.chg >= 0.05) {
-      break  # Exit loop when condition is met. s will store the final time point data!
-    }
+  percent.chg <- ln.slopes[r] / ln.slopes[r + 1]
+  if (percent.chg >= 1.05 & ln.slopes[r] > 0 & ln.slopes[r+1] > 0) { # We don't want to include negative slopes that are driven by a brief decrease in RFUs at the start!
+    s <- r # If the condition is met, reassign s to the corresponding drop-off point!
+    break  # Exit loop when condition is met. s will store the final time point data!
   }
+}
+
+# OK so we now have (in s) an indicator of when we should be thresholding growth data to limit it to the exponential phase.
+# This will work with ln.slopes AND t.series (because we excluded the t_0 data point from it)
   
+df.it.wl.th <- df.it.wl[df.it.wl$days <= t.series[s], ] # Get the thresholded data according to our sliding window approach
   
-  # OK so we now have (in s) an indicator of when we should be thresholding growth data to limit it to the exponential phase.
-  # This will work with ln.slopes AND t.series (because we excluded the t_0 data point from it)
+r_exp <- nls_multstart(RFU ~ N0 * exp(r*days),  # Exponential growth model (N0 is in our dataframe)
+                          data = df.it.wl.th,
+                          start_lower = c(r = 0.2), 
+                          start_upper = c(r = 4.5),   
+                          iter = 500,
+                          supp_errors = 'Y',
+                          control = nls.control(maxiter = 200))
   
-  df.it.wl.th <- df.it.wl[df.it.wl$days <= t.series[s], ] # Get the thresholded data according to our sliding window approach
+summary(r_exp) # Looks good!
   
-  r_exp <- nls_multstart(RFU ~ N0 * exp(r*days),  # Exponential growth model (N0 is in our dataframe)
-                           data = df.it.wl.th,
-                           start_lower = c(r = 0.2), 
-                           start_upper = c(r = 4.5),   
-                           iter = 500,
-                           supp_errors = 'Y',
-                           control = nls.control(maxiter = 200))
+pred.time <- seq(min(df.it.wl.th$days), max(df.it.wl.th$days), length.out = 100) # Let's plot this
+preds <- data.frame(days = pred.time)
+preds$RFU.pred <- predict(r_exp, newdata = preds)
   
-  summary(r_exp) # Looks good!
+ggplot(df.it.wl.th, aes(x = days, y = RFU)) + # Plot observed and fitted data
+  geom_point(color = "blue", size = 2) +
+  geom_line(data = preds, aes(x = days, y = RFU.pred), color = "red", size = 1) +
+  labs(title = "Exponential growth curve, Pop 16, Well B05_71, T 34C",
+        x = "Days",
+        y = "RFU")
   
-  pred.time <- seq(min(df.it.wl.th$days), max(df.it.wl.th$days), length.out = 100) # Let's plot this
-  preds <- data.frame(days = pred.time)
-  preds$RFU.pred <- predict(r_exp, newdata = preds)
-  
-  ggplot(df.it.wl.th, aes(x = days, y = RFU)) + # Plot observed and fitted data
-    geom_point(color = "blue", size = 2) +
-    geom_line(data = preds, aes(x = days, y = RFU.pred), color = "red", size = 1) +
-    labs(title = "Exponential growth curve, Pop 16, Well B05_71, T 34C",
-         x = "Days",
-         y = "RFU")
-  
-} # OK this is looking great! Let's try to loop this through all of my populations now.
+# OK this is looking great! Let's try to loop this through all of my populations now.
 
 # But first, for the 40 C data, we will have to use a different approach. 
 
@@ -173,13 +177,16 @@ for (i in 1:length(mat.rep.34)){ # Looping through all of the populations
         
       } # So now we have our slopes for each well.ID x Pop x T level
       
-      for (s in 1:(length(ln.slopes) - 1)) { # Loop through slopes to find when the drop-off exceeds 5%
+      s <- length(ln.slopes) # Initialize the full length of the dataset, for cases in which the entire period is exponential growth.
+      
+      for (r in 1:(length(ln.slopes) - 1)) { # Loop through slopes to find when the drop-off exceeds 5%
         
-        if (ln.slopes[s] != 0) { # Check for valid denominator to avoid division by zero
-          percent.chg <- (ln.slopes[s] - ln.slopes[s + 1]) / ln.slopes[s]
+        if (ln.slopes[r] != 0) { # Check for valid denominator to avoid division by zero
+          # percent.chg <- (ln.slopes[s] - ln.slopes[s + 1]) / ln.slopes[s] This was the reason we were getting weird negative results! If there was a stochastic drop.
+          percent.chg <- ln.slopes[r] / ln.slopes[r + 1] # This should (along with the next line) fix it.
           
-          # Check if the percent change exceeds the threshold
-          if (percent.chg >= 0.05) {
+          if (percent.chg >= 1.05 & ln.slopes[r] > 0 & ln.slopes[r+1] > 0) { # Because now, the drop-off ignores transiently negative slopes. 
+            s <- r # If the condition is met, reassign s to the corresponding drop-off point!
             break  # Exit loop when condition is met
           }
         }
@@ -256,4 +263,99 @@ for (i in 1:length(mat.rep.40)){
 # OK I've got my summary table! Let's save it then move on to plotting this out for a few randomly selected populations.
 write.csv(df.r.exp, "data-processed/05_final_r_estimates.csv")
 
+pops<-names(mat.rep)
+ran <- sample(pops, 6, replace = F) # OK, let's select 6 random populations.
+
+# Loop through these, generating first the trimmed data set for each population, T, and well, and then trimming based on slope thresholding
+# Then fit the exponential growth model, generating a series of predicted data over a smoothed time period. Save these in a list
+# Finally, plot these fitted models against the whole panel of raw data for each.
+
+plot.list <- list() # make a list of the plots
+
+for (i in ran){ # random populations
   
+  for (t in ord.tmp){ # temperatures, now only between 10 and 34
+    
+    df.it <- subset(mat.rep.34[[i]], temperature==t)
+    df.it <- droplevels(df.it) # Drop unused levels to isolate well replicate IDs at given t
+    
+    pred.df.mod34 <- data.frame( # Dataframe to store fitted data for the first 5 temperatures. Will reset for each T, but that's OK, as we will save the plots first
+      population.fac = character(),
+      population.num = numeric(),
+      temperature = numeric(),
+      well.ID = character(),
+      smt.days = numeric(),
+      fit.RFU = numeric()
+    )
+    
+    for (w in 1:length(levels(df.it$well.ID))){
+      
+      df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == w)
+      
+      t.series <- unique(df.it.wl$days) 
+      t.series <- t.series[-1] 
+      
+      ln.slopes <- c() 
+      
+      for (t in t.series){
+        
+        df.it.wl.sl <- df.it.wl[df.it.wl$days <= t, ] # Subset the data to exclude time points above our window
+        
+        ln_slope <- lm(logRFU~days, data = df.it.wl.sl)
+        
+        ln.slopes <- c(ln.slopes, summary(ln_slope)$coefficients[2,1])
+        
+      } # So now we have our slopes for each well.ID x Pop x T level
+      
+      s <- length(ln.slopes) # Initialize the full length of the dataset, for cases in which the entire period is exponential growth.
+      
+      for (r in 1:(length(ln.slopes) - 1)) { # Loop through slopes to find when the drop-off exceeds 5%
+        
+        if (ln.slopes[r] != 0) { # Check for valid denominator to avoid division by zero
+          # percent.chg <- (ln.slopes[s] - ln.slopes[s + 1]) / ln.slopes[s] This was the reason we were getting weird negative results! If there was a stochastic drop.
+          percent.chg <- ln.slopes[r] / ln.slopes[r + 1] # This should (along with the next line) fix it.
+          
+          if (percent.chg >= 1.05 & ln.slopes[r] > 0 & ln.slopes[r+1] > 0) { # Because now, the drop-off ignores transiently negative slopes. 
+            s <- r # If the condition is met, reassign s to the corresponding drop-off point!
+            break  # Exit loop when condition is met
+          }
+        }
+      } # Now I have s!
+      
+      df.it.wl.th <- df.it.wl[df.it.wl$days <= t.series[s], ] # Get the thresholded data according to our sliding window approach
+      
+      r_exp <- nls_multstart(RFU ~ N0 * exp(r*days),  # Exponential growth model (N0 is in our dataframe)
+                             data = df.it.wl.th,
+                             start_lower = c(r = 0.2), 
+                             start_upper = c(r = 4.5),   
+                             iter = 500,
+                             supp_errors = 'Y',
+                             control = nls.control(maxiter = 200))
+      
+      smt.days <- seq(min(df.it.wl.th$days, na.rm = TRUE), max(df.it.wl.th$days, na.rm = TRUE), length.out = 500) # Get a smooth distribution of time points
+      
+      # Predict fitted RFU values for the exponential growth model at each well.ID and store it for plotting
+      fit.RFU.mod34 <- predict(r_exp, newdata = data.frame(days = smt.days))
+      pred.df.mod34 <- rbind(pred.df.mod34, data.frame(
+        population.fac = df.it.wl$pop.fac[1],
+        population.num = i,
+        temperature = t,
+        well.ID = unique(df.it.wl$well.ID),
+        smt.days = smt.days,
+        fit.RFU = fit.RFU.mod34
+      ))
+      
+      # Now we plot it out
+      
+      p <- ggplot() + 
+        geom_point(data=df.it.wl, aes(x=days, y=RFU, colour= well.ID), size = 2) + # Observed data
+        geom_line(data = pred.df.mod34, aes(x = days, y = fit.RFU, colour = well.ID), size = 1) + # Fitted line
+        labs(title = paste("Population", i, "Temperature:", t), x = "Days", y = "RFU") +
+        theme_minimal() +
+        theme(legend.position = "none")
+      
+      plot.list[[paste0("Pop", df.it.wl.th$pop.fac[1], " Temp", t)]] <- p
+      
+    }
+  }
+}
