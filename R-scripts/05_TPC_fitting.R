@@ -192,11 +192,43 @@ rez_plot <- ggplot(preds.rez) + geom_point(aes(Temp, r.exp), df.i) +
 
 nls.plot.list[['Rezende']] <- rez_plot # store the plot
 
-# Asrafi II
+# Ashrafi II
+# We are using the model formulation from the supplement to Kontopolous 2024
+# 6. Ashrafi II (3 parameters)^4 : B(T) = a + b x T^3/2 + c x T^2
 
+# This isn't in rTPC, so we'll have to write the function ourselves:
+
+ashrafi_simple <- function(temp, a, b, c) {
+  a + b * temp^(3/2) + c * temp^2
+}
+
+ash_nls <- nls_multstart(
+  r.exp ~ ashrafi_simple(Temp, a, b, c),
+  data = df.i,
+  iter = c(4, 4, 4),  # Number of iterations for starting values
+  start_lower = c(a = -10, b = -10, c = -1),  # Lower bounds for start values
+  start_upper = c(a = 10, b = 10, c = 1),    # Upper bounds for start values
+  lower = c(a = -30, b = -30, c = -15),   # Hard lower parameter bounds
+  upper = c(a = 30, b = 30, c = 15),      # Hard upper parameter bounds
+  supp_errors = 'Y',
+  convergence_count = FALSE
+)
+
+summary(ash_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Ashrafi II", AICc = AICc(ash_nls)))
+
+preds.ash <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.ash <- broom::augment(ash_nls, newdata = preds.ash)
+
+ash_plot <- ggplot(preds.ash) + geom_point(aes(Temp, r.exp), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Ashrafi II simple') +ylim(-3,5)
+
+nls.plot.list[['Ashrafi II simple']] <- ash_plot # store the plot
 
 # Atkin
 
+B(T) = B0 x (a - b x T)^T/10
 
 # Mitchell-Angilletta
 
