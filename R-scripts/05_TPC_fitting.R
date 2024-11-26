@@ -16,5 +16,189 @@ library(nls.multstart)
 library(tidyr)
 library(cowplot)
 library(ggplot2)
+library(rTPC)
+library(MuMIn)
 
-############# Upload and examine data #######################
+##################### Upload and examine data #######################
+
+df <- read.csv("data-processed/05_final_r_estimates.csv")
+
+head(df)
+str(df)
+
+df$pop.fac <- as.factor(df$population)
+df$pop.num <- as.numeric(df$population.number)
+df$well.ID <- as.factor(df$well.ID)
+df$Temp <- df$temperature
+
+mat <- split(df, df$pop.num)  # Matrixify the data!
+
+############# Explore fitting TPCs - 1 population ###############################
+
+i <- sample(1:38, 1) # We'll start with one population
+
+df.i <- subset(mat[[i]])
+df.i <- droplevels(df.i) 
+
+model.AICc <- data.frame(
+  model = character(),
+  AICc = numeric(),
+  stringsAsFactors = FALSE
+)
+
+nls.plot.list <- list()
+
+# We'll start fitting models with nls_multstart(), selecting 4 from the rTPC package and 3 from the Kontopolous paper
+
+# modified Deutsch
+
+start.vals.deut <- get_start_vals(df.i$Temp, df.i$r.exp, model_name = 'deutsch_2008')
+
+deut_nls <- nls_multstart(r.exp ~ deutsch_2008(temp = Temp, rmax, topt, ctmax, a),
+                          data = df.i,
+                          iter = c(4, 4, 4, 4), 
+                          start_lower = start.vals.deut - 10,
+                          start_upper = start.vals.deut + 10,
+                          lower = get_lower_lims(df.i$Temp, df.i$r.exp, model_name = 'deutsch_2008'),
+                          upper = get_upper_lims(df.i$Temp, df.i$r.exp, model_name = 'deutsch_2008'),
+                          supp_errors = 'Y',
+                          convergence_count = FALSE
+)
+
+summary(deut_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Deutsch", AICc = AICc(deut_nls)))
+
+preds.deut <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.deut <- broom::augment(deut_nls, newdata = preds.deut)
+
+deut_plot <- ggplot(preds.deut) + geom_point(aes(Temp, r.exp), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Deutsch') + ylim(-3,5)
+
+nls.plot.list[['deutsch']] <- deut_plot # store the plot
+
+# Lactin 2
+
+start.vals.lac <- get_start_vals(df.i$Temp, df.i$r.exp, model_name = 'lactin2_1995')
+
+lac_nls <- nls_multstart(r.exp ~ lactin2_1995(temp = Temp, a, b, tmax, delta_t),
+                         data = df.i,
+                         iter = c(4, 4, 4, 4), 
+                         start_lower = start.vals.lac - 10,
+                         start_upper = start.vals.lac + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.exp, model_name = 'lactin2_1995'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.exp, model_name = 'lactin2_1995'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+summary(lac_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Lactin2", AICc = AICc(lac_nls)))
+
+preds.lac <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.lac <- broom::augment(lac_nls, newdata = preds.lac)
+
+lac_plot <- ggplot(preds.lac) + geom_point(aes(Temp, r.exp), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Lactin 2') +ylim(-3,5)
+
+nls.plot.list[['Lactin 2']] <- lac_plot # store the plot
+
+# Ratkowsky (bounded)
+
+start.vals.rat <- get_start_vals(df.i$Temp, df.i$r.exp, model_name = 'ratkowsky_1983')
+
+rat_nls <- nls_multstart(r.exp ~ ratkowsky_1983(temp = Temp, tmin, tmax, a, b),
+                         data = df.i,
+                         iter = c(4, 4, 4, 4), 
+                         start_lower = start.vals.rat - 10,
+                         start_upper = start.vals.rat + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.exp, model_name = 'ratkowsky_1983'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.exp, model_name = 'ratkowsky_1983'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+summary(rat_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Ratkowsky", AICc = AICc(rat_nls)))
+
+preds.rat <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.rat <- broom::augment(rat_nls, newdata = preds.rat)
+
+rat_plot <- ggplot(preds.rat) + geom_point(aes(Temp, r.exp), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Ratkowsky') +ylim(-3,5)
+
+nls.plot.list[['Ratkowsky unbounded']] <- rat_plot # store the plot
+
+bounded_ratkowsky <- function(temp, tmin, tmax, a, b) { # We're going to try to write a bounded function here.
+  # Original Ratkowsky equation
+  rate <- (a * (temp - tmin))^2 * (1 - exp(b * (temp - tmax)))^2
+  
+  # Bound the rate to 0 for temp > tmax
+  rate[temp > tmax] <- 0
+  
+  # Ensure no negative rates
+  rate[rate < 0] <- 0
+  
+  return(rate)
+}
+
+ratbd_nls <- nls_multstart(r.exp ~ bounded_ratkowsky(temp = Temp, tmin, tmax, a, b),
+                         data = df.i,
+                         iter = c(4, 4, 4, 4), 
+                         start_lower = start.vals.rat - 10,
+                         start_upper = start.vals.rat + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.exp, model_name = 'ratkowsky_1983'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.exp, model_name = 'ratkowsky_1983'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Ratkowsky bounded", AICc = AICc(ratbd_nls)))
+
+preds.ratbd <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.ratbd <- broom::augment(ratbd_nls, newdata = preds.ratbd)
+
+ratbd_plot <- ggplot(preds.ratbd) + geom_point(aes(Temp, r.exp), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Ratkowsky bounded') +ylim(-3,5)
+
+nls.plot.list[['Ratkowsky bounded']] <- ratbd_plot # store the plot
+
+# Rezende
+
+start.vals.rez <- get_start_vals(df.i$Temp, df.i$r.exp, model_name = 'rezende_2019')
+
+rez_nls <- nls_multstart(r.exp ~ rezende_2019(temp = Temp, q10, a, b, c),
+                         data = df.i,
+                         iter = c(4, 4, 4, 4), 
+                         start_lower = start.vals.rez - 10,
+                         start_upper = start.vals.rez + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.exp, model_name = 'rezende_2019'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.exp, model_name = 'rezende_2019'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+summary(rez_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Rezende", AICc = AICc(rez_nls)))
+
+preds.rez <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.rez <- broom::augment(rez_nls, newdata = preds.rez)
+
+rez_plot <- ggplot(preds.rez) + geom_point(aes(Temp, r.exp), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Rezende') +ylim(-3,5)
+
+nls.plot.list[['Rezende']] <- rez_plot # store the plot
+
+# Asrafi II
+
+
+# Atkin
+
+
+# Mitchell-Angilletta
+
+
+
