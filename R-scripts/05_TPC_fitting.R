@@ -256,7 +256,7 @@ preds.atk <- broom::augment(atk_nls, newdata = preds.atk)
 atk_plot <- ggplot(preds.atk) + geom_point(aes(Temp, r.exp), df.i) +
   geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Atkin') +ylim(-3,5)
 
-nls.plot.list[['Atkin']] <- ash_plot # store the plot
+nls.plot.list[['Atkin']] <- atk_plot # store the plot
 
 # Mitchell-Angilletta
 # # Mitchell-Angilletta (3 parameters)^6: B(T) = (a/(2 x b)) x [1 + cos (((T-T_pk)/b) x pi)]
@@ -317,7 +317,7 @@ preds.ankt <- broom::augment(ankt_nls, newdata = preds.ankt)
 ankt_plot <- ggplot(preds.ankt) + geom_point(aes(Temp, r.exp), df.i) +
   geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Analytis-Kontodimas') +ylim(-3,5)
 
-nls.plot.list[['Mitchell-Angilletta']] <- mitch_plot # store the plot
+nls.plot.list[['Analytis-Kontomodimas']] <- ankt_plot # store the plot
 
 # Eubank
 
@@ -437,3 +437,225 @@ write.csv(model.AICc, "data-processed/06_rTPC_modelcomparison_population15.csv")
 mod_grid<- plot_grid(plotlist = nls.plot.list, ncol = 4) # plot it!
 ggsave("figures/05_rTPC_modelcomparison_pop15.pdf", plot = mod_grid, width = 24, height = 16)
 
+############### Loop through all populations, calculating AICc values ###################################
+
+aicc_df <- data.frame( # list of models to consider
+  model = c("Deutsch", "Lactin2", "Ratkowsky", "Ratkowsky bounded", 
+            "Rezende", "Ashrafi II", "Atkin", "Mitchell-Angilletta", 
+            "Analytis-Kontodimas", "Eubank", "Taylor-Sexton", "Briere"),
+  stringsAsFactors = FALSE
+)
+
+for (i in 1:length(mat)){
+  
+  df.i <- subset(mat[[i]])
+  df.i <- droplevels(df.i)
+  
+  aicc_pop <- c() # Temporary storage for this population
+  
+  # modified Deutsch
+  
+  start.vals <- get_start_vals(df.i$Temp, df.i$r.exp, model_name = 'deutsch_2008')
+  
+  mod <- nls_multstart(r.exp ~ deutsch_2008(temp = Temp, rmax, topt, ctmax, a),
+                            data = df.i,
+                            iter = c(4, 4, 4, 4), 
+                            start_lower = start.vals - 10,
+                            start_upper = start.vals + 10,
+                            lower = get_lower_lims(df.i$Temp, df.i$r.exp, model_name = 'deutsch_2008'),
+                            upper = get_upper_lims(df.i$Temp, df.i$r.exp, model_name = 'deutsch_2008'),
+                            supp_errors = 'Y',
+                            convergence_count = FALSE
+  )
+  
+  aicc_pop <- c(aicc_pop, AICc(mod))
+  
+  # Lactin 2
+  
+  start.vals <- get_start_vals(df.i$Temp, df.i$r.exp, model_name = 'lactin2_1995')
+  
+  mod <- nls_multstart(r.exp ~ lactin2_1995(temp = Temp, a, b, tmax, delta_t),
+                           data = df.i,
+                           iter = c(4, 4, 4, 4), 
+                           start_lower = start.vals - 10,
+                           start_upper = start.vals + 10,
+                           lower = get_lower_lims(df.i$Temp, df.i$r.exp, model_name = 'lactin2_1995'),
+                           upper = get_upper_lims(df.i$Temp, df.i$r.exp, model_name = 'lactin2_1995'),
+                           supp_errors = 'Y',
+                           convergence_count = FALSE
+  )
+  
+  aicc_pop <- c(aicc_pop, AICc(mod))
+  
+  # Ratkowsky (unbounded)
+  
+  start.vals <- get_start_vals(df.i$Temp, df.i$r.exp, model_name = 'ratkowsky_1983')
+  
+  mod <- nls_multstart(r.exp ~ ratkowsky_1983(temp = Temp, tmin, tmax, a, b),
+                           data = df.i,
+                           iter = c(4, 4, 4, 4), 
+                           start_lower = start.vals - 10,
+                           start_upper = start.vals + 10,
+                           lower = get_lower_lims(df.i$Temp, df.i$r.exp, model_name = 'ratkowsky_1983'),
+                           upper = get_upper_lims(df.i$Temp, df.i$r.exp, model_name = 'ratkowsky_1983'),
+                           supp_errors = 'Y',
+                           convergence_count = FALSE
+  )
+  
+  aicc_pop <- c(aicc_pop, AICc(mod))
+  
+  # Bounded Ratkowsky
+  
+  mod <- nls_multstart(r.exp ~ bounded_ratkowsky(temp = Temp, tmin, tmax, a, b),
+                             data = df.i,
+                             iter = c(4, 4, 4, 4), 
+                             start_lower = start.vals - 10,
+                             start_upper = start.vals + 10,
+                             lower = get_lower_lims(df.i$Temp, df.i$r.exp, model_name = 'ratkowsky_1983'),
+                             upper = get_upper_lims(df.i$Temp, df.i$r.exp, model_name = 'ratkowsky_1983'),
+                             supp_errors = 'Y',
+                             convergence_count = FALSE
+  )
+  
+  aicc_pop <- c(aicc_pop, AICc(mod))
+  
+  #Rezende
+  
+  start.vals <- get_start_vals(df.i$Temp, df.i$r.exp, model_name = 'rezende_2019')
+  
+  mod <- nls_multstart(r.exp ~ rezende_2019(temp = Temp, q10, a, b, c),
+                           data = df.i,
+                           iter = c(4, 4, 4, 4), 
+                           start_lower = start.vals - 10,
+                           start_upper = start.vals + 10,
+                           lower = get_lower_lims(df.i$Temp, df.i$r.exp, model_name = 'rezende_2019'),
+                           upper = get_upper_lims(df.i$Temp, df.i$r.exp, model_name = 'rezende_2019'),
+                           supp_errors = 'Y',
+                           convergence_count = FALSE
+  )
+  
+  aicc_pop <- c(aicc_pop, AICc(mod))
+  
+  # Ashrafi II
+  
+  mod <- nls_multstart(
+    r.exp ~ ashrafi_simple(Temp, a, b, c),
+    data = df.i,
+    iter = c(4, 4, 4),  # Number of iterations for starting values
+    start_lower = c(a = -10, b = -10, c = -1),  # Lower bounds for start values
+    start_upper = c(a = 10, b = 10, c = 1),    # Upper bounds for start values
+    lower = c(a = -30, b = -30, c = -15),   # Hard lower parameter bounds
+    upper = c(a = 30, b = 30, c = 15),      # Hard upper parameter bounds
+    supp_errors = 'Y',
+    convergence_count = FALSE
+  )
+  
+  aicc_pop <- c(aicc_pop, AICc(mod))
+  
+  # Atkin
+  
+  mod <- nls_multstart(
+    r.exp ~ atkin(Temp, B0, a, b),
+    data = df.i,
+    iter = c(4, 4, 4),
+    start_lower = c(B0 = 0.1, a = 10, b = 0.01),
+    start_upper = c(B0 = 5, a = 30, b = 0.1),
+    lower = c(B0 = 0, a = 0, b = 0),
+    upper = c(B0 = 10, a = 50, b = 1),
+    supp_errors = 'Y',
+    convergence_count = FALSE
+  )
+  
+  aicc_pop <- c(aicc_pop, AICc(mod))
+  
+  # Mitchell-Angilletta
+  
+  mod <- nls_multstart(
+    r.exp ~ mitchell(Temp, a, b, Tpk),
+    data = df.i,
+    iter = c(4, 4, 4),
+    start_lower = c(a = 0.1, b = 1, Tpk = 20),
+    start_upper = c(a = 10, b = 10, Tpk = 40),
+    lower = c(a = 0, b = 0.1, Tpk = 0),
+    upper = c(a = Inf, b = Inf, Tpk = 50),
+    supp_errors = 'Y',
+    convergence_count = FALSE
+  )
+  
+  aicc_pop <- c(aicc_pop, AICc(mod))
+  
+  # Analytis-Kontomodimas
+  
+  mod <- nls_multstart(
+    r.exp ~ anal_kont(Temp, a, tmin, tmax),
+    data = df.i,
+    iter = c(4, 4, 4),
+    start_lower = c(a = 0.1, tmin = 0, tmax = 30),
+    start_upper = c(a = 10, tmin = 10, tmax = 50),
+    lower = c(a = 0, tmin = -Inf, tmax = -Inf),
+    upper = c(a = Inf, tmin = Inf, tmax = Inf),
+    supp_errors = 'Y',
+    convergence_count = FALSE
+  )
+  
+  aicc_pop <- c(aicc_pop, AICc(mod))
+  
+  # Eubank
+  
+  mod <- nls_multstart(
+    r.exp ~ eubank(Temp, a, tpk, b),
+    data = df.i,
+    iter = c(4, 4, 4),
+    start_lower = c(a = 0.1, tpk = 20, b = 0.1),
+    start_upper = c(a = 10, tpk = 35, b = 5),
+    lower = c(a = 0, tpk = 0, b = 0.01),
+    upper = c(a = Inf, tpk = Inf, b = Inf),
+    supp_errors = 'Y',
+    convergence_count = FALSE
+  )
+  
+  aicc_pop <- c(aicc_pop, AICc(mod))
+  
+  # Taylor-Sexton
+  
+  mod <- nls_multstart(
+    r.exp ~ tay_sex(Temp, bpk, tmin, tpk),
+    data = df.i,
+    iter = c(4, 4, 4),
+    start_lower = c(bpk = 0.1, tmin = 0, tpk = 20),
+    start_upper = c(bpk = 10, tmin = 10, tpk = 40),
+    lower = c(bpk = 0, tmin = -Inf, tpk = -Inf),
+    upper = c(bpk = Inf, tmin = Inf, tpk = Inf),
+    supp_errors = 'Y',
+    convergence_count = FALSE
+  )
+  
+  aicc_pop <- c(aicc_pop, AICc(mod))
+  
+  # Briere II
+  
+  start.vals <- get_start_vals(df.i$Temp, df.i$r.exp, model_name = 'briere2_1999')
+  
+  mod <- nls_multstart(r.exp~briere2_1999(temp = Temp, Tmin, Tmax, a, b),
+                           data = df.i,
+                           iter = c(4,4,4,4),
+                           start_lower = start.vals - 10,
+                           start_upper = start.vals + 10,
+                           lower = get_lower_lims(df.i$Temp, df.i$r.exp, model_name = 'briere2_1999'),
+                           upper = get_upper_lims(df.i$Temp, df.i$r.exp, model_name = 'briere2_1999'),
+                           supp_errors = 'Y',
+                           convergence_count = F)
+  
+  aicc_pop <- c(aicc_pop, AICc(mod))
+  
+  aicc_df[[paste0("AICc_pop", i)]] <- aicc_pop #Add this population's AICc values as a new column
+  
+}
+
+mean_aicc <- rowMeans(aicc_df[, -1], na.rm = TRUE)
+
+aicc_df <- cbind(aicc_df[, 1, drop = FALSE], 
+                 Mean_AICc = mean_aicc, 
+                 aicc_df[, -1])
+
+write.csv(aicc_df, "data-processed/07_nls_TPC_comparison_AICcs.csv") # Save model comparison data
