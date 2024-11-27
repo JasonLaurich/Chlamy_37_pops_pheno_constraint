@@ -18,6 +18,8 @@ library(cowplot)
 library(ggplot2)
 library(rTPC)
 library(MuMIn)
+library(R2jags) # Fits Bayesian models
+library(mcmcplots) # Diagnostic plots for fits
 
 ##################### Upload and examine data #######################
 
@@ -659,3 +661,243 @@ aicc_df <- cbind(aicc_df[, 1, drop = FALSE],
                  aicc_df[, -1])
 
 write.csv(aicc_df, "data-processed/07_nls_TPC_comparison_AICcs.csv") # Save model comparison data
+
+############# Fit best models (Deutsch, Rezende, Lactin2) and extract shape parameters for all populations #####################
+
+############# Bayesian modelling #########################
+
+# OK, the next step is to try to fit our best performing models in R2jags - Deutsch, Rezende, and Lactin2
+# This model framework (see https://github.com/JoeyBernhardt/anopheles-rate-summation/blob/master/AnalysisDemo.R)
+# is predicated on text files (e.g. briere.txt) that specify model structure and parameters. New ones must be
+# made and saved in the directory before calling them when fitting the TPCs themselves. 
+
+# Let's set up our MCMC model settings
+ni <- 55000 # iterations / chain
+nb <- 5000 # burn in periods for each chain
+nt <- 50 # thinning interval : (55,000 - 5,000) / 50 = 1000 posterior estimates / chain
+nc <- 5 # number of chains
+
+Temp.xs <- seq(0, 45, 0.1) # Temperature gradient we're interested in
+N.Temp.xs <-length(Temp.xs)
+
+i <- sample(1:38, 1) # OK we'll start with a random population again
+
+df.i <- subset(mat[[i]])
+df.i <- droplevels(df.i) 
+
+trait <- df.i$r.exp # Jags needs traits in a certain format
+N.obs <- length(trait)
+temp <- df.i$Temp
+
+jag.data <- list(trait = trait, N.obs = N.obs, temp = temp, Temp.xs = Temp.xs, N.Temp.xs = N.Temp.xs)
+
+# Now we know the Briere function should work, because it's included as a txt file in the tutorial
+
+# inits function
+inits.bri<-function(){list(
+  cf.q = runif( 1, 0.01, 0.1),
+  cf.Tm = runif(1, 35, 45),
+  cf.T0 = runif(1, 0, 10),
+  cf.sigma = rlnorm(1, log(1), 0.5)
+)
+}
+
+parameters.bri <- c("cf.q", "cf.T0", "cf.Tm","cf.sigma", "r.pred") # estimate these, will depend based on model
+
+# jags MCMC, Briere function
+bri_jag <- jags(data=jag.data, inits=inits.bri, parameters.to.save=parameters.bri, model.file="briere.txt",
+                n.thin=nt, n.chains=nc, n.burnin=nb, n.iter=ni, DIC=T, working.directory=getwd())
+
+bri_jag$BUGSoutput$summary[1:5,] # Get estimates
+mcmcplot(bri_jag) # Evaluate model performance
+bri_jag$BUGSoutput$DIC # DIC
+
+# plot!
+plot(trait ~ jitter(Temp, 0.5), xlim = c(0, 45), data = df.i, 
+     ylab = "Growth rate", xlab = expression(paste("Temperature (",degree,"C)")))
+lines(bri_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "2.5%"] ~ Temp.xs, lty = 2)
+lines(bri_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "97.5%"] ~ Temp.xs, lty = 2)
+lines(bri_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "mean"] ~ Temp.xs)
+
+# OK, before moving on to my chosen models, I want to try a super simple model. Briere 2?
+
+inits.bri2 <- function() {
+  list(
+    cf.a = runif(1, 0, 5),
+    cf.tmin = runif(1, 0, 10),
+    cf.tmax = runif(1, 30, 50),
+    cf.b = runif(1, 1, 5),
+    cf.sigma = runif(1, 0.5, 2)
+  )
+}
+
+parameters.bri2 <- c("cf.a", "cf.tmin", "cf.tmax", "cf.b", "cf.sigma", "r.pred")
+
+bri2_jag <- jags(data=jag.data, inits=inits.bri2, parameters.to.save=parameters.bri2, model.file="briere2stp.txt",
+                n.thin=nt, n.chains=nc, n.burnin=nb, n.iter=ni, DIC=T, working.directory=getwd())
+
+bri2_jag$BUGSoutput$summary[1:6,] # Get estimates
+mcmcplot(bri2_jag) # Evaluate model performance
+bri2_jag$BUGSoutput$DIC # DIC
+
+# plot!
+plot(trait ~ jitter(Temp, 0.5), xlim = c(1, 45), data = df.i, 
+     ylab = "Growth rate", xlab = expression(paste("Temperature (",degree,"C)")))
+lines(bri2_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "2.5%"] ~ Temp.xs, lty = 2)
+lines(bri2_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "97.5%"] ~ Temp.xs, lty = 2)
+lines(bri2_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "mean"] ~ Temp.xs)
+
+preds <- data.frame( # Let's try this in ggplot - first generate some predictions
+  Temp = Temp.xs,
+  Mean = bri2_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "mean"],
+  LCL = bri2_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "2.5%"],
+  UCL = bri2_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "97.5%"]
+)
+
+ggplot(data = preds, aes(x = Temp)) +
+  geom_ribbon(aes(ymin = LCL, ymax = UCL), fill = "gold", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
+  geom_line(aes(y = Mean), color = "darkorchid", size = 1) + # Add the mean prediction line
+  geom_point(data = df.i, aes(x = jitter(Temp, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for Temp
+  scale_x_continuous(limits = c(1, 45)) + 
+  scale_y_continuous(limits = c(-0.5, 5.5)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Temperature (", degree, "C)")),
+    y = "Growth rate",
+    title = "Briere 2 Model Fit"
+  ) +
+  theme_classic()
+
+# OK, now let's try the Deutsch model!
+
+
+# Lactin 2
+
+inits.lactin2 <- function() {
+  list(
+    cf.a = runif(1, 0.01, 0.3),  # More constrained initial values
+    cf.tmax = runif(1, 30, 40),
+    cf.delta_t = runif(1, 1, 5),
+    cf.b = runif(1, -5, 5),
+    cf.sigma = runif(1, 0.5, 2)
+  )
+}
+
+parameters.lactin2 <- c("cf.a", "cf.b", "cf.tmax", "cf.delta_t", "cf.sigma", "r.pred")
+
+lac_jag <- jags(
+  data = jag.data, 
+  inits = inits.lactin2, 
+  parameters.to.save = parameters.lactin2, 
+  model.file = "lactin.txt",
+  n.thin = nt, 
+  n.chains = nc, 
+  n.burnin = nb, 
+  n.iter = ni, 
+  DIC = TRUE, 
+  working.directory = getwd()
+)
+
+lac_jag$BUGSoutput$summary[1:6,] # Get estimates
+mcmcplot(lac_jag) # Evaluate model performance
+lac_jag$BUGSoutput$DIC # DIC
+
+preds <- data.frame(
+  Temp = Temp.xs,
+  Mean = lac_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "mean"],
+  LCL = lac_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "2.5%"],
+  UCL = lac_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "97.5%"]
+)
+
+ggplot(data = preds, aes(x = Temp)) +
+  geom_ribbon(aes(ymin = LCL, ymax = UCL), fill = "gold", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
+  geom_line(aes(y = Mean), color = "darkorchid", size = 1) + # Add the mean prediction line
+  geom_point(data = df.i, aes(x = jitter(Temp, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for Temp
+  scale_x_continuous(limits = c(1, 45)) + 
+  scale_y_continuous(limits = c(-0.5, 5.5)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Temperature (", degree, "C)")),
+    y = "Growth rate",
+    title = "Lactin 2 Model Fit"
+  ) +
+  theme_classic()
+
+inits.lactin2 <- function() {
+  list(
+    cf.a = runif(1, 0.01, 0.2),  # More constrained initial values
+    cf.tmax = runif(1, 35, 45),
+    cf.delta_t = runif(1, 1, 5),
+    cf.b = runif(1, -3, 3),
+    cf.sigma = runif(1, 0.5, 2)
+  )
+}
+
+
+lac2_jag <- jags(
+  data = jag.data, 
+  inits = inits.lactin2, 
+  parameters.to.save = parameters.lactin2, 
+  model.file = "lactin2.txt",
+  n.thin = nt, 
+  n.chains = nc, 
+  n.burnin = nb, 
+  n.iter = ni, 
+  DIC = TRUE, 
+  working.directory = getwd()
+)
+
+lac2_jag$BUGSoutput$summary[1:6,] # Get estimates
+mcmcplot(lac2_jag) # Evaluate model performance
+lac2_jag$BUGSoutput$DIC # DIC
+
+preds <- data.frame(
+  Temp = Temp.xs,
+  Mean = lac2_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "mean"],
+  LCL = lac2_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "2.5%"],
+  UCL = lac2_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "97.5%"]
+)
+
+ggplot(data = preds, aes(x = Temp)) +
+  geom_ribbon(aes(ymin = LCL, ymax = UCL), fill = "gold", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
+  geom_line(aes(y = Mean), color = "darkorchid", size = 1) + # Add the mean prediction line
+  geom_point(data = df.i, aes(x = jitter(Temp, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for Temp
+  scale_x_continuous(limits = c(1, 45)) + 
+  scale_y_continuous(limits = c(-0.5, 5.5)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Temperature (", degree, "C)")),
+    y = "Growth rate",
+    title = "Lactin 2 Model Fit"
+  ) +
+  theme_classic()
+
+# Examine the results:
+
+df.jags <- data.frame(lac2_jag$BUGSoutput$summary)
+df.jags.plot <- df.jags[-c(1:6),]
+df.jags.plot$temp <- seq(0, 45, 0.1)
+
+ggplot(data = df.jags.plot, aes(x = temp)) +
+  geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "gold", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
+  geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
+  geom_point(data = df.i, aes(x = jitter(Temp, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for Temp
+  scale_x_continuous(limits = c(0, 45)) + 
+  scale_y_continuous(limits = c(-2, 5.5)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Temperature (", degree, "C)")),
+    y = "Growth rate",
+    title = "Lactin 2 Model Fit"
+  ) +
+  theme_classic() +
+  geom_hline(yintercept = 0)
+
+lac3_jag <- jags(
+  data = jag.data, 
+  inits = inits.lactin2, 
+  parameters.to.save = parameters.lactin2, 
+  model.file = "lactin2_narrow.txt",
+  n.thin = nt, 
+  n.chains = nc, 
+  n.burnin = nb, 
+  n.iter = ni, 
+  DIC = TRUE, 
+  working.directory = getwd()
+)

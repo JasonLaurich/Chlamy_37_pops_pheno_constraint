@@ -1,0 +1,24 @@
+model {
+    # Priors
+    cf.a ~ dunif(0, 10)
+    cf.tmin ~ dunif(0, 10)
+    cf.tmax ~ dunif(25, 50)
+    cf.b ~ dunif(1, 5)
+    cf.sigma ~ dunif(0, 5)
+    cf.tau <- pow(cf.sigma, -2)
+
+    # Likelihood
+    for (i in 1:N.obs) {
+        trait.mu[i] <- cf.a * temp[i] * (temp[i] - cf.tmin) *
+                       pow((cf.tmax - temp[i]) * step(cf.tmax - temp[i]), 1 / cf.b) *
+                       step(temp[i] - cf.tmin)
+        trait[i] ~ dnorm(trait.mu[i], cf.tau)
+    }
+
+    # Predictions
+    for (j in 1:N.Temp.xs) {
+        r.pred[j] <- cf.a * Temp.xs[j] * (Temp.xs[j] - cf.tmin) *
+                     pow((cf.tmax - Temp.xs[j]) * step(cf.tmax - Temp.xs[j]), 1 / cf.b) *
+                     step(Temp.xs[j] - cf.tmin)
+    }
+}
