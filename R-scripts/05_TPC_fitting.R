@@ -227,10 +227,213 @@ ash_plot <- ggplot(preds.ash) + geom_point(aes(Temp, r.exp), df.i) +
 nls.plot.list[['Ashrafi II simple']] <- ash_plot # store the plot
 
 # Atkin
+# We are using the model formulation from the supplement to Kontopolous 2024 :
+# Atkin (3 parameters)^5: B(T) = B0 x (a - b x T)^T/10
 
-B(T) = B0 x (a - b x T)^T/10
+atkin <- function(temp, B0, a, b) {
+  B0 * (a - b * temp)^(temp / 10)
+}
+
+atk_nls <- nls_multstart(
+  r.exp ~ atkin(Temp, B0, a, b),
+  data = df.i,
+  iter = c(4, 4, 4),
+  start_lower = c(B0 = 0.1, a = 10, b = 0.01),
+  start_upper = c(B0 = 5, a = 30, b = 0.1),
+  lower = c(B0 = 0, a = 0, b = 0),
+  upper = c(B0 = 10, a = 50, b = 1),
+  supp_errors = 'Y',
+  convergence_count = FALSE
+)
+
+summary(atk_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Atkin", AICc = AICc(atk_nls)))
+
+preds.atk <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.atk <- broom::augment(atk_nls, newdata = preds.atk)
+
+atk_plot <- ggplot(preds.atk) + geom_point(aes(Temp, r.exp), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Atkin') +ylim(-3,5)
+
+nls.plot.list[['Atkin']] <- ash_plot # store the plot
 
 # Mitchell-Angilletta
+# # Mitchell-Angilletta (3 parameters)^6: B(T) = (a/(2 x b)) x [1 + cos (((T-T_pk)/b) x pi)]
 
+mitchell <- function(temp, a, b, Tpk) {
+  (a / (2 * b)) * (1 + cos(((temp - Tpk) / b) * pi))
+}
 
+mitch_nls <- nls_multstart(
+  r.exp ~ mitchell(Temp, a, b, Tpk),
+  data = df.i,
+  iter = c(4, 4, 4),
+  start_lower = c(a = 0.1, b = 1, Tpk = 20),
+  start_upper = c(a = 10, b = 10, Tpk = 40),
+  lower = c(a = 0, b = 0.1, Tpk = 0),
+  upper = c(a = Inf, b = Inf, Tpk = 50),
+  supp_errors = 'Y',
+  convergence_count = FALSE
+)
+
+summary(mitch_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Mitchell-Angilletta", AICc = AICc(mitch_nls)))
+
+preds.mitch <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.mitch <- broom::augment(mitch_nls, newdata = preds.mitch)
+
+mitch_plot <- ggplot(preds.mitch) + geom_point(aes(Temp, r.exp), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Mitchell-Angilletta') +ylim(-3,5)
+
+nls.plot.list[['Mitchell-Angilletta']] <- mitch_plot # store the plot
+
+# I don't love how these are working. Let's try a few more
+
+# Analytis-Kontomodimas
+
+anal_kont <- function(temp, a, tmin, tmax) {
+  a * (temp - tmin)^2 * (tmax - temp)
+}
+
+ankt_nls <- nls_multstart(
+  r.exp ~ anal_kont(Temp, a, tmin, tmax),
+  data = df.i,
+  iter = c(4, 4, 4),
+  start_lower = c(a = 0.1, tmin = 0, tmax = 30),
+  start_upper = c(a = 10, tmin = 10, tmax = 50),
+  lower = c(a = 0, tmin = -Inf, tmax = -Inf),
+  upper = c(a = Inf, tmin = Inf, tmax = Inf),
+  supp_errors = 'Y',
+  convergence_count = FALSE
+)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Analytis-Kontodimas", AICc = AICc(ankt_nls)))
+
+preds.ankt <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.ankt <- broom::augment(ankt_nls, newdata = preds.ankt)
+
+ankt_plot <- ggplot(preds.ankt) + geom_point(aes(Temp, r.exp), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Analytis-Kontodimas') +ylim(-3,5)
+
+nls.plot.list[['Mitchell-Angilletta']] <- mitch_plot # store the plot
+
+# Eubank
+
+eubank <- function(temp, a, tpk, b) {
+  a / ((temp - tpk)^2 + b)
+}
+
+eub_nls <- nls_multstart(
+  r.exp ~ eubank(Temp, a, tpk, b),
+  data = df.i,
+  iter = c(4, 4, 4),
+  start_lower = c(a = 0.1, tpk = 20, b = 0.1),
+  start_upper = c(a = 10, tpk = 35, b = 5),
+  lower = c(a = 0, tpk = 0, b = 0.01),
+  upper = c(a = Inf, tpk = Inf, b = Inf),
+  supp_errors = 'Y',
+  convergence_count = FALSE
+)
+
+summary(eub_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Eubank", AICc = AICc(eub_nls)))
+
+preds.eub <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.eub <- broom::augment(eub_nls, newdata = preds.eub)
+
+eub_plot <- ggplot(preds.eub) + geom_point(aes(Temp, r.exp), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Eubank') +ylim(-3,6)
+
+nls.plot.list[['Eubank']] <- eub_plot # store the plot
+
+# Taylor-Sexton
+
+tay_sex <- function(temp, bpk, tmin, tpk) {
+  bpk * (-(temp - tmin)^4 + 2 * (temp - tmin)^2 * (tpk - tmin)^2) / (tpk - tmin)^4
+}
+
+tay_nls <- nls_multstart(
+  r.exp ~ tay_sex(Temp, bpk, tmin, tpk),
+  data = df.i,
+  iter = c(4, 4, 4),
+  start_lower = c(bpk = 0.1, tmin = 0, tpk = 20),
+  start_upper = c(bpk = 10, tmin = 10, tpk = 40),
+  lower = c(bpk = 0, tmin = -Inf, tpk = -Inf),
+  upper = c(bpk = Inf, tmin = Inf, tpk = Inf),
+  supp_errors = 'Y',
+  convergence_count = FALSE
+)
+
+summary(tay_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Taylor-Sexton", AICc = AICc(tay_nls)))
+
+preds.tay <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.tay <- broom::augment(tay_nls, newdata = preds.tay)
+
+tay_plot <- ggplot(preds.tay) + geom_point(aes(Temp, r.exp), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Taylor-Sexton') +ylim(-3,5)
+
+nls.plot.list[['Taylor-Sexton']] <- tay_plot # store the plot
+
+# Briere II (rTPC)
+
+start.vals.briere <- get_start_vals(df.i$Temp, df.i$r.exp, model_name = 'briere2_1999')
+
+bri_nls <- nls_multstart(r.exp~briere2_1999(temp = Temp, Tmin, Tmax, a, b),
+                         data = df.i,
+                         iter = c(4,4,4,4),
+                         start_lower = c(Tmin = 5, Tmax = 30, a = 0, b = 0.1),
+                         start_upper = c(Tmin = 15, Tmax = 50, a = 10, b = 5),
+                         lower.lims <- c(a = 0, tmin = 0, tmax = 30, b = 0.1),
+                         upper.lims <- c(a = 20, tmin = 20, tmax = 50, b = 10),
+                         supp_errors = 'Y',
+                         convergence_count = F)
+
+summary(bri_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Briere", AICc = AICc(bri_nls)))
+
+preds.bri <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.bri <- broom::augment(bri_nls, newdata = preds.bri)
+
+bri_plot <- ggplot(preds.bri) + geom_point(aes(Temp, r.exp), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() + ggtitle('Briere')
+
+nls.plot.list[['briere']] <- bri_plot # store the plot
+
+# Just for fun, let's fit the Deutsch model from scratch to make sure our approach to fitting our models is working equally well to rTPC
+
+deutsch2 <- function(temp, rmax, topt, ctmax, a) {
+  ifelse(
+    temp < topt, 
+    # Case when temp < topt
+    rmax * exp(-((temp - topt) / (2 * a))^2),
+    # Case when temp > topt
+    rmax * (1 - ((temp - topt) / (topt - ctmax))^2)
+  )
+}
+
+deut2_nls <- nls_multstart(
+  r.exp ~ deutsch2(Temp, rmax, topt, ctmax, a),
+  data = df.i,
+  iter = c(4, 4, 4, 4),
+  start_lower = c(rmax = 0.1, topt = 10, ctmax = 30, a = 0.1),
+  start_upper = c(rmax = 10, topt = 30, ctmax = 50, a = 10),
+  lower = c(rmax = 0, topt = -Inf, ctmax = -Inf, a = 0.01),
+  upper = c(rmax = Inf, topt = Inf, ctmax = Inf, a = Inf),
+  supp_errors = 'Y',
+  convergence_count = FALSE
+)
+
+summary(deut2_nls)
+AICc(deut2_nls) # So this is giving me the same numbers as the rTPC package which is great! This means that our custom models are working equally well.
+
+write.csv(model.AICc, "data-processed/06_rTPC_modelcomparison_population15.csv") # Save model comparison data
+
+mod_grid<- plot_grid(plotlist = nls.plot.list, ncol = 4) # plot it!
+ggsave("figures/05_rTPC_modelcomparison_pop15.pdf", plot = mod_grid, width = 24, height = 16)
 
