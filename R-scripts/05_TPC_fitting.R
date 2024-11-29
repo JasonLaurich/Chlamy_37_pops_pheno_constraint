@@ -106,32 +106,9 @@ lac_plot <- ggplot(preds.lac) + geom_point(aes(Temp, r.exp), df.i) +
 
 nls.plot.list[['Lactin 2']] <- lac_plot # store the plot
 
-# Ratkowsky (bounded)
+# Ratkowsky, bounded so it doesn't jump back up after Tmax
 
 start.vals.rat <- get_start_vals(df.i$Temp, df.i$r.exp, model_name = 'ratkowsky_1983')
-
-rat_nls <- nls_multstart(r.exp ~ ratkowsky_1983(temp = Temp, tmin, tmax, a, b),
-                         data = df.i,
-                         iter = c(4, 4, 4, 4), 
-                         start_lower = start.vals.rat - 10,
-                         start_upper = start.vals.rat + 10,
-                         lower = get_lower_lims(df.i$Temp, df.i$r.exp, model_name = 'ratkowsky_1983'),
-                         upper = get_upper_lims(df.i$Temp, df.i$r.exp, model_name = 'ratkowsky_1983'),
-                         supp_errors = 'Y',
-                         convergence_count = FALSE
-)
-
-summary(rat_nls)
-
-model.AICc <- rbind(model.AICc, data.frame(model = "Ratkowsky", AICc = AICc(rat_nls)))
-
-preds.rat <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
-preds.rat <- broom::augment(rat_nls, newdata = preds.rat)
-
-rat_plot <- ggplot(preds.rat) + geom_point(aes(Temp, r.exp), df.i) +
-  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() +ggtitle('Ratkowsky') +ylim(-3,5)
-
-nls.plot.list[['Ratkowsky unbounded']] <- rat_plot # store the plot
 
 bounded_ratkowsky <- function(temp, tmin, tmax, a, b) { # We're going to try to write a bounded function here.
   # Original Ratkowsky equation
@@ -407,6 +384,32 @@ bri_plot <- ggplot(preds.bri) + geom_point(aes(Temp, r.exp), df.i) +
 
 nls.plot.list[['briere']] <- bri_plot # store the plot
 
+# Thomas 1 (Norberg) - requested by Joey, this is in the rTPC package
+
+start.vals.thom <- get_start_vals(df.i$Temp, df.i$r.exp, model_name = 'thomas_2012')
+
+thom_nls <- nls_multstart(r.exp~thomas_2012(temp = Temp, a, b, c, topt),
+                         data = df.i,
+                         iter = c(4,4,4,4),
+                         start_lower = start.vals.thom - 10,
+                         start_upper = start.vals.thom + 10,
+                         lower = get_lower_lims(df.i$Temp, df.i$r.exp, model_name = 'thomas_2012'),
+                         upper = get_upper_lims(df.i$Temp, df.i$r.exp, model_name = 'thomas_2012'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE)
+
+summary(thom_nls)
+
+model.AICc <- rbind(model.AICc, data.frame(model = "Thomas 1", AICc = AICc(thom_nls)))
+
+preds.thom <- data.frame(Temp = seq(min(df.i$Temp - 2), max(df.i$Temp +2), length.out = 100))
+preds.thom <- broom::augment(thom_nls, newdata = preds.thom)
+
+thom_plot <- ggplot(preds.thom) + geom_point(aes(Temp, r.exp), df.i) +
+  geom_line(aes(Temp, .fitted), col = 'darkslateblue') + theme_classic() + ggtitle('Thomas 1')
+
+nls.plot.list[['thomas']] <- thom_plot # store the plot
+
 # Just for fun, let's fit the Deutsch model from scratch to make sure our approach to fitting our models is working equally well to rTPC
 
 deutsch2 <- function(temp, rmax, topt, ctmax, a) {
@@ -434,17 +437,17 @@ deut2_nls <- nls_multstart(
 summary(deut2_nls)
 AICc(deut2_nls) # So this is giving me the same numbers as the rTPC package which is great! This means that our custom models are working equally well.
 
-write.csv(model.AICc, "data-processed/06_rTPC_modelcomparison_population15.csv") # Save model comparison data
+write.csv(model.AICc, "data-processed/06_rTPC_modelcomparison_population2.csv") # Save model comparison data
 
 mod_grid<- plot_grid(plotlist = nls.plot.list, ncol = 4) # plot it!
-ggsave("figures/05_rTPC_modelcomparison_pop15.pdf", plot = mod_grid, width = 24, height = 16)
+ggsave("figures/05_rTPC_modelcomparison_pop2.pdf", plot = mod_grid, width = 24, height = 16)
 
 ############### Loop through all populations, calculating AICc values ###################################
 
 aicc_df <- data.frame( # list of models to consider
-  model = c("Deutsch", "Lactin2", "Ratkowsky", "Ratkowsky bounded", 
+  model = c("Deutsch", "Lactin2", "Ratkowsky bounded", 
             "Rezende", "Ashrafi II", "Atkin", "Mitchell-Angilletta", 
-            "Analytis-Kontodimas", "Eubank", "Taylor-Sexton", "Briere"),
+            "Analytis-Kontodimas", "Eubank", "Taylor-Sexton", "Briere", "Thomas1"),
   stringsAsFactors = FALSE
 )
 
@@ -489,24 +492,9 @@ for (i in 1:length(mat)){
   
   aicc_pop <- c(aicc_pop, AICc(mod))
   
-  # Ratkowsky (unbounded)
+  # Bounded Ratkowsky
   
   start.vals <- get_start_vals(df.i$Temp, df.i$r.exp, model_name = 'ratkowsky_1983')
-  
-  mod <- nls_multstart(r.exp ~ ratkowsky_1983(temp = Temp, tmin, tmax, a, b),
-                           data = df.i,
-                           iter = c(4, 4, 4, 4), 
-                           start_lower = start.vals - 10,
-                           start_upper = start.vals + 10,
-                           lower = get_lower_lims(df.i$Temp, df.i$r.exp, model_name = 'ratkowsky_1983'),
-                           upper = get_upper_lims(df.i$Temp, df.i$r.exp, model_name = 'ratkowsky_1983'),
-                           supp_errors = 'Y',
-                           convergence_count = FALSE
-  )
-  
-  aicc_pop <- c(aicc_pop, AICc(mod))
-  
-  # Bounded Ratkowsky
   
   mod <- nls_multstart(r.exp ~ bounded_ratkowsky(temp = Temp, tmin, tmax, a, b),
                              data = df.i,
@@ -647,6 +635,22 @@ for (i in 1:length(mat)){
                            upper = get_upper_lims(df.i$Temp, df.i$r.exp, model_name = 'briere2_1999'),
                            supp_errors = 'Y',
                            convergence_count = F)
+  
+  aicc_pop <- c(aicc_pop, AICc(mod))
+  
+  # Thomas 1
+  
+  start.vals <- get_start_vals(df.i$Temp, df.i$r.exp, model_name = 'thomas_2012')
+  
+  mod <- nls_multstart(r.exp~thomas_2012(temp = Temp, a, b, c, topt),
+                       data = df.i,
+                       iter = c(4,4,4,4),
+                       start_lower = start.vals - 10,
+                       start_upper = start.vals + 10,
+                       lower = get_lower_lims(df.i$Temp, df.i$r.exp, model_name = 'thomas_2012'),
+                       upper = get_upper_lims(df.i$Temp, df.i$r.exp, model_name = 'thomas_2012'),
+                       supp_errors = 'Y',
+                       convergence_count = F)
   
   aicc_pop <- c(aicc_pop, AICc(mod))
   
