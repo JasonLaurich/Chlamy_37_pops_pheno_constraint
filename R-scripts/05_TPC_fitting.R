@@ -20,6 +20,7 @@ library(rTPC)
 library(MuMIn)
 library(R2jags) # Fits Bayesian models
 library(mcmcplots) # Diagnostic plots for fits
+library(gridExtra)
 
 ##################### Upload and examine data #######################
 
@@ -681,6 +682,11 @@ nb <- 5000 # burn in periods for each chain
 nt <- 50 # thinning interval : (55,000 - 5,000) / 50 = 1000 posterior estimates / chain
 nc <- 5 # number of chains
 
+# Let's set up more generous MCMC settings
+ni.2 <- 110000 # iterations / chain
+nb.2 <- 10000 # burn in periods for each chain
+nt.2 <- 100 # thinning interval : (110,000 - 10,000) / 100 = 1000 posterior estimates / chain
+
 Temp.xs <- seq(0, 45, 0.1) # Temperature gradient we're interested in
 N.Temp.xs <-length(Temp.xs)
 
@@ -774,6 +780,55 @@ ggplot(data = preds, aes(x = Temp)) +
 # OK, now let's try the Deutsch model!
 
 # Deutsch
+
+inits.deutsch <- function() {
+  list(
+    rmax = runif(1, 0, 5),  # More constrained initial values
+    topt = runif(1, 30, 40),
+    ctmax = runif(1, 37, 43),
+    a = runif(1, 0.1, 5),
+    sigma = runif(1, 0.5, 2)
+  )
+}
+
+parameters.deutsch <- c("rmax", "topt", "ctmax", "a", "sigma", "r.pred")
+
+deut_jag <- jags(
+  data = jag.data, 
+  inits = inits.deutsch, 
+  parameters.to.save = parameters.deutsch, 
+  model.file = "deutsch.txt",
+  n.thin = nt.2, 
+  n.chains = nc, 
+  n.burnin = nb.2, 
+  n.iter = ni.2, 
+  DIC = TRUE, 
+  working.directory = getwd()
+)
+
+deut_jag$BUGSoutput$summary[c(1:3, 455:457),] # Get estimates. For some reason rmax, sigma and topt are at the end!
+mcmcplot(deut_jag) # Evaluate model performance
+deut_jag$BUGSoutput$DIC # DIC
+
+# This looks really nice!
+
+df.jags <- data.frame(deut_jag$BUGSoutput$summary)
+df.jags.plot <- df.jags[-c(1:3, 455:457),]
+df.jags.plot$temp <- seq(0, 45, 0.1)
+
+deut.jag.plot <- ggplot(data = df.jags.plot, aes(x = temp)) +
+  geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "azure3", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
+  geom_line(aes(y = mean), color = "firebrick", size = 1) + # Add the mean prediction line
+  geom_point(data = df.i, aes(x = jitter(Temp, 0.5), y = trait), color = "darkgreen", size = 2) + # Add observed data points with jitter for Temp
+  scale_x_continuous(limits = c(0, 45)) + 
+  scale_y_continuous(limits = c(-2, 5.5)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Temperature (", degree, "C)")),
+    y = "Growth rate",
+    title = "Deutsch Model Fit"
+  ) +
+  theme_classic() +
+  geom_hline(yintercept = 0)
 
 
 # Lactin 2
@@ -996,12 +1051,6 @@ ggplot(data = df.jags.plot, aes(x = temp)) +
 
 # Having a problem with independance, Tmax...
 
-# Let's set up more generous MCMC settings
-ni.2 <- 110000 # iterations / chain
-nb.2 <- 10000 # burn in periods for each chain
-nt.2 <- 100 # thinning interval : (110,000 - 10,000) / 100 = 1000 posterior estimates / chain
-nc <- 5 # number of chains
-
 inits.lactin2.3 <- function() {
   list(
     cf.a = runif(1, 0.05, 0.15),  # More constrained initial values
@@ -1033,7 +1082,7 @@ df.jags <- data.frame(lac5_jag$BUGSoutput$summary)
 df.jags.plot <- df.jags[-c(1:6),]
 df.jags.plot$temp <- seq(0, 45, 0.1)
 
-ggplot(data = df.jags.plot, aes(x = temp)) +
+lact.jag.plot <- ggplot(data = df.jags.plot, aes(x = temp)) +
   geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "gold", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
   geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
   geom_point(data = df.i, aes(x = jitter(Temp, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for Temp
@@ -1046,3 +1095,107 @@ ggplot(data = df.jags.plot, aes(x = temp)) +
   ) +
   theme_classic() +
   geom_hline(yintercept = 0)
+
+# Rezende model?
+
+inits.rezende <- function() {
+  list(
+    q10 = runif(1, 1.5, 5),    # Reasonable range for q10
+    a = runif(1, 0.5, 5),      # Initial guess for a
+    b = runif(1, 30, 40),      # Initial guess for threshold temperature
+    c = runif(1, 0.1, 0.5),    # Initial guess for the decline parameter
+    sigma = runif(1, 0.5, 2)   # Initial guess for error
+  )
+}
+
+parameters.rezende <- c("q10", "a", "b", "c", "sigma", "r.pred")
+
+rez_jag <- jags(
+  data = jag.data, 
+  inits = inits.rezende, 
+  parameters.to.save = parameters.rezende, 
+  model.file = "rezende.txt",
+  n.thin = nt.2, 
+  n.chains = nc, 
+  n.burnin = nb.2, 
+  n.iter = ni.2, 
+  DIC = TRUE, 
+  working.directory = getwd()
+)
+
+rez_jag$BUGSoutput$summary[c(1:5, 457),] # Get estimates. For some reason rmax, sigma and topt are at the end!
+mcmcplot(rez_jag) # Evaluate model performance
+rez_jag$BUGSoutput$DIC # DIC
+
+df.jags <- data.frame(rez_jag$BUGSoutput$summary)
+df.jags.plot <- df.jags[-c(1:3, 455:457),]
+df.jags.plot$temp <- seq(0, 45, 0.1)
+
+rez.jag.plot <- ggplot(data = df.jags.plot, aes(x = temp)) +
+  geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "azure3", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
+  geom_line(aes(y = mean), color = "blue4", size = 1) + # Add the mean prediction line
+  geom_point(data = df.i, aes(x = jitter(Temp, 0.5), y = trait), color = "dodgerblue1", size = 2) + # Add observed data points with jitter for Temp
+  scale_x_continuous(limits = c(1, 45)) + 
+  scale_y_continuous(limits = c(-2, 5.5)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Temperature (", degree, "C)")),
+    y = "Growth rate",
+    title = "Rezende Model Fit"
+  ) +
+  theme_classic() +
+  geom_hline(yintercept = 0)
+
+# Thomas model (Norberg)
+
+inits.thomas <- function() {
+  list(
+    a = runif(1, 1, 5),      # Initial guess for a
+    b = runif(1, -0.5, 0.5), # Initial guess for b
+    c = runif(1, 5, 40),     # Initial guess for thermal niche width
+    topt = runif(1, 30, 40), # Initial guess for topt
+    sigma = runif(1, 0.5, 2) # Initial guess for error
+  )
+}
+
+parameters.thomas <- c("a", "b", "c", "topt", "sigma", "r.pred")
+
+thom_jag <- jags(
+  data = jag.data, 
+  inits = inits.thomas, 
+  parameters.to.save = parameters.thomas, 
+  model.file = "thomas.txt",
+  n.thin = nt.2, 
+  n.chains = nc, 
+  n.burnin = nb.2, 
+  n.iter = ni.2, 
+  DIC = TRUE, 
+  working.directory = getwd()
+)
+
+thom_jag$BUGSoutput$summary[c(1:4, 456:457),] # Get estimates. For some reason rmax, sigma and topt are at the end!
+mcmcplot(thom_jag) # Evaluate model performance
+thom_jag$BUGSoutput$DIC # DIC
+
+df.jags <- data.frame(thom_jag$BUGSoutput$summary)
+df.jags.plot <- df.jags[-c(1:4, 456:457),]
+df.jags.plot$temp <- seq(0, 45, 0.1)
+
+thom.jag.plot <- ggplot(data = df.jags.plot, aes(x = temp)) +
+  geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "orchid1", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
+  geom_line(aes(y = mean), color = "sienna", size = 1) + # Add the mean prediction line
+  geom_point(data = df.i, aes(x = jitter(Temp, 0.5), y = trait), color = "gray12", size = 2) + # Add observed data points with jitter for Temp
+  scale_x_continuous(limits = c(1, 45)) + 
+  scale_y_continuous(limits = c(-2, 5.5)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Temperature (", degree, "C)")),
+    y = "Growth rate",
+    title = "Thomas 1 / Norberg Model Fit"
+  ) +
+  theme_classic() +
+  geom_hline(yintercept = 0)
+
+# Let's make a summary plot with all 4 figures
+
+plot_grid <- grid.arrange(deut.jag.plot, lact.jag.plot, rez.jag.plot, thom.jag.plot, ncol = 2)
+
+ggsave("figures/06_R2jags_modelfits_pop26.pdf", plot_grid, width = 30, height = 30, units = "cm")

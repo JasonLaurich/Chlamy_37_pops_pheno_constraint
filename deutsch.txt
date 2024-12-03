@@ -1,25 +1,30 @@
 model {
-    ## Priors for parameters
-    rmax ~ dunif(0, 10)       # rmax, maximum rate at optimum temperature
-    topt ~ dunif(25, 45)       # optimum temperature (ºC)
-    ctmax ~ dunif(30, 50)     # critical thermal maximum (ºC)
-    a ~ dunif(0, 10)          # width parameter, controlling the curve width
-    sigma ~ dunif(0, 1000)    # SD for the likelihood (uncertainty)
-    tau <- 1 / (sigma * sigma)  # Precision (inverse of variance)
 
-    ## Likelihood for the observed data
-    for(i in 1:N.obs){
-        # Calculate rate using a combination of conditions
-        trait.mu[i] <- (rmax * exp(-0.5 * ((temp[i] - topt) / a)^2)) * step(topt - temp[i]) +
-                       (rmax * (1 - ((temp[i] - topt) / (topt - ctmax))^2)) * step(temp[i] - topt)
-        
-        trait[i] ~ dnorm(trait.mu[i], tau)  # Normal likelihood
-    }
+  ## Priors for parameters
+  rmax ~ dunif(0, 10)        # Maximum rate at the optimum temperature
+  topt ~ dunif(25, 45)       # Optimum temperature (ºC)
+  ctmax ~ dunif(35, 50)      # Critical thermal maximum (ºC)
+  a ~ dunif(0.1, 10)         # Width parameter
+  sigma ~ dunif(0, 1000)     # Standard deviation for the likelihood
+  tau <- 1 / (sigma * sigma) # Precision (inverse variance)
 
-    ## Derived Predictions for the temperature gradient
-    for(i in 1:N.Temp.xs) {
-        r.pred[i] <- (rmax * exp(-0.5 * ((Temp.xs[i] - topt) / a)^2)) * step(topt - Temp.xs[i]) +
-                     (rmax * (1 - ((Temp.xs[i] - topt) / (topt - ctmax))^2)) * step(Temp.xs[i] - topt)
-    }
+  ## Likelihood for observed data
+  for (i in 1:N.obs) {
+    # Conditional expression for the modified Deutsch function
+    trait.mu[i] <- ifelse(
+      temp[i] <= topt,
+      rmax * exp(-pow((temp[i] - topt) / (2 * a), 2)), # Rising phase
+      rmax - rmax * pow((temp[i] - topt) / (topt - ctmax), 2) # Declining phase
+    )
+    trait[i] ~ dnorm(trait.mu[i], tau) # Observed trait
+  }
+
+  ## Predictions for new temperature range
+  for (j in 1:N.Temp.xs) {
+    r.pred[j] <- ifelse(
+      Temp.xs[j] <= topt,
+      rmax * exp(-pow((Temp.xs[j] - topt) / (2 * a), 2)), # Rising phase
+      rmax - rmax * pow((Temp.xs[j] - topt) / (topt - ctmax), 2) # Declining phase
+    )
+  }
 }
-
