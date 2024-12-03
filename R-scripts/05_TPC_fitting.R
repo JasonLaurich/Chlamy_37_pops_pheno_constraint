@@ -773,6 +773,8 @@ ggplot(data = preds, aes(x = Temp)) +
 
 # OK, now let's try the Deutsch model!
 
+# Deutsch
+
 
 # Lactin 2
 
@@ -787,6 +789,8 @@ inits.lactin2 <- function() {
 }
 
 parameters.lactin2 <- c("cf.a", "cf.b", "cf.tmax", "cf.delta_t", "cf.sigma", "r.pred")
+
+# This first one doesn't seem to work... not sure why? Has to do with the step function in the text file?
 
 lac_jag <- jags(
   data = jag.data, 
@@ -834,6 +838,9 @@ inits.lactin2 <- function() {
     cf.sigma = runif(1, 0.5, 2)
   )
 }
+
+# This next model doesn't really work that well.. The different chains are not converging.
+# looks like our initial values and priors need to be tighter?
 
 
 lac2_jag <- jags(
@@ -893,9 +900,21 @@ ggplot(data = df.jags.plot, aes(x = temp)) +
   theme_classic() +
   geom_hline(yintercept = 0)
 
+# OK, let's try tightening our priors and initial values...
+
+inits.lactin2.1 <- function() {
+  list(
+    cf.a = runif(1, 0.01, 0.2),  # More constrained initial values
+    cf.tmax = runif(1, 32, 38),
+    cf.delta_t = runif(1, 0.1, 5),
+    cf.b = runif(1, -1, 1),
+    cf.sigma = runif(1, 0, 2)
+  )
+}
+
 lac3_jag <- jags(
   data = jag.data, 
-  inits = inits.lactin2, 
+  inits = inits.lactin2.1, 
   parameters.to.save = parameters.lactin2, 
   model.file = "lactin2_narrow.txt",
   n.thin = nt, 
@@ -905,3 +924,125 @@ lac3_jag <- jags(
   DIC = TRUE, 
   working.directory = getwd()
 )
+
+lac3_jag$BUGSoutput$summary[1:6,] # Get estimates
+mcmcplot(lac3_jag) # Evaluate model performance
+lac3_jag$BUGSoutput$DIC # DIC
+
+# Examine the results:
+
+df.jags <- data.frame(lac3_jag$BUGSoutput$summary)
+df.jags.plot <- df.jags[-c(1:6),]
+df.jags.plot$temp <- seq(0, 45, 0.1)
+
+ggplot(data = df.jags.plot, aes(x = temp)) +
+  geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "gold", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
+  geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
+  geom_point(data = df.i, aes(x = jitter(Temp, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for Temp
+  scale_x_continuous(limits = c(0, 45)) + 
+  scale_y_continuous(limits = c(-2, 5.5)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Temperature (", degree, "C)")),
+    y = "Growth rate",
+    title = "Lactin 2 Model Fit"
+  ) +
+  theme_classic() +
+  geom_hline(yintercept = 0)
+
+inits.lactin2.2 <- function() {
+  list(
+    cf.a = runif(1, 0.05, 0.15),  # More constrained initial values
+    cf.tmax = runif(1, 32, 38),
+    cf.delta_t = runif(1, 1, 4),
+    cf.b = runif(1, -0.5, 0.5),
+    cf.sigma = runif(1, 0.1, 2)
+  )
+}
+
+lac4_jag <- jags(
+  data = jag.data, 
+  inits = inits.lactin2.2, 
+  parameters.to.save = parameters.lactin2, 
+  model.file = "lactin2_narrower.txt",
+  n.thin = nt, 
+  n.chains = nc, 
+  n.burnin = nb, 
+  n.iter = ni, 
+  DIC = TRUE, 
+  working.directory = getwd()
+)
+
+lac4_jag$BUGSoutput$summary[1:6,] # Get estimates
+mcmcplot(lac4_jag) # Evaluate model performance
+lac4_jag$BUGSoutput$DIC # DIC
+
+df.jags <- data.frame(lac4_jag$BUGSoutput$summary)
+df.jags.plot <- df.jags[-c(1:6),]
+df.jags.plot$temp <- seq(0, 45, 0.1)
+
+ggplot(data = df.jags.plot, aes(x = temp)) +
+  geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "gold", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
+  geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
+  geom_point(data = df.i, aes(x = jitter(Temp, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for Temp
+  scale_x_continuous(limits = c(0, 45)) + 
+  scale_y_continuous(limits = c(-2, 5.5)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Temperature (", degree, "C)")),
+    y = "Growth rate",
+    title = "Lactin 2 Model Fit, Constrained"
+  ) +
+  theme_classic() +
+  geom_hline(yintercept = 0)
+
+# Having a problem with independance, Tmax...
+
+# Let's set up more generous MCMC settings
+ni.2 <- 110000 # iterations / chain
+nb.2 <- 10000 # burn in periods for each chain
+nt.2 <- 100 # thinning interval : (110,000 - 10,000) / 100 = 1000 posterior estimates / chain
+nc <- 5 # number of chains
+
+inits.lactin2.3 <- function() {
+  list(
+    cf.a = runif(1, 0.05, 0.15),  # More constrained initial values
+    cf.tmax = runif(1, 37, 43),
+    cf.delta_t = runif(1, 1, 4),
+    cf.b = runif(1, -0.5, 0.5),
+    cf.sigma = runif(1, 0.1, 2)
+  )
+}
+
+lac5_jag <- jags(
+  data = jag.data, 
+  inits = inits.lactin2.3, 
+  parameters.to.save = parameters.lactin2, 
+  model.file = "lactin2_narrower_lrgTmax.txt",
+  n.thin = nt.2, 
+  n.chains = nc, 
+  n.burnin = nb.2, 
+  n.iter = ni.2, 
+  DIC = TRUE, 
+  working.directory = getwd()
+)
+
+lac5_jag$BUGSoutput$summary[1:6,] # Get estimates
+mcmcplot(lac5_jag) # Evaluate model performance
+lac5_jag$BUGSoutput$DIC # DIC
+
+df.jags <- data.frame(lac5_jag$BUGSoutput$summary)
+df.jags.plot <- df.jags[-c(1:6),]
+df.jags.plot$temp <- seq(0, 45, 0.1)
+
+ggplot(data = df.jags.plot, aes(x = temp)) +
+  geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "gold", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
+  geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
+  geom_point(data = df.i, aes(x = jitter(Temp, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for Temp
+  scale_x_continuous(limits = c(0, 45)) + 
+  scale_y_continuous(limits = c(-2, 5.5)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Temperature (", degree, "C)")),
+    y = "Growth rate",
+    title = "Lactin 2 Model Fit, Constrained, Doubled"
+  ) +
+  theme_classic() +
+  geom_hline(yintercept = 0)
