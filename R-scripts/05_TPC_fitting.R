@@ -1049,7 +1049,7 @@ ggplot(data = df.jags.plot, aes(x = temp)) +
   theme_classic() +
   geom_hline(yintercept = 0)
 
-# Having a problem with independance, Tmax...
+# Having a problem with independence, Tmax...
 
 inits.lactin2.3 <- function() {
   list(
@@ -1199,3 +1199,112 @@ thom.jag.plot <- ggplot(data = df.jags.plot, aes(x = temp)) +
 plot_grid <- grid.arrange(deut.jag.plot, lact.jag.plot, rez.jag.plot, thom.jag.plot, ncol = 2)
 
 ggsave("figures/06_R2jags_modelfits_pop26.pdf", plot_grid, width = 30, height = 30, units = "cm")
+
+################## Model fitting ########################
+
+# OK we are now going to loop through all of our populations, fitting and saving R2jags objects.
+# We'll go with the Thomas and Lactin models for now.
+# These are the two that allow negative grwowth rates at both ends, and Lactin 2
+# is basically tied with Deutsch in our DIC comparisons for best model.
+
+# Let's set more generous MCMC settings still for our final models. 
+ni.fit <- 330000   # iterations / chain
+nb.fit <- 30000    # burn in periods for each chain
+nt.fit <- 300      # thinning interval : (330,000 - 30,000) / 300 = 1000 posterior estimates / chain
+nc.fit <- 6        # number of chains, total of 6,000 estimates for each model. 
+
+summary.df <- data.frame(   # We'll create a dataframe to store the data as we fit models.
+  Pop.fac = character(),    # Population name
+  Pop.num = character(),    # Number assigned to population (not the same). This corresponds to the jags objects
+  Model = character(),      # Model name
+  T.min = numeric(),        # Minimum T
+  T.max = numeric(),        # Maximum T
+  T.br = numeric(),         # T breadth
+  T.opt = numeric(),        # Optimal T
+  r.max = numeric(),        # Maximum growth rate
+  stringsAsFactors = FALSE  # Avoid factor conversion
+)
+
+dic.df <- data.frame(       # Save DIC scores for comparison
+  Pop.fac = character(),    # Population name
+  Pop.num = character(),    # Number assigned to population (not the same)       
+  Model = character(),      # Model (lactin or thomas)
+  DIC = numeric(),          # DIC           
+  stringsAsFactors = FALSE            
+)
+
+inits.lactin.final <- function() { # The final initial values set we landed on after experimenting. 
+  list(
+    cf.a = runif(1, 0.05, 0.15),  # More constrained initial values
+    cf.tmax = runif(1, 37, 43),
+    cf.delta_t = runif(1, 1, 5),
+    cf.b = runif(1, -2.5, -1),
+    cf.sigma = runif(1, 0.1, 2)
+  )
+}
+
+inits.thomas.final <- function() {
+  list(
+    a = runif(1, 1, 5),      # Initial guess for a
+    b = runif(1, -0.5, 0.5), # Initial guess for b
+    c = runif(1, 5, 40),     # Initial guess for thermal niche width
+    topt = runif(1, 30, 40), # Initial guess for topt
+    sigma = runif(1, 0.5, 2) # Initial guess for error
+  )
+}
+
+parameters.lactin2 <- c("cf.a", "cf.b", "cf.tmax", "cf.delta_t", "cf.sigma", "r.pred") # repeated here
+parameters.thomas <- c("a", "b", "c", "topt", "sigma", "r.pred") # repeated here
+
+Temp.xs <- seq(0, 45, 0.05) # Temperature gradient we're interested in - upped the granularity here
+N.Temp.xs <-length(Temp.xs)
+
+for (i in 1:length(mat)){ # for each population
+  
+  df.i <- subset(mat[[i]])
+  df.i <- droplevels(df.i)
+  
+  trait <- df.i$r.exp     # format the data for jags
+  N.obs <- length(trait)
+  temp <- df.i$Temp
+  
+  jag.data <- list(trait = trait, N.obs = N.obs, temp = temp, Temp.xs = Temp.xs, N.Temp.xs = N.Temp.xs)
+  
+  lac_jag <- jags(
+    data = jag.data, 
+    inits = inits.lactin.final, 
+    parameters.to.save = parameters.lactin2, 
+    model.file = "lactin2_final.txt",
+    n.thin = nt.fit, 
+    n.chains = nc.fit, 
+    n.burnin = nb.fit, 
+    n.iter = ni.fit, 
+    DIC = TRUE, 
+    working.directory = getwd()
+  )
+  
+  save(lac_jag, file = paste0("R2jags-objects/pop_", i, "_lactin2.RData")) # save the lactin2 model
+  
+  df.jags <- data.frame(lac_jag$BUGSoutput$summary)[-c(1:6),]   # generate the sequence of r.pred values
+  df.jags$temp <- seq(0, 45, 0.05)
+  
+  summary.df <- rbind(summary.df, data.frame(                             # Add summary data
+    Pop.fac = df.i$pop.fac[1],                                            # Population name
+    Pop.num = df.i$pop.num[1],                                            # Number assigned to population (not the same)
+    Model = "Lactin 2",                                                   # Model name
+    T.min = df.jags$temp[min(which(df.jags$mean > 0))],                   # Minimum T
+    T.max = df.jags$temp[max(which(df.jags$mean > 0))],                   # Maximum T
+    T.br = df.jags$temp[max(which(df.jags$mean > (max(df.jags$mean) / 2)))] - 
+      df.jags$temp[min(which(df.jags$mean > (max(df.jags$mean) / 2)))],   # T breadth
+    T.opt = df.jags$temp[which.max(df.jags$mean)],                        # Optimal T
+    r.max = max(df.jags$mean)                                             # Maximum growth rate   
+  ))
+  
+  dic.df <- rbind(dic.df, data.frame(         # Add DIC data
+    Pop.fac = df.i$pop.fac[1],      # Population name
+    Pop.num = df.i$pop.num[1],      # Number assigned to population (not the same)
+    Model = "Lactin 2",             # Model name
+    DIC = lac_jag$BUGSoutput$DIC    # DIC
+  ))
+
+}
