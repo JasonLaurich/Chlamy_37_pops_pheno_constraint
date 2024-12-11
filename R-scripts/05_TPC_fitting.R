@@ -695,6 +695,8 @@ i <- sample(1:38, 1) # OK we'll start with a random population again
 df.i <- subset(mat[[i]])
 df.i <- droplevels(df.i) 
 
+head(df.i)
+
 trait <- df.i$r.exp # Jags needs traits in a certain format
 N.obs <- length(trait)
 temp <- df.i$Temp
@@ -719,6 +721,7 @@ bri_jag <- jags(data=jag.data, inits=inits.bri, parameters.to.save=parameters.br
                 n.thin=nt, n.chains=nc, n.burnin=nb, n.iter=ni, DIC=T, working.directory=getwd())
 
 bri_jag$BUGSoutput$summary[1:5,] # Get estimates
+bri_jag$BUGSoutput$summary[c(1:5, 110:120),]
 mcmcplot(bri_jag) # Evaluate model performance
 bri_jag$BUGSoutput$DIC # DIC
 
@@ -728,6 +731,26 @@ plot(trait ~ jitter(Temp, 0.5), xlim = c(0, 45), data = df.i,
 lines(bri_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "2.5%"] ~ Temp.xs, lty = 2)
 lines(bri_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "97.5%"] ~ Temp.xs, lty = 2)
 lines(bri_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "mean"] ~ Temp.xs)
+
+df.jags <- data.frame(bri_jag$BUGSoutput$summary)
+df.jags.plot <- df.jags[-c(1:5),]
+df.jags.plot$temp <- seq(0, 45, 0.1)
+
+bri.jag.plot <- ggplot(data = df.jags.plot, aes(x = temp)) +
+  geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "orchid1", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
+  geom_line(aes(y = mean), color = "sienna", size = 1) + # Add the mean prediction line
+  geom_point(data = df.i, aes(x = jitter(Temp, 0.5), y = trait), color = "gray12", size = 2) + # Add observed data points with jitter for Temp
+  scale_x_continuous(limits = c(1, 45)) + 
+  scale_y_continuous(limits = c(-2, 5.5)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Temperature (", degree, "C)")),
+    y = "Growth rate",
+    title = "Briere I model fit"
+  ) +
+  theme_classic() +
+  geom_hline(yintercept = 0)
+
+bri.jag.plot
 
 # OK, before moving on to my chosen models, I want to try a super simple model. Briere 2?
 
@@ -1308,3 +1331,56 @@ for (i in 1:length(mat)){ # for each population
   ))
 
 }
+
+for (i in 1:length(mat)){ # for each population
+  
+  df.i <- subset(mat[[i]])
+  df.i <- droplevels(df.i)
+  
+  trait <- df.i$r.exp     # format the data for jags
+  N.obs <- length(trait)
+  temp <- df.i$Temp
+  
+  jag.data <- list(trait = trait, N.obs = N.obs, temp = temp, Temp.xs = Temp.xs, N.Temp.xs = N.Temp.xs)
+  
+  lac_jag <- jags(
+    data = jag.data, 
+    inits = inits.lactin.final, 
+    parameters.to.save = parameters.lactin2, 
+    model.file = "lactin2_final.txt",
+    n.thin = nt.fit, 
+    n.chains = nc.fit, 
+    n.burnin = nb.fit, 
+    n.iter = ni.fit, 
+    DIC = TRUE, 
+    working.directory = getwd()
+  )
+  
+  save(lac_jag, file = paste0("R2jags-objects/pop_", i, "_lactin2.RData")) # save the lactin2 model
+  
+  df.jags <- data.frame(lac_jag$BUGSoutput$summary)[-c(1:6),]   # generate the sequence of r.pred values
+  df.jags$temp <- seq(0, 45, 0.05)
+  
+  summary.df <- rbind(summary.df, data.frame(                             # Add summary data
+    Pop.fac = df.i$pop.fac[1],                                            # Population name
+    Pop.num = df.i$pop.num[1],                                            # Number assigned to population (not the same)
+    Model = "Lactin 2",                                                   # Model name
+    T.min = df.jags$temp[min(which(df.jags$mean > 0))],                   # Minimum T
+    T.max = df.jags$temp[max(which(df.jags$mean > 0))],                   # Maximum T
+    T.br = df.jags$temp[max(which(df.jags$mean > (max(df.jags$mean) / 2)))] - 
+      df.jags$temp[min(which(df.jags$mean > (max(df.jags$mean) / 2)))],   # T breadth
+    T.opt = df.jags$temp[which.max(df.jags$mean)],                        # Optimal T
+    r.max = max(df.jags$mean)                                             # Maximum growth rate   
+  ))
+  
+  dic.df <- rbind(dic.df, data.frame(         # Add DIC data
+    Pop.fac = df.i$pop.fac[1],      # Population name
+    Pop.num = df.i$pop.num[1],      # Number assigned to population (not the same)
+    Model = "Lactin 2",             # Model name
+    DIC = lac_jag$BUGSoutput$DIC    # DIC
+  ))
+  
+}
+
+write.csv(dic.df, "data-processed/08_DIC_values_BayesTPC.csv") # Save DIC table
+write.csv(summary.df, "data-processed/09_TPC_shape_values_BayesTPC.csv") # Save DIC table
