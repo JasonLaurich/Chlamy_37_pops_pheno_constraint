@@ -1332,7 +1332,7 @@ for (i in 1:length(mat)){ # for each population
 
 }
 
-for (i in 1:length(mat)){ # for each population
+for (i in 1:length(mat)){ # Thomas 1 for each population now.
   
   df.i <- subset(mat[[i]])
   df.i <- droplevels(df.i)
@@ -1343,11 +1343,11 @@ for (i in 1:length(mat)){ # for each population
   
   jag.data <- list(trait = trait, N.obs = N.obs, temp = temp, Temp.xs = Temp.xs, N.Temp.xs = N.Temp.xs)
   
-  lac_jag <- jags(
+  thom_jag <- jags(
     data = jag.data, 
-    inits = inits.lactin.final, 
-    parameters.to.save = parameters.lactin2, 
-    model.file = "lactin2_final.txt",
+    inits = inits.thomas.final, 
+    parameters.to.save = parameters.thomas, 
+    model.file = "thomas.txt",
     n.thin = nt.fit, 
     n.chains = nc.fit, 
     n.burnin = nb.fit, 
@@ -1356,15 +1356,15 @@ for (i in 1:length(mat)){ # for each population
     working.directory = getwd()
   )
   
-  save(lac_jag, file = paste0("R2jags-objects/pop_", i, "_lactin2.RData")) # save the lactin2 model
+  save(thom_jag, file = paste0("R2jags-objects/pop_", i, "_thomas1.RData")) # save the thomas1 model
   
-  df.jags <- data.frame(lac_jag$BUGSoutput$summary)[-c(1:6),]   # generate the sequence of r.pred values
+  df.jags <- data.frame(thom_jag$BUGSoutput$summary)[-c(1:4, 906:907),]   # generate the sequence of r.pred values
   df.jags$temp <- seq(0, 45, 0.05)
   
   summary.df <- rbind(summary.df, data.frame(                             # Add summary data
     Pop.fac = df.i$pop.fac[1],                                            # Population name
     Pop.num = df.i$pop.num[1],                                            # Number assigned to population (not the same)
-    Model = "Lactin 2",                                                   # Model name
+    Model = "Thomas 1",                                                   # Model name
     T.min = df.jags$temp[min(which(df.jags$mean > 0))],                   # Minimum T
     T.max = df.jags$temp[max(which(df.jags$mean > 0))],                   # Maximum T
     T.br = df.jags$temp[max(which(df.jags$mean > (max(df.jags$mean) / 2)))] - 
@@ -1376,8 +1376,8 @@ for (i in 1:length(mat)){ # for each population
   dic.df <- rbind(dic.df, data.frame(         # Add DIC data
     Pop.fac = df.i$pop.fac[1],      # Population name
     Pop.num = df.i$pop.num[1],      # Number assigned to population (not the same)
-    Model = "Lactin 2",             # Model name
-    DIC = lac_jag$BUGSoutput$DIC    # DIC
+    Model = "Thomas 1",             # Model name
+    DIC = thom_jag$BUGSoutput$DIC   # DIC
   ))
   
 }
