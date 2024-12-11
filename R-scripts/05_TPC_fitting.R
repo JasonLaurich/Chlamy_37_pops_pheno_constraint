@@ -1382,5 +1382,16 @@ for (i in 1:length(mat)){ # Thomas 1 for each population now.
   
 }
 
+mean.dics <- aggregate(DIC ~ Model, data = dic.df, mean) # Calculate mean DIC for each model
+
+mean.rows <- data.frame( # Create rows for the mean DICs with "all" for Pop.fac and Pop.num
+  Pop.fac = "Mean of all", 
+  Pop.num = "Mean of all", 
+  Model = mean.dics$Model, 
+  DIC = mean.dics$DIC
+)
+
+dic.df <- rbind(mean.rows, dic.df) # Bind to the top
+
 write.csv(dic.df, "data-processed/08_DIC_values_BayesTPC.csv") # Save DIC table
 write.csv(summary.df, "data-processed/09_TPC_shape_values_BayesTPC.csv") # Save DIC table
