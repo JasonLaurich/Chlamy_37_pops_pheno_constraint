@@ -1395,3 +1395,28 @@ dic.df <- rbind(mean.rows, dic.df) # Bind to the top
 
 write.csv(dic.df, "data-processed/08_DIC_values_BayesTPC.csv") # Save DIC table
 write.csv(summary.df, "data-processed/09_TPC_shape_values_BayesTPC.csv") # Save DIC table
+
+# Let's plot some figures to look at these summary data
+topt_plot <- ggplot(summary.df, aes(x = Pop.fac, y = T.opt, color = Model, group = Pop.fac)) +
+  geom_point(position = position_dodge(width = 0.5), size = 3) + 
+  labs(
+    title = "Optimal Temperature (T.opt) for Each Population",
+    x = "Population",
+    y = "Optimal Temperature (T.opt)"
+  ) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+tbr_plot <- ggplot(summary.df, aes(x = Pop.fac, y = T.br, color = Model, group = Pop.fac)) +
+  geom_point(position = position_dodge(width = 0.5), size = 3) + 
+  labs(
+    title = "Thermal Breadth (T.br) for Each Population",
+    x = "Population",
+    y = "Thermal Breadth (T.br)"
+  ) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+sum_grid <- grid.arrange(topt_plot, tbr_plot, ncol = 1)
+ggsave("figures/07_TPC_shape_parameters_plot.pdf", plot = sum_grid, width = 24, height = 16)
+
