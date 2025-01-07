@@ -1,13 +1,11 @@
 # Jason R Laurich
 # January 7, 2025
 
-# This script will estimate r for each light condition in the same way that I estimated it for the TPC analysis (04_final_r_estimation)
+# This script will estimate r for each nitrate concentration as for light (script 06)
 # I'm going to use a sliding-window approach to identify the exponential phase of the logged linear data, then fit an exponential growth
-# curve to un-logged data for that time period for each light level.
+# curve to un-logged data for that time period for each nitrogen level.
 
-# I'll also play with a model that incorporates lag, as that seems to have been potentially important for calculating R* in Joey's experiment. 
-
-# Then I'm going to fit Monod curves to those data (using R2jags) for each population to estimate R* (I*)
+# Then I'm going to fit Monod curves to those data (using R2jags) for each population to estimate R* (N*)
 
 ############# Packages ########################
 
@@ -23,4 +21,3 @@
 
 
 ############# Fit Monod curves to data ###################
-
