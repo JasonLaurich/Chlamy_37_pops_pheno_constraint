@@ -18,6 +18,8 @@ library(ggplot2)
 library(dplyr)
 library(gridExtra)
 library(grid)
+library(R2jags)
+library(mcmcplots)
 
 ############# Upload and examine data #######################
 
@@ -259,3 +261,157 @@ ggsave("figures/08_light_r_estimatation.pdf", plot_grid, width = 40, height = 25
 
 ############# Fit Monod curves to data ###################
 
+df.r <- read.csv("data-processed/10a_light_r_estimates.csv")
+
+head(df.r)
+str(df.r)
+
+df.r$pop.fac <- as.factor(df.r$population)
+df.r$pop.num <- as.numeric(df.r$population.number)
+df.r$well.ID <- as.factor(df.r$well.ID)
+df.r$light.lvl <- as.factor(df.r$light.lvl)
+df.r$light.numeric <- ord.light[as.numeric(df.r$light.lvl)] # Match up the numeric light level values.
+
+mat <- split(df.r, df.r$pop.num)  # Matrixify the data!
+
+i <- sample(1:38, 1) # We'll start by fitting a Monod curve to just one population
+
+df.i <- subset(mat[[i]])
+df.i <- droplevels(df.i) 
+
+inits.monod <- function() { # Set the initial values for our Monod curve
+  list(
+    r_max = runif(1, 0.1, 5), # Initial guess for r_max
+    K_s = runif(1, 0.1, 5),   # Initial guess for K_s
+    sigma = runif(1, 0.1, 1)  # Initial guess for error
+  )
+}
+
+parameters.monod <- c("r_max", "K_s", "sigma", "r_pred_new") # Save these
+
+trait <- df.i$r.exp     # format the data for jags
+N.obs <- length(trait)
+light <- df.i$light.numeric
+
+S.pred <- seq(0, 100, 0.05) # Light gradient we're interested in (percentages)
+N.S.pred <-length(S.pred)
+
+jag.data <- list(trait = trait, N.obs = N.obs, S = light, S.pred = S.pred, N.S.pred = N.S.pred)
+
+# We'll use the same larger number of chains and iterations we did for our final TPC models. 
+ni.fit <- 330000   # iterations / chain
+nb.fit <- 30000    # burn in periods for each chain
+nt.fit <- 300      # thinning interval : (330,000 - 30,000) / 300 = 1000 posterior estimates / chain
+nc.fit <- 6        # number of chains, total of 6,000 estimates for each model. 
+
+monod_jag <- jags( # Run the light Monod function. 
+  data = jag.data,
+  inits = inits.monod,
+  parameters.to.save = parameters.monod,
+  model.file = "monod.txt",
+  n.thin = nt.fit,
+  n.chains = nc.fit,
+  n.burnin = nb.fit,
+  n.iter = ni.fit,
+  DIC = TRUE,
+  working.directory = getwd()
+)
+
+mcmcplot(monod_jag) # Evaluate model performance
+monod_jag$BUGSoutput$summary[c(1:3,2005),] # Get estimates
+
+df.jags <- data.frame(monod_jag$BUGSoutput$summary)
+df.jags.plot <- df.jags[-c(1:3,2005),]
+df.jags.plot$light <- seq(0, 100, 0.05)
+
+light.jag.plot <- ggplot(data = df.jags.plot, aes(x = light)) +
+  geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "gold", alpha = 0.5) + # Add shaded uncertainty region (LCL to UCL)
+  geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
+  geom_point(data = df.i, aes(x = jitter(light, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for Temp
+  scale_x_continuous(limits = c(0, 100)) + 
+  scale_y_continuous(limits = c(-0.25, 2.25)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Light (percent)")),
+    y = "Growth rate",
+    title = "Monod curve, light limitation"
+  ) +
+  theme_classic() +
+  geom_hline(yintercept = 0)
+
+R <- df.jags.plot$light[which(df.jags.plot$mean > 0.56)[1]]
+R
+
+R2 <- 0.56*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.56)
+R2
+
+# OK let's loop through all of the populations: 
+
+summary.df <- data.frame(   # We'll create a dataframe to store the data as we fit models.
+  Pop.fac = character(),    # Population name
+  Pop.num = character(),    # Number assigned to population (not the same). This corresponds to the jags objects
+  K.s = numeric(),          # Half-saturation constant
+  r.max = numeric(),        # Maximum population growth rate
+  R.jag = numeric(),        # Minimum resource requirement for positive growth (from jags model)
+  R.mth = numeric(),        # Minimum resource requirement for positive growth (analytical solution, R* = m*ks/(rmax-m))
+  stringsAsFactors = FALSE  # Avoid factor conversion
+)
+
+
+inits.monod.final <- function() { # In case I want to play with these in the future
+  list(
+    r_max = runif(1, 0.1, 5), # Initial guess for r_max
+    K_s = runif(1, 0.1, 5),   # Initial guess for K_s
+    sigma = runif(1, 0.1, 1)  # Initial guess for error
+  )
+}
+
+parameters.monod <- c("r_max", "K_s", "sigma", "r_pred_new") # Repeated here
+
+S.pred <- seq(0, 100, 0.05) # Repeated here
+N.S.pred <-length(S.pred)
+
+# Repeated here
+ni.fit <- 330000   # iterations / chain
+nb.fit <- 30000    # burn in periods for each chain
+nt.fit <- 300      # thinning interval : (330,000 - 30,000) / 300 = 1000 posterior estimates / chain
+nc.fit <- 6        # number of chains, total of 6,000 estimates for each model.
+
+for (i in 1:length(mat)){ # for each population
+  
+  df.i <- subset(mat[[i]])
+  df.i <- droplevels(df.i)
+  
+  trait <- df.i$r.exp     # format the data for jags
+  N.obs <- length(trait)
+  light <- df.i$light.numeric
+  
+  jag.data <- list(trait = trait, N.obs = N.obs, S = light, S.pred = S.pred, N.S.pred = N.S.pred)
+  
+  monod_jag <- jags( # Run the light Monod function. 
+    data = jag.data,
+    inits = inits.monod,
+    parameters.to.save = parameters.monod,
+    model.file = "monod.txt",
+    n.thin = nt.fit,
+    n.chains = nc.fit,
+    n.burnin = nb.fit,
+    n.iter = ni.fit,
+    DIC = TRUE,
+    working.directory = getwd()
+  )
+  
+  save(monod_jag, file = paste0("R2jags-objects/pop_", i, "_light_monod.RData")) # save the light limitation monod function
+  
+  df.jags <- data.frame(monod_jag$BUGSoutput$summary)[-c(1:3,2005),]   # generate the sequence of r.pred values
+  df.jags$light <- seq(0, 100, 0.05)
+  
+  summary.df <- rbind(summary.df, data.frame(                                                   # Add summary data
+    Pop.fac = df.i$pop.fac[1],                                                                  # Population name
+    Pop.num = df.i$pop.num[1],                                                                  # Number assigned to population (not the same)
+    K.s = monod_jag$BUGSoutput$summary[1,1],                                                    # Half-saturation constant
+    r.max = monod_jag$BUGSoutput$summary[3,1],                                                  # Maximum population growth rate
+    R.jag = df.jags$light[which(df.jags$mean > 0.56)[1]],                                       # Minimum resource requirement for positive growth (from jags model)
+    R.mth = 0.56*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.56)   # Optimal T                                                             
+  ))
+  
+}

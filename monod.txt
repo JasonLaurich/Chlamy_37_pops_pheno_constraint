@@ -1,0 +1,18 @@
+model {
+  # Priors
+  r_max ~ dunif(0, 5)         # Prior for maximum growth rate
+  K_s ~ dunif(0, 10)          # Prior for half-saturation constant
+  sigma ~ dunif(0, 2)         # Prior for error standard deviation
+  tau <- pow(sigma, -2)       # Precision (inverse variance)
+
+  # Likelihood
+  for (i in 1:N.obs) {
+    trait[i] ~ dnorm(r_pred[i], tau)   # Observed growth rates with error
+    r_pred[i] <- r_max * S[i] / (K_s + S[i])  # Monod equation
+  }
+
+  # Predictions for new substrate concentrations
+  for (j in 1:N.S.pred) {
+    r_pred_new[j] <- r_max * S.pred[j] / (K_s + S.pred[j])
+  }
+}
