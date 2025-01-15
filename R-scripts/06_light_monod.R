@@ -136,9 +136,9 @@ for (i in 1:length(mat.exp)){ # Looping through all of the populations
       }else{
         # Add data to our summary table
         df.r.exp <- rbind(df.r.exp, data.frame(
-          population = df.it.wl$pop.fac[1],          # Population as factor
+          population = df.it.wl$pop.fac[1],             # Population as factor
           population.number = df.it.wl$pop.num[1],      # Numeric population number
-          light.lvl = df.it.wl$light_level[1],        # Temperature
+          light.lvl = df.it.wl$light_level[1],          # Light
           well.ID = df.it.wl$well.ID[1],                # Well ID (assuming one well ID per subset)
           r.exp = summary(r_exp)$parameters[1,1]        # The calculated r.exp value
         ))
