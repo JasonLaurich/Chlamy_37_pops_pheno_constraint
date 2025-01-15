@@ -415,3 +415,6 @@ for (i in 1:length(mat)){ # for each population
   ))
   
 }
+
+write.csv(summary.df, "data-processed/10b_light_Monod_estimates.csv") # Save summary table
+
