@@ -81,7 +81,7 @@ for (i in 1:length(mat.exp)){ # Looping through all of the populations
         df.it.wl$N0 <- df.it.wl$RFU[1]
       }
       
-      t.series <- unique(df.it.wl$days) # Re-initialize this internally - we will only save summary data for each unique pop x T x well combo
+      t.series <- unique(df.it.wl$days) # Re-initialize this internally - we will only save summary data for each unique pop x P x well combo
       t.series <- t.series[-1] # Trim off the first entry to make tracking easier.
       
       ln.slopes <- c() # Re-initialize this too!
