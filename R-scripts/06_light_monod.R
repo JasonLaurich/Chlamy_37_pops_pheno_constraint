@@ -198,7 +198,7 @@ for (i in ran){ # Looping through all of the populations
         
         ln.slopes <- c(ln.slopes, summary(ln_slope)$coefficients[2,1])
         
-      } # So now we have our slopes for each well.ID x Pop x T level
+      } # So now we have our slopes for each well.ID x Pop x Light level
       
       s <- length(ln.slopes) # Initialize the full length of the dataset, for cases in which the entire period is exponential growth.
       
