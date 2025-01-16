@@ -41,7 +41,7 @@ df$logRFU <- log(df$RFU + 0.001)
 
 levels(df$pop.fac) # I don't recognize the COMBO group, I'm guessing this is a control?
 
-df.exp <- subset(df, df$pop.fac != "COMBO") # We're going to work only with repeat data (this is most of the well_plates) which I'll use as replicates. 
+df.exp <- subset(df, df$pop.fac != "COMBO") 
 df.exp$well.ID<-as.factor(df.exp$well_plate)
 
 N0.df <- df.exp %>% # We want to create an additional column that holds N0 data - we will pull this from the RFU column for the first time point for each well.ID
@@ -96,7 +96,7 @@ for (i in 1:length(mat.exp)){ # Looping through all of the populations
         
         ln.slopes <- c(ln.slopes, summary(ln_slope)$coefficients[2,1])
         
-      } # So now we have our slopes for each well.ID x Pop x T level
+      } # So now we have our slopes for each well.ID x Pop x Light level
       
       s <- length(ln.slopes) # Initialize the full length of the dataset, for cases in which the entire period is exponential growth.
       
