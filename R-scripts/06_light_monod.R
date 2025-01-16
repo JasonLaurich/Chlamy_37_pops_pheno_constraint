@@ -327,7 +327,7 @@ df.jags.plot$light <- seq(0, 100, 0.05)
 light.jag.plot <- ggplot(data = df.jags.plot, aes(x = light)) +
   geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "gold", alpha = 0.5) + # Add shaded uncertainty region (LCL to UCL)
   geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
-  geom_point(data = df.i, aes(x = jitter(light, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for Temp
+  geom_point(data = df.i, aes(x = jitter(light, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for Light
   scale_x_continuous(limits = c(0, 100)) + 
   scale_y_continuous(limits = c(-0.25, 2.25)) + # Customize the axes and labels +
   labs(

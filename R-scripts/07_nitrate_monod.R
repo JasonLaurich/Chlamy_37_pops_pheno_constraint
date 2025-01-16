@@ -326,7 +326,7 @@ df.jags.plot$nitrogen <- seq(0, 1000, 0.5)
 nit.jag.plot <- ggplot(data = df.jags.plot, aes(x = nitrogen)) +
   geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "gold", alpha = 0.5) + # Add shaded uncertainty region (LCL to UCL)
   geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
-  geom_point(data = df.i, aes(x = jitter(nitrate.conc, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for Temp
+  geom_point(data = df.i, aes(x = jitter(nitrate.conc, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for N
   scale_x_continuous(limits = c(0, 1000)) + 
   scale_y_continuous(limits = c(-0.25, 2.25)) + # Customize the axes and labels +
   labs(
@@ -409,7 +409,7 @@ for (i in 2:length(mat)){ # for each population. Fixed an error for population 1
     Pop.num = df.i$pop.num[1],                                                                  # Number assigned to population (not the same)
     K.s = monod_jag$BUGSoutput$summary[1,1],                                                    # Half-saturation constant
     r.max = monod_jag$BUGSoutput$summary[3,1],                                                  # Maximum population growth rate
-    R.jag = df.jags$nitrogen[which(df.jags$mean > 0.56)[1]],                                       # Minimum resource requirement for positive growth (from jags model)
+    R.jag = df.jags$nitrogen[which(df.jags$mean > 0.56)[1]],                                    # Minimum resource requirement for positive growth (from jags model)
     R.mth = 0.56*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.56)   # Minimum resource requirement for positive growth (from math)                                                   
   ))
   
