@@ -375,7 +375,7 @@ nb.fit <- 30000    # burn in periods for each chain
 nt.fit <- 300      # thinning interval : (330,000 - 30,000) / 300 = 1000 posterior estimates / chain
 nc.fit <- 6        # number of chains, total of 6,000 estimates for each model.
 
-for (i in 1:length(mat)){ # for each population.
+for (i in 2:length(mat)){ # for each population. Starting at 2 again because I messed up the data entry phase, and did it manually for the first pop. Will work now properly in the loop
   
   df.i <- subset(mat[[i]])
   df.i <- droplevels(df.i)
@@ -409,7 +409,7 @@ for (i in 1:length(mat)){ # for each population.
     Pop.num = df.i$pop.num[1],                                                                  # Number assigned to population (not the same)
     K.s = monod_jag$BUGSoutput$summary[1,1],                                                    # Half-saturation constant
     r.max = monod_jag$BUGSoutput$summary[3,1],                                                  # Maximum population growth rate
-    R.jag = df.jags$nitrogen[which(df.jags$mean > 0.56)[1]],                                    # Minimum resource requirement for positive growth (from jags model)
+    R.jag = df.jags$phos[which(df.jags$mean > 0.56)[1]],                                        # Minimum resource requirement for positive growth (from jags model)
     R.mth = 0.56*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.56)   # Minimum resource requirement for positive growth (from math)                                                   
   ))
   
