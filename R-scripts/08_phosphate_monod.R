@@ -165,7 +165,7 @@ for (i in ran){ # Looping through all of the populations
     df.it <- subset(mat.exp[[i]], phos.conc==t)
     df.it <- droplevels(df.it) # Drop unused levels to isolate well replicate IDs at given t
     
-    pred.df.mod <- data.frame( # Dataframe to store fitted data for light levels growth curves. Will reset for each level, but that's OK, as we will save the plots first
+    pred.df.mod <- data.frame( # Dataframe to store fitted data for P levels growth curves. Will reset for each level, but that's OK, as we will save the plots first
       population.fac = character(),
       population.num = numeric(),
       phos.conc = numeric(),
@@ -185,7 +185,7 @@ for (i in ran){ # Looping through all of the populations
         df.it.wl$N0 <- df.it.wl$RFU[1]
       }
       
-      t.series <- unique(df.it.wl$days) # Re-initialize this internally - we will only save summary data for each unique pop x T x well combo
+      t.series <- unique(df.it.wl$days) # Re-initialize this internally - we will only save summary data for each unique pop x P x well combo
       t.series <- t.series[-1] # Trim off the first entry to make tracking easier.
       
       ln.slopes <- c() # Re-initialize this too!
@@ -202,7 +202,7 @@ for (i in ran){ # Looping through all of the populations
       
       s <- length(ln.slopes) # Initialize the full length of the dataset, for cases in which the entire period is exponential growth.
       
-      for (r in 1:(length(ln.slopes) - 1)) { # Loop through slopes to find when the drop-off exceeds 5%
+      for (r in 1:(length(ln.slopes) - 1)) { # Loop through slopes to find when the drop-off exceeds 10%
         
         if (ln.slopes[r] != 0 & round(ln.slopes[r], digits = 5) !=0) { # We also need to account for tiny values that are basically 0 (e.g. 5 e-16, but are messing up our loops)
           # percent.chg <- (ln.slopes[s] - ln.slopes[s + 1]) / ln.slopes[s] This was the reason we were getting weird negative results! If there was a stochastic drop.

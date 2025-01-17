@@ -1,0 +1,19 @@
+model {
+  # Priors
+  a ~ dunif(0, 10)       # Upper asymptote (max growth rate)
+  b ~ dunif(0, 10)       # Decline rate
+  c ~ dunif(0, max(S))   # Half-max salt concentration
+  sigma ~ dunif(0, 5)    # Standard deviation
+  tau <- pow(sigma, -2)  # Precision
+
+  # Likelihood
+  for (i in 1:N.obs) {
+    mu[i] <- a / (1 + exp(-b * (S[i] - c)))  # Logistic function
+    trait[i] ~ dnorm(mu[i], tau)            # Observed data with normal error
+  }
+
+  # Predictions
+  for (j in 1:N.S.pred) {
+    r_pred_new[j] <- a / (1 + exp(-b * (S.pred[j] - c)))  # Predicted logistic function
+  }
+}
