@@ -8,12 +8,12 @@ model {
 
   # Likelihood
   for (i in 1:N.obs) {
-    mu[i] <- a / (1 + exp(-b * (S[i] - c)))  # Logistic function
+    mu[i] <- a / (1 + exp(b * (S[i] - c)))  # Reversed logistic function
     trait[i] ~ dnorm(mu[i], tau)            # Observed data with normal error
   }
 
   # Predictions
   for (j in 1:N.S.pred) {
-    r_pred_new[j] <- a / (1 + exp(-b * (S.pred[j] - c)))  # Predicted logistic function
+    r_pred_new[j] <- a / (1 + exp(b * (S.pred[j] - c)))  # Predicted logistic function, reversed
   }
 }

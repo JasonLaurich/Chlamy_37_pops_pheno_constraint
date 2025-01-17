@@ -288,7 +288,7 @@ inits.salt <- function() {
   )
 }
 
-parameters.salt <- c("a", "b", "c", "sigma", "mu_pred") # Save these
+parameters.salt <- c("a", "b", "c", "sigma", "r_pred_new") # Save these
 
 trait <- df.i$r.exp     # format the data for jags
 N.obs <- length(trait)
@@ -319,56 +319,53 @@ monod_jag <- jags( # Run the salt logistic growth curve function.
 )
 
 mcmcplot(monod_jag) # Evaluate model performance
-monod_jag$BUGSoutput$summary[c(1:3,2005),] # Get estimates
+monod_jag$BUGSoutput$summary[c(1:4,2006),] # Get estimates
 
 df.jags <- data.frame(monod_jag$BUGSoutput$summary)
-df.jags.plot <- df.jags[-c(1:3,2005),]
-df.jags.plot$phos <- seq(0, 50, 0.025)
+df.jags.plot <- df.jags[-c(1:4,2006),]
+df.jags.plot$salt <- seq(0, 10, 0.005)
 
-phos.jag.plot <- ggplot(data = df.jags.plot, aes(x = phos)) +
+salt.jag.plot <- ggplot(data = df.jags.plot, aes(x = salt)) +
   geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "gold", alpha = 0.5) + # Add shaded uncertainty region (LCL to UCL)
   geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
-  geom_point(data = df.i, aes(x = jitter(phos.conc, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for P
-  scale_x_continuous(limits = c(0, 50)) + 
+  geom_point(data = df.i, aes(x = jitter(salt.lvl, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for salt
+  scale_x_continuous(limits = c(0, 10)) + 
   scale_y_continuous(limits = c(-0.25, 2.25)) + # Customize the axes and labels +
   labs(
-    x = expression(paste("Phosphorous (concentration)")),
+    x = expression(paste("Salt (concentration)")),
     y = "Growth rate",
-    title = "Monod curve, phosphorous limitation"
+    title = "Logistic growth curve, salt stress"
   ) +
   theme_classic() +
   geom_hline(yintercept = 0)
 
-R <- df.jags.plot$phos[which(df.jags.plot$mean > 0.56)[1]]
-R
+c <- df.jags.plot$salt[which.min(abs(df.jags.plot$mean - (monod_jag$BUGSoutput$summary[1,1] / 2)))]
 
-R2 <- 0.56*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.56)
-R2
+c2 <- monod_jag$BUGSoutput$summary[3,1]
 
 # OK let's loop through all of the populations: 
 
 summary.df <- data.frame(   # We'll create a dataframe to store the data as we fit models.
   Pop.fac = character(),    # Population name
   Pop.num = character(),    # Number assigned to population (not the same). This corresponds to the jags objects
-  K.s = numeric(),          # Half-saturation constant
-  r.max = numeric(),        # Maximum population growth rate
-  R.jag = numeric(),        # Minimum resource requirement for positive growth (from jags model)
-  R.mth = numeric(),        # Minimum resource requirement for positive growth (analytical solution, R* = m*ks/(rmax-m))
+  r.max = numeric(),        # Maximum population growth rate (alpha)
+  c.mod = numeric(),        # salt concentration at which r is half of alpha (extracted from model)
+  c.pred = numeric(),       # salt concentration at which r is half of alpha (extracted from predicted values)
   stringsAsFactors = FALSE  # Avoid factor conversion
 )
 
-
-inits.monod.final <- function() { # In case I want to play with these in the future
+inits.salt <- function() { # In case I want to tweak these
   list(
-    r_max = runif(1, 0.1, 5), # Initial guess for r_max
-    K_s = runif(1, 0.1, 5),   # Initial guess for K_s
-    sigma = runif(1, 0.1, 1)  # Initial guess for error
+    a = runif(1, 0.1, 5),  # Initial guess for a
+    b = runif(1, 0.1, 5),  # Initial guess for b
+    c = runif(1, 0.1, max(df.i$salt.lvl)),  # Initial guess for c
+    sigma = runif(1, 0.1, 2)  # Initial guess for error
   )
 }
 
-parameters.monod <- c("r_max", "K_s", "sigma", "r_pred_new") # Repeated here
+parameters.salt <- c("a", "b", "c", "sigma", "r_pred_new") # Repeats
 
-S.pred <- seq(0, 50, 0.025) # Repeated here
+S.pred <- seq(0, 10, 0.005) # Repeats
 N.S.pred <-length(S.pred)
 
 # Repeated here
@@ -377,22 +374,22 @@ nb.fit <- 30000    # burn in periods for each chain
 nt.fit <- 300      # thinning interval : (330,000 - 30,000) / 300 = 1000 posterior estimates / chain
 nc.fit <- 6        # number of chains, total of 6,000 estimates for each model.
 
-for (i in 2:length(mat)){ # for each population. Starting at 2 again because I messed up the data entry phase, and did it manually for the first pop. Will work now properly in the loop
+for (i in 1:length(mat)){ # for each population.
   
   df.i <- subset(mat[[i]])
   df.i <- droplevels(df.i)
   
   trait <- df.i$r.exp     # format the data for jags
   N.obs <- length(trait)
-  phos <- df.i$phos.conc
+  salt <- df.i$salt.lvl
   
-  jag.data <- list(trait = trait, N.obs = N.obs, S = phos, S.pred = S.pred, N.S.pred = N.S.pred)
+  jag.data <- list(trait = trait, N.obs = N.obs, S = salt, S.pred = S.pred, N.S.pred = N.S.pred)
   
-  monod_jag <- jags( # Run the phosphorous Monod function. 
+  monod_jag <- jags( # Run the salt logistic growth curve function. 
     data = jag.data,
-    inits = inits.monod,
-    parameters.to.save = parameters.monod,
-    model.file = "monod.txt",
+    inits = inits.salt,
+    parameters.to.save = parameters.salt,
+    model.file = "salt.tol.txt",
     n.thin = nt.fit,
     n.chains = nc.fit,
     n.burnin = nb.fit,
@@ -401,20 +398,19 @@ for (i in 2:length(mat)){ # for each population. Starting at 2 again because I m
     working.directory = getwd()
   )
   
-  save(monod_jag, file = paste0("R2jags-objects/pop_", i, "_phosphorous_monod.RData")) # save the phosphorous limitation monod function
+  save(monod_jag, file = paste0("R2jags-objects/pop_", i, "_salt_tolerance.RData")) # save the salt tolerance reverse logistic model object
   
-  df.jags <- data.frame(monod_jag$BUGSoutput$summary)[-c(1:3,2005),]   # generate the sequence of r.pred values
-  df.jags$phos <- seq(0, 50, 0.025)
+  df.jags <- data.frame(monod_jag$BUGSoutput$summary)[-c(1:4,2006),]   # generate the sequence of r.pred values
+  df.jags$salt <- seq(0, 10, 0.005)
   
-  summary.df <- rbind(summary.df, data.frame(                                                   # Add summary data
-    Pop.fac = df.i$pop.fac[1],                                                                  # Population name
-    Pop.num = df.i$pop.num[1],                                                                  # Number assigned to population (not the same)
-    K.s = monod_jag$BUGSoutput$summary[1,1],                                                    # Half-saturation constant
-    r.max = monod_jag$BUGSoutput$summary[3,1],                                                  # Maximum population growth rate
-    R.jag = df.jags$phos[which(df.jags$mean > 0.56)[1]],                                        # Minimum resource requirement for positive growth (from jags model)
-    R.mth = 0.56*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.56)   # Minimum resource requirement for positive growth (from math)                                                   
+  summary.df <- rbind(summary.df, data.frame(                                                                 # Add summary data
+    Pop.fac = df.i$pop.fac[1],                                                                                # Population name
+    Pop.num = df.i$pop.num[1],                                                                                # Number assigned to population (not the same)
+    r.max = monod_jag$BUGSoutput$summary[1,1],                                                                # Maximum population growth rate
+    c.mod = monod_jag$BUGSoutput$summary[3,1],                                                                # salt concentration at which r is half of alpha (extracted from model)
+    c.pred = df.jags.plot$salt[which.min(abs(df.jags.plot$mean - (monod_jag$BUGSoutput$summary[1,1] / 2)))]   # salt concentration at which r is half of alpha (extracted from predicted values)                                                   
   ))
   
 }
 
-write.csv(summary.df, "data-processed/12b_phosphorous_Monod_estimates.csv") # Save summary table
+write.csv(summary.df, "data-processed/13b_salt_tolerance_estimates.csv") # Save summary table
