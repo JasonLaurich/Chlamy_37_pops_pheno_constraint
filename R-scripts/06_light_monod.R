@@ -274,7 +274,7 @@ df.r$light.numeric <- ord.light[as.numeric(df.r$light.lvl)] # Match up the numer
 
 mat <- split(df.r, df.r$pop.num)  # Matrixify the data!
 
-i <- sample(1:38, 1) # We'll start by fitting a Monod curve to just one population
+i <- sample(1:37, 1) # We'll start by fitting a Monod curve to just one population
 
 df.i <- subset(mat[[i]])
 df.i <- droplevels(df.i) 

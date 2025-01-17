@@ -5,7 +5,8 @@
 # I'm going to use a sliding-window approach to identify the exponential phase of the logged linear data, then fit an exponential growth
 # curve to un-logged data for that time period for each phosphorous level.
 
-# Then I'm going to calculate salt tolerance.... need to look into this after I get the other Monods fitted and done with!
+# Then I'm going to calculate salt tolerance
+# This will be done using the method from Bernhardt et al 2020 (PNAS) — fitting a simplified logistic function and estimating c
 
 ############# Packages ########################
 
@@ -258,4 +259,162 @@ grid.draw(plot_grid)
 
 ggsave("figures/11_salt_r_estimatation.pdf", plot_grid, width = 40, height = 25, units = "cm")
 
-############# Fit Monod curves to data ###################
+############# Fit Salt tolerance logistic curves to data ###################
+
+df.r <- read.csv("data-processed/13a_salt_r_estimates.csv")
+
+head(df.r)
+str(df.r)
+
+df.r$pop.fac <- as.factor(df.r$population)
+df.r$pop.num <- as.numeric(df.r$population.number)
+df.r$well.ID <- as.factor(df.r$well.ID)
+df.r$salt.lvl <- as.numeric(df.r$salt.lvl)
+
+mat <- split(df.r, df.r$pop.num)  # Matrixify the data!
+
+i <- sample(1:37, 1) # We'll start by fitting a Monod curve to just one population
+
+df.i <- subset(mat[[i]])
+df.i <- droplevels(df.i) 
+
+# Define the initial values for the parameters for the salt tolerance logistic curve
+inits.salt <- function() {
+  list(
+    a = runif(1, 0.1, 5),  # Initial guess for a
+    b = runif(1, 0.1, 5),  # Initial guess for b
+    c = runif(1, 0.1, max(df.i$salt.lvl)),  # Initial guess for c
+    sigma = runif(1, 0.1, 2)  # Initial guess for error
+  )
+}
+
+parameters.salt <- c("a", "b", "c", "sigma", "mu_pred") # Save these
+
+trait <- df.i$r.exp     # format the data for jags
+N.obs <- length(trait)
+salt <- df.i$salt.lvl
+
+S.pred <- seq(0, 10, 0.005) # Salt gradient we are interested in (here arbitrary 0 - 10, need to get actual []s) - we'll keep N.S.pred consistent across abiotic gradients for now
+N.S.pred <-length(S.pred)
+
+jag.data <- list(trait = trait, N.obs = N.obs, S = salt, S.pred = S.pred, N.S.pred = N.S.pred)
+
+# We'll use the same larger number of chains and iterations we did for our final TPC models. 
+ni.fit <- 330000   # iterations / chain
+nb.fit <- 30000    # burn in periods for each chain
+nt.fit <- 300      # thinning interval : (330,000 - 30,000) / 300 = 1000 posterior estimates / chain
+nc.fit <- 6        # number of chains, total of 6,000 estimates for each model. 
+
+monod_jag <- jags( # Run the salt logistic growth curve function. 
+  data = jag.data,
+  inits = inits.salt,
+  parameters.to.save = parameters.salt,
+  model.file = "salt.tol.txt",
+  n.thin = nt.fit,
+  n.chains = nc.fit,
+  n.burnin = nb.fit,
+  n.iter = ni.fit,
+  DIC = TRUE,
+  working.directory = getwd()
+)
+
+mcmcplot(monod_jag) # Evaluate model performance
+monod_jag$BUGSoutput$summary[c(1:3,2005),] # Get estimates
+
+df.jags <- data.frame(monod_jag$BUGSoutput$summary)
+df.jags.plot <- df.jags[-c(1:3,2005),]
+df.jags.plot$phos <- seq(0, 50, 0.025)
+
+phos.jag.plot <- ggplot(data = df.jags.plot, aes(x = phos)) +
+  geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "gold", alpha = 0.5) + # Add shaded uncertainty region (LCL to UCL)
+  geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
+  geom_point(data = df.i, aes(x = jitter(phos.conc, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for P
+  scale_x_continuous(limits = c(0, 50)) + 
+  scale_y_continuous(limits = c(-0.25, 2.25)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Phosphorous (concentration)")),
+    y = "Growth rate",
+    title = "Monod curve, phosphorous limitation"
+  ) +
+  theme_classic() +
+  geom_hline(yintercept = 0)
+
+R <- df.jags.plot$phos[which(df.jags.plot$mean > 0.56)[1]]
+R
+
+R2 <- 0.56*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.56)
+R2
+
+# OK let's loop through all of the populations: 
+
+summary.df <- data.frame(   # We'll create a dataframe to store the data as we fit models.
+  Pop.fac = character(),    # Population name
+  Pop.num = character(),    # Number assigned to population (not the same). This corresponds to the jags objects
+  K.s = numeric(),          # Half-saturation constant
+  r.max = numeric(),        # Maximum population growth rate
+  R.jag = numeric(),        # Minimum resource requirement for positive growth (from jags model)
+  R.mth = numeric(),        # Minimum resource requirement for positive growth (analytical solution, R* = m*ks/(rmax-m))
+  stringsAsFactors = FALSE  # Avoid factor conversion
+)
+
+
+inits.monod.final <- function() { # In case I want to play with these in the future
+  list(
+    r_max = runif(1, 0.1, 5), # Initial guess for r_max
+    K_s = runif(1, 0.1, 5),   # Initial guess for K_s
+    sigma = runif(1, 0.1, 1)  # Initial guess for error
+  )
+}
+
+parameters.monod <- c("r_max", "K_s", "sigma", "r_pred_new") # Repeated here
+
+S.pred <- seq(0, 50, 0.025) # Repeated here
+N.S.pred <-length(S.pred)
+
+# Repeated here
+ni.fit <- 330000   # iterations / chain
+nb.fit <- 30000    # burn in periods for each chain
+nt.fit <- 300      # thinning interval : (330,000 - 30,000) / 300 = 1000 posterior estimates / chain
+nc.fit <- 6        # number of chains, total of 6,000 estimates for each model.
+
+for (i in 2:length(mat)){ # for each population. Starting at 2 again because I messed up the data entry phase, and did it manually for the first pop. Will work now properly in the loop
+  
+  df.i <- subset(mat[[i]])
+  df.i <- droplevels(df.i)
+  
+  trait <- df.i$r.exp     # format the data for jags
+  N.obs <- length(trait)
+  phos <- df.i$phos.conc
+  
+  jag.data <- list(trait = trait, N.obs = N.obs, S = phos, S.pred = S.pred, N.S.pred = N.S.pred)
+  
+  monod_jag <- jags( # Run the phosphorous Monod function. 
+    data = jag.data,
+    inits = inits.monod,
+    parameters.to.save = parameters.monod,
+    model.file = "monod.txt",
+    n.thin = nt.fit,
+    n.chains = nc.fit,
+    n.burnin = nb.fit,
+    n.iter = ni.fit,
+    DIC = TRUE,
+    working.directory = getwd()
+  )
+  
+  save(monod_jag, file = paste0("R2jags-objects/pop_", i, "_phosphorous_monod.RData")) # save the phosphorous limitation monod function
+  
+  df.jags <- data.frame(monod_jag$BUGSoutput$summary)[-c(1:3,2005),]   # generate the sequence of r.pred values
+  df.jags$phos <- seq(0, 50, 0.025)
+  
+  summary.df <- rbind(summary.df, data.frame(                                                   # Add summary data
+    Pop.fac = df.i$pop.fac[1],                                                                  # Population name
+    Pop.num = df.i$pop.num[1],                                                                  # Number assigned to population (not the same)
+    K.s = monod_jag$BUGSoutput$summary[1,1],                                                    # Half-saturation constant
+    r.max = monod_jag$BUGSoutput$summary[3,1],                                                  # Maximum population growth rate
+    R.jag = df.jags$phos[which(df.jags$mean > 0.56)[1]],                                        # Minimum resource requirement for positive growth (from jags model)
+    R.mth = 0.56*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.56)   # Minimum resource requirement for positive growth (from math)                                                   
+  ))
+  
+}
+
+write.csv(summary.df, "data-processed/12b_phosphorous_Monod_estimates.csv") # Save summary table
