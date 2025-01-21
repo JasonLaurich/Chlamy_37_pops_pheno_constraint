@@ -14,6 +14,9 @@
 library(dplyr)
 library(ggplot2)
 library(rPref)
+library(gridExtra)
+library(cowplot)
+library(ggpubr)
 
 ############# Upload and organize data #######################
 
@@ -153,4 +156,391 @@ T.I.evol <- T.I +
 
 T.I.evol
 
+T.I.evol.noleg <- T.I + 
+  geom_point(aes(colour = evol.plt)) +  # Add the color aesthetic mapping
+  scale_colour_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Ancestral" = "black",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Phosphorous limitation" = "firebrick",
+               "Salt stress" = "blue",
+               "Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen")
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = 'none',  # Move legend to bottom right
+    text = element_text(face = "bold"),  # Make all text bold
+    axis.title = element_text(face = "bold"),  # Bold axis titles
+    axis.text = element_text(face = "bold"),  # Bold axis tick labels
+    legend.title = element_text(face = "bold"),  # Bold legend title
+    legend.text = element_text(face = "bold")   # Bold legend labels
+  )
 
+
+T.I.evol.noleg
+
+par.res <- par_frt(df, xvar = "N.comp", yvar = "T.br")
+
+T.N <- ggplot(df, aes(x = N.comp, y = T.br)) +  # removing the outlier data point
+  geom_point(size = 2) +  # Original data points
+  geom_line(data = par.res, aes(x = N.comp, y = T.br), color = "red", size = 1) +  # Pareto frontier line
+  labs(x = "Competitive ability (1/N*)", y = "Thermal breadth (T.br)") +
+  theme_classic()
+
+T.N
+
+T.N.evol <- T.N + 
+  geom_point(aes(colour = evol.plt)) +  # Add the color aesthetic mapping
+  scale_colour_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Ancestral" = "black",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Phosphorous limitation" = "firebrick",
+               "Salt stress" = "blue",
+               "Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen")
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = 'none',  # no legend
+    text = element_text(face = "bold"),  # Make all text bold
+    axis.title = element_text(face = "bold"),  # Bold axis titles
+    axis.text = element_text(face = "bold"),  # Bold axis tick labels
+    legend.title = element_text(face = "bold"),  # Bold legend title
+    legend.text = element_text(face = "bold")   # Bold legend labels
+  )
+
+
+T.N.evol
+
+par.res <- par_frt(df, xvar = "P.comp", yvar = "T.br")
+
+T.P <- ggplot(df, aes(x = P.comp, y = T.br)) +  # removing the outlier data point
+  geom_point(size = 2) +  # Original data points
+  geom_line(data = par.res, aes(x = P.comp, y = T.br), color = "red", size = 1) +  # Pareto frontier line
+  labs(x = "Competitive ability (1/P*)", y = "Thermal breadth (T.br)") +
+  theme_classic()
+
+T.P
+
+T.P.evol <- T.P + 
+  geom_point(aes(colour = evol.plt)) +  # Add the color aesthetic mapping
+  scale_colour_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Ancestral" = "black",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Phosphorous limitation" = "firebrick",
+               "Salt stress" = "blue",
+               "Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen")
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = 'none',  # no legend
+    text = element_text(face = "bold"),  # Make all text bold
+    axis.title = element_text(face = "bold"),  # Bold axis titles
+    axis.text = element_text(face = "bold"),  # Bold axis tick labels
+    legend.title = element_text(face = "bold"),  # Bold legend title
+    legend.text = element_text(face = "bold")   # Bold legend labels
+  )
+
+
+T.P.evol
+
+par.res <- par_frt(df, xvar = "S.c.mod", yvar = "T.br")
+
+T.S <- ggplot(df, aes(x = S.c.mod, y = T.br)) +  # removing the outlier data point
+  geom_point(size = 2) +  # Original data points
+  geom_line(data = par.res, aes(x = S.c.mod, y = T.br), color = "red", size = 1) +  # Pareto frontier line
+  labs(x = "Salt tolerance (c)", y = "Thermal breadth (T.br)") +
+  theme_classic()
+
+T.S
+
+T.S.evol <- T.S + 
+  geom_point(aes(colour = evol.plt)) +  # Add the color aesthetic mapping
+  scale_colour_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Ancestral" = "black",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Phosphorous limitation" = "firebrick",
+               "Salt stress" = "blue",
+               "Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen")
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = 'none',  # no legend
+    text = element_text(face = "bold"),  # Make all text bold
+    axis.title = element_text(face = "bold"),  # Bold axis titles
+    axis.text = element_text(face = "bold"),  # Bold axis tick labels
+    legend.title = element_text(face = "bold"),  # Bold legend title
+    legend.text = element_text(face = "bold")   # Bold legend labels
+  )
+
+
+T.S.evol
+
+par.res <- par_frt(df[df$I.comp < 10,], xvar = "N.comp", yvar = "I.comp")
+
+I.N <- ggplot(df[df$I.comp < 10,], aes(x = N.comp, y = I.comp)) +  # removing the outlier data point
+  geom_point(size = 2) +  # Original data points
+  geom_line(data = par.res, aes(x = N.comp, y = I.comp), color = "red", size = 1) +  # Pareto frontier line
+  labs(x = "Competitive ability (1/N*)", y = "Competitive ability (1/I*)") +
+  theme_classic()
+
+I.N
+
+I.N.evol <- I.N + 
+  geom_point(aes(colour = evol.plt)) +  # Add the color aesthetic mapping
+  scale_colour_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Ancestral" = "black",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Phosphorous limitation" = "firebrick",
+               "Salt stress" = "blue",
+               "Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen")
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = 'none',  # no legend
+    text = element_text(face = "bold"),  # Make all text bold
+    axis.title = element_text(face = "bold"),  # Bold axis titles
+    axis.text = element_text(face = "bold"),  # Bold axis tick labels
+    legend.title = element_text(face = "bold"),  # Bold legend title
+    legend.text = element_text(face = "bold")   # Bold legend labels
+  )
+
+
+I.N.evol
+
+par.res <- par_frt(df[df$I.comp < 10,], xvar = "P.comp", yvar = "I.comp")
+
+I.P <- ggplot(df[df$I.comp < 10,], aes(x = P.comp, y = I.comp)) +  # removing the outlier data point
+  geom_point(size = 2) +  # Original data points
+  geom_line(data = par.res, aes(x = P.comp, y = I.comp), color = "red", size = 1) +  # Pareto frontier line
+  labs(x = "Competitive ability (1/P*)", y = "Competitive ability (1/I*)") +
+  theme_classic()
+
+I.P
+
+I.P.evol <- I.P + 
+  geom_point(aes(colour = evol.plt)) +  # Add the color aesthetic mapping
+  scale_colour_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Ancestral" = "black",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Phosphorous limitation" = "firebrick",
+               "Salt stress" = "blue",
+               "Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen")
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = 'none',  # no legend
+    text = element_text(face = "bold"),  # Make all text bold
+    axis.title = element_text(face = "bold"),  # Bold axis titles
+    axis.text = element_text(face = "bold"),  # Bold axis tick labels
+    legend.title = element_text(face = "bold"),  # Bold legend title
+    legend.text = element_text(face = "bold")   # Bold legend labels
+  )
+
+
+I.P.evol
+
+par.res <- par_frt(df[df$I.comp < 10,], xvar = "S.c.mod", yvar = "I.comp")
+
+I.S <- ggplot(df[df$I.comp < 10,], aes(x = S.c.mod, y = I.comp)) +  # removing the outlier data point
+  geom_point(size = 2) +  # Original data points
+  geom_line(data = par.res, aes(x = S.c.mod, y = I.comp), color = "red", size = 1) +  # Pareto frontier line
+  labs(x = "Salt tolerance (c)", y = "Competitive ability (1/I*)") +
+  theme_classic()
+
+I.S
+
+I.S.evol <- I.S + 
+  geom_point(aes(colour = evol.plt)) +  # Add the color aesthetic mapping
+  scale_colour_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Ancestral" = "black",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Phosphorous limitation" = "firebrick",
+               "Salt stress" = "blue",
+               "Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen")
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = 'none',  # no legend
+    text = element_text(face = "bold"),  # Make all text bold
+    axis.title = element_text(face = "bold"),  # Bold axis titles
+    axis.text = element_text(face = "bold"),  # Bold axis tick labels
+    legend.title = element_text(face = "bold"),  # Bold legend title
+    legend.text = element_text(face = "bold")   # Bold legend labels
+  )
+
+
+I.S.evol
+
+par.res <- par_frt(df, xvar = "P.comp", yvar = "N.comp")
+
+N.P <- ggplot(df, aes(x = P.comp, y = N.comp)) +  # removing the outlier data point
+  geom_point(size = 2) +  # Original data points
+  geom_line(data = par.res, aes(x = P.comp, y = N.comp), color = "red", size = 1) +  # Pareto frontier line
+  labs(x = "Competitive ability (1/P*)", y = "Competitive ability (1/N*)") +
+  theme_classic()
+
+N.P
+
+N.P.evol <- N.P + 
+  geom_point(aes(colour = evol.plt)) +  # Add the color aesthetic mapping
+  scale_colour_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Ancestral" = "black",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Phosphorous limitation" = "firebrick",
+               "Salt stress" = "blue",
+               "Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen")
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = 'none',  # no legend
+    text = element_text(face = "bold"),  # Make all text bold
+    axis.title = element_text(face = "bold"),  # Bold axis titles
+    axis.text = element_text(face = "bold"),  # Bold axis tick labels
+    legend.title = element_text(face = "bold"),  # Bold legend title
+    legend.text = element_text(face = "bold")   # Bold legend labels
+  )
+
+
+N.P.evol
+
+par.res <- par_frt(df, xvar = "S.c.mod", yvar = "N.comp")
+
+N.S <- ggplot(df, aes(x = S.c.mod, y = N.comp)) +  # removing the outlier data point
+  geom_point(size = 2) +  # Original data points
+  geom_line(data = par.res, aes(x = S.c.mod, y = N.comp), color = "red", size = 1) +  # Pareto frontier line
+  labs(x = "Salt tolerance (c)", y = "Competitive ability (1/N*)") +
+  theme_classic()
+
+N.S
+
+N.S.evol <- N.S + 
+  geom_point(aes(colour = evol.plt)) +  # Add the color aesthetic mapping
+  scale_colour_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Ancestral" = "black",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Phosphorous limitation" = "firebrick",
+               "Salt stress" = "blue",
+               "Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen")
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = 'none',  # no legend
+    text = element_text(face = "bold"),  # Make all text bold
+    axis.title = element_text(face = "bold"),  # Bold axis titles
+    axis.text = element_text(face = "bold"),  # Bold axis tick labels
+    legend.title = element_text(face = "bold"),  # Bold legend title
+    legend.text = element_text(face = "bold")   # Bold legend labels
+  )
+
+
+N.S.evol
+
+par.res <- par_frt(df[df$P.comp < 4,], xvar = "S.c.mod", yvar = "P.comp")
+
+P.S <- ggplot(df[df$P.comp < 4,], aes(x = S.c.mod, y = P.comp)) +  # removing the outlier data point
+  geom_point(size = 2) +  # Original data points
+  geom_line(data = par.res, aes(x = S.c.mod, y = P.comp), color = "red", size = 1) +  # Pareto frontier line
+  labs(x = "Salt tolerance (c)", y = "Competitive ability (1/P*)") +
+  theme_classic()
+
+P.S
+
+P.S.evol <- P.S + 
+  geom_point(aes(colour = evol.plt)) +  # Add the color aesthetic mapping
+  scale_colour_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Ancestral" = "black",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Phosphorous limitation" = "firebrick",
+               "Salt stress" = "blue",
+               "Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen")
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = 'none',  # no legend
+    text = element_text(face = "bold"),  # Make all text bold
+    axis.title = element_text(face = "bold"),  # Bold axis titles
+    axis.text = element_text(face = "bold"),  # Bold axis tick labels
+    legend.title = element_text(face = "bold"),  # Bold legend title
+    legend.text = element_text(face = "bold")   # Bold legend labels
+  )
+
+
+P.S.evol
+
+T.I.evol.leg <- T.I + 
+  geom_point(aes(colour = evol.plt)) +  # Add the color aesthetic mapping
+  scale_colour_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Ancestral" = "black",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Phosphorous limitation" = "firebrick",
+               "Salt stress" = "blue",
+               "Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen")
+  ) +
+  theme_classic() +
+  theme(
+    text = element_text(face = "bold"),  # Make all text bold
+    axis.title = element_text(face = "bold"),  # Bold axis titles
+    axis.text = element_text(face = "bold"),  # Bold axis tick labels
+    legend.title = element_text(face = "bold"),  # Bold legend title
+    legend.text = element_text(face = "bold")   # Bold legend labels
+  )
+
+T.I.evol.leg
+
+leg <- get_legend(T.I.evol.leg)
+
+as_ggplot(leg)
+
+p_list <- list(T.I.evol.noleg, T.N.evol, T.P.evol, T.S.evol, # OK let's plot them together
+               NULL, I.N.evol, I.P.evol, I.S.evol,
+               NULL, NULL, N.P.evol, N.S.evol,
+               NULL, NULL, NULL, P.S.evol)
+
+empty_plot <- ggplot() + theme_void() # Convert NULL values to empty plots to maintain the layout
+
+p_list <- lapply(p_list, function(x) if(is.null(x)) empty_plot else x) # Replace NULL values with empty_plot to avoid errors in grid arrangement
+
+grid.arrange(grobs = p_list, ncol = 4, nrow = 4) # Arrange plots in a 4x4 grid
