@@ -549,6 +549,8 @@ pareto.plot <- grid.arrange(grobs = p_list, ncol = 4, nrow = 4) # Arrange plots 
 
 ggsave("figures/12_pareto_grid_plot.pdf", pareto.plot, width = 20, height = 16)
 
+################### PCA and RDA #########################################
+
 # Let's do a PCA
 
 df.pca <- df %>% select(T.br, I.comp, N.comp, P.comp, S.c.mod, evol.plt) # Prepare the data: selecting only the relevant columns
@@ -695,6 +697,51 @@ rda_plot <- ggplot() +
 rda_plot
 
 ggsave("figures/14_RDA.pdf", rda_plot, width = 10, height = 8)
+
+# Let's try looking for evidence of trade-offs between µ_max and 1/R* values? Gleaner-oppurtunist.
+
+
+I.go <- ggplot(df[df$I.comp<15,], aes(x = r.max_I, y = I.comp)) +
+  geom_point(size = 2) +  # Original data points
+  labs(x = " µ_max ", y = "Competitive ability (1/I*)", title = "Light limitation") +
+  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +
+  
+  theme_classic()
+
+I.go
+
+N.go <- ggplot(df[df$N.comp<0.9,], aes(x = r.max_N, y = N.comp)) +
+  geom_point(size = 2) +  # Original data points
+  labs(x = " µ_max ", y = "Competitive ability (1/N*)", title = "Nitrogen limitation") +
+  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +
+  
+  theme_classic()
+
+N.go
+
+P.go <- ggplot(df[df$P.comp<4,], aes(x = r.max_P, y = P.comp)) +
+  geom_point(size = 2) +  # Original data points
+  labs(x = " µ_max ", y = "Competitive ability (1/P*)", title = "Phosphorous limitation") +
+  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +
+  
+  theme_classic()
+
+P.go
+
+T.gs <- ggplot(df, aes(x = r.max_T, y = T.br)) +
+  geom_point(size = 2) +  # Original data points
+  labs(x = " µ_max ", y = "Thermal breadth", title = "Thermal performance") +
+  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +
+  
+  theme_classic()
+
+T.gs
+
+t.o.plot <- grid.arrange(T.gs, P.go, N.go, I.go, ncol = 2, nrow = 2) # Arrange plots in a 2x2 grid
+
+ggsave("figures/15_trade-off_plot.pdf", t.o.plot, width = 12, height = 10)
+
+####################### Sample TPCs, Monods, Salt tolerance plots ##########################
 
 # Let's pull up my R2jags objects to look at some plots.
 
