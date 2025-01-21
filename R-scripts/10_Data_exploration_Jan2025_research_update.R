@@ -17,6 +17,8 @@ library(rPref)
 library(gridExtra)
 library(cowplot)
 library(ggpubr)
+library(vegan)  # For PCA and RDA
+library(ggrepel)
 
 ############# Upload and organize data #######################
 
@@ -543,4 +545,306 @@ empty_plot <- ggplot() + theme_void() # Convert NULL values to empty plots to ma
 
 p_list <- lapply(p_list, function(x) if(is.null(x)) empty_plot else x) # Replace NULL values with empty_plot to avoid errors in grid arrangement
 
-grid.arrange(grobs = p_list, ncol = 4, nrow = 4) # Arrange plots in a 4x4 grid
+pareto.plot <- grid.arrange(grobs = p_list, ncol = 4, nrow = 4) # Arrange plots in a 4x4 grid
+
+ggsave("figures/12_pareto_grid_plot.pdf", pareto.plot, width = 20, height = 16)
+
+# Let's do a PCA
+
+df.pca <- df %>% select(T.br, I.comp, N.comp, P.comp, S.c.mod, evol.plt) # Prepare the data: selecting only the relevant columns
+df.pca
+
+df.pca <- df.pca[-c(31, 33:36),] # For now removing wonky/missing points
+
+evol.fil <- df.pca$evol.plt
+
+df.pca <- df.pca %>% select(-evol.plt)
+
+pca.result <- prcomp(df.pca, center = TRUE, scale. = TRUE) # Perform PCA
+pca.result
+
+pca.df <- data.frame(pca.result$x, evol.fil)  # Add grouping factor
+colnames(pca.df) <- c("PC1", "PC2", "PC3", "PC4", "PC5", "Evolution")
+
+screeplot(pca.result, type = "lines") # Scree plot to check explained variance
+
+PCA <- ggplot(pca.df, aes(x = PC1, y = PC2, color = Evolution)) +  # PCA biplot visualization
+  geom_point(size = 3) +
+  theme_classic() +
+  labs(x = paste("PC1 (", round(pca.result$sdev[1]^2 / sum(pca.result$sdev^2) * 100, 2), "%)", sep = ""),
+       y = paste("PC2 (", round(pca.result$sdev[2]^2 / sum(pca.result$sdev^2) * 100, 2), "%)", sep = ""),
+       title = "PCA of Thermal Performance and Competitive Abilities") +
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  )
+
+PCA
+
+# Extract PCA loadings (rotation matrix)
+loadings <- as.data.frame(pca.result$rotation)
+
+# Scale loadings to fit within the PCA plot (adjust the scaling factor if needed)
+loadings$PC1 <- loadings$PC1 * max(abs(pca.df$PC1))
+loadings$PC2 <- loadings$PC2 * max(abs(pca.df$PC2))
+
+# Add variable names for annotation
+loadings$variable <- rownames(loadings)
+
+# Create PCA plot with arrows
+pca_plot_arrows <- ggplot(pca.df, aes(x = PC1, y = PC2, color = Evolution)) +
+  geom_point(size = 3) +
+  theme_classic() +
+  labs(x = paste("PC1 (", round(pca.result$sdev[1]^2 / sum(pca.result$sdev^2) * 100, 2), "%)", sep = ""),
+       y = paste("PC2 (", round(pca.result$sdev[2]^2 / sum(pca.result$sdev^2) * 100, 2), "%)", sep = ""),
+       title = "PCA of Thermal Performance and Competitive Abilities") +
+  scale_color_manual(values = evol_colors) +  # Use your custom colors
+  # Add arrows for variable contributions
+  geom_segment(data = loadings, aes(x = 0, y = 0, xend = PC1, yend = PC2),
+               arrow = arrow(length = unit(0.2, "cm")), color = "black") +
+  # Add variable names to the plot
+  geom_text(data = loadings, aes(x = PC1, y = PC2, label = variable),
+            vjust = 1, hjust = 1, color = "black", size = 5)
+
+# Show the plot
+pca_plot_arrows
+
+ggsave("figures/13_PCA.pdf", pca_plot_arrows, width = 10, height = 8)
+
+# Redundancy analysis
+
+response_vars <- df.pca
+explanatory_vars <- model.matrix(~ evol.fil)[, -1]  # Remove intercept
+
+rda_result <- rda(response_vars ~ ., data = as.data.frame(explanatory_vars)) # run the RDA
+summary(rda_result)
+
+# Extract RDA site scores (sample coordinates)
+rda_sites <- as.data.frame(scores(rda_result, display = "sites"))
+
+# Extract RDA species (trait arrows)
+rda_species <- as.data.frame(scores(rda_result, display = "species"))
+
+# Extract explanatory variable centroids (e.g., treatment centroids)
+rda_constraints <- as.data.frame(scores(rda_result, display = "bp"))
+
+# Add the evolutionary treatment labels to the site scores
+rda_sites$Evolution <- evol.fil
+
+# Prepare RDA site data (samples)
+rda_sites <- rda_sites %>% 
+  rename(RDA1 = RDA1, RDA2 = RDA2)
+
+# Prepare RDA trait data (arrows)
+rda_species <- rda_species %>%
+  rename(RDA1 = RDA1, RDA2 = RDA2)
+
+# Prepare centroids of treatment conditions
+rda_constraints <- rda_constraints %>%
+  rename(RDA1 = RDA1, RDA2 = RDA2)
+
+# Assign readable labels for centroids
+rda_constraints$label <- rownames(rda_constraints)
+
+# Define custom colors for evolution environments
+evol_colors <- c(
+  "Biotic depletion" = "darkorange",
+  "Biotic depletion x Salt" = "deepskyblue1",
+  "Control" = "forestgreen",
+  "Light limitation" = "gold",
+  "Nitrogen limitation" = "magenta3",
+  "Ancestral" = "black",
+  "Phosphorous limitation" = "firebrick",  
+  "Salt stress" = "blue"
+)
+
+# Create the RDA biplot
+rda_plot <- ggplot() +
+  geom_point(data = rda_sites, aes(x = RDA1, y = RDA2, color = Evolution), size = 3, alpha = 0.8) +
+  
+  # Retain trait arrows
+  geom_segment(data = rda_species, aes(x = 0, y = 0, xend = RDA1, yend = RDA2), 
+               arrow = arrow(length = unit(0.25, "cm")), color = "black") +
+  
+  # Retain trait labels only
+  geom_text_repel(data = rda_species, aes(x = RDA1, y = RDA2, label = rownames(rda_species)), size = 5) +
+  
+  # Customize color legend
+  scale_color_manual(name = "Evolution environment", values = evol_colors) +
+  
+  # Axes labels
+  labs(x = paste("RDA1 (", round(summary(rda_result)$cont$importance[2, 1] * 100, 2), "%)", sep = ""),
+       y = paste("RDA2 (", round(summary(rda_result)$cont$importance[2, 2] * 100, 2), "%)", sep = ""),
+       title = "Redundancy Analysis (RDA) of Traits by Evolution Environment") +
+  
+  theme_classic() +
+  theme(text = element_text(size = 14, face = "bold"),
+        legend.position = "right",
+        axis.title = element_text(size = 16, face = "bold"),
+        axis.text = element_text(size = 12),
+        legend.title = element_text(size = 14),
+        legend.text = element_text(size = 12))
+
+rda_plot
+
+ggsave("figures/14_RDA.pdf", rda_plot, width = 10, height = 8)
+
+# Let's pull up my R2jags objects to look at some plots.
+
+pops <- sample(1:37, 5, replace = FALSE)
+
+file.names <- paste0("R2jags-objects/pop_", pops, "_lactin2.RData")
+
+for (i in pops){
+  load(paste0("R2jags-objects/pop_", i, "_lactin2.RData"))
+  assign(paste0("tpc", i), lac_jag)
+}
+
+tpc2$BUGSoutput$summary[1:6,] # Get estimates
+
+df.jags <- data.frame(tpc2$BUGSoutput$summary)
+df.jags.plot <- df.jags[-c(1:6),]
+df.jags.plot$temp <- seq(0, 45, 0.05)
+
+lact.jag.plot <- ggplot(data = df.jags.plot, aes(x = temp)) +
+  geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "gold", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
+  geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
+  scale_x_continuous(limits = c(0, 45)) + 
+  scale_y_continuous(limits = c(-2, 5.5)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Temperature (", degree, "C)")),
+    y = "Growth rate",
+    title = "TPC, Lactin II"
+  ) +
+  theme_classic() +
+  geom_hline(yintercept = 0)
+
+df.jags2 <- data.frame(tpc9$BUGSoutput$summary[-c(1:6),])
+df.jags2$temp <- seq(0, 45, 0.05)
+
+df.jags3 <- data.frame(tpc18$BUGSoutput$summary[-c(1:6),])
+df.jags3$temp <- seq(0, 45, 0.05)
+
+df.jags4 <- data.frame(tpc26$BUGSoutput$summary[-c(1:6),])
+df.jags4$temp <- seq(0, 45, 0.05)
+
+df.jags5 <- data.frame(tpc30$BUGSoutput$summary[-c(1:6),])
+df.jags5$temp <- seq(0, 45, 0.05)
+
+lact.jag.plot2 <- ggplot(data = df.jags.plot, aes(x = temp)) +
+  geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
+  
+  geom_line(data = df.jags2, aes(x = temp, y = mean), color = "darkorange", size = 1) + 
+  
+  geom_line(data = df.jags3, aes(x = temp, y = mean), color = "forestgreen", size = 1) + 
+  
+  geom_line(data = df.jags4, aes(x = temp, y = mean), color = "goldenrod1", size = 1) + 
+  
+  geom_line(data = df.jags5, aes(x = temp, y = mean), color = "dodgerblue3", size = 1) + 
+  
+  scale_x_continuous(limits = c(0, 45)) + 
+  scale_y_continuous(limits = c(-2, 5.5)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Temperature (", degree, "C)")),
+    y = "Growth rate",
+    title = "TPCs, Lactin II"
+  ) +
+  theme_classic() +
+  geom_hline(yintercept = 0)
+
+lact.jag.plot2
+
+for (i in pops){
+  load(paste0("R2jags-objects/pop_", i, "_salt_tolerance.RData"))
+  assign(paste0("salt", i), monod_jag)
+}
+
+df.jags1 <- data.frame(salt2$BUGSoutput$summary)[-c(1:4,2006),]   # generate the sequence of r.pred values
+df.jags1$salt <- seq(0, 10, 0.005)
+
+df.jags2 <- data.frame(salt9$BUGSoutput$summary)[-c(1:4,2006),]   # generate the sequence of r.pred values
+df.jags2$salt <- seq(0, 10, 0.005)
+
+df.jags3 <- data.frame(salt18$BUGSoutput$summary)[-c(1:4,2006),]   # generate the sequence of r.pred values
+df.jags3$salt <- seq(0, 10, 0.005)
+
+df.jags4 <- data.frame(salt26$BUGSoutput$summary)[-c(1:4,2006),]   # generate the sequence of r.pred values
+df.jags4$salt <- seq(0, 10, 0.005)
+
+df.jags5 <- data.frame(salt30$BUGSoutput$summary)[-c(1:4,2006),]   # generate the sequence of r.pred values
+df.jags5$salt <- seq(0, 10, 0.005)
+
+salt.jag.plot <- ggplot(data = df.jags1, aes(x = salt)) +
+  
+  geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
+  
+  geom_line(data = df.jags2, aes(x = salt, y = mean), color = "darkorange", size = 1) + 
+  
+  geom_line(data = df.jags3, aes(x = salt, y = mean), color = "forestgreen", size = 1) + 
+  
+  geom_line(data = df.jags4, aes(x = salt, y = mean), color = "goldenrod1", size = 1) + 
+  
+  geom_line(data = df.jags5, aes(x = salt, y = mean), color = "dodgerblue3", size = 1) + 
+  
+  scale_x_continuous(limits = c(0, 10)) + 
+  scale_y_continuous(limits = c(-0.25, 2.25)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Salt (concentration)")),
+    y = "Growth rate",
+    title = "Logistic growth curve, salt stress"
+  ) +
+  theme_classic() +
+  geom_hline(yintercept = 0)
+
+salt.jag.plot
+
+for (i in pops){
+  load(paste0("R2jags-objects/pop_", i, "_phosphorous_monod.RData"))
+  assign(paste0("phos", i), monod_jag)
+}
+
+df.jags1 <- data.frame(phos2$BUGSoutput$summary)[-c(1:3,2005),]   # generate the sequence of r.pred values
+df.jags1$phos <- seq(0, 50, 0.025)
+
+df.jags2 <- data.frame(phos9$BUGSoutput$summary)[-c(1:3,2005),]   # generate the sequence of r.pred values
+df.jags2$phos <- seq(0, 50, 0.025)
+
+df.jags3 <- data.frame(phos18$BUGSoutput$summary)[-c(1:3,2005),]   # generate the sequence of r.pred values
+df.jags3$phos <- seq(0, 50, 0.025)
+
+df.jags4 <- data.frame(phos26$BUGSoutput$summary)[-c(1:3,2005),]   # generate the sequence of r.pred values
+df.jags4$phos <- seq(0, 50, 0.025)
+
+df.jags5 <- data.frame(phos30$BUGSoutput$summary)[-c(1:3,2005),]   # generate the sequence of r.pred values
+df.jags5$phos <- seq(0, 50, 0.025)
+
+phos.jag.plot <- ggplot(data = df.jags1, aes(x = phos)) +
+  
+  geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
+  
+  geom_line(data = df.jags2, aes(x = phos, y = mean), color = "darkorange", size = 1) + 
+  
+  geom_line(data = df.jags3, aes(x = phos, y = mean), color = "forestgreen", size = 1) + 
+  
+  geom_line(data = df.jags4, aes(x = phos, y = mean), color = "goldenrod1", size = 1) + 
+  
+  geom_line(data = df.jags5, aes(x = phos, y = mean), color = "dodgerblue3", size = 1) + 
+  
+  scale_x_continuous(limits = c(0, 10)) + 
+  scale_y_continuous(limits = c(-0.25, 2.25)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Phosphorous (concentration)")),
+    y = "Growth rate",
+    title = "Monod function, phosphorous limitation"
+  ) +
+  theme_classic() +
+  geom_hline(yintercept = 0)
+
+phos.jag.plot
