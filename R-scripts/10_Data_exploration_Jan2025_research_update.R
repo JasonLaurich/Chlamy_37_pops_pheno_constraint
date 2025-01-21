@@ -86,3 +86,71 @@ names(df.S.par) <- c("Pop.fac", "r.max_S", "S.c.mod", "S.c.pred") # rename
 df <- merge(df, df.S.par, by = "Pop.fac", all.x = TRUE)
 
 write.csv(df, "data-processed/14_summary_metric_table.csv") # Save summary table
+
+########################## Visualization #####################################
+
+df<-read.csv("data-processed/14_summary_metric_table.csv")
+
+par_frt <- function(df, xvar, yvar) { # general pareto frontier function
+  
+  df <- df[order(-df[[xvar]], df[[yvar]]), ]  
+  pareto_points <- df[1, ]  # Start with the first point
+  
+  for (i in 2:nrow(df)) {
+    if (df[i, yvar] > tail(pareto_points[[yvar]], 1)) {  # Ensure increasing y values
+      pareto_points <- rbind(pareto_points, df[i,])
+    }
+  }
+  
+  return(pareto_points)
+}
+
+par.res <- par_frt(df[df$I.comp < 10,], xvar = "I.comp", yvar = "T.br")
+
+df$evol.plt <- factor(df$evol, 
+                      levels = c("none", "L", "N", "P", "S", "B", "BS", "C"),
+                      labels = c("Ancestral", 
+                                 "Light limitation", 
+                                 "Nitrogen limitation", 
+                                 "Phosphorous limitation", 
+                                 "Salt stress", 
+                                 "Biotic depletion", 
+                                 "Biotic depletion x Salt", 
+                                 "Control"))
+
+
+T.I <- ggplot(df[df$I.comp < 10,], aes(x = I.comp, y = T.br)) +  # removing the outlier data point
+  geom_point(size = 2) +  # Original data points
+  geom_line(data = par.res, aes(x = I.comp, y = T.br), color = "red", size = 1) +  # Pareto frontier line
+  labs(x = "Competitive ability (1/I*)", y = "Thermal breadth (T.br)") +
+  theme_classic()
+
+T.I
+
+T.I.evol <- T.I + 
+  geom_point(aes(colour = evol.plt)) +  # Add the color aesthetic mapping
+  scale_colour_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Ancestral" = "black",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Phosphorous limitation" = "firebrick",
+               "Salt stress" = "blue",
+               "Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen")
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = c(0.85, 0.3),  # Move legend to bottom right
+    text = element_text(face = "bold"),  # Make all text bold
+    axis.title = element_text(face = "bold"),  # Bold axis titles
+    axis.text = element_text(face = "bold"),  # Bold axis tick labels
+    legend.title = element_text(face = "bold"),  # Bold legend title
+    legend.text = element_text(face = "bold")   # Bold legend labels
+  )
+
+
+T.I.evol
+
+
