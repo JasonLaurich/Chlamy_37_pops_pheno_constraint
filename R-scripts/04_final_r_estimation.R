@@ -90,8 +90,8 @@ s <- length(ln.slopes) # Initialize the default to the final number, in case we 
   
 for (r in 1:(length(ln.slopes) - 1)) { # Now we will loop through the ln.slopes vector to find when the slope decreases by more than 5%
     
-  percent.chg <- ln.slopes[r] / ln.slopes[r + 1]
-  if (percent.chg >= 1.05 & ln.slopes[r] > 0 & ln.slopes[r+1] > 0) { # We don't want to include negative slopes that are driven by a brief decrease in RFUs at the start!
+  percent.chg <- ln.slopes[r] / ln.slopes[r + 1] # Changed 1.05 to 1.1
+  if (percent.chg >= 1.1 & ln.slopes[r] > 0 & ln.slopes[r+1] > 0) { # We don't want to include negative slopes that are driven by a brief decrease in RFUs at the start!
     s <- r # If the condition is met, reassign s to the corresponding drop-off point!
     break  # Exit loop when condition is met. s will store the final time point data!
   }
