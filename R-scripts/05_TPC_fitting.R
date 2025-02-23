@@ -1401,7 +1401,7 @@ for (i in 1:length(mat)){ # for each population
   ))
 
   for (j in 1:6){
-    fit.df <- data.frame(                                       # model performance data
+    fit.df <- rbind(fit.df, data.frame(                         # Model performance data
       Model = "Lactin 2",                                       # Model name
       Pop.fac = df.i$pop.fac[1],                                # Population name
       Pop.num = df.i$pop.num[1],                                # Number assigned to population (not the same)       
@@ -1410,11 +1410,11 @@ for (i in 1:length(mat)){ # for each population
       Rhat = lac_jag$BUGSoutput$summary[j,8],                   # Rhat values
       n.eff = lac_jag$BUGSoutput$summary[j,9],                  # Sample size estimates (should be ~6000)
       stringsAsFactors = FALSE            
-    )
+    ))
   }
 }
 
-for (i in 1:length(mat)){ # Thomas 1 for each population now.
+for (i in 2:length(mat)){ # Thomas 1 for each population now. Starting at 2, 1 was done separately for testing.
   
   df.i <- subset(mat[[i]])
   df.i <- droplevels(df.i)
@@ -1443,16 +1443,65 @@ for (i in 1:length(mat)){ # Thomas 1 for each population now.
   df.jags <- data.frame(thom_jag$BUGSoutput$summary)[-c(1:4, 906:907),]   # generate the sequence of r.pred values
   df.jags$temp <- seq(0, 45, 0.05)
   
-  summary.df <- rbind(summary.df, data.frame(                             # Add summary data
-    Pop.fac = df.i$pop.fac[1],                                            # Population name
-    Pop.num = df.i$pop.num[1],                                            # Number assigned to population (not the same)
-    Model = "Thomas 1",                                                   # Model name
-    T.min = df.jags$temp[min(which(df.jags$mean > 0))],                   # Minimum T
-    T.max = df.jags$temp[max(which(df.jags$mean > 0))],                   # Maximum T
-    T.br = df.jags$temp[max(which(df.jags$mean > (max(df.jags$mean) / 2)))] - 
-      df.jags$temp[min(which(df.jags$mean > (max(df.jags$mean) / 2)))],   # T breadth
-    T.opt = df.jags$temp[which.max(df.jags$mean)],                        # Optimal T
-    r.max = max(df.jags$mean)                                             # Maximum growth rate   
+  thomas1 <- function(temp, a, b, c, topt) { 
+    a * exp(b * temp) * (1 - ((temp - topt) / (c / 2))^2)
+  } # Define the Thomas I function
+  
+  # Define the derivative of the Thomas I function
+  thomas1_deriv <- function(temp, a, b, c, topt) {
+    # Compute terms
+    exp_term <- a * b * exp(b * temp)  # Derivative of the exponential part
+    quad_term <- (1 - ((temp - topt) / (c / 2))^2)  # Quadratic term
+    quad_deriv <- (-2 * (temp - topt)) / (c^2 / 4)  # Derivative of quadratic term
+    
+    # Apply product rule
+    deriv_value <- exp_term * quad_term + (a * exp(b * temp) * quad_deriv)
+    
+    return(deriv_value)
+  }
+  
+  a <- thom_jag$BUGSoutput$summary[1,1] # Extract parameters
+  b <- thom_jag$BUGSoutput$summary[2,1]
+  c <- thom_jag$BUGSoutput$summary[3,1]
+  topt <- thom_jag$BUGSoutput$summary[907,1]
+  
+  # Find the T_opt: where the derivative crosses zero
+  T_opt <- uniroot(
+    function(temp) thomas1_deriv(temp, a, b, c, topt),
+    interval = c(10, 45)
+  )$root
+  
+  r_max <- thomas1(temp=T_opt, a = a, b = b, c = c, topt = topt)
+  
+  Tmin <- uniroot(thomas1, interval = c(0, T_opt), a = a, b = b, c = c, topt = topt)$root
+  
+  Tmax <- uniroot(thomas1, interval = c(T_opt,45), a = a, b = b, c = c, topt = topt)$root
+  
+  thomas1_halfmax <- function(temp, a, b, c, topt, r_half) {
+    a * exp(b * temp) * (1 - ((temp - topt) / (c / 2))^2) - r_half
+  }
+  
+  r_half <- r_max/2 # calculate half of rmax and get the roots.
+  
+  Tlow <- uniroot(thomas1_halfmax, interval = c(Tmin, T_opt), a = a, b = b, c = c, topt = topt, r_half = r_half)$root
+  
+  Thigh <- uniroot(thomas1_halfmax, interval = c(T_opt, Tmax), a = a, b = b, c = c, topt = topt, r_half = r_half)$root
+  
+  summary.df <- rbind(summary.df, data.frame(                                  # Add summary data
+    Pop.fac = df.i$pop.fac[1],                                                 # Population name
+    Pop.num = df.i$pop.num[1],                                                 # Number assigned to population (not the same)
+    Model = "Thomas 1",                                                        # Model name
+    T.min = Tmin,                                                              # Minimum T (calculus)
+    T.max = Tmax,                                                              # Maximum T (calculus)
+    T.br = Thigh - Tlow,                                                       # T breadth (calculus)
+    T.opt = T_opt,                                                             # Optimal T (calculus)
+    r.max = r_max,                                                             # Maximum growth rate (calculus)
+    T.min.raw = df.jags$temp[min(which(df.jags$mean > 0))],                    # Minimum T
+    T.max.raw = df.jags$temp[max(which(df.jags$mean > 0))],                    # Maximum T
+    T.br.raw = df.jags$temp[max(which(df.jags$mean > (max(df.jags$mean) / 2)))] - 
+      df.jags$temp[min(which(df.jags$mean > (max(df.jags$mean) / 2)))],        # T breadth
+    T.opt.raw = df.jags$temp[which.max(df.jags$mean)],                         # Optimal T
+    r.max.raw = max(df.jags$mean)                                              # Maximum growth rate   
   ))
   
   dic.df <- rbind(dic.df, data.frame(         # Add DIC data
@@ -1461,6 +1510,21 @@ for (i in 1:length(mat)){ # Thomas 1 for each population now.
     Model = "Thomas 1",             # Model name
     DIC = thom_jag$BUGSoutput$DIC   # DIC
   ))
+  
+  thom_sum <- thom_jag$BUGSoutput$summary[c(1:4, 906:907),] # Have to create a new frame for summaries (not listed 1 to 6)
+  
+  for (j in 1:6){
+    fit.df <- rbind(fit.df, data.frame(                         # Model performance data
+      Model = "Thomas 1",                                       # Model name
+      Pop.fac = df.i$pop.fac[1],                                # Population name
+      Pop.num = df.i$pop.num[1],                                # Number assigned to population (not the same)       
+      Parameter = rownames(thom_sum)[j],                        # Model parameter (e.g. cf.a, cf.tmax, etc.)
+      mean = thom_sum[j,1],                                     # Posterior mean
+      Rhat = thom_sum[j,8],                                     # Rhat values
+      n.eff = thom_sum[j,9],                                    # Sample size estimates (should be ~6000)
+      stringsAsFactors = FALSE            
+    ))
+  }
   
 }
 
@@ -1577,3 +1641,71 @@ Thigh <- uniroot(lactin2_halfmax, interval = c(T_opt, Tmax), cf.a = cf.a,
 
 Tbr <- Thigh - Tlow
 Tbr
+
+# Let's also do a test drive of the Thomas 1 TPCs (here pop 1)
+
+thom_jag$BUGSoutput$summary[c(1:4, 906:907),] # Get estimates
+
+df.jags <- data.frame(thom_jag$BUGSoutput$summary)
+df.jags.plot <- df.jags[-c(1:4, 906:907),]
+df.jags.plot$temp <- seq(0, 45, 0.05)
+
+# OK my original way of calculating these things:     
+df.jags.plot$temp[min(which(df.jags.plot$mean > 0))]                   # Minimum T
+df.jags.plot$temp[max(which(df.jags.plot$mean > 0))]                   # Maximum T
+df.jags.plot$temp[max(which(df.jags.plot$mean > (max(df.jags.plot$mean) / 2)))] - df.jags.plot$temp[min(which(df.jags.plot$mean > (max(df.jags.plot$mean) / 2)))]   # T breadth
+df.jags.plot$temp[which.max(df.jags.plot$mean)]                        # Optimal T
+max(df.jags.plot$mean)
+
+thomas1 <- function(temp, a, b, c, topt) { 
+  a * exp(b * temp) * (1 - ((temp - topt) / (c / 2))^2)
+} # Define the Thomas I function
+
+# Define the derivative of the Thomas I function
+thomas1_deriv <- function(temp, a, b, c, topt) {
+  # Compute terms
+  exp_term <- a * b * exp(b * temp)  # Derivative of the exponential part
+  quad_term <- (1 - ((temp - topt) / (c / 2))^2)  # Quadratic term
+  quad_deriv <- (-2 * (temp - topt)) / (c^2 / 4)  # Derivative of quadratic term
+  
+  # Apply product rule
+  deriv_value <- exp_term * quad_term + (a * exp(b * temp) * quad_deriv)
+  
+  return(deriv_value)
+}
+
+a <- thom_jag$BUGSoutput$summary[1,1] # Extract parameters
+b <- thom_jag$BUGSoutput$summary[2,1]
+c <- thom_jag$BUGSoutput$summary[3,1]
+topt <- thom_jag$BUGSoutput$summary[907,1]
+
+# Find the T_opt: where the derivative crosses zero
+T_opt <- uniroot(
+  function(temp) thomas1_deriv(temp, a, b, c, topt),
+  interval = c(10, 45)
+)$root
+
+T_opt # looks good
+
+r_max <- thomas1(temp=T_opt, a = a, b = b, c = c, topt = topt)
+r_max # Looks pretty good!
+
+Tmin <- uniroot(thomas1, interval = c(0, T_opt), a = a, b = b, c = c, topt = topt)$root
+Tmin # Looks good!
+
+Tmax <- uniroot(thomas1, interval = c(T_opt,45), a = a, b = b, c = c, topt = topt)$root
+Tmax # Also looks good.
+
+# OK we're going to modify the function to calculate T_breadth, based on a modified thomas1.
+thomas1_halfmax <- function(temp, a, b, c, topt, r_half) {
+  a * exp(b * temp) * (1 - ((temp - topt) / (c / 2))^2) - r_half
+}
+
+r_half <- r_max/2 # calculate half of rmax and get the roots.
+
+Tlow <- uniroot(thomas1_halfmax, interval = c(Tmin, T_opt), a = a, b = b, c = c, topt = topt, r_half = r_half)$root
+
+Thigh <- uniroot(thomas1_halfmax, interval = c(T_opt, Tmax), a = a, b = b, c = c, topt = topt, r_half = r_half)$root
+
+Tbr <- Thigh - Tlow
+Tbr # Looks good!

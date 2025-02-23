@@ -11,12 +11,12 @@ model {
   ## Likelihood for observed data
   for (i in 1:N.obs) {
     # Thomas model equation
-    trait.mu[i] <- a * exp(b * temp[i]) * (1 - pow((temp[i] - topt) / c, 2))
+    trait.mu[i] <- a * exp(b * temp[i]) * (1 - pow((temp[i] - topt) / (c/2), 2))
     trait[i] ~ dnorm(trait.mu[i], tau) # Observed trait
   }
 
   ## Predictions for new temperature range
   for (j in 1:N.Temp.xs) {
-    r.pred[j] <- a * exp(b * Temp.xs[j]) * (1 - pow((Temp.xs[j] - topt) / c, 2))
+    r.pred[j] <- a * exp(b * Temp.xs[j]) * (1 - pow((Temp.xs[j] - topt) / (c/2), 2))
   }
 }
