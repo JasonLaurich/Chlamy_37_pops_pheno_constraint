@@ -416,3 +416,78 @@ for (i in 2:length(mat)){ # for each population. Starting at 2 again because I m
 }
 
 write.csv(summary.df, "data-processed/12b_phosphorous_Monod_estimates.csv") # Save summary table
+
+################# Analytical solutions & Model fit confirmation #####################
+
+# OK, so we are going to upload all of the R2jags objects, and iteravely use calculus to estimate rmax and R*
+
+i<-1 # for now, starting with one population.
+# for (i in 1:37){
+load(paste0("R2jags-objects/pop_", i, "_phosphorous_monod.RData"))
+#}
+
+monod_jag$BUGSoutput$summary[c(1:3,2005),] # Get estimates# Look at the summary data
+
+df.jags <- data.frame(monod_jag$BUGSoutput$summary)
+df.jags.plot <- df.jags[-c(1:3,2005),]
+df.jags.plot$phos <- seq(0, 50, 0.025)
+
+phos.jag.plot <- ggplot(data = df.jags.plot, aes(x = phos)) +
+  geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "gold", alpha = 0.5) + # Add shaded uncertainty region (LCL to UCL)
+  geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
+  geom_point(data = df.i, aes(x = jitter(phos.conc, 0.5), y = r.exp), color = "grey9", size = 2) + # Add observed data points with jitter for Light
+  scale_x_continuous(limits = c(0, 50)) + 
+  scale_y_continuous(limits = c(-0.25, 2.25)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Phosphate (concentration)")),
+    y = "Growth rate",
+    title = "Monod curve, phosphorous limitation"
+  ) +
+  theme_classic() +
+  geom_hline(yintercept = 0)
+
+phos.jag.plot # OK so µmax still seems lower (~1.3 compared to 3.8 ish for TPCs)
+
+0.56*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.56) #this is our R* mathematical solution.
+# This it the R* calculation from Bernhardt et al 2020. Probably don't need to do anything more.
+# The model also directly estimates µmax (which looks accurate given the raw data) so no need for any further math.
+
+# Which leaves us with iteratively extracting model fit parameters. Let's make sure Rhat and n.eff values look good!
+
+fit.df <- data.frame(       # Save model fit estimates for examination
+  Grad = character(),       # Specifiy abiotic gradient
+  Pop.fac = character(),    # Population name
+  Pop.num = character(),    # Number assigned to population (not the same)       
+  Parameter = character(),  # Model parameter (e.g. K_s, r_max, etc.)
+  mean = numeric(),         # Posterior mean
+  Rhat = numeric(),         # Rhat values
+  n.eff = numeric(),        # Sample size estimates (should be ~6000)
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:37){
+  
+  df.i <- subset(mat[[i]])
+  df.i <- droplevels(df.i)
+  
+  load(paste0("R2jags-objects/pop_", i, "_phosphorous_monod.RData"))
+  
+  phos_sum <- monod_jag$BUGSoutput$summary[c(1:3, 2005),] # Have to create a new frame for summaries (not listed 1 to 6)
+  
+  for (j in 1:4){
+    fit.df <- rbind(fit.df, data.frame(        # Model performance data
+      Grad = "Phosphorous limitation",         # Abiotic gradient
+      Pop.fac = df.i$pop.fac[1],               # Population name
+      Pop.num = df.i$pop.num[1],               # Number assigned to population (not the same)       
+      Parameter = rownames(phos_sum)[j],       # Model parameter (e.g. K_s, r_max, etc.)
+      mean = phos_sum[j,1],                    # Posterior mean
+      Rhat = phos_sum[j,8],                    # Rhat values
+      n.eff = phos_sum[j,9],                   # Sample size estimates (should be ~6000)
+      stringsAsFactors = FALSE            
+    ))
+  }
+  
+}
+
+write.csv(fit.df, "data-processed/12c_phosphorous_monod_model_fit_stats.csv") # Save model fit summary table
+# These look pretty good! A few models where n.eff is a touch low (2 estimates < 2,000, 10 < 3,000)
