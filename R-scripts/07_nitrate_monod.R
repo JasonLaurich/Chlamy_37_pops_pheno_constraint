@@ -416,3 +416,78 @@ for (i in 2:length(mat)){ # for each population. Fixed an error for population 1
 }
 
 write.csv(summary.df, "data-processed/11b_nitrogen_Monod_estimates.csv") # Save summary table
+
+################# Analytical solutions & Model fit confirmation #####################
+
+# OK, so we are going to upload all of the R2jags objects, and iteravely use calculus to estimate rmax and R*
+
+i<-1 # for now, starting with one population.
+# for (i in 1:37){
+load(paste0("R2jags-objects/pop_", i, "_nitrogen_monod.RData"))
+#}
+
+monod_jag$BUGSoutput$summary[c(1:3,2005),] # Get estimates# Look at the summary data
+
+df.jags <- data.frame(monod_jag$BUGSoutput$summary)
+df.jags.plot <- df.jags[-c(1:3,2005),]
+df.jags.plot$nitrogen <- seq(0, 1000, 0.5)
+
+nit.jag.plot <- ggplot(data = df.jags.plot, aes(x = nitrogen)) +
+  geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "gold", alpha = 0.5) + # Add shaded uncertainty region (LCL to UCL)
+  geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
+  geom_point(data = df.i, aes(x = jitter(nitrate.conc, 0.5), y = r.exp), color = "grey9", size = 2) + # Add observed data points with jitter for Light
+  scale_x_continuous(limits = c(0, 100)) + 
+  scale_y_continuous(limits = c(-0.25, 2.25)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Nitrate (concentration)")),
+    y = "Growth rate",
+    title = "Monod curve, nitrogen limitation"
+  ) +
+  theme_classic() +
+  geom_hline(yintercept = 0)
+
+nit.jag.plot # OK so µmax still seems lower (~1.3 compared to 3.8 ish for TPCs)
+
+0.56*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.56) #this is our R* mathematical solution.
+# This it the R* calculation from Bernhardt et al 2020. Probably don't need to do anything more.
+# The model also directly estimates µmax (which looks accurate given the raw data) so no need for any further math.
+
+# Which leaves us with iteratively extracting model fit parameters. Let's make sure Rhat and n.eff values look good!
+
+fit.df <- data.frame(       # Save model fit estimates for examination
+  Grad = character(),       # Specifiy abiotic gradient
+  Pop.fac = character(),    # Population name
+  Pop.num = character(),    # Number assigned to population (not the same)       
+  Parameter = character(),  # Model parameter (e.g. K_s, r_max, etc.)
+  mean = numeric(),         # Posterior mean
+  Rhat = numeric(),         # Rhat values
+  n.eff = numeric(),        # Sample size estimates (should be ~6000)
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:37){
+  
+  df.i <- subset(mat[[i]])
+  df.i <- droplevels(df.i)
+  
+  load(paste0("R2jags-objects/pop_", i, "_nitrogen_monod.RData"))
+  
+  nit_sum <- monod_jag$BUGSoutput$summary[c(1:3, 2005),] # Have to create a new frame for summaries (not listed 1 to 6)
+  
+  for (j in 1:4){
+    fit.df <- rbind(fit.df, data.frame(        # Model performance data
+      Grad = "Nitrogen limitation",            # Abiotic gradient
+      Pop.fac = df.i$pop.fac[1],               # Population name
+      Pop.num = df.i$pop.num[1],               # Number assigned to population (not the same)       
+      Parameter = rownames(nit_sum)[j],        # Model parameter (e.g. K_s, r_max, etc.)
+      mean = nit_sum[j,1],                     # Posterior mean
+      Rhat = nit_sum[j,8],                     # Rhat values
+      n.eff = nit_sum[j,9],                    # Sample size estimates (should be ~6000)
+      stringsAsFactors = FALSE            
+    ))
+  }
+  
+}
+
+write.csv(fit.df, "data-processed/011c_nitrogen_monod_model_fit_stats.csv") # Save model fit summary table
+# These look pretty good! A few models where n.eff is a touch low (4 estimates < 2,000, 10 < 3,000)
