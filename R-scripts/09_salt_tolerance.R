@@ -414,3 +414,96 @@ for (i in 1:length(mat)){ # for each population.
 }
 
 write.csv(summary.df, "data-processed/13b_salt_tolerance_estimates.csv") # Save summary table
+
+################# Analytical solutions & Model fit confirmation #####################
+
+# OK, so we are going to upload all of the R2jags objects, and iteravely use calculus to estimate rmax and R*
+
+i<-1 # for now, starting with one population.
+# for (i in 1:37){
+load(paste0("R2jags-objects/pop_", i, "_salt_tolerance.RData"))
+#}
+
+monod_jag$BUGSoutput$summary[c(1:4,2006),] # Get estimates# Look at the summary data
+
+df.jags <- data.frame(monod_jag$BUGSoutput$summary)
+df.jags.plot <- df.jags[-c(1:4,2006),]
+df.jags.plot$salt <- seq(0, 10, 0.005)
+
+salt.jag.plot <- ggplot(data = df.jags.plot, aes(x = salt)) +
+  geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "gold", alpha = 0.5) + # Add shaded uncertainty region (LCL to UCL)
+  geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
+  geom_point(data = df.i, aes(x = jitter(salt.lvl, 0.5), y = r.exp), color = "grey9", size = 2) + # Add observed data points with jitter for Light
+  scale_x_continuous(limits = c(0, 10)) + 
+  scale_y_continuous(limits = c(-0.25, 2.25)) + # Customize the axes and labels +
+  labs(
+    x = expression(paste("Salt (concentration)")),
+    y = "Growth rate",
+    title = "Reverse logistic curve, salt stress"
+  ) +
+  theme_classic() +
+  geom_hline(yintercept = 0) +
+  geom_hline(yintercept = 1.4885590/2) +
+  geom_vline(xintercept = 3.2465563)
+
+salt.jag.plot # OK so µmax still seems lower (~1.3 compared to 3.8 ish for TPCs)
+
+df.jags.plot$salt[which.min(abs(df.jags.plot$mean - (monod_jag$BUGSoutput$summary[1,1] / 2)))] #this is our solution from math.
+# This it the calculation from Bernhardt et al 2020. Probably don't need to do anything more.
+# The model also directly estimates µmax (which looks accurate given the raw data) so no need for any further math.
+
+# Let's try solving this with math!
+solve_salt <- function(a, b, c) {
+  salt <- c + log((a / (a/2)) - 1) / b
+  return(salt)
+}
+
+a <- monod_jag$BUGSoutput$summary[1,1]
+b <- monod_jag$BUGSoutput$summary[2,1]
+c <- monod_jag$BUGSoutput$summary[3,1]
+
+c.mth <- solve_salt(a, b, c)
+c.mth # Gives the same number. 
+
+
+# Which leaves us with iteratively extracting model fit parameters. Let's make sure Rhat and n.eff values look good!
+
+fit.df <- data.frame(       # Save model fit estimates for examination
+  Grad = character(),       # Specifiy abiotic gradient
+  Pop.fac = character(),    # Population name
+  Pop.num = character(),    # Number assigned to population (not the same)       
+  Parameter = character(),  # Model parameter (e.g. K_s, r_max, etc.)
+  mean = numeric(),         # Posterior mean
+  Rhat = numeric(),         # Rhat values
+  n.eff = numeric(),        # Sample size estimates (should be ~6000)
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:37){
+  
+  df.i <- subset(mat[[i]])
+  df.i <- droplevels(df.i)
+  
+  load(paste0("R2jags-objects/pop_", i, "_salt_tolerance.RData"))
+  
+  salt_sum <- monod_jag$BUGSoutput$summary[c(1:4, 2006),] # Have to create a new frame for summaries (not listed 1 to 6)
+  
+  for (j in 1:4){
+    fit.df <- rbind(fit.df, data.frame(        # Model performance data
+      Grad = "Salt stress",                    # Abiotic gradient
+      Pop.fac = df.i$pop.fac[1],               # Population name
+      Pop.num = df.i$pop.num[1],               # Number assigned to population (not the same)       
+      Parameter = rownames(salt_sum)[j],       # Model parameter (e.g. K_s, r_max, etc.)
+      mean = salt_sum[j,1],                    # Posterior mean
+      Rhat = salt_sum[j,8],                    # Rhat values
+      n.eff = salt_sum[j,9],                   # Sample size estimates (should be ~6000)
+      stringsAsFactors = FALSE            
+    ))
+  }
+  
+}
+
+write.csv(fit.df, "data-processed/13c_salt_tolerance_model_fit_stats.csv") # Save model fit summary table
+# These are substantially worse at the moment (2 estimates < 1,000, 5 < 2,000, 10 < 3,000)
+# Keep in mind these are being presently fit to salt LVLs, not concentrations. I need to match levels to concentrations
+# after looking through Joey's repo and finding this mapping data. Should be better then.
