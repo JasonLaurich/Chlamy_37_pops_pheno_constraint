@@ -268,7 +268,7 @@ df$shape <- ifelse(df$evol == "none", 22,
 
 par.res <- par_frt(df, xvar = "r.max_N", yvar = "N.comp")
 
-N_par1 <- ggplot(df, aes(x = r.max_N, y = N.comp)) +  # Remove shape from aes() for regression
+N_par <- ggplot(df, aes(x = r.max_N, y = N.comp)) +  # Remove shape from aes() for regression
   geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
   geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
   labs(x = "Maximum exponential growth rate", 
@@ -279,7 +279,7 @@ N_par1 <- ggplot(df, aes(x = r.max_N, y = N.comp)) +  # Remove shape from aes() 
   theme_classic() +
   theme(legend.position = "none")  # Remove legend
 
-N_par1 # Raw pareto front.
+N_par # Raw pareto front.
 
 # Light
 
@@ -288,7 +288,7 @@ df$shape <- ifelse(df$evol == "none", 22,
 
 par.res <- par_frt(df[df$I.comp<10,], xvar = "r.max_I", yvar = "I.comp")
 
-L_par1 <- ggplot(df[df$I.comp<10,], aes(x = r.max_I, y = I.comp)) +  # Remove shape from aes() for regression
+L_par <- ggplot(df[df$I.comp<10,], aes(x = r.max_I, y = I.comp)) +  # Remove shape from aes() for regression
   geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
   geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
   labs(x = "Maximum exponential growth rate", 
@@ -299,7 +299,7 @@ L_par1 <- ggplot(df[df$I.comp<10,], aes(x = r.max_I, y = I.comp)) +  # Remove sh
   theme_classic() +
   theme(legend.position = "none")  # Remove legend
 
-L_par1 # Raw pareto front.
+L_par # Raw pareto front.
 
 # Salt
 
@@ -308,7 +308,7 @@ df$shape <- ifelse(df$evol == "none", 22,
 
 par.res <- par_frt(df, xvar = "r.max_S", yvar = "S.c.mod")
 
-S_par1 <- ggplot(df[df$I.comp<10,], aes(x = r.max_S, y = S.c.mod)) +  # Remove shape from aes() for regression
+S_par <- ggplot(df[df$I.comp<10,], aes(x = r.max_S, y = S.c.mod)) +  # Remove shape from aes() for regression
   geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
   geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
   labs(x = "Maximum exponential growth rate", 
@@ -319,4 +319,65 @@ S_par1 <- ggplot(df[df$I.comp<10,], aes(x = r.max_S, y = S.c.mod)) +  # Remove s
   theme_classic() +
   theme(legend.position = "none")  # Remove legend
 
-S_par1 # Raw pareto front.
+S_par # Raw pareto front.
+
+################ Troubleshooting & Investigating ################################
+
+plot_grid(T_par, P_par, N_par, S_par, L_par) # Different max growth rates being observed across experiments! TPC > salt > nutrients..
+
+# Is this real? Let's load the raw data and find out.
+
+df.t <- read.csv("data-processed/chlamee-acute-rfu-time.csv")
+head(df.t)
+
+df.l <- read.csv("data-processed/10_light_rstar_rfus_time.csv")
+head(df.l)
+
+df.n <- read.csv("data-processed/11_nitrate_abundances_processed.csv")
+head(df.n)
+
+df.p <- read.csv("data-processed/12_phosphate_rstar_rfus_time.csv")
+head(df.p)
+
+df.s <- read.csv("data-processed/13_chlamee_salt_rfus_time.csv")
+head(df.s)
+
+# OK let's make a grid plot with the raw data to look at it (< 4 days to capture the exponential growth phase of most samples)
+
+p.t <- ggplot(df.t[df.t$days<4,], aes(x=days, y=RFU)) +
+  geom_point() +
+  geom_smooth(method='lm', colour='red') +
+  ylim(c(0,2500)) + # Some weird outliers, we'll keep this constant
+  theme_classic() +
+  labs(title = 'Temperature')
+
+p.l <- ggplot(df.l[df.l$days<4,], aes(x=days, y=RFU)) +
+  geom_point() +
+  geom_smooth(method='lm', colour='red') +
+  ylim(c(0,2500)) + # Some weird outliers, we'll keep this constant
+  theme_classic() +
+  labs(title = 'Light')
+
+p.n <- ggplot(df.n[df.n$days<4,], aes(x=days, y=RFU)) +
+  geom_point() +
+  geom_smooth(method='lm', colour='red') +
+  ylim(c(0,2500)) + # Some weird outliers, we'll keep this constant
+  theme_classic() +
+  labs(title = 'Nitrogen')
+
+p.p <- ggplot(df.p[df.p$days<4,], aes(x=days, y=RFU)) +
+  geom_point() +
+  geom_smooth(method='lm', colour='red') +
+  ylim(c(0,2500)) + # Some weird outliers, we'll keep this constant
+  theme_classic() +
+  labs(title = 'Phosphorous')
+
+p.s <- ggplot(df.s[df.s$time<4,], aes(x=time, y=RFU)) +
+  geom_point() +
+  geom_smooth(method='lm', colour='red') +
+  ylim(c(0,2500)) + # Some weird outliers, we'll keep this constant
+  theme_classic() +
+  labs(title = 'Salt')
+
+plot_grid(p.t, p.l, p.n, p.p, p.s, nrow = 1)
+
