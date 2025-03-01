@@ -5,6 +5,15 @@
 # Modelling gleaner-opportunist, specialist-generalist trade-offs
 # Adding Pareto frontier estimation to correlation plots. 
 
+# Conceptual approach - (1) use Convex Hull algorithm to identify potential Pareto frontier.
+# (2) Model regression of full data set, evolved populations, ancestral using brms - are the slopes of the evolved populations different? Does the intercept differ?
+# (3) Model regression using non-linear regression - same question - differences in shape (especially where evolved populations form the PF) would be strong evidence.
+
+# So partition out ancestors, evolutionary conditions particular to the nutrient in question, and other evolutionary treatments?
+
+# Another angle for confirming the Pareto Frontier would be bootstrapping the data, and asking whether, on average, the Pareto front is more likely
+# to contain points that evolved under relevant conditions?
+
 ############# Packages ########################
 
 library(dplyr)
@@ -20,7 +29,23 @@ library(brms)
 
 ############# Upload and organize data #######################
 
-df<-read.csv("data-processed/14_summary_metric_table.csv") # To start back up from this point forward
+df<-read.csv("data-processed/14_summary_metric_table.csv") # Summary file
+
+par_frt <- function(df, xvar, yvar) { # Simple Pareto frontier function
+  
+  df <- df[order(-df[[xvar]], df[[yvar]]), ]  
+  pareto_points <- df[1, ]  # Start with the first point
+  
+  for (i in 2:nrow(df)) {
+    if (df[i, yvar] > tail(pareto_points[[yvar]], 1)) {  # Ensure increasing y values
+      pareto_points <- rbind(pareto_points, df[i,])
+    }
+  }
+  
+  return(pareto_points)
+}
+
+############# Temperature ####################################
 
 df$shape <- ifelse(df$evol == "none", 22, 16) # I want to add a shape column to the dataframe that I will update
 # The idea is to label un-evolved populations with a square, and then later (not for T) relevant experimental evolution nutrient conditions with a star
@@ -111,8 +136,11 @@ T_par_bqr <- ggplot(df, aes(x = r.max_T, y = T.br)) +
 
 T_par_bqr  # Display the plot
 
+############# Light ##########################################
 
-# Phosphorous
+############# Nitrogen #######################################
+
+############# Phosphorous ####################################
 
 df$shape <- ifelse(df$evol == "none", 22, 
                    ifelse(df$evol == "P", 8, 16)) # Ps are now equivalent to 8, for later mapping
@@ -356,6 +384,10 @@ P_par_poly <- ggplot(df, aes(x = r.max_P, y = P.comp)) +
   theme(legend.position = "none")  # Remove legend
 
 P_par_poly # Display the plot
+
+############# Salt ###########################################
+
+
 
 # Nitrogen
 
