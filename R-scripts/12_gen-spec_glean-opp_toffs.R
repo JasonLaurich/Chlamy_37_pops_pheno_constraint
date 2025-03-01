@@ -13,6 +13,7 @@
 
 # Another angle for confirming the Pareto Frontier would be bootstrapping the data, and asking whether, on average, the Pareto front is more likely
 # to contain points that evolved under relevant conditions?
+# Can I estimate the Pareto Frontier using the convex hull approach at various levels of sensitivity for this analysis?
 
 ############# Packages ########################
 
