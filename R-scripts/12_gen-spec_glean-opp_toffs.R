@@ -5,15 +5,19 @@
 # Modelling gleaner-opportunist, specialist-generalist trade-offs
 # Adding Pareto frontier estimation to correlation plots. 
 
-# Conceptual approach - (1) use Convex Hull algorithm to identify potential Pareto frontier.
-# (2) Model regression of full data set, evolved populations, ancestral using brms - are the slopes of the evolved populations different? Does the intercept differ?
+# Conceptual approach - (1) use modified convex Hull algorithm (upper right only) to identify potential Pareto frontier.
+# (2) Model regression of full data set, evolved populations, ancestral using lmer/brms - are the slopes of the evolved populations different? Does the intercept differ?
 # (3) Model regression using non-linear regression - same question - differences in shape (especially where evolved populations form the PF) would be strong evidence.
 
 # So partition out ancestors, evolutionary conditions particular to the nutrient in question, and other evolutionary treatments?
 
 # Another angle for confirming the Pareto Frontier would be bootstrapping the data, and asking whether, on average, the Pareto front is more likely
 # to contain points that evolved under relevant conditions?
-# Can I estimate the Pareto Frontier using the convex hull approach at various levels of sensitivity for this analysis?
+
+# Or can I estimate the Pareto Frontier using quantile regression at various levels of sensitivity for this analysis?
+# And then ask whether the evolved populations relevant to a particular nutrient are above some threshold QR?
+# E.g. If half of the data points are evolutionary relevant, they should be above the 50% QR?
+# Confirm by randomizing and evaluating the distribution of evoluationarily relevant points under a null distribution?
 
 ############# Packages ########################
 
@@ -146,7 +150,9 @@ T_par_bqr  # Display the plot
 df$shape <- ifelse(df$evol == "none", 22, 
                    ifelse(df$evol == "P", 8, 16)) # Ps are now equivalent to 8, for later mapping
 
-par.res <- par_frt(df, xvar = "r.max_P", yvar = "P.comp")
+par.res.P <- par_frt(df, xvar = "r.max_P", yvar = "P.comp")
+
+par.res.CH.P <- convex_hull_frt(df, xvar = "r.max_P", yvar = "P.comp")
 
 P_par <- ggplot(df, aes(x = r.max_P, y = P.comp)) +  # Remove shape from aes() for regression
   geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
@@ -155,7 +161,7 @@ P_par <- ggplot(df, aes(x = r.max_P, y = P.comp)) +  # Remove shape from aes() f
        y = "Competitive ability (1/R*)", 
        title = "Phosphorous limitation") +
   scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
-  geom_line(data = par.res, aes(x = r.max_P, y = P.comp), color = "blue", size = 1) +  # Pareto frontier line
+  geom_line(data = par.res.CH.P, aes(x = r.max_P, y = P.comp), color = "blue", size = 1) +  # Pareto frontier line
   theme_classic() +
   theme(legend.position = "none")  # Remove legend
 
