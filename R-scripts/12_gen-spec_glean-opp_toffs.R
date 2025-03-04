@@ -560,3 +560,29 @@ S.qrs <- ggplot(df, aes(x = r.max_S, y = S.c.mod, color = evol.bin)) +  # Quanti
   )
 
 S.qrs  # Display the plot
+
+plot_grid(L_par, N_par, P_par, S_par, T_par) # Summary plots
+
+plot_grid(L.qrs, N.qrs, P.qrs, S.qrs, T.qrs)
+
+L.qrs1 <- L.qrs + labs(x = "Maximum exponential growth rate",    
+                       y = "Light competition (1/R*)", 
+                       title = "Light") + theme(legend.position = 'none') # for summary plotting
+
+N.qrs1 <- N.qrs + labs(x = "Maximum exponential growth rate",    
+                       y = "Nitrogen competition (1/R*)", 
+                       title = "Nitrogen") + theme(legend.position = 'none') # for summary plotting
+
+P.qrs1 <- P.qrs + labs(x = "Maximum exponential growth rate",    
+                       y = "Phosphorous competition (1/R*)", 
+                       title = "Phosphorous") + theme(legend.position = 'none') # for summary plotting
+
+S.qrs1 <- S.qrs + labs(x = "Maximum exponential growth rate",    
+                       y = "Salt tolerance (c)", 
+                       title = "Salt") + theme(legend.position = 'none') # for summary plotting
+
+T.qrs1 <- T.qrs + labs(x = "Maximum exponential growth rate",    
+                       y = "Thermal breadth", 
+                       title = "Temperature") + theme(legend.position = 'none') # for summary plotting
+      
+plot_grid(L.qrs1, N.qrs1, P.qrs1, S.qrs1, T.qrs1)
