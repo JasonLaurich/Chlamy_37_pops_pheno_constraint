@@ -80,13 +80,13 @@ T.regs <- ggplot(df, aes(x = r.max_T, y = T.br, color = evol.bin)) +
   geom_smooth(method = "lm", se = FALSE, aes(color = evol.bin)) +  # Separate regression lines
   labs(x = "Maximum exponential growth rate", 
        y = "Competitive ability (1/R*)", 
-       title = "Evolutionary Effects on P-Competition Trade-offs",
+       title = "Evolutionary Effects on Thermal Performance Trade-offs",
        color = "Evolutionary History") +  # Change legend title) +
   scale_color_manual(values = c("black", "goldenrod1"), 
                      labels = c("Ancestral", "Evolved")) +  # Custom colors per group
   theme_classic() +
   theme(
-    legend.position = c(0.85, 0.85),  # Moves legend inside the plot (x, y) in [0,1] scale
+    legend.position = c(0.8, 0.85),  # Moves legend inside the plot (x, y) in [0,1] scale
     legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
     legend.text = element_text(size = 10, face = "bold"),  # Adjust text size
     axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
@@ -134,15 +134,15 @@ T.qrs <- ggplot(df, aes(x = r.max_T, y = T.br, color = evol.bin)) +  # Quantiles
                   color = "black", size = 5, fontface = "bold") + # Adding labels where lines intersect data points
   
   labs(x = "Maximum exponential growth rate",    
-       y = "Competitive ability (1/R*)", 
-       title = "Quantile Regressions of P-Competition Trade-offs",
+       y = "Thermal breadth", 
+       title = "Quantile Regressions of Temperature Performance Trade-offs",
        color = "Evolutionary History") +  # labels
   
   scale_color_manual(values = c("black", "goldenrod1"), 
                      labels = c("Ancestral", "Evolved")) +  
   theme_classic() +
   theme(
-    legend.position = c(0.85, 0.85),  # Move legend inside the plot
+    legend.position = c(0.8, 0.85),  # Move legend inside the plot
     legend.title = element_text(size = 12, face = "bold"),  
     legend.text = element_text(size = 10, face = "bold"),  
     axis.title = element_text(size = 12, face = "bold"),  
@@ -154,38 +154,38 @@ T.qrs  # Display the plot
 ############# Light ##########################################
 
 df$shape <- ifelse(df$evol == "none", 22, 
-                   ifelse(df$evol == "P", 8, 16)) # Ps are now equivalent to 8, for later mapping
+                   ifelse(df$evol == "L", 8, 16)) # Ls are now equivalent to 8, for later mapping
 
 df$evol.bin <- ifelse(df$evol == "none", 'ancestral', 
-                      ifelse(df$evol == "P", 'phos', 'other')) # for testing regressions.
+                      ifelse(df$evol == "L", 'light', 'other')) # for testing regressions.
 
-par.res.P <- par_frt(df, xvar = "r.max_P", yvar = "P.comp")
+par.res.L <- par_frt(df[df$I.comp<10,], xvar = "r.max_I", yvar = "I.comp")
 
-P_par <- ggplot(df, aes(x = r.max_P, y = P.comp)) +  # Remove shape from aes() for regression
+L_par <- ggplot(df[df$I.comp<10,], aes(x = r.max_I, y = I.comp)) +  # Remove shape from aes() for regression
   geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
   geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
   labs(x = "Maximum exponential growth rate", 
        y = "Competitive ability (1/R*)", 
-       title = "Phosphorous limitation") +
+       title = "Light limitation") +
   scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
-  geom_line(data = par.res.P, aes(x = r.max_P, y = P.comp), color = "blue", size = 1) +  # Pareto frontier line
+  geom_line(data = par.res.L, aes(x = r.max_I, y = I.comp), color = "blue", size = 1) +  # Pareto frontier line
   theme_classic() +
   theme(legend.position = "none")  # Remove legend
 
-P_par # Raw pareto front.
+L_par # Raw pareto front.
 
-mod.P <- lm(P.comp~r.max_P*evol.bin, data=df)  # test significance of Pareto frontier
-summary(mod.P)
+mod.L <- lm(I.comp~r.max_I*evol.bin, data=df[df$I.comp<10,])  # test significance of Pareto frontier
+summary(mod.L)
 
-P.regs <- ggplot(df, aes(x = r.max_P, y = P.comp, color = evol.bin)) +  
+L.regs <- ggplot(df[df$I.comp<10,], aes(x = r.max_I, y = I.comp, color = evol.bin)) +  
   geom_point(size = 2) +  # Scatter plot of raw data
   geom_smooth(method = "lm", se = FALSE, aes(color = evol.bin)) +  # Separate regression lines
   labs(x = "Maximum exponential growth rate", 
        y = "Competitive ability (1/R*)", 
-       title = "Evolutionary Effects on P-Competition Trade-offs",
+       title = "Evolutionary Effects on Light-Competition Trade-offs",
        color = "Evolutionary History") +  # Change legend title) +
   scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
-                     labels = c("Ancestral", "Other", "Phosphorous")) +  # Custom colors per group
+                     labels = c("Ancestral", "Other", "Light")) +  # Custom colors per group
   theme_classic() +
   theme(
     legend.position = c(0.85, 0.85),  # Moves legend inside the plot (x, y) in [0,1] scale
@@ -195,54 +195,53 @@ P.regs <- ggplot(df, aes(x = r.max_P, y = P.comp, color = evol.bin)) +
     axis.text = element_text(size = 10)
   ) 
 
-P.regs
+L.regs
 
-pred.p <- data.frame(r.max_P = seq(min(df$r.max_P), max(df$r.max_P), length.out = 100)) # Dataframe to collect quantile info in
+pred.l <- data.frame(r.max_I = seq(min(df$r.max_I), max(df$r.max_I), length.out = 100)) # Dataframe to collect quantile info in
 
-quant.P.100 <- rq(P.comp ~ poly(r.max_P, 2), data = df, tau = 1.00) 
-pred.p$P.comp.100 <- predict(quant.P.100, newdata = pred.p.100)
+quant.I.100 <- rq(I.comp ~ poly(r.max_I, 2), data = df[df$I.comp<10,], tau = 1.00) 
+pred.l$I.comp.100 <- predict(quant.I.100, newdata = pred.l)
 
-quant.P.95 <- rq(P.comp ~ poly(r.max_P, 2), data = df, tau = 0.95) 
-pred.p$P.comp.95 <- predict(quant.P.95, newdata = pred.p)
+quant.I.95 <- rq(I.comp ~ poly(r.max_I, 2), data = df[df$I.comp<10,], tau = 0.95) 
+pred.l$I.comp.95 <- predict(quant.I.95, newdata = pred.l)
 
-quant.P.90 <- rq(P.comp ~ poly(r.max_P, 2), data = df, tau = 0.90) 
-pred.p$P.comp.90 <- predict(quant.P.90, newdata = pred.p)
+quant.I.90 <- rq(I.comp ~ poly(r.max_I, 2), data = df[df$I.comp<10,], tau = 0.90) 
+pred.l$I.comp.90 <- predict(quant.I.90, newdata = pred.l)
 
-quant.P.75 <- rq(P.comp ~ poly(r.max_P, 2), data = df, tau = 0.75) 
-pred.p$P.comp.75 <- predict(quant.P.75, newdata = pred.p)
+quant.I.75 <- rq(I.comp ~ poly(r.max_I, 2), data = df[df$I.comp<10,], tau = 0.75) 
+pred.l$I.comp.75 <- predict(quant.I.75, newdata = pred.l)
 
-quant.P.50 <- rq(P.comp ~ poly(r.max_P, 2), data = df, tau = 0.50) 
-pred.p$P.comp.50 <- predict(quant.P.50, newdata = pred.p)
+quant.I.50 <- rq(I.comp ~ poly(r.max_I, 2), data = df[df$I.comp<10,], tau = 0.50) 
+pred.l$I.comp.50 <- predict(quant.I.50, newdata = pred.l)
 
-
-P.qrs <- ggplot(df, aes(x = r.max_P, y = P.comp, color = evol.bin)) +  # Quantiles plot
+L.qrs <- ggplot(df[df$I.comp<10,], aes(x = r.max_I, y = I.comp, color = evol.bin)) +  # Quantiles plot
   geom_point(size = 2) +  # Scatter plot of raw data
   
-  geom_line(data = pred.p, aes(x = r.max_P, y = P.comp.100), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
-  geom_line(data = pred.p, aes(x = r.max_P, y = P.comp.90), color = "black", size = 1.2, linetype = "dashed") +  
-  geom_line(data = pred.p, aes(x = r.max_P, y = P.comp.75), color = "black", size = 1.2, linetype = "dotted") +  
-  geom_line(data = pred.p, aes(x = r.max_P, y = P.comp.50), color = "black", size = 1.2, linetype = "dotdash") +  
+  geom_line(data = pred.l, aes(x = r.max_I, y = I.comp.100), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  geom_line(data = pred.l, aes(x = r.max_I, y = I.comp.90), color = "black", size = 1.2, linetype = "dashed") +  
+  geom_line(data = pred.l, aes(x = r.max_I, y = I.comp.75), color = "black", size = 1.2, linetype = "dotted") +  
+  geom_line(data = pred.l, aes(x = r.max_I, y = I.comp.50), color = "black", size = 1.2, linetype = "dotdash") +  
   
-  geom_text_repel(data = pred.p[which.min(abs(df$r.max_P - median(df$r.max_P))), ],  
-                  aes(x = r.max_P, y = P.comp.100, label = "100"), 
+  geom_text_repel(data = pred.l[which.min(abs(df$r.max_I - median(df$r.max_I))), ],  
+                  aes(x = r.max_I, y = I.comp.100, label = "100"), 
                   color = "black", size = 5, fontface = "bold") +
-  geom_text_repel(data = pred.p[which.min(abs(df$r.max_P - median(df$r.max_P))), ], 
-                  aes(x = r.max_P, y = P.comp.90, label = "90"), 
+  geom_text_repel(data = pred.l[which.min(abs(df$r.max_I - median(df$r.max_I))), ], 
+                  aes(x = r.max_I, y = I.comp.90, label = "90"), 
                   color = "black", size = 5, fontface = "bold") +
-  geom_text_repel(data = pred.p[which.min(abs(df$r.max_P - median(df$r.max_P))), ], 
-                  aes(x = r.max_P, y = P.comp.75, label = "75"), 
+  geom_text_repel(data = pred.l[which.min(abs(df$r.max_I - median(df$r.max_I))), ], 
+                  aes(x = r.max_I, y = I.comp.75, label = "75"), 
                   color = "black", size = 5, fontface = "bold") +
-  geom_text_repel(data = pred.p[which.min(abs(df$r.max_P - median(df$r.max_P))), ], 
-                  aes(x = r.max_P, y = P.comp.50, label = "50"), 
+  geom_text_repel(data = pred.l[which.min(abs(df$r.max_I - median(df$r.max_I))), ], 
+                  aes(x = r.max_I, y = I.comp.50, label = "50"), 
                   color = "black", size = 5, fontface = "bold") + # Adding labels where lines intersect data points
   
   labs(x = "Maximum exponential growth rate",    
        y = "Competitive ability (1/R*)", 
-       title = "Quantile Regressions of P-Competition Trade-offs",
+       title = "Quantile Regressions of Light-Competition Trade-offs",
        color = "Evolutionary History") +  # labels
   
   scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
-                     labels = c("Ancestral", "Other", "Phosphorous")) +  
+                     labels = c("Ancestral", "Other", "Light")) +  
   theme_classic() +
   theme(
     legend.position = c(0.85, 0.85),  # Move legend inside the plot
@@ -252,9 +251,110 @@ P.qrs <- ggplot(df, aes(x = r.max_P, y = P.comp, color = evol.bin)) +  # Quantil
     axis.text = element_text(size = 10) # theme stuff
   )
 
-P.qrs  # Display the plot
+L.qrs  # Display the plot
 
 ############# Nitrogen #######################################
+
+df$shape <- ifelse(df$evol == "none", 22, 
+                   ifelse(df$evol == "N", 8, 16)) # Ns are now equivalent to 8, for later mapping
+
+df$evol.bin <- ifelse(df$evol == "none", 'ancestral', 
+                      ifelse(df$evol == "N", 'nit', 'other')) # for testing regressions.
+
+par.res.N <- par_frt(df, xvar = "r.max_N", yvar = "N.comp")
+
+N_par <- ggplot(df, aes(x = r.max_N, y = N.comp)) +  # Remove shape from aes() for regression
+  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
+  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
+  labs(x = "Maximum exponential growth rate", 
+       y = "Competitive ability (1/R*)", 
+       title = "Nitrogen limitation") +
+  scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
+  geom_line(data = par.res.N, aes(x = r.max_N, y = N.comp), color = "blue", size = 1) +  # Pareto frontier line
+  theme_classic() +
+  theme(legend.position = "none")  # Remove legend
+
+N_par # Raw pareto front.
+
+mod.N <- lm(N.comp~r.max_N*evol.bin, data=df)  # test significance of Pareto frontier
+summary(mod.N)
+
+N.regs <- ggplot(df, aes(x = r.max_N, y = N.comp, color = evol.bin)) +  
+  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_smooth(method = "lm", se = FALSE, aes(color = evol.bin)) +  # Separate regression lines
+  labs(x = "Maximum exponential growth rate", 
+       y = "Competitive ability (1/R*)", 
+       title = "Evolutionary Effects on N-Competition Trade-offs",
+       color = "Evolutionary History") +  # Change legend title) +
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
+                     labels = c("Ancestral", "Other", "Nitrogen")) +  # Custom colors per group
+  theme_classic() +
+  theme(
+    legend.position = c(0.35, 0.85),  # Moves legend inside the plot (x, y) in [0,1] scale
+    legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
+    legend.text = element_text(size = 10, face = "bold"),  # Adjust text size
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10)
+  ) 
+
+N.regs
+
+pred.n <- data.frame(r.max_N = seq(min(df$r.max_N), max(df$r.max_N), length.out = 100)) # Dataframe to collect quantile info in
+
+quant.N.100 <- rq(N.comp ~ poly(r.max_N, 2), data = df, tau = 1.00) 
+pred.n$N.comp.100 <- predict(quant.N.100, newdata = pred.n)
+
+quant.N.95 <- rq(N.comp ~ poly(r.max_N, 2), data = df, tau = 0.95) 
+pred.n$N.comp.95 <- predict(quant.N.95, newdata = pred.n)
+
+quant.N.90 <- rq(N.comp ~ poly(r.max_N, 2), data = df, tau = 0.90) 
+pred.n$N.comp.90 <- predict(quant.N.90, newdata = pred.n)
+
+quant.N.75 <- rq(N.comp ~ poly(r.max_N, 2), data = df, tau = 0.75) 
+pred.n$N.comp.75 <- predict(quant.N.75, newdata = pred.n)
+
+quant.N.50 <- rq(N.comp ~ poly(r.max_N, 2), data = df, tau = 0.50) 
+pred.n$N.comp.50 <- predict(quant.N.50, newdata = pred.n)
+
+
+N.qrs <- ggplot(df, aes(x = r.max_N, y = N.comp, color = evol.bin)) +  # Quantiles plot
+  geom_point(size = 2) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.n, aes(x = r.max_N, y = N.comp.100), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  geom_line(data = pred.n, aes(x = r.max_N, y = N.comp.90), color = "black", size = 1.2, linetype = "dashed") +  
+  geom_line(data = pred.n, aes(x = r.max_N, y = N.comp.75), color = "black", size = 1.2, linetype = "dotted") +  
+  geom_line(data = pred.n, aes(x = r.max_N, y = N.comp.50), color = "black", size = 1.2, linetype = "dotdash") +  
+  
+  geom_text_repel(data = pred.n[which.min(abs(df$r.max_N - median(df$r.max_N))), ],  
+                  aes(x = r.max_N, y = N.comp.100, label = "100"), 
+                  color = "black", size = 5, fontface = "bold") +
+  geom_text_repel(data = pred.n[which.min(abs(df$r.max_N - median(df$r.max_N))), ], 
+                  aes(x = r.max_N, y = N.comp.90, label = "90"), 
+                  color = "black", size = 5, fontface = "bold") +
+  geom_text_repel(data = pred.n[which.min(abs(df$r.max_N - median(df$r.max_N))), ], 
+                  aes(x = r.max_N, y = N.comp.75, label = "75"), 
+                  color = "black", size = 5, fontface = "bold") +
+  geom_text_repel(data = pred.n[which.min(abs(df$r.max_N - median(df$r.max_N))), ], 
+                  aes(x = r.max_N, y = N.comp.50, label = "50"), 
+                  color = "black", size = 5, fontface = "bold") + # Adding labels where lines intersect data points
+  
+  labs(x = "Maximum exponential growth rate",    
+       y = "Competitive ability (1/R*)", 
+       title = "Quantile Regressions of N-Competition Trade-offs",
+       color = "Evolutionary History") +  # labels
+  
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
+                     labels = c("Ancestral", "Other", "Nitrogen")) +  
+  theme_classic() +
+  theme(
+    legend.position = c(0.85, 0.85),  # Move legend inside the plot
+    legend.title = element_text(size = 12, face = "bold"),  
+    legend.text = element_text(size = 10, face = "bold"),  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10) # theme stuff
+  )
+
+N.qrs  # Display the plot
 
 ############# Phosphorous ####################################
 
@@ -305,7 +405,7 @@ P.regs
 pred.p <- data.frame(r.max_P = seq(min(df$r.max_P), max(df$r.max_P), length.out = 100)) # Dataframe to collect quantile info in
 
 quant.P.100 <- rq(P.comp ~ poly(r.max_P, 2), data = df, tau = 1.00) 
-pred.p$P.comp.100 <- predict(quant.P.100, newdata = pred.p.100)
+pred.p$P.comp.100 <- predict(quant.P.100, newdata = pred.p)
 
 quant.P.95 <- rq(P.comp ~ poly(r.max_P, 2), data = df, tau = 0.95) 
 pred.p$P.comp.95 <- predict(quant.P.95, newdata = pred.p)
@@ -361,54 +461,13 @@ P.qrs  # Display the plot
 
 ############# Salt ###########################################
 
-
-
-# Nitrogen
-
 df$shape <- ifelse(df$evol == "none", 22, 
-                   ifelse(df$evol == "N", 8, 16)) # Ps are now equivalent to 8, for later mapping
+                   ifelse(df$evol %in% c("S", "BS"), 8, 16)) # Ss and BSs are now equivalent to 8, for later mapping
 
-par.res <- par_frt(df, xvar = "r.max_N", yvar = "N.comp")
+df$evol.bin <- ifelse(df$evol == "none", 'ancestral', 
+                      ifelse(df$evol %in% c("S", "BS"), 'salt', 'other')) # for testing regressions.
 
-N_par <- ggplot(df, aes(x = r.max_N, y = N.comp)) +  # Remove shape from aes() for regression
-  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
-  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
-  labs(x = "Maximum exponential growth rate", 
-       y = "Competitive ability (1/R*)", 
-       title = "Nitrogen limitation") +
-  scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
-  geom_line(data = par.res, aes(x = r.max_N, y = N.comp), color = "blue", size = 1) +  # Pareto frontier line
-  theme_classic() +
-  theme(legend.position = "none")  # Remove legend
-
-N_par # Raw pareto front.
-
-# Light
-
-df$shape <- ifelse(df$evol == "none", 22, 
-                   ifelse(df$evol == "L", 8, 16)) # Ls are now equivalent to 8, for later mapping
-
-par.res <- par_frt(df[df$I.comp<10,], xvar = "r.max_I", yvar = "I.comp")
-
-L_par <- ggplot(df[df$I.comp<10,], aes(x = r.max_I, y = I.comp)) +  # Remove shape from aes() for regression
-  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
-  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
-  labs(x = "Maximum exponential growth rate", 
-       y = "Competitive ability (1/R*)", 
-       title = "Light limitation") +
-  scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
-  geom_line(data = par.res, aes(x = r.max_I, y = I.comp), color = "blue", size = 1) +  # Pareto frontier line
-  theme_classic() +
-  theme(legend.position = "none")  # Remove legend
-
-L_par # Raw pareto front.
-
-# Salt
-
-df$shape <- ifelse(df$evol == "none", 22, 
-                   ifelse(df$evol == "S", 8, 16)) # Ls are now equivalent to 8, for later mapping
-
-par.res <- par_frt(df, xvar = "r.max_S", yvar = "S.c.mod")
+par.res.S <- par_frt(df, xvar = "r.max_S", yvar = "S.c.mod")
 
 S_par <- ggplot(df, aes(x = r.max_S, y = S.c.mod)) +  # Remove shape from aes() for regression
   geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
@@ -417,8 +476,87 @@ S_par <- ggplot(df, aes(x = r.max_S, y = S.c.mod)) +  # Remove shape from aes() 
        y = "Salt tolerance (c)", 
        title = "Salt stress") +
   scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
-  geom_line(data = par.res, aes(x = r.max_S, y = S.c.mod), color = "blue", size = 1) +  # Pareto frontier line
+  geom_line(data = par.res.S, aes(x = r.max_S, y = S.c.mod), color = "blue", size = 1) +  # Pareto frontier line
   theme_classic() +
   theme(legend.position = "none")  # Remove legend
 
 S_par # Raw pareto front.
+
+mod.S <- lm(S.c.mod~r.max_S*evol.bin, data=df)  # test significance of Pareto frontier
+summary(mod.S)
+
+S.regs <- ggplot(df, aes(x = r.max_S, y = S.c.mod, color = evol.bin)) +  
+  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_smooth(method = "lm", se = FALSE, aes(color = evol.bin)) +  # Separate regression lines
+  labs(x = "Maximum exponential growth rate", 
+       y = "Salt tolerance (c)", 
+       title = "Evolutionary Effects on S-Tolerance Trade-offs",
+       color = "Evolutionary History") +  # Change legend title) +
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
+                     labels = c("Ancestral", "Other", "Salt or Biotic Salt")) +  # Custom colors per group
+  theme_classic() +
+  theme(
+    legend.position = c(0.75, 0.85),  # Moves legend inside the plot (x, y) in [0,1] scale
+    legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
+    legend.text = element_text(size = 10, face = "bold"),  # Adjust text size
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10)
+  ) 
+
+S.regs
+
+pred.S <- data.frame(r.max_S = seq(min(df$r.max_S), max(df$r.max_S), length.out = 100)) # Dataframe to collect quantile info in
+
+quant.S.100 <- rq(S.c.mod ~ poly(r.max_S, 2), data = df, tau = 1.00) 
+pred.S$S.c.mod.100 <- predict(quant.S.100, newdata = pred.S)
+
+quant.S.95 <- rq(S.c.mod ~ poly(r.max_S, 2), data = df, tau = 0.95) 
+pred.S$S.c.mod.95 <- predict(quant.S.95, newdata = pred.S)
+
+quant.S.90 <- rq(S.c.mod ~ poly(r.max_S, 2), data = df, tau = 0.90) 
+pred.S$S.c.mod.90 <- predict(quant.S.90, newdata = pred.S)
+
+quant.S.75 <- rq(S.c.mod ~ poly(r.max_S, 2), data = df, tau = 0.75) 
+pred.S$S.c.mod.75 <- predict(quant.S.75, newdata = pred.S)
+
+quant.S.50 <- rq(S.c.mod ~ poly(r.max_S, 2), data = df, tau = 0.50) 
+pred.S$S.c.mod.50 <- predict(quant.S.50, newdata = pred.S)
+
+S.qrs <- ggplot(df, aes(x = r.max_S, y = S.c.mod, color = evol.bin)) +  # Quantiles plot
+  geom_point(size = 2) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.S, aes(x = r.max_S, y = S.c.mod.100), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  geom_line(data = pred.S, aes(x = r.max_S, y = S.c.mod.90), color = "black", size = 1.2, linetype = "dashed") +  
+  geom_line(data = pred.S, aes(x = r.max_S, y = S.c.mod.75), color = "black", size = 1.2, linetype = "dotted") +  
+  geom_line(data = pred.S, aes(x = r.max_S, y = S.c.mod.50), color = "black", size = 1.2, linetype = "dotdash") +  
+  
+  geom_text_repel(data = pred.S[which.min(abs(df$r.max_S - median(df$r.max_S))), ],  
+                  aes(x = r.max_S, y = S.c.mod.100, label = "100"), 
+                  color = "black", size = 5, fontface = "bold") +
+  geom_text_repel(data = pred.S[which.min(abs(df$r.max_S - median(df$r.max_S))), ], 
+                  aes(x = r.max_S, y = S.c.mod.90, label = "90"), 
+                  color = "black", size = 5, fontface = "bold") +
+  geom_text_repel(data = pred.S[which.min(abs(df$r.max_S - median(df$r.max_S))), ], 
+                  aes(x = r.max_S, y = S.c.mod.75, label = "75"), 
+                  color = "black", size = 5, fontface = "bold") +
+  geom_text_repel(data = pred.S[which.min(abs(df$r.max_S - median(df$r.max_S))), ], 
+                  aes(x = r.max_S, y = S.c.mod.50, label = "50"), 
+                  color = "black", size = 5, fontface = "bold") + # Adding labels where lines intersect data points
+  
+  labs(x = "Maximum exponential growth rate",    
+       y = "Salt tolerance (c)", 
+       title = "Quantile Regressions of S-Tolerance Trade-offs",
+       color = "Evolutionary History") +  # labels
+  
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
+                     labels = c("Ancestral", "Other", "Salt or Biotic Salt")) +  
+  theme_classic() +
+  theme(
+    legend.position = c(0.8, 0.85),  # Move legend inside the plot
+    legend.title = element_text(size = 12, face = "bold"),  
+    legend.text = element_text(size = 10, face = "bold"),  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10) # theme stuff
+  )
+
+S.qrs  # Display the plot
