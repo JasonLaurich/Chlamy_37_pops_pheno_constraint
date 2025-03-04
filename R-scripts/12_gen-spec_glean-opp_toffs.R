@@ -55,22 +55,9 @@ par_frt <- function(df, xvar, yvar) { # Simple Pareto frontier function
 df$shape <- ifelse(df$evol == "none", 22, 16) # I want to add a shape column to the dataframe that I will update
 # The idea is to label un-evolved populations with a square, and then later (not for T) relevant experimental evolution nutrient conditions with a star
 
-# Let's define a Pareto front function
-par_frt <- function(df, xvar, yvar) { # general pareto frontier function
-  
-  df <- df[order(-df[[xvar]], df[[yvar]]), ]  
-  pareto_points <- df[1, ]  # Start with the first point
-  
-  for (i in 2:nrow(df)) {
-    if (df[i, yvar] > tail(pareto_points[[yvar]], 1)) {  # Ensure increasing y values
-      pareto_points <- rbind(pareto_points, df[i,])
-    }
-  }
-  
-  return(pareto_points)
-}
+df$evol.bin <- ifelse(df$evol == "none", "ancestral", "evolved") # For regressions
 
-par.res <- par_frt(df, xvar = "r.max_T", yvar = "T.br")
+par.res.T <- par_frt(df, xvar = "r.max_T", yvar = "T.br")
 
 T_par <- ggplot(df, aes(x = r.max_T, y = T.br)) +  # Remove shape from aes() for regression
   geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
@@ -79,80 +66,100 @@ T_par <- ggplot(df, aes(x = r.max_T, y = T.br)) +  # Remove shape from aes() for
        y = "Thermal breadth", 
        title = "Thermal performance") +
   scale_shape_manual(values = c(16, 3)) +  # Keep custom shapes
-  geom_line(data = par.res, aes(x = r.max_T, y = T.br), color = "blue", size = 1) +  # Pareto frontier line
+  geom_line(data = par.res.T, aes(x = r.max_T, y = T.br), color = "blue", size = 1) +  # Pareto frontier line
   theme_classic() +
   theme(legend.position = "none")  # Remove legend
 
 T_par # Raw pareto front.
 
-mod_qr <- rq(T.br ~ poly(r.max_T, 2), tau = 0.95, data = df) # Frequentist quantile regression for plotting Pareto frontiers. 
+mod.T <- lm(T.br~r.max_T*evol.bin, data=df)  # test significance of Pareto frontier
+summary(mod.T)
 
-new.data <- data.frame(r.max_T = seq(min(df$r.max_T), max(df$r.max_T), length.out = 100))
-new.data$pred_br <- predict(mod_qr, new.data)
-
-T_par_qr <- ggplot(df, aes(x = r.max_T, y = T.br)) +  # Remove shape from aes() for regression
-  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
-  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
-  geom_line(data = new.data, aes(x = r.max_T, y = pred_br), color = "blue", size = 1) + # quantile regression in blue
+T.regs <- ggplot(df, aes(x = r.max_T, y = T.br, color = evol.bin)) +  
+  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_smooth(method = "lm", se = FALSE, aes(color = evol.bin)) +  # Separate regression lines
   labs(x = "Maximum exponential growth rate", 
-       y = "Thermal breadth", 
-       title = "Thermal performance") +
-  scale_shape_manual(values = c(16, 3)) +  # Keep custom shapes
+       y = "Competitive ability (1/R*)", 
+       title = "Evolutionary Effects on P-Competition Trade-offs",
+       color = "Evolutionary History") +  # Change legend title) +
+  scale_color_manual(values = c("black", "goldenrod1"), 
+                     labels = c("Ancestral", "Evolved")) +  # Custom colors per group
   theme_classic() +
-  theme(legend.position = "none")  # Remove legend
+  theme(
+    legend.position = c(0.85, 0.85),  # Moves legend inside the plot (x, y) in [0,1] scale
+    legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
+    legend.text = element_text(size = 10, face = "bold"),  # Adjust text size
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10)
+  ) 
 
-T_par_qr # Quantile regression pareto front.
+T.regs
 
-brm_sp <- brm(
-  bf(T.br ~ s(r.max_T), quantile = 0.95),
-  data = par.res,  # Use only the Pareto front subset
-  family = asym_laplace(),
-  prior = prior(sigma ~ normal(0, 5)),  # Optional priors
-  iter = 4000, chains = 4, cores = 4
-)
+pred.t <- data.frame(r.max_T = seq(min(df$r.max_T), max(df$r.max_T), length.out = 100)) # Dataframe to collect quantile info in
 
-brm_qd <- brm(
-  bf(T.br ~ poly(r.max_T, 2), quantile = 0.95),  # Quadratic term instead of spline
-  data = par.res,  
-  family = asym_laplace(),
-  iter = 4000, chains = 4, cores = 4
-) # Quadratic Bayesian function
+quant.T.100 <- rq(T.br ~ poly(r.max_T, 2), data = df, tau = 1.00) 
+pred.t$T.br.100 <- predict(quant.T.100, newdata = pred.t)
 
-new.data.bqr <- data.frame(r.max_T = seq(min(df$r.max_T), max(df$r.max_T), length.out = 100))
+quant.T.95 <- rq(T.br ~ poly(r.max_T, 2), data = df, tau = 0.95) 
+pred.t$T.br.95 <- predict(quant.T.95, newdata = pred.t)
 
-preds <- fitted(brm_sp, newdata = new.data.bqr, probs = c(0.05, 0.95))  
+quant.T.90 <- rq(T.br ~ poly(r.max_T, 2), data = df, tau = 0.90) 
+pred.t$T.br.90 <- predict(quant.T.90, newdata = pred.t)
 
-new.data.bqr$pred_br <- preds[, "Estimate"] # Add predictions to new_data
-new.data.bqr$lower <- preds[, "Q5"]   # 5% CI
-new.data.bqr$upper <- preds[, "Q95"]  # 95% CI
+quant.T.75 <- rq(T.br ~ poly(r.max_T, 2), data = df, tau = 0.75) 
+pred.t$T.br.75 <- predict(quant.T.75, newdata = pred.t)
 
-T_par_bqr <- ggplot(df, aes(x = r.max_T, y = T.br)) +
-  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
-  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
-  geom_ribbon(data = new.data.bqr, aes(x = r.max_T, ymin = lower, ymax = upper), 
-              fill = "grey75", alpha = 0.5, inherit.aes = FALSE) +
-  geom_line(data = new.data.bqr, aes(x = r.max_T, y = pred_br), color = "blue", size = 1) + # Bayesian quantile regression
-  labs(x = "Maximum exponential growth rate", 
-       y = "Thermal breadth", 
-       title = "Thermal performance with Bayesian quantile regression (95% HDPI)") +
-  scale_shape_manual(values = c(16, 3)) +  # Keep custom shapes
+quant.T.50 <- rq(T.br ~ poly(r.max_T, 2), data = df, tau = 0.50) 
+pred.t$T.br.50 <- predict(quant.T.50, newdata = pred.t)
+
+T.qrs <- ggplot(df, aes(x = r.max_T, y = T.br, color = evol.bin)) +  # Quantiles plot
+  geom_point(size = 2) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.t, aes(x = r.max_T, y = T.br.100), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  geom_line(data = pred.t, aes(x = r.max_T, y = T.br.90), color = "black", size = 1.2, linetype = "dashed") +  
+  geom_line(data = pred.t, aes(x = r.max_T, y = T.br.75), color = "black", size = 1.2, linetype = "dotted") +  
+  geom_line(data = pred.t, aes(x = r.max_T, y = T.br.50), color = "black", size = 1.2, linetype = "dotdash") +  
+  
+  geom_text_repel(data = pred.t[which.min(abs(df$r.max_T - median(df$r.max_T))), ],  
+                  aes(x = r.max_T, y = T.br.100, label = "100"), 
+                  color = "black", size = 5, fontface = "bold") +
+  geom_text_repel(data = pred.t[which.min(abs(df$r.max_T - median(df$r.max_T))), ], 
+                  aes(x = r.max_T, y = T.br.90, label = "90"), 
+                  color = "black", size = 5, fontface = "bold") +
+  geom_text_repel(data = pred.t[which.min(abs(df$r.max_T - median(df$r.max_T))), ], 
+                  aes(x = r.max_T, y = T.br.75, label = "75"), 
+                  color = "black", size = 5, fontface = "bold") +
+  geom_text_repel(data = pred.t[which.min(abs(df$r.max_T - median(df$r.max_T))), ], 
+                  aes(x = r.max_T, y = T.br.50, label = "50"), 
+                  color = "black", size = 5, fontface = "bold") + # Adding labels where lines intersect data points
+  
+  labs(x = "Maximum exponential growth rate",    
+       y = "Competitive ability (1/R*)", 
+       title = "Quantile Regressions of P-Competition Trade-offs",
+       color = "Evolutionary History") +  # labels
+  
+  scale_color_manual(values = c("black", "goldenrod1"), 
+                     labels = c("Ancestral", "Evolved")) +  
   theme_classic() +
-  theme(legend.position = "none")  # Remove legend
+  theme(
+    legend.position = c(0.85, 0.85),  # Move legend inside the plot
+    legend.title = element_text(size = 12, face = "bold"),  
+    legend.text = element_text(size = 10, face = "bold"),  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10) # theme stuff
+  )
 
-T_par_bqr  # Display the plot
+T.qrs  # Display the plot
 
 ############# Light ##########################################
-
-############# Nitrogen #######################################
-
-############# Phosphorous ####################################
 
 df$shape <- ifelse(df$evol == "none", 22, 
                    ifelse(df$evol == "P", 8, 16)) # Ps are now equivalent to 8, for later mapping
 
-par.res.P <- par_frt(df, xvar = "r.max_P", yvar = "P.comp")
+df$evol.bin <- ifelse(df$evol == "none", 'ancestral', 
+                      ifelse(df$evol == "P", 'phos', 'other')) # for testing regressions.
 
-par.res.CH.P <- convex_hull_frt(df, xvar = "r.max_P", yvar = "P.comp")
+par.res.P <- par_frt(df, xvar = "r.max_P", yvar = "P.comp")
 
 P_par <- ggplot(df, aes(x = r.max_P, y = P.comp)) +  # Remove shape from aes() for regression
   geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
@@ -161,236 +168,196 @@ P_par <- ggplot(df, aes(x = r.max_P, y = P.comp)) +  # Remove shape from aes() f
        y = "Competitive ability (1/R*)", 
        title = "Phosphorous limitation") +
   scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
-  geom_line(data = par.res.CH.P, aes(x = r.max_P, y = P.comp), color = "blue", size = 1) +  # Pareto frontier line
+  geom_line(data = par.res.P, aes(x = r.max_P, y = P.comp), color = "blue", size = 1) +  # Pareto frontier line
   theme_classic() +
   theme(legend.position = "none")  # Remove legend
 
 P_par # Raw pareto front.
 
-brm_qd_P <- brm(
-  bf(P.comp ~ poly(r.max_P, 2), quantile = 0.95),  # Quadratic term instead of spline
-  data = par.res,  
-  family = asym_laplace(),
-  iter = 4000, chains = 4, cores = 4
-)
+mod.P <- lm(P.comp~r.max_P*evol.bin, data=df)  # test significance of Pareto frontier
+summary(mod.P)
 
-brm_sp_P <- brm(
-  bf(P.comp ~ s(r.max_P, bs = "gp"), quantile = 0.95),  # Use a Gaussian Process spline
-  data = par.res,  
-  family = asym_laplace(),
-  prior = c(prior(normal(0, 5), class = "b")), # Regularization to prevent overfitting
-  iter = 4000, chains = 4, cores = 4
-)
-
-brm_sp_P2 <- brm(
-  bf(P.comp ~ s(r.max_P, k = 5, bs = "tp"), quantile = 0.95),  # Thin-plate regression spline
-  data = par.res,  
-  family = asym_laplace(),
-  iter = 4000, chains = 4, cores = 4
-)
-
-new_data <- data.frame(r.max_P = seq(min(par.res$r.max_P), max(par.res$r.max_P), length.out = 100))
-preds <- as.data.frame(fitted(brm_sp_P2, newdata = new_data, probs = c(0.05, 0.95))) 
-
-# Add predictions to new_data
-new_data$pred_P.comp <- preds[, "Estimate"]
-new_data$lower <- preds[, "Q5"]   # 5% CI
-new_data$upper <- preds[, "Q95"]  # 95% CI
-
-preds$r.max_P <- new_data$r.max_P
-
-P_par_bsp <- ggplot(df, aes(x = r.max_P, y = P.comp)) +  
-  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
-  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
-  geom_ribbon(data = new_data, aes(x = r.max_P, ymin = lower, ymax = upper), 
-              fill = "grey75", alpha = 0.5, inherit.aes = FALSE) +
-  geom_line(data = preds, aes(x = r.max_P, y = Estimate), color = "blue", size = 1) +  # Bayesian quantile regression in blue
+P.regs <- ggplot(df, aes(x = r.max_P, y = P.comp, color = evol.bin)) +  
+  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_smooth(method = "lm", se = FALSE, aes(color = evol.bin)) +  # Separate regression lines
   labs(x = "Maximum exponential growth rate", 
        y = "Competitive ability (1/R*)", 
-       title = "Phosphorous limitation, Bayesian quantile regression (95% HDPI)") +
+       title = "Evolutionary Effects on P-Competition Trade-offs",
+       color = "Evolutionary History") +  # Change legend title) +
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
+                     labels = c("Ancestral", "Other", "Phosphorous")) +  # Custom colors per group
+  theme_classic() +
+  theme(
+    legend.position = c(0.85, 0.85),  # Moves legend inside the plot (x, y) in [0,1] scale
+    legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
+    legend.text = element_text(size = 10, face = "bold"),  # Adjust text size
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10)
+  ) 
+
+P.regs
+
+pred.p <- data.frame(r.max_P = seq(min(df$r.max_P), max(df$r.max_P), length.out = 100)) # Dataframe to collect quantile info in
+
+quant.P.100 <- rq(P.comp ~ poly(r.max_P, 2), data = df, tau = 1.00) 
+pred.p$P.comp.100 <- predict(quant.P.100, newdata = pred.p.100)
+
+quant.P.95 <- rq(P.comp ~ poly(r.max_P, 2), data = df, tau = 0.95) 
+pred.p$P.comp.95 <- predict(quant.P.95, newdata = pred.p)
+
+quant.P.90 <- rq(P.comp ~ poly(r.max_P, 2), data = df, tau = 0.90) 
+pred.p$P.comp.90 <- predict(quant.P.90, newdata = pred.p)
+
+quant.P.75 <- rq(P.comp ~ poly(r.max_P, 2), data = df, tau = 0.75) 
+pred.p$P.comp.75 <- predict(quant.P.75, newdata = pred.p)
+
+quant.P.50 <- rq(P.comp ~ poly(r.max_P, 2), data = df, tau = 0.50) 
+pred.p$P.comp.50 <- predict(quant.P.50, newdata = pred.p)
+
+
+P.qrs <- ggplot(df, aes(x = r.max_P, y = P.comp, color = evol.bin)) +  # Quantiles plot
+  geom_point(size = 2) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.p, aes(x = r.max_P, y = P.comp.100), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  geom_line(data = pred.p, aes(x = r.max_P, y = P.comp.90), color = "black", size = 1.2, linetype = "dashed") +  
+  geom_line(data = pred.p, aes(x = r.max_P, y = P.comp.75), color = "black", size = 1.2, linetype = "dotted") +  
+  geom_line(data = pred.p, aes(x = r.max_P, y = P.comp.50), color = "black", size = 1.2, linetype = "dotdash") +  
+  
+  geom_text_repel(data = pred.p[which.min(abs(df$r.max_P - median(df$r.max_P))), ],  
+                  aes(x = r.max_P, y = P.comp.100, label = "100"), 
+                  color = "black", size = 5, fontface = "bold") +
+  geom_text_repel(data = pred.p[which.min(abs(df$r.max_P - median(df$r.max_P))), ], 
+                  aes(x = r.max_P, y = P.comp.90, label = "90"), 
+                  color = "black", size = 5, fontface = "bold") +
+  geom_text_repel(data = pred.p[which.min(abs(df$r.max_P - median(df$r.max_P))), ], 
+                  aes(x = r.max_P, y = P.comp.75, label = "75"), 
+                  color = "black", size = 5, fontface = "bold") +
+  geom_text_repel(data = pred.p[which.min(abs(df$r.max_P - median(df$r.max_P))), ], 
+                  aes(x = r.max_P, y = P.comp.50, label = "50"), 
+                  color = "black", size = 5, fontface = "bold") + # Adding labels where lines intersect data points
+  
+  labs(x = "Maximum exponential growth rate",    
+       y = "Competitive ability (1/R*)", 
+       title = "Quantile Regressions of P-Competition Trade-offs",
+       color = "Evolutionary History") +  # labels
+  
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
+                     labels = c("Ancestral", "Other", "Phosphorous")) +  
+  theme_classic() +
+  theme(
+    legend.position = c(0.85, 0.85),  # Move legend inside the plot
+    legend.title = element_text(size = 12, face = "bold"),  
+    legend.text = element_text(size = 10, face = "bold"),  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10) # theme stuff
+  )
+
+P.qrs  # Display the plot
+
+############# Nitrogen #######################################
+
+############# Phosphorous ####################################
+
+df$shape <- ifelse(df$evol == "none", 22, 
+                   ifelse(df$evol == "P", 8, 16)) # Ps are now equivalent to 8, for later mapping
+
+df$evol.bin <- ifelse(df$evol == "none", 'ancestral', 
+                      ifelse(df$evol == "P", 'phos', 'other')) # for testing regressions.
+
+par.res.P <- par_frt(df, xvar = "r.max_P", yvar = "P.comp")
+
+P_par <- ggplot(df, aes(x = r.max_P, y = P.comp)) +  # Remove shape from aes() for regression
+  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
+  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
+  labs(x = "Maximum exponential growth rate", 
+       y = "Competitive ability (1/R*)", 
+       title = "Phosphorous limitation") +
   scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
+  geom_line(data = par.res.P, aes(x = r.max_P, y = P.comp), color = "blue", size = 1) +  # Pareto frontier line
   theme_classic() +
   theme(legend.position = "none")  # Remove legend
 
-P_par_bsp # Display the plot
+P_par # Raw pareto front.
 
-P_par_par <- ggplot(par.res, aes(x = r.max_P, y = P.comp)) +  
-  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
-  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
-  geom_ribbon(data = new_data, aes(x = r.max_P, ymin = lower, ymax = upper), 
-              fill = "grey75", alpha = 0.5, inherit.aes = FALSE) +
-  geom_line(data = preds, aes(x = r.max_P, y = Estimate), color = "blue", size = 1) +  # Bayesian quantile regression in blue
+mod.P <- lm(P.comp~r.max_P*evol.bin, data=df)  # test significance of Pareto frontier
+summary(mod.P)
+
+P.regs <- ggplot(df, aes(x = r.max_P, y = P.comp, color = evol.bin)) +  
+  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_smooth(method = "lm", se = FALSE, aes(color = evol.bin)) +  # Separate regression lines
   labs(x = "Maximum exponential growth rate", 
        y = "Competitive ability (1/R*)", 
-       title = "Phosphorous limitation, Bayesian quantile regression (95% HDPI)") +
-  scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
+       title = "Evolutionary Effects on P-Competition Trade-offs",
+       color = "Evolutionary History") +  # Change legend title) +
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
+                     labels = c("Ancestral", "Other", "Phosphorous")) +  # Custom colors per group
   theme_classic() +
-  theme(legend.position = "none")  # Remove legend
+  theme(
+    legend.position = c(0.85, 0.85),  # Moves legend inside the plot (x, y) in [0,1] scale
+    legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
+    legend.text = element_text(size = 10, face = "bold"),  # Adjust text size
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10)
+  ) 
 
-P_par_par # Just the pareto points
+P.regs
 
-brm_sp_P2.1 <- brm(
-  bf(P.comp ~ s(r.max_P, k = 5, bs = "tp"), quantile = 0.95),  # Thin-plate regression spline
-  data = df,  
-  family = asym_laplace(),
-  iter = 4000, chains = 4, cores = 4
-)
+pred.p <- data.frame(r.max_P = seq(min(df$r.max_P), max(df$r.max_P), length.out = 100)) # Dataframe to collect quantile info in
 
-new_data <- data.frame(r.max_P = seq(min(par.res$r.max_P), max(par.res$r.max_P), length.out = 100))
-preds <- as.data.frame(fitted(brm_sp_P2.1, newdata = new_data, probs = c(0.05, 0.95))) 
+quant.P.100 <- rq(P.comp ~ poly(r.max_P, 2), data = df, tau = 1.00) 
+pred.p$P.comp.100 <- predict(quant.P.100, newdata = pred.p.100)
 
-# Add predictions to new_data
-new_data$pred_P.comp <- preds[, "Estimate"]
-new_data$lower <- preds[, "Q5"]   # 5% CI
-new_data$upper <- preds[, "Q95"]  # 95% CI
+quant.P.95 <- rq(P.comp ~ poly(r.max_P, 2), data = df, tau = 0.95) 
+pred.p$P.comp.95 <- predict(quant.P.95, newdata = pred.p)
 
-preds$r.max_P <- new_data$r.max_P
+quant.P.90 <- rq(P.comp ~ poly(r.max_P, 2), data = df, tau = 0.90) 
+pred.p$P.comp.90 <- predict(quant.P.90, newdata = pred.p)
 
-P_par_bq <- ggplot(df, aes(x = r.max_P, y = P.comp)) +  
-  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
-  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
-  geom_ribbon(data = new_data, aes(x = r.max_P, ymin = lower, ymax = upper), 
-              fill = "grey75", alpha = 0.5, inherit.aes = FALSE) +
-  geom_line(data = preds, aes(x = r.max_P, y = Estimate), color = "blue", size = 1) +  # Bayesian quantile regression in blue
-  labs(x = "Maximum exponential growth rate", 
+quant.P.75 <- rq(P.comp ~ poly(r.max_P, 2), data = df, tau = 0.75) 
+pred.p$P.comp.75 <- predict(quant.P.75, newdata = pred.p)
+
+quant.P.50 <- rq(P.comp ~ poly(r.max_P, 2), data = df, tau = 0.50) 
+pred.p$P.comp.50 <- predict(quant.P.50, newdata = pred.p)
+
+
+P.qrs <- ggplot(df, aes(x = r.max_P, y = P.comp, color = evol.bin)) +  # Quantiles plot
+  geom_point(size = 2) +  # Scatter plot of raw data
+
+  geom_line(data = pred.p, aes(x = r.max_P, y = P.comp.100), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  geom_line(data = pred.p, aes(x = r.max_P, y = P.comp.90), color = "black", size = 1.2, linetype = "dashed") +  
+  geom_line(data = pred.p, aes(x = r.max_P, y = P.comp.75), color = "black", size = 1.2, linetype = "dotted") +  
+  geom_line(data = pred.p, aes(x = r.max_P, y = P.comp.50), color = "black", size = 1.2, linetype = "dotdash") +  
+  
+  geom_text_repel(data = pred.p[which.min(abs(df$r.max_P - median(df$r.max_P))), ],  
+                  aes(x = r.max_P, y = P.comp.100, label = "100"), 
+                  color = "black", size = 5, fontface = "bold") +
+  geom_text_repel(data = pred.p[which.min(abs(df$r.max_P - median(df$r.max_P))), ], 
+                  aes(x = r.max_P, y = P.comp.90, label = "90"), 
+                  color = "black", size = 5, fontface = "bold") +
+  geom_text_repel(data = pred.p[which.min(abs(df$r.max_P - median(df$r.max_P))), ], 
+                  aes(x = r.max_P, y = P.comp.75, label = "75"), 
+                  color = "black", size = 5, fontface = "bold") +
+  geom_text_repel(data = pred.p[which.min(abs(df$r.max_P - median(df$r.max_P))), ], 
+                  aes(x = r.max_P, y = P.comp.50, label = "50"), 
+                  color = "black", size = 5, fontface = "bold") + # Adding labels where lines intersect data points
+  
+  labs(x = "Maximum exponential growth rate",    
        y = "Competitive ability (1/R*)", 
-       title = "Phosphorous limitation, Bayesian quantile regression (95% HDPI)") +
-  scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
+       title = "Quantile Regressions of P-Competition Trade-offs",
+       color = "Evolutionary History") +  # labels
+  
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
+                     labels = c("Ancestral", "Other", "Phosphorous")) +  
   theme_classic() +
-  theme(legend.position = "none")  # Remove legend
+  theme(
+    legend.position = c(0.85, 0.85),  # Move legend inside the plot
+    legend.title = element_text(size = 12, face = "bold"),  
+    legend.text = element_text(size = 10, face = "bold"),  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10) # theme stuff
+  )
 
-P_par_bq # Display the plot
-
-#OK we shouldn't need the quantile regression, just the spline. The data is already subsetted to the Pareto front.
-brm_sp_P3 <- brm(
-  bf(P.comp ~ s(r.max_P, k = 3, bs = "tp")), # thin-plate spline
-  data = par.res,  
-  family = gaussian(),  # Regular Gaussian likelihood instead of asymmetric Laplace
-  iter = 4000, chains = 4, cores = 4
-)
-
-new_data <- data.frame(r.max_P = seq(min(par.res$r.max_P), max(par.res$r.max_P), length.out = 100))
-preds <- as.data.frame(fitted(brm_sp_P3, newdata = new_data, probs = c(0.025, 0.975))) 
-
-# Add predictions to new_data
-new_data$pred_P.comp <- preds[, "Estimate"]
-new_data$lower <- preds[, "Q2.5"]   # 5% CI
-new_data$upper <- preds[, "Q97.5"]  # 95% CI
-
-preds$r.max_P <- new_data$r.max_P
-
-P_par_bsp2 <- ggplot(df, aes(x = r.max_P, y = P.comp)) +  
-  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
-  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
-  geom_ribbon(data = new_data, aes(x = r.max_P, ymin = lower, ymax = upper), 
-              fill = "grey75", alpha = 0.5, inherit.aes = FALSE) +
-  geom_line(data = preds, aes(x = r.max_P, y = Estimate), color = "blue", size = 1) +  # Bayesian quantile regression in blue
-  labs(x = "Maximum exponential growth rate", 
-       y = "Competitive ability (1/R*)", 
-       title = "Phosphorous limitation, Bayesian quantile regression (95% HDPI)") +
-  scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
-  theme_classic() +
-  theme(legend.position = "none")  # Remove legend
-
-P_par_bsp2 # Display the plot
-
-brm_gp <- brm(
-  bf(P.comp ~ gp(r.max_P)),  
-  data = par.res,
-  family = gaussian(),
-  iter = 6000, chains = 4, cores = 4
-)
-
-new_data <- data.frame(r.max_P = seq(min(par.res$r.max_P), max(par.res$r.max_P), length.out = 100))
-preds <- as.data.frame(fitted(brm_gp, newdata = new_data, probs = c(0.05, 0.95))) 
-
-# Add predictions to new_data
-new_data$pred_P.comp <- preds[, "Estimate"]
-new_data$lower <- preds[, "Q5"]   # 5% CI
-new_data$upper <- preds[, "Q95"]  # 95% CI
-
-preds$r.max_P <- new_data$r.max_P
-
-P_par_gp <- ggplot(df, aes(x = r.max_P, y = P.comp)) +  
-  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
-  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
-  geom_ribbon(data = new_data, aes(x = r.max_P, ymin = lower, ymax = upper), 
-              fill = "grey75", alpha = 0.5, inherit.aes = FALSE) +
-  geom_line(data = preds, aes(x = r.max_P, y = Estimate), color = "blue", size = 1) +  # Bayesian quantile regression in blue
-  labs(x = "Maximum exponential growth rate", 
-       y = "Competitive ability (1/R*)", 
-       title = "Phosphorous limitation, Bayesian quantile regression (95% HDPI)") +
-  scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
-  theme_classic() +
-  theme(legend.position = "none")  # Remove legend
-
-P_par_gp # Display the plot
-
-brm_ns <- brm(
-  bf(P.comp ~ ns(r.max_P, df = 4)),  # Natural spline with 4 degrees of freedom
-  data = par.res,
-  family = gaussian(),
-  iter = 4000, chains = 4, cores = 4
-)
-
-new_data <- data.frame(r.max_P = seq(min(par.res$r.max_P), max(par.res$r.max_P), length.out = 100))
-preds <- as.data.frame(fitted(brm_ns, newdata = new_data, probs = c(0.05, 0.95))) 
-
-# Add predictions to new_data
-new_data$pred_P.comp <- preds[, "Estimate"]
-new_data$lower <- preds[, "Q5"]   # 5% CI
-new_data$upper <- preds[, "Q95"]  # 95% CI
-
-preds$r.max_P <- new_data$r.max_P
-
-P_par_ns <- ggplot(df, aes(x = r.max_P, y = P.comp)) +  
-  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
-  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
-  geom_ribbon(data = new_data, aes(x = r.max_P, ymin = lower, ymax = upper), 
-              fill = "grey75", alpha = 0.5, inherit.aes = FALSE) +
-  geom_line(data = preds, aes(x = r.max_P, y = Estimate), color = "blue", size = 1) +  # Bayesian quantile regression in blue
-  labs(x = "Maximum exponential growth rate", 
-       y = "Competitive ability (1/R*)", 
-       title = "Phosphorous limitation, Bayesian quantile regression (95% HDPI)") +
-  scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
-  theme_classic() +
-  theme(legend.position = "none")  # Remove legend
-
-P_par_ns # Display the plot
-
-#OK let's try a polynomial function again?
-
-brm_poly <- brm(
-  bf(P.comp ~ poly(r.max_P, 2)),  # Quadratic regression (degree 2)
-  data = par.res,
-  family = gaussian(),
-  iter = 4000, chains = 4, cores = 4
-)
-
-new_data <- data.frame(r.max_P = seq(min(par.res$r.max_P), max(par.res$r.max_P), length.out = 100))
-preds <- as.data.frame(fitted(brm_poly, newdata = new_data, probs = c(0.05, 0.95))) 
-
-# Add predictions to new_data
-new_data$pred_P.comp <- preds[, "Estimate"]
-new_data$lower <- preds[, "Q5"]   # 5% CI
-new_data$upper <- preds[, "Q95"]  # 95% CI
-
-preds$r.max_P <- new_data$r.max_P
-
-P_par_poly <- ggplot(df, aes(x = r.max_P, y = P.comp)) +  
-  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
-  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
-  geom_ribbon(data = new_data, aes(x = r.max_P, ymin = lower, ymax = upper), 
-              fill = "grey75", alpha = 0.5, inherit.aes = FALSE) +
-  geom_line(data = preds, aes(x = r.max_P, y = Estimate), color = "blue", size = 1) +  # Bayesian quantile regression in blue
-  labs(x = "Maximum exponential growth rate", 
-       y = "Competitive ability (1/R*)", 
-       title = "Phosphorous limitation, Bayesian quantile regression (95% HDPI)") +
-  scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
-  theme_classic() +
-  theme(legend.position = "none")  # Remove legend
-
-P_par_poly # Display the plot
+P.qrs  # Display the plot
 
 ############# Salt ###########################################
 
