@@ -591,20 +591,33 @@ plot_grid(L.qrs1, N.qrs1, P.qrs1, S.qrs1, T.qrs1)
 
 # PCA
 
-df.pca <- df %>% select(T.br, I.comp, N.comp, P.comp, S.c.mod, evol) # Prepare the data: selecting only the relevant columns
+df$evol.plt <- factor(df$evol, 
+                      levels = c("none", "L", "N", "P", "S", "B", "BS", "C"),
+                      labels = c("Ancestral", 
+                                 "Light limitation", 
+                                 "Nitrogen limitation", 
+                                 "Phosphorous limitation", 
+                                 "Salt stress", 
+                                 "Biotic depletion", 
+                                 "Biotic depletion x Salt", 
+                                 "Control")) # For plotting
+
+df.pca <- df %>% select(T.br, I.comp, N.comp, P.comp, S.c.mod, evol.plt) # Prepare the data: selecting only the relevant columns
 df.pca
 
 df.pca <- df.pca[df.pca$I.comp<10,] # For now removing wonky/missing points
 
-evol.fil <- df.pca$evol
+evol.fil <- df.pca$evol.plt
 
-df.pca <- df.pca %>% select(-evol)
+df.pca <- df.pca %>% select(-evol.plt)
 
 pca.result <- prcomp(df.pca, center = TRUE, scale. = TRUE) # Perform PCA
 pca.result
 
 pca.df <- data.frame(pca.result$x, evol.fil)  # Add grouping factor
 colnames(pca.df) <- c("PC1", "PC2", "PC3", "PC4", "PC5", "Evolution")
+pca.df$Evolution <- factor(pca.df$Evolution)
+
 
 screeplot(pca.result, type = "lines") # Scree plot to check explained variance
 
@@ -628,15 +641,12 @@ PCA <- ggplot(pca.df, aes(x = PC1, y = PC2, color = Evolution)) +  # PCA biplot 
 
 PCA
 
-# Extract PCA loadings (rotation matrix)
-loadings <- as.data.frame(pca.result$rotation)
+loadings <- as.data.frame(pca.result$rotation) # Extract PCA loadings (rotation matrix)
 
-# Scale loadings to fit within the PCA plot (adjust the scaling factor if needed)
-loadings$PC1 <- loadings$PC1 * max(abs(pca.df$PC1))
+loadings$PC1 <- loadings$PC1 * max(abs(pca.df$PC1)) # Scale loadings to fit within the PCA plot
 loadings$PC2 <- loadings$PC2 * max(abs(pca.df$PC2))
 
-# Add variable names for annotation
-loadings$variable <- rownames(loadings)
+loadings$variable <- rownames(loadings) # names
 
 # Create PCA plot with arrows
 pca_plot_arrows <- ggplot(pca.df, aes(x = PC1, y = PC2, color = Evolution)) +
@@ -663,6 +673,71 @@ pca_plot_arrows <- ggplot(pca.df, aes(x = PC1, y = PC2, color = Evolution)) +
   geom_text(data = loadings, aes(x = PC1, y = PC2, label = variable),
             vjust = 1, hjust = 1, color = "black", size = 5)
 
-# Show the plot
 pca_plot_arrows
 
+df.pca2 <- df %>% select(T.br, r.max_T, I.comp, r.max_I, N.comp, r.max_N, P.comp, r.max_P, S.c.mod, r.max_S, evol.plt) # Prepare the data: selecting only the relevant columns
+df.pca2
+
+df.pca2 <- df.pca2[df.pca2$I.comp<10,] # For now removing wonky/missing points
+
+df.pca2 <- df.pca2 %>% select(-evol.plt)
+
+pca.result2 <- prcomp(df.pca2, center = TRUE, scale. = TRUE) # Perform PCA
+pca.result2
+
+pca.df2 <- data.frame(pca.result2$x, evol.fil)  # Add grouping factor
+colnames(pca.df2) <- c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10", "Evolution")
+pca.df2$Evolution <- factor(pca.df2$Evolution)
+
+PCA2 <- ggplot(pca.df2, aes(x = PC1, y = PC2, color = Evolution)) +  # PCA biplot visualization
+  geom_point(size = 3) +
+  theme_classic() +
+  labs(x = paste("PC1 (", round(pca.result2$sdev[1]^2 / sum(pca.result2$sdev^2) * 100, 2), "%)", sep = ""),
+       y = paste("PC2 (", round(pca.result2$sdev[2]^2 / sum(pca.result2$sdev^2) * 100, 2), "%)", sep = ""),
+       title = "PCA of Thermal Performance and Nutrient Utilization") +
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  )
+
+PCA2
+
+loadings2 <- as.data.frame(pca.result2$rotation) # loadings
+
+loadings2$PC1 <- loadings2$PC1 * max(abs(pca.df2$PC1)) # Scale loadings to fit within the PCA plot
+loadings2$PC2 <- loadings2$PC2 * max(abs(pca.df2$PC2))
+
+loadings2$variable <- rownames(loadings2)
+
+pca_plot_arrows2 <- ggplot(pca.df2, aes(x = PC1, y = PC2, color = Evolution)) + # Create PCA plot with arrows
+  geom_point(size = 3) +
+  theme_classic() +
+  labs(x = paste("PC1 (", round(pca.result2$sdev[1]^2 / sum(pca.result2$sdev^2) * 100, 2), "%)", sep = ""),
+       y = paste("PC2 (", round(pca.result2$sdev[2]^2 / sum(pca.result2$sdev^2) * 100, 2), "%)", sep = ""),
+       title = "PCA of Thermal Performance and Nutrient Utilization") +
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  # Add arrows for variable contributions
+  geom_segment(data = loadings2, aes(x = 0, y = 0, xend = PC1, yend = PC2),
+               arrow = arrow(length = unit(0.2, "cm")), color = "black") +
+  # Add variable names to the plot
+  geom_text(data = loadings2, aes(x = PC1, y = PC2, label = variable),
+            vjust = 1, hjust = 1, color = "black", size = 5) 
+
+pca_plot_arrows2
