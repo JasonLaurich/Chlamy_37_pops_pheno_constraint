@@ -469,6 +469,23 @@ df$evol.bin <- ifelse(df$evol == "none", 'ancestral',
 
 par.res.S <- par_frt(df, xvar = "r.max_S", yvar = "S.c.mod")
 
+x_mean <- mean(df$r.max_S, na.rm = TRUE)  # Mean of x-axis variable
+y_mean <- mean(df$S.c.mod, na.rm = TRUE)  # Mean of y-axis variable
+
+S_quad <- ggplot(df, aes(x = r.max_S, y = S.c.mod)) +  # Remove shape from aes() for regression
+  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
+  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
+  labs(x = "Maximum exponential growth rate", 
+       y = "Salt tolerance (c)", 
+       title = "Salt stress") +
+  scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
+  theme_classic() +
+  geom_vline(xintercept = x_mean, linetype = "dotted", color = "blue", size = 1) +  # Vertical quadrant line
+  geom_hline(yintercept = y_mean, linetype = "dotted", color = "blue", size = 1) +  # Horizontal quadrant line
+  theme(legend.position = "none")  # Remove legend
+
+S_quad # Raw pareto front.
+
 S_par <- ggplot(df, aes(x = r.max_S, y = S.c.mod)) +  # Remove shape from aes() for regression
   geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
   geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
