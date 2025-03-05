@@ -741,3 +741,167 @@ pca_plot_arrows2 <- ggplot(pca.df2, aes(x = PC1, y = PC2, color = Evolution)) + 
             vjust = 1, hjust = 1, color = "black", size = 5) 
 
 pca_plot_arrows2
+
+# Redundancy analysis
+
+response_vars <- df.pca
+explanatory_vars <- model.matrix(~ evol.fil)[, -1]  # Remove intercept
+
+rda_result <- rda(response_vars ~ ., data = as.data.frame(explanatory_vars)) # run the RDA
+summary(rda_result)
+
+rda_sites <- as.data.frame(scores(rda_result, display = "sites")) # Extract RDA site scores (sample coordinates)
+
+rda_species <- as.data.frame(scores(rda_result, display = "species")) # Extract RDA species (trait arrows)
+
+rda_constraints <- as.data.frame(scores(rda_result, display = "bp")) # Extract explanatory variable centroids (e.g., treatment centroids)
+
+rda_sites$Evolution <- evol.fil # Add the evolutionary treatment labels to the site scores
+
+# Prepare RDA site data (samples)
+rda_sites <- rda_sites %>% 
+  rename(RDA1 = RDA1, RDA2 = RDA2)
+
+# Prepare RDA trait data (arrows)
+rda_species <- rda_species %>%
+  rename(RDA1 = RDA1, RDA2 = RDA2)
+
+# Prepare centroids of treatment conditions
+rda_constraints <- rda_constraints %>%
+  rename(RDA1 = RDA1, RDA2 = RDA2)
+
+# Assign readable labels for centroids
+rda_constraints$label <- rownames(rda_constraints)
+
+# Create the RDA biplot
+rda_plot <- ggplot() +
+  geom_point(data = rda_sites, aes(x = RDA1, y = RDA2, color = Evolution), size = 3, alpha = 0.8) +
+  
+  # Retain trait arrows
+  geom_segment(data = rda_species, aes(x = 0, y = 0, xend = RDA1, yend = RDA2), 
+               arrow = arrow(length = unit(0.25, "cm")), color = "black") +
+  
+  # Retain trait labels only
+  geom_text_repel(data = rda_species, aes(x = RDA1, y = RDA2, label = rownames(rda_species)), 
+                  size = 5, color = "black") +
+  
+  # Color legend to match PCA
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c(
+      "Biotic depletion" = "darkorange",
+      "Biotic depletion x Salt" = "deepskyblue1",
+      "Control" = "forestgreen",
+      "Light limitation" = "gold",
+      "Nitrogen limitation" = "magenta3",
+      "Ancestral" = "black",
+      "Phosphorous limitation" = "firebrick",  
+      "Salt stress" = "blue"
+    )
+  ) +
+  
+  # Axes labels
+  labs(
+    x = paste("RDA1 (", round(summary(rda_result)$cont$importance[2, 1] * 100, 2), "%)", sep = ""),
+    y = paste("RDA2 (", round(summary(rda_result)$cont$importance[2, 2] * 100, 2), "%)", sep = ""),
+    title = "Redundancy Analysis (RDA) of Traits by Evolution Environment"
+  ) +
+  
+  theme_classic() +
+  theme(
+    text = element_text(size = 14, face = "bold"),
+    legend.position = "right",
+    axis.title = element_text(size = 16, face = "bold"),
+    axis.text = element_text(size = 12),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12)
+  )
+
+# Display the plot
+rda_plot
+
+#OK now working with ancestry as the explanatory variable?
+
+df.pca1.1 <- df %>% select(T.br, I.comp, N.comp, P.comp, S.c.mod, anc) # Prepare the data: selecting only the relevant columns
+df.pca1.1
+
+df.pca1.1 <- df.pca1.1[df.pca1.1$I.comp<10,] # For now removing wonky/missing points
+
+anc.fil <- df.pca1.1$anc
+
+df.pca1.1 <- df.pca1.1 %>% select(-anc)
+
+response_vars1.1 <- df.pca1.1
+explanatory_vars1.1 <- model.matrix(~ anc.fil)[, -1]  # Remove intercept
+
+rda_result1.1 <- rda(response_vars1.1 ~ ., data = as.data.frame(explanatory_vars1.1)) # run the RDA
+summary(rda_result1.1)
+
+rda_sites1.1 <- as.data.frame(scores(rda_result1.1, display = "sites")) # Extract RDA site scores (sample coordinates)
+
+rda_species1.1 <- as.data.frame(scores(rda_result1.1, display = "species")) # Extract RDA species (trait arrows)
+
+rda_constraints1.1 <- as.data.frame(scores(rda_result1.1, display = "bp")) # Extract explanatory variable centroids (e.g., treatment centroids)
+
+rda_sites1.1$anc <- anc.fil # Add the evolutionary treatment labels to the site scores
+
+# Prepare RDA site data (samples)
+rda_sites1.1 <- rda_sites1.1 %>% 
+  rename(RDA1 = RDA1, RDA2 = RDA2)
+
+# Prepare RDA trait data (arrows)
+rda_species1.1 <- rda_species1.1 %>%
+  rename(RDA1 = RDA1, RDA2 = RDA2)
+
+# Prepare centroids of treatment conditions
+rda_constraints1.1 <- rda_constraints1.1 %>%
+  rename(RDA1 = RDA1, RDA2 = RDA2)
+
+# Assign readable labels for centroids
+rda_constraints1.1$label <- rownames(rda_constraints1.1)
+
+rda_plot1.1 <- ggplot() +
+  geom_point(data = rda_sites1.1, aes(x = RDA1, y = RDA2, color = anc), size = 3, alpha = 0.8) +
+  
+  # Retain trait arrows
+  geom_segment(data = rda_species1.1, aes(x = 0, y = 0, xend = RDA1, yend = RDA2), 
+               arrow = arrow(length = unit(0.25, "cm")), color = "black") +
+  
+  # Retain trait labels only
+  geom_text_repel(data = rda_species1.1, aes(x = RDA1, y = RDA2, label = rownames(rda_species1.1)), 
+                  size = 5, color = "black") +
+  
+  # Color legend to match PCA
+  scale_color_manual(
+    name = "Ancestry",  # Update the legend title
+    values = c(
+      "anc2" = "darkorange",
+      "anc3" = "gold",
+      "anc4" = "deepskyblue1",
+      "anc5" = "forestgreen",
+      "cc1690" = "magenta3"
+    )
+  ) +
+  
+  # Axes labels
+  labs(
+    x = paste("RDA1 (", round(summary(rda_result1.1)$cont$importance[2, 1] * 100, 2), "%)", sep = ""),
+    y = paste("RDA2 (", round(summary(rda_result1.1)$cont$importance[2, 2] * 100, 2), "%)", sep = ""),
+    title = "Redundancy Analysis (RDA) of Traits by Ancestry"
+  ) +
+  
+  theme_classic() +
+  theme(
+    text = element_text(size = 14, face = "bold"),
+    legend.position = "right",
+    axis.title = element_text(size = 16, face = "bold"),
+    axis.text = element_text(size = 12),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12)
+  )
+
+# Display the plot
+rda_plot1.1
+
+plot_grid(pca_plot_arrows, rda_plot)
+pca_plot_arrows
