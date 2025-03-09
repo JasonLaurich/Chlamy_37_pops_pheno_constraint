@@ -1,0 +1,22 @@
+model {
+
+  ## Priors for parameters
+  a ~ dunif(0, 15)             # Arbitrary constant a
+  b ~ dunif(-2, 2)             # Arbitrary constant b
+  c ~ dunif(1, 75)             # Thermal niche width
+  topt ~ dunif(0, 45)         # Location of the maximum of the quadratic portion
+  sigma ~ dunif(0, 5)          # Standard deviation for the likelihood
+  tau <- 1 / (sigma * sigma)   # Precision (inverse variance)
+
+  ## Likelihood for observed data
+  for (i in 1:N.obs) {
+    # Thomas model equation
+    trait.mu[i] <- a * exp(b * temp[i]) * (1 - pow((temp[i] - topt) / (c/2), 2))
+    trait[i] ~ dnorm(trait.mu[i], tau) # Observed trait
+  }
+
+  ## Predictions for new temperature range
+  for (j in 1:N.Temp.xs) {
+    r.pred[j] <- a * exp(b * Temp.xs[j]) * (1 - pow((Temp.xs[j] - topt) / (c/2), 2))
+  }
+}
