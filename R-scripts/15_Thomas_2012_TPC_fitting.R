@@ -336,7 +336,7 @@ nb.fit <- 30000     # burn in periods for each chain
 nt.fit <- 300       # thinning interval : (330,000 - 30,000) / 300 = 1000 posterior estimates / chain
 nc.fit <- 3         # number of chains, total of 3,000 estimates for each model. 
 
-for (i in 1:194){
+for (i in 69:72){
   
   df.i <- subset(mat[[i]])
   
