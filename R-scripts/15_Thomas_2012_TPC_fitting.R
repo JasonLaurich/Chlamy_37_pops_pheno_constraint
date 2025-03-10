@@ -336,7 +336,12 @@ nb.fit <- 30000     # burn in periods for each chain
 nt.fit <- 300       # thinning interval : (330,000 - 30,000) / 300 = 1000 posterior estimates / chain
 nc.fit <- 3         # number of chains, total of 3,000 estimates for each model. 
 
-for (i in 113:194){
+# I need to run this in chunks so that I can save the output periodically. Read the follow files to get the dfs we can add to.
+
+thomas.summ.df <- read.csv("data-processed/17_Thomas2012_TPCs.csv") # TPC parameters
+fit.df <- read.csv("data-processed/17a_Thomas2012_TPCs_fits.csv")   # Model fit details
+
+for (i in 1:30){
   
   df.i <- subset(mat[[i]])
   
@@ -345,6 +350,8 @@ for (i in 113:194){
   temp <- df.i$Temperature
   
   jag.data <- list(trait = trait, N.obs = N.obs, temp = temp, Temp.xs = Temp.xs, N.Temp.xs = N.Temp.xs)
+  
+  start.vals.lac <- get_start_vals(df.i$Temperature, df.i$Growth.rate, model_name = 'lactin2_1995')
   
   lac_jag <- jags(
     data = jag.data, 
@@ -404,3 +411,6 @@ for (i in 113:194){
     ))
   }
 }
+
+write.csv(thomas.summ.df, "data-processed/17_Thomas2012_TPCs.csv") # Save Thomas 2012 summary table
+write.csv(fit.df, "data-processed/17a_Thomas2012_TPCs_fits.csv") # Save model fit summary table
