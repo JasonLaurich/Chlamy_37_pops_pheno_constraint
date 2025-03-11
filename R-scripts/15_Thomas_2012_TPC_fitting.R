@@ -341,7 +341,7 @@ nc.fit <- 3         # number of chains, total of 3,000 estimates for each model.
 thomas.summ.df <- read.csv("data-processed/17_Thomas2012_TPCs.csv") # TPC parameters
 fit.df <- read.csv("data-processed/17a_Thomas2012_TPCs_fits.csv")   # Model fit details
 
-for (i in 128:194){
+for (i in 146:194){
   
   df.i <- subset(mat[[i]])
   
