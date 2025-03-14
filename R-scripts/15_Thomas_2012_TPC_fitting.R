@@ -414,3 +414,10 @@ for (i in 188:194){
 
 write.csv(thomas.summ.df, "data-processed/17_Thomas2012_TPCs.csv") # Save Thomas 2012 summary table
 write.csv(fit.df, "data-processed/17a_Thomas2012_TPCs_fits.csv") # Save model fit summary table
+
+################### Examining the summary data ################################################
+
+# OK the plot.list didn't work, let's upload the objects we saved and plot them. 
+
+# How do these estimates compare to those calculated and presented by Thomas et al in their supplement?
+# Let's compare Tbr to niche breadth. 
