@@ -86,6 +86,10 @@ N.Temp.xs <-length(Temp.xs)
 
 plot.list.p30 <- list() # There's only 5-6 species, we'll plot them all. 
 
+# Scenedesmus isn't working for some reason, so we'll skip to Raphidocelis
+
+i <- 'Raphidocelis'
+
 for (i in unique(df.t.p30$Sp.fac)){ # Most species don't have a rich enough dataset at P50, so we're starting with 30
   
   df.i <- df.t.p30[df.t.p30$Sp.fac == i, ]
@@ -126,9 +130,9 @@ for (i in unique(df.t.p30$Sp.fac)){ # Most species don't have a rich enough data
     theme_classic() +
     geom_hline(yintercept = 0)
     
-  plot.list.p50[[paste0("Species ", i)]] <- p
+  plot.list.p30[[paste0("Species ", i)]] <- p
   
-  thomas.summ.df <- rbind(thomas.summ.df, data.frame(                                  # Add summary data
+  bestion.summ.df <- rbind(bestion.summ.df, data.frame(                                  # Add summary data
     Sp.id = i,                                                                         # Species name 
     DIC = lac_jag$BUGSoutput$DIC,                                                      # DIC
     P.conc = 30,                                                                       # Phosphorous concentration
@@ -153,5 +157,8 @@ for (i in unique(df.t.p30$Sp.fac)){ # Most species don't have a rich enough data
   }
 }
 
-write.csv(thomas.summ.df, "data-processed/17_Thomas2012_TPCs.csv") # Save Thomas 2012 summary table
-write.csv(fit.df, "data-processed/17a_Thomas2012_TPCs_fits.csv") # Save model fit summary table
+
+plot_grid(plotlist = plot.list.p30, ncol = 5) # Not working
+
+write.csv(bestion.summ.df, "data-processed/18a_Bestion2018_TPCs.csv") # Save Bestion 2018 TPC summary table
+write.csv(fit.df, "data-processed/18b_Bestion2018_TPCs_fits.csv") # Save model fit summary table
