@@ -256,12 +256,326 @@ for (i in unique(df.r.exp$Sp.id)){ # For each species
 
 # It does actually seem like there is only data for C. reinhardtii at 20 C! 
 
-write.csv(lewington.summ.df, "data-processed/19b_Lewington2019_TPCs.csv") # Save Bestion 2018 TPC summary table
+write.csv(lewington.summ.df, "data-processed/19b_Lewington2019_TPCs.csv") # Save Lewington-Pearce 2019 TPC summary table
 write.csv(fit.df, "data-processed/19c_Lewington2019_TPCs_fits.csv") # Save model fit summary table
 
 # Calculate µ across Nitrogen and fit Monod curves -------------------------------
 
+# So we are going to do this at 20C to stay consistent with the rest of the dataset.
+# As it turns out, light seems to have been held constant at 140.6 for the nitrate experiments
+
+df.n <- df %>% 
+  filter(light_level == 140.6, temperature == 20)
+
+nit <- as.vector(unique(df.n$nitrate_level))# for looping through nitrate levels
+ord.nit<- sort(nit)
+
+df.r.exp.n <- data.frame(              # Summary dataframe for r_exp
+  Sp.id = character(),                 # Species
+  nit = numeric(),                     # Nitrate level
+  id = character(),                    # Unique ID
+  r.exp = numeric()                    # Thresholded r.exp
+)
+
+for (i in unique(df.n$Sp.fac)){ # for every species
+  
+  for (t in ord.nit){ # at every nitrogen level
+    
+    df.i <- df.n[df.n$Sp.fac == i, ]
+    df.it <- df.i[df.i$nitrate_level == t, ]
+    df.it <- droplevels(df.it) # Drop unused levels to isolate well replicate IDs at given t
+    
+    for (w in unique(df.it$id)){ # Doing this separately for each replicate
+      
+      df.it.wl <- subset(df.it, as.numeric(df.it$id) == w)
+      
+      df.it.wl <- df.it.wl[order(df.it.wl$day), ]
+      
+      df.it.wl2 <- df.it.wl %>% 
+        mutate(N0 = fluorescence[1])
+      
+      if (df.it.wl2$fluorescence[2] <  df.it.wl2$fluorescence[1]){ # Get rid of 1st data points where there is a drop off after the first observation
+        df.it.wl2 <- df.it.wl2[-1,]
+        df.it.wl2$N0 <- df.it.wl2$fluorescence[1]
+      }
+      
+      t.series <- unique(df.it.wl2$day) # Re-initialize this internally - we will only save summary data for each unique pop x N x well combo
+      t.series <- t.series[-1] # Trim off the first entry to make tracking easier.
+      
+      ln.slopes <- c() # Re-initialize this too!
+      
+      for (z in t.series){
+        
+        df.it.wl.sl <- df.it.wl2[df.it.wl2$day <= z, ] # Subset the data to exclude time points above our window
+        
+        ln_slope <- lm(log.fluorescence~day, data = df.it.wl.sl)
+        
+        ln.slopes <- c(ln.slopes, summary(ln_slope)$coefficients[2,1])
+        
+      } # So now we have our slopes for each id x sp x N level
+      
+      s <- length(ln.slopes) # Initialize the full length of the dataset, for cases in which the entire period is exponential growth.
+      
+      for (r in 1:(length(ln.slopes) - 1)) { # Loop through slopes to find when the drop-off exceeds 10%
+        
+        if (ln.slopes[r] != 0 & round(ln.slopes[r], digits = 5) !=0) { # We also need to account for tiny values that are basically 0 (e.g. 5 e-16, but are messing up our loops)
+          # percent.chg <- (ln.slopes[s] - ln.slopes[s + 1]) / ln.slopes[s] This was the reason we were getting weird negative results! If there was a stochastic drop.
+          percent.chg <- ln.slopes[r] / ln.slopes[r + 1] # This should (along with the next line) fix it.
+          
+          if (percent.chg >= 1.10 & ln.slopes[r] > 0 & ln.slopes[r+1] > 0) { # Because now, the drop-off ignores transiently negative slopes. 
+            s <- r # If the condition is met, reassign s to the corresponding drop-off point!
+            break  # Exit loop when condition is met
+          }
+        }
+      } # Now I have s!
+      
+      df.it.wl.th <- df.it.wl2[df.it.wl2$day <= t.series[s], ] # Get the thresholded data according to our sliding window approach
+      
+      r_exp <- nls_multstart(fluorescence ~ N0 * exp(r*day),  # Exponential growth model (N0 is in our dataframe)
+                             data = df.it.wl.th,
+                             start_lower = c(r = -4.5), 
+                             start_upper = c(r = 4.5),   
+                             iter = 500,
+                             supp_errors = 'Y',
+                             control = nls.control(maxiter = 200))
+      
+      if (is.null(r_exp)){
+        
+        df.r.exp.n <- rbind(df.r.exp.n, data.frame(
+          Sp.id = df.it.wl.th$Sp.fac[1],          
+          nit = df.it.wl2$nitrate_level[1],        
+          id = df.it.wl2$id[1],                
+          r.exp = NA        
+        ))
+        
+      }else{
+        # Add data to our summary table
+        df.r.exp.n <- rbind(df.r.exp.n, data.frame(
+          Sp.id = df.it.wl.th$Sp.fac[1],             # Species
+          nit = df.it.wl2$nitrate_level[1],          # Nitrogen
+          id = df.it.wl2$id[1],                      # ID
+          r.exp = summary(r_exp)$parameters[1,1]     # The calculated r.exp value
+        ))
+      }
+      
+    }
+    
+  }
+  
+}
+
+write.csv(df.r.exp.n, "data-processed/19d_Lewington2019_Nit_r_estimates.csv") # let's save the file.
+
+#### Monod Curves ####
+
+# df.r.exp.n <- read.csv("data-processed/19d_Lewington2019_Nit_r_estimates.csv") # if needed
+
+lewington.summ.df.n <- data.frame(   # We'll create a dataframe to store the data as we fit models.
+  Sp.id = numeric(),                 # Species ID
+  DIC = numeric(),                   # DIC
+  K.s = numeric(),                   # Half-saturation constant
+  r.max = numeric(),                 # Maximum population growth rate
+  R.jag = numeric(),                 # Minimum resource requirement for positive growth (from jags model)
+  R.mth = numeric(),                 # Minimum resource requirement for positive growth (analytical solution, R* = m*ks/(rmax-m))
+  stringsAsFactors = FALSE           # Avoid factor conversion
+)
+
+fit.df <- data.frame(       # Save model fit estimates for examination
+  Sp.id = numeric(),        # Species id
+  Parameter = character(),  # Model parameter (e.g. cf.a, cf.tmax, etc.)
+  mean = numeric(),         # Posterior mean
+  Rhat = numeric(),         # Rhat values
+  n.eff = numeric(),        # Sample size estimates (should be ~3000)
+  stringsAsFactors = FALSE            
+)
+
+# Put these here too, in case we want to run this section separately
+ni.fit <- 330000    # iterations / chain
+nb.fit <- 30000     # burn in periods for each chain
+nt.fit <- 300       # thinning interval : (330,000 - 30,000) / 300 = 1000 posterior estimates / chain
+nc.fit <- 3         # number of chains, total of 3,000 estimates for each model. 
+
+inits.monod <- function() { # Set the initial values for our Monod curve
+  list(
+    r_max = runif(1, 0.1, 5), # Initial guess for r_max
+    K_s = runif(1, 0.1, 5),   # Initial guess for K_s
+    sigma = runif(1, 0.1, 1)  # Initial guess for error
+  )
+}
+
+parameters.monod <- c("r_max", "K_s", "sigma", "r_pred_new") # Save these
+
+S.pred <- seq(0, 1000, 0.5) # Nitrogen gradient we are interested in here (concentration)
+N.S.pred <-length(S.pred)   # We will keep this to also have 500 levels in the gradient?
+# This won't really work - the problem with nitrogen is the combination of wide range of []s and
+# fine-grained resolution at the lower end. We're going to estimate r every 0.5 so 2000 levels. 
+
+for (i in unique(df.r.exp.n$Sp.id)){ # For each species
+  
+  df.i <- df.r.exp.n %>% 
+    filter(Sp.id == i, !is.na(r.exp))
+  
+  trait <- df.i$r.exp     # format the data for jags
+  N.obs <- length(trait)
+  
+  nit <- df.i$nit
+  
+  jag.data <- list(trait = trait, N.obs = N.obs, S = nit, S.pred = S.pred, N.S.pred = N.S.pred)
+  
+  monod_jag <- jags( # Run the phosphorous Monod function. 
+    data = jag.data,
+    inits = inits.monod,
+    parameters.to.save = parameters.monod,
+    model.file = "monod.txt",
+    n.thin = nt.fit,
+    n.chains = nc.fit,
+    n.burnin = nb.fit,
+    n.iter = ni.fit,
+    DIC = TRUE,
+    working.directory = getwd()
+  )
+  
+  df.jags <- data.frame(monod_jag$BUGSoutput$summary)[-c(1:3,2005),]   # generate the sequence of r.pred values
+  df.jags$nit <- seq(0, 1000, 0.5)
+  
+  lewington.summ.df.n <- rbind(lewington.summ.df.n, data.frame(                                 # Add summary data
+    Sp.id = i,                                                                                  # Species name 
+    DIC = monod_jag$BUGSoutput$DIC,                                                             # DIC
+    K.s = monod_jag$BUGSoutput$summary[1,1],                                                    # Half-saturation constant
+    r.max = monod_jag$BUGSoutput$summary[3,1],                                                  # Maximum population growth rate
+    R.jag = df.jags$nit[which(df.jags$mean > 0.56)[1]],                                        # Minimum resource requirement for positive growth (from jags model)
+    R.mth = 0.56*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.56)   # Minimum resource requirement for positive growth (from math)
+  ))
+  
+  nit_sum <- monod_jag$BUGSoutput$summary[c(1:3, 2005),] # Have to create a new frame for summaries (not listed 1 to 6)
+  
+  for (j in 1:4){
+    fit.df <- rbind(fit.df, data.frame(        # Model performance data
+      Sp.id = i,                               # Species       
+      Parameter = rownames(nit_sum)[j],        # Model parameter (e.g. K_s, r_max, etc.)
+      mean = nit_sum[j,1],                     # Posterior mean
+      Rhat = nit_sum[j,8],                     # Rhat values
+      n.eff = nit_sum[j,9]                     # Sample size estimates (should be ~3000)
+    ))
+  
+  }
+}
+
+# These numbers seem suspect. Need to investigate further
+df.r.exp.n
+lewington.summ.df.n
+
+# There are no 0 N levels for most species, which means the growths are positive for many 
+# even at the lowest N levels. 
+
+write.csv(lewington.summ.df.n, "data-processed/19e_Lewington2019_Nit_Monods.csv") # Save Lewington-Pearce 2019 N Monod summary table
+write.csv(fit.df, "data-processed/19f_Lewington2019_Nit_Monod_fits.csv") # Save model fit summary table
 
 # Calculate µ across Light and fit Monod Curves ---------------------------
 
+# So we are going to do this at 20C to stay consistent with the rest of the dataset.
+# As it turns out, light seems to have been held constant at 140.6 for the nitrate experiments
 
+df.l <- df %>% 
+  filter(nitrate_level == 1000, temperature == 20)
+
+light <- as.vector(unique(df.l$light_level))# for looping through nitrate levels
+ord.light<- sort(light)
+
+df.r.exp.l <- data.frame(              # Summary dataframe for r_exp
+  Sp.id = character(),                 # Species
+  light = numeric(),                   # Light level
+  id = character(),                    # Unique ID
+  r.exp = numeric()                    # Thresholded r.exp
+)
+
+for (i in unique(df.l$Sp.fac)){ # for every species
+  
+  for (t in ord.light){ # at every nitrogen level
+    
+    df.i <- df.l[df.l$Sp.fac == i, ]
+    df.it <- df.i[df.i$light_level == t, ]
+    df.it <- droplevels(df.it) # Drop unused levels to isolate well replicate IDs at given t
+    
+    for (w in unique(df.it$id)){ # Doing this separately for each replicate
+      
+      df.it.wl <- subset(df.it, as.numeric(df.it$id) == w)
+      
+      df.it.wl <- df.it.wl[order(df.it.wl$day), ]
+      
+      df.it.wl2 <- df.it.wl %>% 
+        mutate(N0 = fluorescence[1])
+      
+      if (df.it.wl2$fluorescence[2] <  df.it.wl2$fluorescence[1]){ # Get rid of 1st data points where there is a drop off after the first observation
+        df.it.wl2 <- df.it.wl2[-1,]
+        df.it.wl2$N0 <- df.it.wl2$fluorescence[1]
+      }
+      
+      t.series <- unique(df.it.wl2$day) # Re-initialize this internally - we will only save summary data for each unique pop x N x well combo
+      t.series <- t.series[-1] # Trim off the first entry to make tracking easier.
+      
+      ln.slopes <- c() # Re-initialize this too!
+      
+      for (z in t.series){
+        
+        df.it.wl.sl <- df.it.wl2[df.it.wl2$day <= z, ] # Subset the data to exclude time points above our window
+        
+        ln_slope <- lm(log.fluorescence~day, data = df.it.wl.sl)
+        
+        ln.slopes <- c(ln.slopes, summary(ln_slope)$coefficients[2,1])
+        
+      } # So now we have our slopes for each id x sp x N level
+      
+      s <- length(ln.slopes) # Initialize the full length of the dataset, for cases in which the entire period is exponential growth.
+      
+      for (r in 1:(length(ln.slopes) - 1)) { # Loop through slopes to find when the drop-off exceeds 10%
+        
+        if (ln.slopes[r] != 0 & round(ln.slopes[r], digits = 5) !=0) { # We also need to account for tiny values that are basically 0 (e.g. 5 e-16, but are messing up our loops)
+          # percent.chg <- (ln.slopes[s] - ln.slopes[s + 1]) / ln.slopes[s] This was the reason we were getting weird negative results! If there was a stochastic drop.
+          percent.chg <- ln.slopes[r] / ln.slopes[r + 1] # This should (along with the next line) fix it.
+          
+          if (percent.chg >= 1.10 & ln.slopes[r] > 0 & ln.slopes[r+1] > 0) { # Because now, the drop-off ignores transiently negative slopes. 
+            s <- r # If the condition is met, reassign s to the corresponding drop-off point!
+            break  # Exit loop when condition is met
+          }
+        }
+      } # Now I have s!
+      
+      df.it.wl.th <- df.it.wl2[df.it.wl2$day <= t.series[s], ] # Get the thresholded data according to our sliding window approach
+      
+      r_exp <- nls_multstart(fluorescence ~ N0 * exp(r*day),  # Exponential growth model (N0 is in our dataframe)
+                             data = df.it.wl.th,
+                             start_lower = c(r = -4.5), 
+                             start_upper = c(r = 4.5),   
+                             iter = 500,
+                             supp_errors = 'Y',
+                             control = nls.control(maxiter = 200))
+      
+      if (is.null(r_exp)){
+        
+        df.r.exp.l <- rbind(df.r.exp.l, data.frame(
+          Sp.id = df.it.wl.th$Sp.fac[1],          
+          light = df.it.wl2$light_level[1],        
+          id = df.it.wl2$id[1],                
+          r.exp = NA        
+        ))
+        
+      }else{
+        # Add data to our summary table
+        df.r.exp.l <- rbind(df.r.exp.l, data.frame(
+          Sp.id = df.it.wl.th$Sp.fac[1],             # Species
+          light = df.it.wl2$light_level[1],          # Light
+          id = df.it.wl2$id[1],                      # ID
+          r.exp = summary(r_exp)$parameters[1,1]     # The calculated r.exp value
+        ))
+      }
+      
+    }
+    
+  }
+  
+}
+
+write.csv(df.r.exp.l, "data-processed/19g_Lewington2019_Light_r_estimates.csv") # let's save the file.
+
+#### Monod Curves ####
