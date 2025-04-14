@@ -1,0 +1,259 @@
+"","Sp.id","Parameter","mean","Rhat","n.eff"
+"1","Actinocyclus octonarius","cf.a",0.025090096472012,29.9356080820347,3
+"2","Actinocyclus octonarius","cf.b",-0.333343340404242,1,1
+"3","Actinocyclus octonarius","cf.delta_t",17.9285531511741,10.3205271840254,3
+"4","Actinocyclus octonarius","cf.sigma",7.10994214369527e-06,1.30560652309789,10
+"5","Actinocyclus octonarius","cf.tmax",27.9031938673292,1.34088297934558,10
+"6","Actinocyclus octonarius","deviance",-109.546167604956,1.39098276030467,9
+"7","Actinoptychus senarius","cf.a",0.0319311106219677,73.4627406985634,3
+"8","Actinoptychus senarius","cf.b",-0.666667502846259,1,1
+"9","Actinoptychus senarius","cf.delta_t",3.7852965332822,5.73014028764716,3
+"10","Actinoptychus senarius","cf.sigma",7.8610729108896e-07,1.00240169329082,1100
+"11","Actinoptychus senarius","cf.tmax",39.5146841987695,1.02293372472262,150
+"12","Actinoptychus senarius","deviance",-154.354573485891,1.00203998943273,1300
+"13","Gymnodinium sanguineum","cf.a",0.0667335680961034,1,1
+"14","Gymnodinium sanguineum","cf.b",-9.60375897742504e-06,1,1
+"15","Gymnodinium sanguineum","cf.delta_t",16.4203885301484,1,1
+"16","Gymnodinium sanguineum","cf.sigma",7.53260617127777e-07,1.15220923772543,18
+"17","Gymnodinium sanguineum","cf.tmax",40.6362682701336,31.4907083694451,3
+"18","Gymnodinium sanguineum","deviance",-3526.42701637392,3.91298722845361,3
+"19","Alexandrium catenella","cf.a",0.0307768477503388,46.5030582765576,3
+"20","Alexandrium catenella","cf.b",-0.66667219191871,1,1
+"21","Alexandrium catenella","cf.delta_t",4.09730954681361,6.07588528156789,3
+"22","Alexandrium catenella","cf.sigma",1.73655501400317e-06,1.09552690576679,26
+"23","Alexandrium catenella","cf.tmax",38.3403459436539,1.23154006566295,13
+"24","Alexandrium catenella","deviance",-310.114564487617,1.21952112510053,13
+"25","Alexandrium catenella ","cf.a",0.0946420695562802,400.288124140297,3
+"26","Alexandrium catenella ","cf.b",-9.37080074585839e-05,1.08785482794629,80
+"27","Alexandrium catenella ","cf.delta_t",12.9351760632423,395.199121436433,3
+"28","Alexandrium catenella ","cf.sigma",6.59596600065084e-06,1.00180037938075,1500
+"29","Alexandrium catenella ","cf.tmax",26.250373420507,1.30409801929109,11
+"30","Alexandrium catenella ","deviance",-93.7004331681497,1.00174145279477,1600
+"31","Alexandrium fundyense","cf.a",0.102622159112513,1,1
+"32","Alexandrium fundyense","cf.b",-6.66916718310148e-06,1,1
+"33","Alexandrium fundyense","cf.delta_t",11.1074414037176,1,1
+"34","Alexandrium fundyense","cf.sigma",1.06731694169224e-06,1.00496246785036,450
+"35","Alexandrium fundyense","cf.tmax",28.1050878196442,11.1638457754909,3
+"36","Alexandrium fundyense","deviance",-494.832419716462,1.02165329145475,98
+"37","Alexandrium minutum","cf.a",0.0797145046234142,42.0872883009954,3
+"38","Alexandrium minutum","cf.b",-0.333338587117841,1,1
+"39","Alexandrium minutum","cf.delta_t",7.23391762118296,6.43049290859547,3
+"40","Alexandrium minutum","cf.sigma",5.05920533543395e-07,1.36667576443864,9
+"41","Alexandrium minutum","cf.tmax",34.5195408650519,3.62860403763843,4
+"42","Alexandrium minutum","deviance",-211.924352926076,1.69597714453529,6
+"43","Alexandrium monilatum","cf.a",0.0425931242610769,118.311012931113,3
+"44","Alexandrium monilatum","cf.b",-0.333360732125738,1,1
+"45","Alexandrium monilatum","cf.delta_t",10.7234000503476,10.3656877000062,3
+"46","Alexandrium monilatum","cf.sigma",9.21679831914995e-07,1.78005604163626,6
+"47","Alexandrium monilatum","cf.tmax",42.1170807950163,2.01336296685778,5
+"48","Alexandrium monilatum","deviance",-203.234400447496,2.16722594347656,5
+"49","Alexandrium ostenfeldii","cf.a",0.0677666436001029,136.982538518815,3
+"50","Alexandrium ostenfeldii","cf.b",-0.333345493961981,1,1
+"51","Alexandrium ostenfeldii","cf.delta_t",10.1536525625661,39.8481004702088,3
+"52","Alexandrium ostenfeldii","cf.sigma",2.64776166435424e-07,3.73631516035353,4
+"53","Alexandrium ostenfeldii","cf.tmax",37.3351234108998,19.8761358710672,3
+"54","Alexandrium ostenfeldii","deviance",-553.28575547912,7.81186478838746,3
+"55","Amphidinium klebsii","cf.a",0.0841052947306174,1,1
+"56","Amphidinium klebsii","cf.b",-8.09343757791197e-06,1,1
+"57","Amphidinium klebsii","cf.delta_t",11.9720821889167,1,1
+"58","Amphidinium klebsii","cf.sigma",6.88726587984153e-07,1.01574546089284,130
+"59","Amphidinium klebsii","cf.tmax",40.9977233952706,2.97744757868609,4
+"60","Amphidinium klebsii","deviance",-282.890406032435,1.03713802661373,58
+"61","Amphidinium","cf.a",0.0577338010217036,16.2448406858851,3
+"62","Amphidinium","cf.b",-0.333337324703781,1,1
+"63","Amphidinium","cf.delta_t",8.73183695217578,10.503177535054,3
+"64","Amphidinium","cf.sigma",1.62639433093311e-06,1.19034406021992,15
+"65","Amphidinium","cf.tmax",40.5140723106207,1.3597927897249,11
+"66","Amphidinium","deviance",-146.132769209124,1.30421726794285,11
+"67","Amphiprora paludosa","cf.a",0.0987863650041961,75.9222567647062,3
+"68","Amphiprora paludosa","cf.b",-0.333336315070799,1,1
+"69","Amphiprora paludosa","cf.delta_t",5.31271190349625,6.57482884597812,3
+"70","Amphiprora paludosa","cf.sigma",3.24007987856358e-06,1.42341204516692,9
+"71","Amphiprora paludosa","cf.tmax",36.6178486650401,2.40788375769091,4
+"72","Amphiprora paludosa","deviance",-160.447046424524,1.67041564913885,6
+"73","Amphiprora","cf.a",0.0236133207738103,64.964863050243,3
+"74","Amphiprora","cf.b",-0.666678029969138,1,1
+"75","Amphiprora","cf.delta_t",5.12387615908869,8.52734114637732,3
+"76","Amphiprora","cf.sigma",1.64510964436181e-06,1.10458199434026,24
+"77","Amphiprora","cf.tmax",41.0307463388438,1.09032111391113,170
+"78","Amphiprora","deviance",-287.525029414048,1.31313672721143,10
+"79","Dolichospermum flosaquae","cf.a",0.0534804789695788,2169.49167053638,3
+"80","Dolichospermum flosaquae","cf.b",-3.17954272952927e-06,1,1
+"81","Dolichospermum flosaquae","cf.delta_t",19.117293699676,2166.78313760782,3
+"82","Dolichospermum flosaquae","cf.sigma",4.52651086295978e-06,1.0275565013395,78
+"83","Dolichospermum flosaquae","cf.tmax",40.2318688170454,1.25728278012023,39
+"84","Dolichospermum flosaquae","deviance",-350.109257956871,1.09254834263752,27
+"85","Aphanizomenon flosaquae","cf.a",0.0775466304575748,1,1
+"86","Aphanizomenon flosaquae","cf.b",-1.02239904214067e-05,1,1
+"87","Aphanizomenon flosaquae","cf.delta_t",13.6454606725518,1,1
+"88","Aphanizomenon flosaquae","cf.sigma",2.9779746651911e-06,1.0013544879324,2300
+"89","Aphanizomenon flosaquae","cf.tmax",39.5217230975048,6.73353884389665,3
+"90","Aphanizomenon flosaquae","deviance",-1652.04396117877,1.00800197236823,270
+"91","Asterionella formosa","cf.a",0.0364931049151452,105.351866475382,3
+"92","Asterionella formosa","cf.b",-0.333354413658399,1,1
+"93","Asterionella formosa","cf.delta_t",13.0548541754756,10.2579329537857,3
+"94","Asterionella formosa","cf.sigma",3.59485445243221e-06,1.03522190870096,61
+"95","Asterionella formosa","cf.tmax",38.9466940716801,2.878826977565,4
+"96","Asterionella formosa","deviance",-1224.45605357704,1.51205086480641,7
+"97","Asterionellopsis glacialis","cf.a",0.0767857851760158,1,1
+"98","Asterionellopsis glacialis","cf.b",-6.94939282412099e-06,1,1
+"99","Asterionellopsis glacialis","cf.delta_t",13.8305251347288,1,1
+"100","Asterionellopsis glacialis","cf.sigma",5.47580041056769e-06,1.00126130104694,2600
+"101","Asterionellopsis glacialis","cf.tmax",39.4149950087306,4.44126671814425,3
+"102","Asterionellopsis glacialis","deviance",-1220.85411508494,1.00618140172891,350
+"103","Aulacoseira granulata","cf.a",0.043819178557403,50.1053903542931,3
+"104","Aulacoseira granulata","cf.b",-0.666666998328451,1,1
+"105","Aulacoseira granulata","cf.delta_t",2.85181337626195,5.05759379288799,3
+"106","Aulacoseira granulata","cf.sigma",1.00515594159913e-06,1.00735807878199,400
+"107","Aulacoseira granulata","cf.tmax",38.1983377047025,1.63362487377367,6
+"108","Aulacoseira granulata","deviance",-200.400805221305,1.0153989636758,360
+"109","Odontella aurita","cf.a",0.106603503383519,1,1
+"110","Odontella aurita","cf.b",-1.26790188424707e-05,1,1
+"111","Odontella aurita","cf.delta_t",10.6148391248613,1,1
+"112","Odontella aurita","cf.sigma",1.10813846729888e-06,1.60837731645596,7
+"113","Odontella aurita","cf.tmax",22.9822298493131,17.712272891772,3
+"114","Odontella aurita","deviance",-346.313639976886,2.57890683233395,4
+"115","Odontella regia","cf.a",0.0485994148114677,4.57035112772268,3
+"116","Odontella regia","cf.b",-6.58502292432537e-05,1.26828376420014,720
+"117","Odontella regia","cf.delta_t",20.852192161186,4.57252892078588,3
+"118","Odontella regia","cf.sigma",1.10152833952419e-05,1.00600776198629,500
+"119","Odontella regia","cf.tmax",36.694490223321,1.05449888608852,42
+"120","Odontella regia","deviance",-93.0381794586777,1.0063501775403,480
+"121","Odontella sinensis","cf.a",0.017672371712649,42.1319019095507,3
+"122","Odontella sinensis","cf.b",-0.66667169358192,1,1
+"123","Odontella sinensis","cf.delta_t",6.54656151270189,7.22841402713733,3
+"124","Odontella sinensis","cf.sigma",2.01756809636241e-06,1.73861348381229,6
+"125","Odontella sinensis","cf.tmax",40.8016576585307,1.33604839342699,10
+"126","Odontella sinensis","deviance",-236.551792714956,2.60842492103724,4
+"127","Cyclococcolithus leptoporus","cf.a",0.0479665343553665,1,1
+"128","Cyclococcolithus leptoporus","cf.b",-5.0702282575004e-05,1,1
+"129","Cyclococcolithus leptoporus","cf.delta_t",21.5881041748385,1,1
+"130","Cyclococcolithus leptoporus","cf.sigma",1.64680528893748e-06,1.00138950655942,2200
+"131","Cyclococcolithus leptoporus","cf.tmax",38.5691251661959,7.47801611844826,3
+"132","Cyclococcolithus leptoporus","deviance",-287.447112543592,1.00181183119433,3000
+"133","Ceratium furca","cf.a",0.0515317996453821,1,1
+"134","Ceratium furca","cf.b",-1.32068178040764e-05,1,1
+"135","Ceratium furca","cf.delta_t",21.3752548924928,1,1
+"136","Ceratium furca","cf.sigma",1.73586141041606e-06,4.30827618972305,3
+"137","Ceratium furca","cf.tmax",41.3340167866021,5.43740890812921,3
+"138","Ceratium furca","deviance",-1023.42021801351,13.8108002248423,3
+"139","Ceratium furcoides","cf.a",0.0605944109995108,1,1
+"140","Ceratium furcoides","cf.b",-1.24197264263493e-05,1,1
+"141","Ceratium furcoides","cf.delta_t",17.6354957615885,1,1
+"142","Ceratium furcoides","cf.sigma",2.09432430760667e-07,2.71686554864584,4
+"143","Ceratium furcoides","cf.tmax",39.3051992457165,41.4608650809651,3
+"144","Ceratium furcoides","deviance",-393.897578419222,4.7319230989073,3
+"145","Ceratium fusus","cf.a",0.0758886109373687,81.0748566641551,3
+"146","Ceratium fusus","cf.b",-0.333338194098705,1,1
+"147","Ceratium fusus","cf.delta_t",7.93941356481969,10.9905212638096,3
+"148","Ceratium fusus","cf.sigma",1.32209168377652e-06,1.09967028463779,25
+"149","Ceratium fusus","cf.tmax",38.1982719554954,5.41101738426543,3
+"150","Ceratium fusus","deviance",-801.270071922779,1.76020659379757,6
+"151","Chaetoceros calcitrans","cf.a",0.0267979667890396,41.3225325175418,3
+"152","Chaetoceros calcitrans","cf.b",-0.666680482968905,1,1
+"153","Chaetoceros calcitrans","cf.delta_t",4.79461023669126,5.63196212168826,3
+"154","Chaetoceros calcitrans","cf.sigma",9.57437183929301e-06,1.04082526256296,54
+"155","Chaetoceros calcitrans","cf.tmax",38.9085104374628,1.22760587791891,13
+"156","Chaetoceros calcitrans","deviance",-731.616527188278,1.32803488812476,10
+"157","Chaetoceros curvisetum","cf.a",0.0472951250182103,1.01854119172023,320
+"158","Chaetoceros curvisetum","cf.b",-0.235936666270388,1.00077585011163,3000
+"159","Chaetoceros curvisetum","cf.delta_t",18.5040241820186,1.00476112042498,3000
+"160","Chaetoceros curvisetum","cf.sigma",0.106028963677814,1.00143515144215,2100
+"161","Chaetoceros curvisetum","cf.tmax",32.8108929173603,1.00506944886928,3000
+"162","Chaetoceros curvisetum","deviance",-32.6360787846605,1.00149523354698,2000
+"163","Chaetoceros debilis","cf.a",0.0437404533444965,1.00096228412899,3000
+"164","Chaetoceros debilis","cf.b",-0.23713529693548,1.00054289316805,3000
+"165","Chaetoceros debilis","cf.delta_t",19.3012337374368,1.0069166289863,360
+"166","Chaetoceros debilis","cf.sigma",0.0947742127393267,1.00103622853701,3000
+"167","Chaetoceros debilis","cf.tmax",31.9974297470764,1.00236061916578,1700
+"168","Chaetoceros debilis","deviance",-30.1294337141045,1.00086651284046,3000
+"169","Chaetoceros diadema","cf.a",0.0502248157768337,1.0414836391159,340
+"170","Chaetoceros diadema","cf.b",-0.218530381619406,1.01958707484967,180
+"171","Chaetoceros diadema","cf.delta_t",18.0490310675891,1.02798133385522,120
+"172","Chaetoceros diadema","cf.sigma",0.0393524649127679,1.00317941354042,750
+"173","Chaetoceros diadema","cf.tmax",25.6003897338833,1.00088121474442,3000
+"174","Chaetoceros diadema","deviance",-38.7570793394318,1.00337108840915,700
+"175","Chaetoceros gracilis","cf.a",0.0718586655531843,137.628036795692,3
+"176","Chaetoceros gracilis","cf.b",-0.33334459402459,1,1
+"177","Chaetoceros gracilis","cf.delta_t",8.71525881199832,11.0709618666892,3
+"178","Chaetoceros gracilis","cf.sigma",4.84848371254093e-06,2.83733700366661,4
+"179","Chaetoceros gracilis","cf.tmax",40.8805397940134,4.6856652236893,3
+"180","Chaetoceros gracilis","deviance",-889.911991829605,7.60718920151217,3
+"181","Chaetoceros pseudocurvisetus","cf.a",0.0850075504521959,1,1
+"182","Chaetoceros pseudocurvisetus","cf.b",-3.73501371308965e-05,1,1
+"183","Chaetoceros pseudocurvisetus","cf.delta_t",12.0006912271871,1,1
+"184","Chaetoceros pseudocurvisetus","cf.sigma",3.88769764554877e-06,1.12568505954473,21
+"185","Chaetoceros pseudocurvisetus","cf.tmax",39.1519659639526,3.96580806043418,3
+"186","Chaetoceros pseudocurvisetus","deviance",-223.000935388614,1.28824371203971,11
+"187","Chaetoceros simplex","cf.a",0.0556119074171828,100.845892729227,3
+"188","Chaetoceros simplex","cf.b",-0.333350352756418,1,1
+"189","Chaetoceros simplex","cf.delta_t",8.23131852059443,7.2544196999965,3
+"190","Chaetoceros simplex","cf.sigma",6.02585251896915e-06,1.00095830681545,3000
+"191","Chaetoceros simplex","cf.tmax",39.3022597293568,1.22586166213666,19
+"192","Chaetoceros simplex","deviance",-849.615712078204,1.01827915423074,130
+"193","Chaetoceros","cf.a",0.07371969707254,2827.90085168765,3
+"194","Chaetoceros","cf.b",-1.73984960828418e-05,1,1
+"195","Chaetoceros","cf.delta_t",14.2681939919766,2827.7492057885,3
+"196","Chaetoceros","cf.sigma",1.30391734924171e-05,3.67683735319926,4
+"197","Chaetoceros","cf.tmax",43.4443595514935,1.33354463760831,10
+"198","Chaetoceros","deviance",-1300.92167652089,14.778403261246,3
+"199","Chaetoceros teres","cf.a",0.0469285023682947,1.06912159722871,150
+"200","Chaetoceros teres","cf.b",-0.301724045990684,1.03910815464867,65
+"201","Chaetoceros teres","cf.delta_t",16.8259746212072,1.1032682084376,28
+"202","Chaetoceros teres","cf.sigma",0.083556316331363,1.00848450581712,250
+"203","Chaetoceros teres","cf.tmax",27.7078945702101,1.00388483489337,590
+"204","Chaetoceros teres","deviance",-28.4743780617732,1.00842047775776,250
+"205","Chattonella marina","cf.a",0.0497100105470651,78.8612894298468,3
+"206","Chattonella marina","cf.b",-0.333342495444799,1,1
+"207","Chattonella marina","cf.delta_t",9.12573426575669,12.3037914096882,3
+"208","Chattonella marina","cf.sigma",2.39124345962497e-06,1.18190580324169,15
+"209","Chattonella marina","cf.tmax",40.5358630789669,1.40557760289946,12
+"210","Chattonella marina","deviance",-1154.29296690531,2.51675519355988,4
+"211","Chlamydomonas alpina","cf.a",0.0876640763577655,1,1
+"212","Chlamydomonas alpina","cf.b",-1.91411312816228e-05,1,1
+"213","Chlamydomonas alpina","cf.delta_t",11.4758754882323,1,1
+"214","Chlamydomonas alpina","cf.sigma",2.04079705979483e-06,1.02062862162844,100
+"215","Chlamydomonas alpina","cf.tmax",24.2106354336226,2.91477194123515,4
+"216","Chlamydomonas alpina","deviance",-398.934336096301,1.06681105300097,36
+"217","Chlamydomonas globosa","cf.a",0.020847765875084,119.510607098691,3
+"218","Chlamydomonas globosa","cf.b",-0.666673023898085,1,1
+"219","Chlamydomonas globosa","cf.delta_t",5.9052890826262,4.73415740110257,3
+"220","Chlamydomonas globosa","cf.sigma",1.15265336499355e-06,1.00061437209068,3000
+"221","Chlamydomonas globosa","cf.tmax",36.7486573696707,1.11224991841537,40
+"222","Chlamydomonas globosa","deviance",-369.278585044419,1.00512664578717,430
+"223","Chlamydomonas intermedia","cf.a",5.25656549243616e-07,1.00283716304317,1900
+"224","Chlamydomonas intermedia","cf.b",-0.999995509976023,1,1
+"225","Chlamydomonas intermedia","cf.delta_t",0.885542008147271,1.01395461441507,310
+"226","Chlamydomonas intermedia","cf.sigma",1.00799283634342e-06,1.00148469460325,2000
+"227","Chlamydomonas intermedia","cf.tmax",29.8462679604919,1.00534038006869,500
+"228","Chlamydomonas intermedia","deviance",-225.519057630469,1.00090514260062,3000
+"229","Chlamydomonas subcaudata","cf.a",0.107915561906488,1,1
+"230","Chlamydomonas subcaudata","cf.b",-8.36004276262626e-06,1,1
+"231","Chlamydomonas subcaudata","cf.delta_t",9.6383182896458,1,1
+"232","Chlamydomonas subcaudata","cf.sigma",1.29458493785497e-06,1.05440644639193,42
+"233","Chlamydomonas subcaudata","cf.tmax",21.4333012295544,8.96724333126874,3
+"234","Chlamydomonas subcaudata","deviance",-414.393376655307,1.26122908792441,12
+"235","Chlamydomonas","cf.a",0.0466922759971333,17.7763653243236,3
+"236","Chlamydomonas","cf.b",-0.333333482738238,1,1
+"237","Chlamydomonas","cf.delta_t",11.3446625743405,8.98884910522607,3
+"238","Chlamydomonas","cf.sigma",2.21400196979992e-06,1.45582761959763,8
+"239","Chlamydomonas","cf.tmax",34.784359583779,2.73110994065186,4
+"240","Chlamydomonas","deviance",-373.268573689498,2.35268906017587,4
+"241","Chlorella ellipsoidea","cf.a",0.051542526451112,8.83779366410495,3
+"242","Chlorella ellipsoidea","cf.b",-0.000124907788873928,1.07817285281949,2400
+"243","Chlorella ellipsoidea","cf.delta_t",19.7359088852114,8.83818254619577,3
+"244","Chlorella ellipsoidea","cf.sigma",2.85785478691925e-05,1.09586102587396,26
+"245","Chlorella ellipsoidea","cf.tmax",37.5871620583986,1.18026494474603,38
+"246","Chlorella ellipsoidea","deviance",-87.3687591919128,1.10872858336986,23
+"247","Chlorella","cf.a",0.0429342600441369,779.061525791219,3
+"248","Chlorella","cf.b",-3.11907880001967e-06,1,1
+"249","Chlorella","cf.delta_t",23.4502810278132,779.11033621089,3
+"250","Chlorella","cf.sigma",7.42668043115629e-06,1.00220151776439,1200
+"251","Chlorella","cf.tmax",42.4542077920828,1.00088207127385,3000
+"252","Chlorella","deviance",-2059.14954752137,1.08568594165397,28
+"253","Chlorella pyrenoidosa","cf.a",1.85218786689188e-06,1.00086628951821,3000
+"254","Chlorella pyrenoidosa","cf.b",-1.00002368637971,1,1
+"255","Chlorella pyrenoidosa","cf.delta_t",0.205215829465798,1.00248165276401,1000
+"256","Chlorella pyrenoidosa","cf.sigma",1.69914902830528e-05,1.00180277303296,1500
+"257","Chlorella pyrenoidosa","cf.tmax",42.7958727697506,1.00280504760276,870
+"258","Chlorella pyrenoidosa","deviance",-193.190981576633,1.0008817047299,3000
