@@ -19,7 +19,15 @@ library(gridExtra)
 
 # We'll need the full dataset with metabolic and pigment data.
 
-# Figure 2: Inter-gradient trade-offs -------------------------------------
+# Figure 2: Intra-gradient trade-offs -------------------------------------
 
+# We'll need our full dataset for the start
 
+# Then we will bring in inter-specific datasets and plot the position of their metrics on our plots
+
+# Figure 3: Inter-gradient trade-offs -------------------------------------
+
+# We'll need our full dataset again
+
+# Then we will bring in inter-specific datasets? Maybe?
 
