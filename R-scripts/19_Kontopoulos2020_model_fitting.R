@@ -1,8 +1,8 @@
 # Jason R Laurich
-# April 13, 2025
+# April 14, 2025
 
-# Going to work with the Narwani et al 2015 (https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0137085#references) data to fit
-# Monod curves for nitrogen,light, and phosphorous. No temperature data. 
+# Going to work with the Kontopoulos et al 2020 (https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3000894#abstract0) 
+# data to fit TPCs for a bunch of species
 
 # Load packages -----------------------------------------------------------
 
@@ -23,4 +23,6 @@ str(df)
 
 df$Sp.fac <- as.factor(df$Species.name)
 
-# This data set already contains the µmax and R* values for each species, no need to fit Monod curves...
+# TPC fitting -------------------------------------------------------------
+
+
