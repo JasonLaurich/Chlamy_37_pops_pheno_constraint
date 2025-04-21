@@ -94,6 +94,14 @@ df.final$evol.plt <- factor(df$evol,
                                  "Biotic depletion x Salt", 
                                  "Control"))
 
+df.final$anc.plt <- factor(df$anc, 
+                            levels = c("anc2", "anc3", "anc4", "anc5", "cc1690"),
+                            labels = c("Population 2", 
+                                       "Population 3", 
+                                       "Population 4", 
+                                       "Population 5", 
+                                       "Mixed population"))
+
 # Figure 1: PCAs and RDAs -----------------------------------------------------------
 
 # We'll need the full dataset with metabolic and pigment data.
@@ -209,7 +217,248 @@ pca_plot_arrows
 
 ggsave("figures/16_fig_1a_PCA.pdf", pca_plot_arrows, width = 12, height = 9)
 
-# OK let's move onto the RDAs
+###### Evolutionary history RDA #######
+
+response_vars <- df.pca
+explanatory_vars <- model.matrix(~ evol.fil)[, -1]  # Remove intercept
+
+rda_result_evol <- rda(response_vars ~ ., data = as.data.frame(explanatory_vars)) # run the RDA
+summary(rda_result_evol)
+sum(summary(rda_result_evol)$cont$importance[2, 1:rda_result_evol$CCA$rank]) # with P and N, evolutionary environment explains 20.2712% of the variation
+
+rda_sites_evol <- as.data.frame(scores(rda_result_evol, display = "sites")) # Extract RDA site scores (sample coordinates)
+
+rda_species_evol <- as.data.frame(scores(rda_result_evol, display = "species")) # Extract RDA species (trait arrows)
+
+rda_constraints_evol <- as.data.frame(scores(rda_result_evol, display = "bp")) # Extract explanatory variable centroids (e.g., treatment centroids)
+
+rda_sites_evol$Evolution <- evol.fil # Add the evolutionary treatment labels to the site scores
+
+rda_constraints_evol$label <- rownames(rda_constraints_evol) # Assign readable labels for centroids
+
+rda_species_evol$metric <- factor(rownames(rda_species_evol), 
+                          levels = c("T.br", "r.max_T", "I.comp", "r.max_I", "N.comp", "r.max_N", 
+                                     "P.comp", "r.max_P", "r.max_S", "S.c.mod", "chl.a", "chl.b", "luthein",
+                                     "mean.N.µg.l", "mean.P.µg.l"),
+                          labels = c("Thermal~breadth", 
+                                     "mu~max~(T)", 
+                                     "1/I^\"*\"", 
+                                     "mu~max~(I)", 
+                                     "1/N^\"*\"", 
+                                     "mu~max~(N)",
+                                     "1/P^\"*\"", 
+                                     "mu~max~(P)", 
+                                     "mu~max~(Salt)", 
+                                     "Salt~tolerance",
+                                     "Chlorophyll~italic(a)",
+                                     "Chlorophyll~italic(b)",
+                                     "Luthein", 
+                                     "N~content",
+                                     "P~content"))
+
+adjust.x.rda1 <- c(0, 0 , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) # adjustments for each label
+adjust.y.rda1 <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+rda_species_evol$var.x <- rda_species_evol$RDA1 + adjust.x.rda1 # Need to manually space out labels here. 
+rda_species_evol$var.y <- rda_species_evol$RDA2 + adjust.y.rda1
+
+# Create evolutionary environment RDA plot with arrows
+rda_evol_plot_arrows <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, color = Evolution)) +
+  geom_point(size = 3) +
+  theme_classic() +
+  labs(x = paste("RDA 1 (", round(rda_result_evol$sdev[1]^2 / sum(rda_result_evol$sdev^2) * 100, 2), "%)", sep = ""),
+       y = paste("RDA 2 (", round(rda_result_evol$sdev[2]^2 / sum(rda_result_evol$sdev^2) * 100, 2), "%)", sep = "")) +
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +  # Use your custom colors
+  # Add arrows for variable contributions
+  geom_segment(data = rda_species_evol, aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
+               arrow = arrow(length = unit(0.2, "cm")), color = "black", size= 1.1) +
+  scale_x_continuous(breaks = seq(-5, 5, by = 1)) +
+  scale_y_continuous(breaks = seq(-5, 7, by = 1)) +
+  # Add variable names to the plot
+  geom_text(data = rda_species_evol, aes(x = var.x, y = var.y, label = metric),
+            vjust = 1, hjust = 1, color = "black", size = 5, parse = T) +
+  theme(legend.position= c(0.15, 0.75),
+        legend.title = element_text(size = 12, face = "bold"),
+        legend.text  = element_text(size = 12, face = "plain"),
+        axis.title.x = element_text(size = 14, face = "bold"),
+        axis.title.y = element_text(size = 14, face = "bold"))
+
+rda_evol_plot_arrows
+ggsave("figures/16_fig_1b1_RDA_evol.pdf", rda_evol_plot_arrows, width = 12, height = 9) # N and P content is skewing everything. 
+
+df.pca1 <- df.pca %>% 
+  select(-mean.N.µg.l, -mean.P.µg.l)
+
+response_vars <- df.pca1
+explanatory_vars <- model.matrix(~ evol.fil)[, -1]  # Remove intercept
+
+rda_result_evol <- rda(response_vars ~ ., data = as.data.frame(explanatory_vars)) # run the RDA
+summary(rda_result_evol) 
+sum(summary(rda_result_evol)$cont$importance[2, 1:rda_result_evol$CCA$rank]) # without P and N, evolutionary environment explains 20.58758% of the variation
+
+rda_sites_evol <- as.data.frame(scores(rda_result_evol, display = "sites")) # Extract RDA site scores (sample coordinates)
+
+rda_species_evol <- as.data.frame(scores(rda_result_evol, display = "species")) # Extract RDA species (trait arrows)
+
+rda_constraints_evol <- as.data.frame(scores(rda_result_evol, display = "bp")) # Extract explanatory variable centroids (e.g., treatment centroids)
+
+rda_sites_evol$Evolution <- evol.fil # Add the evolutionary treatment labels to the site scores
+
+rda_constraints_evol$label <- rownames(rda_constraints_evol) # Assign readable labels for centroids
+
+rda_species_evol$metric <- factor(rownames(rda_species_evol), 
+                                  levels = c("T.br", "r.max_T", "I.comp", "r.max_I", "N.comp", "r.max_N", 
+                                             "P.comp", "r.max_P", "r.max_S", "S.c.mod", "chl.a", "chl.b", "luthein"),
+                                  labels = c("Thermal~breadth", 
+                                             "mu~max~(T)", 
+                                             "1/I^\"*\"", 
+                                             "mu~max~(I)", 
+                                             "1/N^\"*\"", 
+                                             "mu~max~(N)",
+                                             "1/P^\"*\"", 
+                                             "mu~max~(P)", 
+                                             "mu~max~(Salt)", 
+                                             "Salt~tolerance",
+                                             "Chlorophyll~italic(a)",
+                                             "Chlorophyll~italic(b)",
+                                             "Luthein"))
+
+adjust.x.rda1 <- c(0, 0 , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) # adjustments for each label
+adjust.y.rda1 <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+rda_species_evol$var.x <- rda_species_evol$RDA1 + adjust.x.rda1 # Need to manually space out labels here. 
+rda_species_evol$var.y <- rda_species_evol$RDA2 + adjust.y.rda1
+
+# Create evolutionary environment RDA plot with arrows
+rda_evol_plot_arrows <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, color = Evolution)) +
+  geom_point(size = 3) +
+  theme_classic() +
+  labs(x = paste("RDA 1 (", round(summary(rda_result_evol)$cont$importance[2, 1] * 100, 2), "%)", sep = ""),
+       y = paste("RDA 2 (", round(summary(rda_result_evol)$cont$importance[2, 2] * 100, 2), "%)", sep = "")) +
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +  # Use your custom colors
+  # Add arrows for variable contributions
+  geom_segment(data = rda_species_evol, aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
+               arrow = arrow(length = unit(0.2, "cm")), color = "black", size= 1.1) +
+  scale_x_continuous(breaks = seq(-5, 5, by = 1)) +
+  scale_y_continuous(breaks = seq(-5, 7, by = 1)) +
+  # Add variable names to the plot
+  geom_text(data = rda_species_evol, aes(x = var.x, y = var.y, label = metric),
+            vjust = 1, hjust = 1, color = "black", size = 5, parse = T) +
+  theme(legend.position= c(0.15, 0.75),
+        legend.title = element_text(size = 12, face = "bold"),
+        legend.text  = element_text(size = 12, face = "plain"),
+        axis.title.x = element_text(size = 14, face = "bold"),
+        axis.title.y = element_text(size = 14, face = "bold"))
+
+rda_evol_plot_arrows
+ggsave("figures/16_fig_1b2_RDA_evol.pdf", rda_evol_plot_arrows, width = 12, height = 9) # Still looks off?. 
+
+###### Ancestry RDA ######
+
+df.pca2 <- df.final %>% select(T.br, r.max_T, I.comp, r.max_I, N.comp, r.max_N, P.comp, r.max_P, r.max_S, 
+                              S.c.mod, chl.a, chl.b, luthein, mean.N.µg.l, mean.P.µg.l, anc.plt) # Prepare the data: selecting only the relevant columns
+df.pca2
+
+df.pca2 <- df.pca2[-31,] # For now removing wonky/missing points (I.comp is way too high in row 31)
+
+anc.fil <- df.pca2$anc.plt
+
+df.pca2 <- df.pca2 %>% select(-anc.plt)
+
+response_vars <- df.pca2
+
+explanatory_vars <- model.matrix(~ anc.fil)[, -1]  # Remove intercept
+
+rda_result_anc <- rda(response_vars ~ ., data = as.data.frame(explanatory_vars)) # run the RDA
+summary(rda_result_anc)
+sum(summary(rda_result_anc)$cont$importance[2, 1:rda_result_anc$CCA$rank]) # with P and N, ancestry explains 12.96264% of the variation
+
+rda_sites_anc <- as.data.frame(scores(rda_result_anc, display = "sites")) # Extract RDA site scores (sample coordinates)
+
+rda_species_anc <- as.data.frame(scores(rda_result_anc, display = "species")) # Extract RDA species (trait arrows)
+
+rda_constraints_anc <- as.data.frame(scores(rda_result_anc, display = "bp")) # Extract explanatory variable centroids (e.g., treatment centroids)
+
+rda_sites_anc$Ancestry <- anc.fil # Add the evolutionary treatment labels to the site scores
+
+rda_constraints_anc$label <- rownames(rda_constraints_anc) # Assign readable labels for centroids
+
+rda_species_anc$metric <- factor(rownames(rda_species_anc), 
+                                  levels = c("T.br", "r.max_T", "I.comp", "r.max_I", "N.comp", "r.max_N", 
+                                             "P.comp", "r.max_P", "r.max_S", "S.c.mod", "chl.a", "chl.b", "luthein",
+                                             "mean.N.µg.l", "mean.P.µg.l"),
+                                  labels = c("Thermal~breadth", 
+                                             "mu~max~(T)", 
+                                             "1/I^\"*\"", 
+                                             "mu~max~(I)", 
+                                             "1/N^\"*\"", 
+                                             "mu~max~(N)",
+                                             "1/P^\"*\"", 
+                                             "mu~max~(P)", 
+                                             "mu~max~(Salt)", 
+                                             "Salt~tolerance",
+                                             "Chlorophyll~italic(a)",
+                                             "Chlorophyll~italic(b)",
+                                             "Luthein", 
+                                             "N~content",
+                                             "P~content"))
+
+adjust.x.rda2 <- c(0, 0 , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) # adjustments for each label
+adjust.y.rda2 <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+rda_species_anc$var.x <- rda_species_anc$RDA1 + adjust.x.rda2 # Need to manually space out labels here. 
+rda_species_anc$var.y <- rda_species_anc$RDA2 + adjust.y.rda2
+
+# Create evolutionary environment RDA plot with arrows
+rda_anc_plot_arrows <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color = Ancestry)) +
+  geom_point(size = 3) +
+  theme_classic() +
+  labs(x = paste("RDA 1 (", round(summary(rda_result_anc)$cont$importance[2, 1] * 100, 2), "%)", sep = ""),
+       y = paste("RDA 2 (", round(summary(rda_result_anc)$cont$importance[2, 2] * 100, 2), "%)", sep = "")) +
+  scale_color_manual(
+    name = "Ancestry",  # Update the legend title
+    values = c("Population 2" = "darkorange",
+               "Population 3" = "deepskyblue1",
+               "Population 4" = "forestgreen",
+               "Population 5" = "gold",
+               "Mixed population" = "magenta3")
+  ) +  # Use custom colors
+  # Add arrows for variable contributions
+  geom_segment(data = rda_species_anc, aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
+               arrow = arrow(length = unit(0.2, "cm")), color = "black", size= 1.1) +
+  scale_x_continuous(breaks = seq(-5, 5, by = 1)) +
+  scale_y_continuous(breaks = seq(-5, 7, by = 1)) +
+  # Add variable names to the plot
+  geom_text(data = rda_species_anc, aes(x = var.x, y = var.y, label = metric),
+            vjust = 1, hjust = 1, color = "black", size = 5, parse = T) +
+  theme(legend.position= c(0.15, 0.75),
+        legend.title = element_text(size = 12, face = "bold"),
+        legend.text  = element_text(size = 12, face = "plain"),
+        axis.title.x = element_text(size = 14, face = "bold"),
+        axis.title.y = element_text(size = 14, face = "bold"))
+
+rda_anc_plot_arrows
+ggsave("figures/16_fig_1c_RDA_anc.pdf", rda_anc_plot_arrows, width = 12, height = 9) # Still looks off?.
 
 # Figure 2: Intra-gradient trade-offs -------------------------------------
 
