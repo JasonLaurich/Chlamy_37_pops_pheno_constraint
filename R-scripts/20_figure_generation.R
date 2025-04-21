@@ -12,6 +12,7 @@ library(mcmcplots) # Diagnostic plots for fits
 library(gridExtra)
 library(vegan)  # For PCA and RDA
 library(ggrepel)
+library(quantreg)
 
 # Load and examine data ---------------------------------------------------
 
@@ -463,6 +464,176 @@ ggsave("figures/16_fig_1c_RDA_anc.pdf", rda_anc_plot_arrows, width = 12, height 
 # Figure 2: Intra-gradient trade-offs -------------------------------------
 
 # We'll need our full dataset for the start
+
+par_frt <- function(df, xvar, yvar) { # Simple Pareto front function / crude convex hull algorithm (one sided)
+  
+  df <- df[order(-df[[xvar]], df[[yvar]]), ]  
+  pareto_points <- df[1, ]  # Start with the first point
+  
+  for (i in 2:nrow(df)) {
+    if (df[i, yvar] > tail(pareto_points[[yvar]], 1)) {  # Ensure increasing y values
+      pareto_points <- rbind(pareto_points, df[i,])
+    }
+  }
+  
+  return(pareto_points)
+}
+
+###### Temperature ######
+
+df.final$shape <- ifelse(df.final$evol == "none", 22, 16) # I want to add a shape column to the dataframe that I will update
+# The idea is to label un-evolved populations with a plus, and then later (not for T) relevant experimental evolution nutrient conditions with a star
+
+df.final$evol.bin <- ifelse(df.final$evol == "none", "ancestral", "evolved") # For regressions
+
+par.res.T <- par_frt(df, xvar = "r.max_T", yvar = "T.br")
+
+T_par <- ggplot(df.final, aes(x = r.max_T, y = T.br)) +  # Remove shape from aes() for regression
+  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
+  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
+  labs(x = "Maximum exponential growth rate", 
+       y = "Thermal breadth", 
+       title = "Thermal performance") +
+  scale_shape_manual(values = c(16, 3)) +  # Keep custom shapes
+  geom_line(data = par.res.T, aes(x = r.max_T, y = T.br), color = "blue", size = 1) +  # Pareto frontier line
+  theme_classic() +
+  theme(legend.position = "none")  # Remove legend
+
+T_par # Raw pareto front.
+
+mod.T <- lm(T.br~r.max_T*evol.bin, data=df.final)  # test significance of Pareto frontier
+summary(mod.T) # Not significant (p ~0.8)
+
+T.regs <- ggplot(df.final, aes(x = r.max_T, y = T.br, color = evol.bin)) +  
+  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_smooth(method = "lm", se = FALSE, aes(color = evol.bin)) +  # Separate regression lines
+  labs(x = "Maximum exponential growth rate", 
+       y = "Competitive ability (1/R*)", 
+       title = "Evolutionary Effects on Thermal Performance Trade-offs",
+       color = "Evolutionary History") +  # Change legend title) +
+  scale_color_manual(values = c("black", "goldenrod1"), 
+                     labels = c("Ancestral", "Evolved")) +  # Custom colors per group
+  theme_classic() +
+  theme(
+    legend.position = c(0.8, 0.85),  # Moves legend inside the plot (x, y) in [0,1] scale
+    legend.title = element_text(size = 14, face = "bold"),  # Adjust title size
+    legend.text = element_text(size = 12, face = "plain"),  # Adjust text size
+    axis.title = element_text(size = 14, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10)
+  ) 
+
+T.regs
+
+pred.t <- data.frame(r.max_T = seq(min(df$r.max_T), max(df$r.max_T), length.out = 100)) # Dataframe to collect quantile info in
+
+quant.T.95 <- rq(T.br ~ poly(r.max_T, 2), data = df, tau = 0.95) 
+pred.t$T.br.95 <- predict(quant.T.95, newdata = pred.t)
+
+quant.T.75 <- rq(T.br ~ poly(r.max_T, 2), data = df, tau = 0.75) 
+pred.t$T.br.75 <- predict(quant.T.75, newdata = pred.t)
+
+T.qrs <- ggplot(df.final, aes(x = r.max_T, y = T.br, color = evol.bin)) +  # Quantiles plot
+  geom_point(size = 2) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.t, aes(x = r.max_T, y = T.br.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  geom_line(data = pred.t, aes(x = r.max_T, y = T.br.75), color = "black", size = 1.2, linetype = "dashed") +  
+  
+  labs(x = "Maximum exponential growth rate",    
+       y = "Thermal breadth", 
+       color = "Evolutionary History") +  # labels
+  
+  scale_color_manual(values = c("black", "goldenrod1"), 
+                     labels = c("Ancestral", "Evolved")) +  
+  theme_classic() +
+  theme(
+    legend.position = c(0.8, 0.85),  # Move legend inside the plot
+    legend.title = element_text(size = 12, face = "bold"),  
+    legend.text = element_text(size = 12, face = "plain"),  
+    axis.title = element_text(size = 14, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain") # theme stuff
+  )
+
+T.qrs  # Display the plot
+
+###### Light ######
+
+df.final$shape <- ifelse(df.final$evol == "none", 22, 
+                   ifelse(df.final$evol == "L", 8, 16)) # Ls are now equivalent to 8, for later mapping
+
+df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
+                      ifelse(df.final$evol == "L", 'light', 'other')) # for testing regressions.
+
+par.res.L <- par_frt(df.final[df.final$I.comp<10,], xvar = "r.max_I", yvar = "I.comp")
+
+L_par <- ggplot(df.final[df.final$I.comp<10,], aes(x = r.max_I, y = I.comp)) +  # Remove shape from aes() for regression
+  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
+  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
+  labs(x = "Maximum exponential growth rate", 
+       y = "Competitive ability (1/R*)", 
+       title = "Light limitation") +
+  scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
+  geom_line(data = par.res.L, aes(x = r.max_I, y = I.comp), color = "blue", size = 1) +  # Pareto frontier line
+  theme_classic() +
+  theme(legend.position = "none")  # Remove legend
+
+L_par # Raw pareto front.
+
+mod.L <- lm(I.comp~r.max_I*evol.bin, data=df.final[df.final$I.comp<10,])  # test significance of Pareto frontier
+summary(mod.L) # Nope
+
+L.regs <- ggplot(df.final[df.final$I.comp<10,], aes(x = r.max_I, y = I.comp, color = evol.bin)) +  
+  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_smooth(method = "lm", se = FALSE, aes(color = evol.bin)) +  # Separate regression lines
+  labs(x = "Maximum exponential growth rate", 
+       y = "Competitive ability (1/R*)", 
+       title = "Evolutionary Effects on Light-Competition Trade-offs",
+       color = "Evolutionary History") +  # Change legend title) +
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
+                     labels = c("Ancestral", "Other", "Light")) +  # Custom colors per group
+  theme_classic() +
+  theme(
+    legend.position = c(0.85, 0.85),  # Moves legend inside the plot (x, y) in [0,1] scale
+    legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
+    legend.text = element_text(size = 10, face = "bold"),  # Adjust text size
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10)
+  ) 
+
+L.regs
+
+pred.l <- data.frame(r.max_I = seq(min(df$r.max_I), max(df$r.max_I), length.out = 100)) # Dataframe to collect quantile info in
+
+quant.I.95 <- rq(I.comp ~ poly(r.max_I, 2), data = df.final[df.final$I.comp<10,], tau = 0.95) 
+pred.l$I.comp.95 <- predict(quant.I.95, newdata = pred.l)
+
+pred.l <- pred.l %>%
+  mutate(I.comp.95 = ifelse(row_number() <= which.max(pred.l$I.comp.95) & I.comp.95 < max(I.comp.95), NA, I.comp.95))
+
+quant.I.75 <- rq(I.comp ~ poly(r.max_I, 2), data = df.final[df.final$I.comp<10,], tau = 0.75) 
+pred.l$I.comp.75 <- predict(quant.I.75, newdata = pred.l)
+
+L.qrs <- ggplot(df[df$I.comp<10,], aes(x = r.max_I, y = I.comp, color = evol.bin)) +  # Quantiles plot
+  geom_point(size = 2) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.l, aes(x = r.max_I, y = I.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  geom_line(data = pred.l, aes(x = r.max_I, y = I.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
+
+  labs(x = "Maximum exponential growth rate",    
+       y = "Competitive ability (1/R*)", 
+       color = "Evolutionary History") +  # labels
+  
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
+                     labels = c("Ancestral", "Light", "Other")) +  
+  theme_classic() +
+  theme(
+    legend.position = c(0.25, 0.85),  # Move legend inside the plot
+    legend.title = element_text(size = 14, face = "bold"),  
+    legend.text = element_text(size = 12, face = "plain"),  
+    axis.title = element_text(size = 14, face = "bold"),  
+    axis.text = element_text(size = 10) # theme stuff
+  )
+
+L.qrs  # Display the plot
 
 # Then we will bring in inter-specific datasets and plot the position of their metrics on our plots
 
