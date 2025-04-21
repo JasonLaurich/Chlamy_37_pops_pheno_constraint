@@ -282,8 +282,8 @@ rda_evol_plot_arrows <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, color = E
   # Add arrows for variable contributions
   geom_segment(data = rda_species_evol, aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
                arrow = arrow(length = unit(0.2, "cm")), color = "black", size= 1.1) +
-  scale_x_continuous(breaks = seq(-5, 5, by = 1)) +
-  scale_y_continuous(breaks = seq(-5, 7, by = 1)) +
+  scale_x_continuous(breaks = seq(-20, 25, by = 5)) +
+  scale_y_continuous(breaks = seq(-20, 40, by = 5)) +
   # Add variable names to the plot
   geom_text(data = rda_species_evol, aes(x = var.x, y = var.y, label = metric),
             vjust = 1, hjust = 1, color = "black", size = 5, parse = T) +
@@ -446,8 +446,8 @@ rda_anc_plot_arrows <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color = Anc
   # Add arrows for variable contributions
   geom_segment(data = rda_species_anc, aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
                arrow = arrow(length = unit(0.2, "cm")), color = "black", size= 1.1) +
-  scale_x_continuous(breaks = seq(-5, 5, by = 1)) +
-  scale_y_continuous(breaks = seq(-5, 7, by = 1)) +
+  scale_x_continuous(breaks = seq(-35, 25, by = 5)) +
+  scale_y_continuous(breaks = seq(-35, 20, by = 5)) +
   # Add variable names to the plot
   geom_text(data = rda_species_anc, aes(x = var.x, y = var.y, label = metric),
             vjust = 1, hjust = 1, color = "black", size = 5, parse = T) +
