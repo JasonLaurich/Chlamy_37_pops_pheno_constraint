@@ -16,7 +16,7 @@ library(quantreg)
 
 # Load and examine data ---------------------------------------------------
 
-df<-read.csv("data-processed/14_summary_metric_table.csv") # Summary file
+df <- read.csv("data-processed/14_summary_metric_table.csv") # Summary file
 
 head(df)
 str(df)
@@ -103,7 +103,149 @@ df.final$anc.plt <- factor(df$anc,
                                        "Population 5", 
                                        "Mixed population"))
 
-# Figure 1: PCAs and RDAs -----------------------------------------------------------
+# Figure 1: Representation of model fits ----------------------------------
+
+df.final %>% 
+  filter(T.br %in% c(min(T.br), max(T.br), median(T.br))) %>% 
+  select(Pop.fac, T.br, Topt, r.max_T, S.c.mod, r.max_S, P.comp, r.max_P) %>% 
+  print() 
+  
+# Ok so we are going to work with 3 populations - 17, 27, and cc1690. These represent a good spread
+# As R2jags objects, 17 is number 7, 27 is number 18, cc1690 is 38 (for T) or 37 (for salt and P)
+
+# Temperature
+
+for (i in c(7,18,38)){      # Temperature R2jags (model fits)
+  load(paste0("R2jags-objects/pop_", i, "_lactin2.RData"))
+  df.jags <- data.frame(lac_jag$BUGSoutput$summary)
+  df.jags.plot <- df.jags[-c(1:6),]
+  df.jags.plot$temp <- seq(0, 45, 0.05)
+  assign(paste0("df.T.jags", i), df.jags.plot)
+}
+
+df.r.t <- read.csv("data-processed/05_final_r_estimates.csv") # Growth data across temperatures
+head(df.r.t) # population is the factor, population.number is the corresponding # (e.g. 7, 18, 38)
+
+df.r.t <- df.r.t %>% 
+  filter(population.number %in% c(7, 18, 38)) %>% 
+  print()
+
+p.t <- ggplot(df.r.t, aes(x = temperature, y = r.exp, colour = population)) +
+  geom_jitter(size = 2.5,width = 0.5, height = 0) + # small horizontal shift 
+  scale_colour_manual(values = c("darkorange1", "magenta2", "forestgreen")) +
+  ylim(-2, 7) +
+
+  geom_line(data = df.T.jags7, aes(x = temp, y= mean), colour = "darkorange1", size = 1) +
+  geom_line(data = df.T.jags18, aes(x = temp, y= mean), colour = "magenta2", size = 1) +
+  geom_line(data = df.T.jags38, aes(x = temp, y= mean), colour = "forestgreen", size = 1) +
+  
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40", size = 0.6) +
+  
+  labs(x = "Temperature (°C)", 
+       y = "Exponential growth rate (µ)",
+       title = "A") +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  # delete legend
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+  ) 
+
+p.t
+
+# Phosphorous
+
+for (i in c(7,18,37)){      # Phosphorous
+  load(paste0("R2jags-objects/pop_", i, "_phosphorous_monod.RData"))
+  df.jags <- data.frame(monod_jag$BUGSoutput$summary)
+  df.jags.plot <- df.jags[-c(1:3, 2005),]
+  df.jags.plot$phos <- seq(0, 50, 0.025)
+  assign(paste0("df.P.jags", i), df.jags.plot)
+}
+
+df.r.p <- read.csv("data-processed/12a_phosphorous_r_estimates.csv") # Growth data across P levels
+head(df.r.p) # population is the factor, population.number is the corresponding # (e.g. 7, 18, 37)
+
+df.r.p <- df.r.p %>% 
+  filter(population.number %in% c(7, 18, 37)) %>% 
+  print()
+
+p.p <- ggplot(df.r.p, aes(x = phos.lvl, y = r.exp, colour = population)) +
+  geom_jitter(size = 2.5,width = 0.5, height = 0) + # small horizontal shift 
+  scale_colour_manual(values = c("darkorange1", "magenta2", "forestgreen")) +
+  ylim(-0.5, 2.5) +
+  
+  geom_line(data = df.P.jags7, aes(x = phos, y= mean), colour = "darkorange1", size = 1) +
+  geom_line(data = df.P.jags18, aes(x = phos, y= mean), colour = "magenta2", size = 1) +
+  geom_line(data = df.P.jags37, aes(x = phos, y= mean), colour = "forestgreen", size = 1) +
+  
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40", size = 0.6) +
+  
+  labs(x = "Phosphorous concentration (µM)", 
+       y = "Exponential growth rate (µ)",
+       title = "B") +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  # delete legend
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+  ) 
+
+p.p
+
+# Salt
+
+for (i in c(7,18,37)){      # Salt
+  load(paste0("R2jags-objects/pop_", i, "_salt_tolerance.RData"))
+  df.jags <- data.frame(monod_jag$BUGSoutput$summary)
+  df.jags.plot <- df.jags[-c(1:4, 2006),]
+  df.jags.plot$salt <- seq(0, 10, 0.005)
+  assign(paste0("df.S.jags", i), df.jags.plot)
+}
+
+df.r.s <- read.csv("data-processed/13a_salt_r_estimates.csv") # Growth data across salt levels
+head(df.r.s) # population is the factor, population.number is the corresponding # (e.g. 7, 18, 37)
+
+df.r.s <- df.r.s %>% 
+  filter(population.number %in% c(7, 18, 37)) %>% 
+  print()
+
+p.s <- ggplot(df.r.s, aes(x = salt.lvl, y = r.exp, colour = population)) +
+  geom_jitter(size = 2.5,width = 0.5, height = 0) + # small horizontal shift 
+  scale_colour_manual(values = c("darkorange1", "magenta2", "forestgreen")) +
+  ylim(-0.5, 2.5) +
+  
+  geom_line(data = df.S.jags7, aes(x = salt, y= mean), colour = "darkorange1", size = 1) +
+  geom_line(data = df.S.jags18, aes(x = salt, y= mean), colour = "magenta2", size = 1) +
+  geom_line(data = df.S.jags37, aes(x = salt, y= mean), colour = "forestgreen", size = 1) +
+  
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40", size = 0.6) +
+  
+  labs(x = "Salt concentration (g/L)", 
+       y = "Exponential growth rate (µ)",
+       title = "C") +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  # delete legend
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+  ) 
+
+p.s
+
+fig.1 <- plot_grid(p.t, p.p, p.s, nrow = 1, align=hv, rel_widths = c(1,1,1))
+
+fig.1
+
+ggsave("figures/17_fig_1_sample_models.jpeg", fig.1, width = 15, height = 5) # PDF was rendering weird
+
+# Figure 2: PCAs and RDAs -----------------------------------------------------------
 
 # We'll need the full dataset with metabolic and pigment data.
 
@@ -461,7 +603,7 @@ rda_anc_plot_arrows <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color = Anc
 rda_anc_plot_arrows
 ggsave("figures/16_fig_1c_RDA_anc.pdf", rda_anc_plot_arrows, width = 12, height = 9) # Still looks off?.
 
-# Figure 2: Intra-gradient trade-offs -------------------------------------
+# Figure 3: Intra-gradient trade-offs -------------------------------------
 
 # We'll need our full dataset for the start
 
@@ -930,9 +1072,13 @@ ggsave("figures/17_fig_2_intra-gradient_tradeoffs.pdf", grad_toffs, width = 8, h
 
 # Then we will bring in inter-specific datasets and plot the position of their metrics on our plots
 
-# Figure 3: Inter-gradient trade-offs -------------------------------------
+# Figure 4: Intra-gradient, interspecific trade-offs-------------------------------------
 
-# We'll need our full dataset again
+# Bringing in interspecific data sets
 
-# Then we will bring in inter-specific datasets? Maybe?
+
+
+# Figure 5: Inter-gradient trade-offs -------------------------------------
+
+
 
