@@ -243,7 +243,7 @@ fig.1 <- plot_grid(p.t, p.p, p.s, nrow = 1, align=hv, rel_widths = c(1,1,1))
 
 fig.1
 
-ggsave("figures/17_fig_1_sample_models.jpeg", fig.1, width = 15, height = 5) # PDF was rendering weird
+ggsave("figures/16_fig_1_sample_models.jpeg", fig.1, width = 15, height = 5) # PDF was rendering weird
 
 # Figure 2: PCAs and RDAs -----------------------------------------------------------
 
@@ -312,15 +312,15 @@ loadings$metric <- factor(loadings$variable,
                                        "1/P^\"*\"", 
                                        "mu~max~(P)", 
                                        "mu~max~(Salt)", 
-                                       "Salt~tolerance",
+                                       "tolerance",
                                        "Chlorophyll~italic(a)",
                                        "Chlorophyll~italic(b)",
                                        "Luthein", 
                                        "N~content",
                                        "P~content"))
 
-adjust.x <- c(0.55, -0.05 , 0.36, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) # adjustments for each label
-adjust.y <- c(-0.1, 0.15, 0.11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+adjust.x <- c(0.55, -0.05 , 0.36, -0.05, -0.02, 0, -0.02, 0.7, 0.8, 0.3, -0.05, 0.5, -0.05, -0.05, -0.05) # adjustments for each label
+adjust.y <- c(-0.1, 0.15, 0.15, 0.1, 0.15, -0.05, 0.15, 0.02, -0.01, 0.24, 0.05, -0.15, 0.05, 0.09, 0.1)
 
 loadings$var.x <- loadings$PC1 + adjust.x # Need to manually space out labels here. 
 loadings$var.y <- loadings$PC2 + adjust.y
@@ -349,16 +349,20 @@ pca_plot_arrows <- ggplot(df.pca.res, aes(x = PC1, y = PC2, color = Evolution)) 
   scale_y_continuous(breaks = seq(-5, 7, by = 1)) +
   # Add variable names to the plot
   geom_text(data = loadings, aes(x = var.x, y = var.y, label = metric),
-            vjust = 1, hjust = 1, color = "black", size = 5, parse = T) +
+            vjust = 1, hjust = 1,  color = "black", size = 5, parse = T) +
   theme(legend.position= c(0.15, 0.75),
         legend.title = element_text(size = 12, face = "bold"),
         legend.text  = element_text(size = 12, face = "plain"),
         axis.title.x = element_text(size = 12, face = "bold"),
-        axis.title.y = element_text(size = 12, face = "bold"))
+        axis.title.y = element_text(size = 12, face = "bold")) +
+  geom_text(aes(x = -0.885, y = 0.95),  # adjust these coords
+                     label = "Salt",
+                     size = 5,
+                     color = "black")
 
 pca_plot_arrows
 
-ggsave("figures/16_fig_1a_PCA.pdf", pca_plot_arrows, width = 12, height = 9)
+ggsave("figures/17_fig_2a_PCA.jpeg", pca_plot_arrows, width = 12, height = 9)
 
 ###### Evolutionary history RDA #######
 
@@ -368,6 +372,8 @@ explanatory_vars <- model.matrix(~ evol.fil)[, -1]  # Remove intercept
 rda_result_evol <- rda(response_vars ~ ., data = as.data.frame(explanatory_vars)) # run the RDA
 summary(rda_result_evol)
 sum(summary(rda_result_evol)$cont$importance[2, 1:rda_result_evol$CCA$rank]) # with P and N, evolutionary environment explains 20.2712% of the variation
+
+rda_var_explained <- summary(rda_result_evol)$cont$importance["Proportion Explained", 1:2] * 100
 
 rda_sites_evol <- as.data.frame(scores(rda_result_evol, display = "sites")) # Extract RDA site scores (sample coordinates)
 
@@ -409,8 +415,9 @@ rda_species_evol$var.y <- rda_species_evol$RDA2 + adjust.y.rda1
 rda_evol_plot_arrows <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, color = Evolution)) +
   geom_point(size = 3) +
   theme_classic() +
-  labs(x = paste("RDA 1 (", round(rda_result_evol$sdev[1]^2 / sum(rda_result_evol$sdev^2) * 100, 2), "%)", sep = ""),
-       y = paste("RDA 2 (", round(rda_result_evol$sdev[2]^2 / sum(rda_result_evol$sdev^2) * 100, 2), "%)", sep = "")) +
+  labs(x = paste0("RDA 1 (", round(rda_var_explained[1], 2), "%)"),
+       y = paste0("RDA 2 (", round(rda_var_explained[2], 2), "%)"),
+       title = "A") +
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
     values = c("Biotic depletion" = "darkorange",
@@ -423,7 +430,7 @@ rda_evol_plot_arrows <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, color = E
                "Salt stress" = "blue")
   ) +  # Use your custom colors
   # Add arrows for variable contributions
-  geom_segment(data = rda_species_evol, aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
+  geom_segment(data = rda_species_evol, aes(x = 0, y = 0, xend = RDA1*2, yend = RDA2*2),
                arrow = arrow(length = unit(0.2, "cm")), color = "black", size= 1.1) +
   scale_x_continuous(breaks = seq(-20, 25, by = 5)) +
   scale_y_continuous(breaks = seq(-20, 40, by = 5)) +
@@ -434,10 +441,10 @@ rda_evol_plot_arrows <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, color = E
         legend.title = element_text(size = 12, face = "bold"),
         legend.text  = element_text(size = 12, face = "plain"),
         axis.title.x = element_text(size = 12, face = "bold"),
-        axis.title.y = element_text(size = 12, face = "bold"))
+        axis.title.y = element_text(size = 12, face = "bold"),
+        plot.title = element_text(size = 14, face = "bold", hjust = 0.03))
 
-rda_evol_plot_arrows
-ggsave("figures/16_fig_1b1_RDA_evol.pdf", rda_evol_plot_arrows, width = 12, height = 9) # N and P content is skewing everything. 
+rda_evol_plot_arrows # N and P content is skewing everything. 
 
 df.pca1 <- df.pca %>% 
   select(-mean.N.µg.l, -mean.P.µg.l)
@@ -483,11 +490,12 @@ rda_species_evol$var.x <- rda_species_evol$RDA1 + adjust.x.rda1 # Need to manual
 rda_species_evol$var.y <- rda_species_evol$RDA2 + adjust.y.rda1
 
 # Create evolutionary environment RDA plot with arrows
-rda_evol_plot_arrows <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, color = Evolution)) +
+rda_evol_plot_arrows_no_NP <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, color = Evolution)) +
   geom_point(size = 3) +
   theme_classic() +
   labs(x = paste("RDA 1 (", round(summary(rda_result_evol)$cont$importance[2, 1] * 100, 2), "%)", sep = ""),
-       y = paste("RDA 2 (", round(summary(rda_result_evol)$cont$importance[2, 2] * 100, 2), "%)", sep = "")) +
+       y = paste("RDA 2 (", round(summary(rda_result_evol)$cont$importance[2, 2] * 100, 2), "%)", sep = ""),
+       title = "B") +
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
     values = c("Biotic depletion" = "darkorange",
@@ -500,21 +508,19 @@ rda_evol_plot_arrows <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, color = E
                "Salt stress" = "blue")
   ) +  # Use your custom colors
   # Add arrows for variable contributions
-  geom_segment(data = rda_species_evol, aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
+  geom_segment(data = rda_species_evol, aes(x = 0, y = 0, xend = RDA1*2, yend = RDA2*2),
                arrow = arrow(length = unit(0.2, "cm")), color = "black", size= 1.1) +
-  scale_x_continuous(breaks = seq(-5, 5, by = 1)) +
-  scale_y_continuous(breaks = seq(-5, 7, by = 1)) +
+  scale_x_continuous(breaks = seq(-5, 6, by = 1)) +
+  scale_y_continuous(breaks = seq(-3, 5, by = 1)) +
   # Add variable names to the plot
   geom_text(data = rda_species_evol, aes(x = var.x, y = var.y, label = metric),
             vjust = 1, hjust = 1, color = "black", size = 5, parse = T) +
-  theme(legend.position= c(0.15, 0.75),
-        legend.title = element_text(size = 12, face = "bold"),
-        legend.text  = element_text(size = 12, face = "plain"),
+  theme(legend.position = "none",
         axis.title.x = element_text(size = 12, face = "bold"),
-        axis.title.y = element_text(size = 12, face = "bold"))
+        axis.title.y = element_text(size = 12, face = "bold"),
+        plot.title = element_text(size = 14, face = "bold", hjust = 0.03))
 
-rda_evol_plot_arrows
-ggsave("figures/16_fig_1b2_RDA_evol.pdf", rda_evol_plot_arrows, width = 12, height = 9) # Still looks off?. 
+rda_evol_plot_arrows_no_NP
 
 ###### Ancestry RDA ######
 
@@ -577,7 +583,8 @@ rda_anc_plot_arrows <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color = Anc
   geom_point(size = 3) +
   theme_classic() +
   labs(x = paste("RDA 1 (", round(summary(rda_result_anc)$cont$importance[2, 1] * 100, 2), "%)", sep = ""),
-       y = paste("RDA 2 (", round(summary(rda_result_anc)$cont$importance[2, 2] * 100, 2), "%)", sep = "")) +
+       y = paste("RDA 2 (", round(summary(rda_result_anc)$cont$importance[2, 2] * 100, 2), "%)", sep = ""),
+       title = "C") +
   scale_color_manual(
     name = "Ancestry",  # Update the legend title
     values = c("Population 2" = "darkorange",
@@ -587,7 +594,7 @@ rda_anc_plot_arrows <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color = Anc
                "Mixed population" = "magenta3")
   ) +  # Use custom colors
   # Add arrows for variable contributions
-  geom_segment(data = rda_species_anc, aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
+  geom_segment(data = rda_species_anc, aes(x = 0, y = 0, xend = RDA1*2, yend = RDA2*2),
                arrow = arrow(length = unit(0.2, "cm")), color = "black", size= 1.1) +
   scale_x_continuous(breaks = seq(-35, 25, by = 5)) +
   scale_y_continuous(breaks = seq(-35, 20, by = 5)) +
@@ -598,10 +605,147 @@ rda_anc_plot_arrows <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color = Anc
         legend.title = element_text(size = 12, face = "bold"),
         legend.text  = element_text(size = 12, face = "plain"),
         axis.title.x = element_text(size = 12, face = "bold"),
-        axis.title.y = element_text(size = 12, face = "bold"))
+        axis.title.y = element_text(size = 12, face = "bold"),
+        plot.title = element_text(size = 14, face = "bold", hjust = 0.03))
 
-rda_anc_plot_arrows
-ggsave("figures/16_fig_1c_RDA_anc.pdf", rda_anc_plot_arrows, width = 12, height = 9) # Still looks off?.
+rda_anc_plot_arrows # Again, N and P are skewing everything
+
+df.pca3 <- df.pca2 %>% 
+  select(-mean.N.µg.l, -mean.P.µg.l)
+
+df.pca3
+
+response_vars <- df.pca3
+
+explanatory_vars <- model.matrix(~ anc.fil)[, -1]  # Remove intercept
+
+rda_result_anc <- rda(response_vars ~ ., data = as.data.frame(explanatory_vars)) # run the RDA
+summary(rda_result_anc)
+sum(summary(rda_result_anc)$cont$importance[2, 1:rda_result_anc$CCA$rank]) # without P and N, ancestry explains 2.886395% of the variation
+
+rda_sites_anc <- as.data.frame(scores(rda_result_anc, display = "sites")) # Extract RDA site scores (sample coordinates)
+
+rda_species_anc <- as.data.frame(scores(rda_result_anc, display = "species")) # Extract RDA species (trait arrows)
+
+rda_constraints_anc <- as.data.frame(scores(rda_result_anc, display = "bp")) # Extract explanatory variable centroids (e.g., treatment centroids)
+
+rda_sites_anc$Ancestry <- anc.fil # Add the evolutionary treatment labels to the site scores
+
+rda_constraints_anc$label <- rownames(rda_constraints_anc) # Assign readable labels for centroids
+
+rda_species_anc$metric <- factor(rownames(rda_species_anc), 
+                                 levels = c("T.br", "r.max_T", "I.comp", "r.max_I", "N.comp", "r.max_N", 
+                                            "P.comp", "r.max_P", "r.max_S", "S.c.mod", "chl.a", "chl.b", "luthein"),
+                                 labels = c("Thermal~breadth", 
+                                            "mu~max~(T)", 
+                                            "1/I^\"*\"", 
+                                            "mu~max~(I)", 
+                                            "1/N^\"*\"", 
+                                            "mu~max~(N)",
+                                            "1/P^\"*\"", 
+                                            "mu~max~(P)", 
+                                            "mu~max~(Salt)", 
+                                            "Salt~tolerance",
+                                            "Chlorophyll~italic(a)",
+                                            "Chlorophyll~italic(b)",
+                                            "Luthein"))
+
+adjust.x.rda2 <- c(0, 0 , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) # adjustments for each label
+adjust.y.rda2 <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+rda_species_anc$var.x <- rda_species_anc$RDA1 + adjust.x.rda2 # Need to manually space out labels here. 
+rda_species_anc$var.y <- rda_species_anc$RDA2 + adjust.y.rda2
+
+# Create evolutionary environment RDA plot with arrows
+rda_anc_plot_arrows_no_NP <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color = Ancestry)) +
+  geom_point(size = 3) +
+  theme_classic() +
+  labs(x = paste("RDA 1 (", round(summary(rda_result_anc)$cont$importance[2, 1] * 100, 2), "%)", sep = ""),
+       y = paste("RDA 2 (", round(summary(rda_result_anc)$cont$importance[2, 2] * 100, 2), "%)", sep = ""),
+       title = "D") +
+  scale_color_manual(
+    name = "Ancestry",  # Update the legend title
+    values = c("Population 2" = "darkorange",
+               "Population 3" = "deepskyblue1",
+               "Population 4" = "forestgreen",
+               "Population 5" = "gold",
+               "Mixed population" = "magenta3")
+  ) +  # Use custom colors
+  # Add arrows for variable contributions
+  geom_segment(data = rda_species_anc, aes(x = 0, y = 0, xend = RDA1*2, yend = RDA2*2),
+               arrow = arrow(length = unit(0.2, "cm")), color = "black", size= 1.1) +
+  scale_x_continuous(breaks = seq(-14, 12, by = 2)) +
+  scale_y_continuous(breaks = seq(-8, 14, by = 2)) +
+  # Add variable names to the plot
+  geom_text(data = rda_species_anc, aes(x = var.x, y = var.y, label = metric),
+            vjust = 1, hjust = 1, color = "black", size = 5, parse = T) +
+  theme(legend.position = "none",
+        axis.title.x = element_text(size = 12, face = "bold"),
+        axis.title.y = element_text(size = 12, face = "bold"),
+        plot.title = element_text(size = 14, face = "bold", hjust = 0.03))
+
+rda_anc_plot_arrows_no_NP 
+
+df.evol.dummy.leg <- data.frame( # dummy df for making an extractable legend
+  RDA1 = rep(0, 8),
+  RDA2 = rep(0, 8),
+  Evolution = factor(c("Biotic depletion", "Biotic depletion x Salt", "Control",
+                       "Light limitation", "Nitrogen limitation", "Ancestral",
+                       "Phosphorous limitation", "Salt stress"))
+)
+
+legend_evol <- ggplot(df.evol.dummy.leg, aes(x = RDA1, y = RDA2, color = Evolution)) +
+  geom_point() +
+  scale_color_manual(
+    name = "Evolution environment",
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  theme_void() +
+  theme(legend.position = "right",
+        legend.title = element_text(size = 12, face = "bold"),
+        legend.text  = element_text(size = 12, face = "plain"))
+
+evol_legend <- get_legend(legend_evol)
+
+df.anc.dummy.leg <- data.frame( # dummy df for making an extractable legend
+  RDA1 = rep(0, 5),
+  RDA2 = rep(0, 5),
+  Ancestry = factor(c("Population 2", "Population 3", "Population 4",
+                       "Population 5", "Mixed population"))
+)
+
+legend_anc <- ggplot(df.anc.dummy.leg, aes(x = RDA1, y = RDA2, color = Ancestry)) +
+  geom_point() +
+  scale_color_manual(
+    name = "Ancestry",
+    values = c("Population 2" = "darkorange",
+               "Population 3" = "deepskyblue1",
+               "Population 4" = "forestgreen",
+               "Population 5" = "gold",
+               "Mixed population" = "magenta3")
+  ) +
+  theme_void() +
+  theme(legend.position = "right",
+        legend.title = element_text(size = 12, face = "bold"),
+        legend.text  = element_text(size = 12, face = "plain"))
+
+anc_legend <- get_legend(legend_anc)
+
+rda_evol_plot_arrows <- rda_evol_plot_arrows + theme(legend.position = "none")
+rda_anc_plot_arrows <- rda_anc_plot_arrows + theme(legend.position = "none")
+
+rdas <- plot_grid(rda_evol_plot_arrows, rda_evol_plot_arrows_no_NP, evol_legend, rda_anc_plot_arrows, rda_anc_plot_arrows_no_NP, anc_legend,
+                  align= 'hv',
+                  nrow = 2)
+
+ggsave("figures/17_fig_2b_supp_rdas.jpeg", rdas, width = 16, height = 8) # PDF was rendering weird
 
 # Figure 3: Intra-gradient trade-offs -------------------------------------
 
@@ -657,9 +801,10 @@ T.qrs <- ggplot(df.final, aes(x = r.max_T, y = T.br, color = evol.bin)) +  # Qua
   geom_line(data = pred.t, aes(x = r.max_T, y = T.br.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
   geom_line(data = pred.t, aes(x = r.max_T, y = T.br.75), color = "black", size = 1.2, linetype = "dashed") +  
   
-  labs(x = "Maximum exponential growth rate",    
-       y = "Thermal breadth", 
-       color = "Evolutionary History") +  # labels
+  labs(x = "Maximum exponential growth rate (µ max)",    
+       y = "Thermal breadth (°C)", 
+       color = "Evolutionary History",
+       title = "E") +  # labels
   
   scale_color_manual(values = c("black", "goldenrod1"), 
                      labels = c("Ancestral", "Evolved")) +  
@@ -669,7 +814,8 @@ T.qrs <- ggplot(df.final, aes(x = r.max_T, y = T.br, color = evol.bin)) +  # Qua
     legend.title = element_text(size = 12, face = "bold"),  
     legend.text = element_text(size = 12, face = "plain"),  
     axis.title = element_text(size = 12, face = "bold"),  
-    axis.text = element_text(size = 10, face ="plain") # theme stuff
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
 T.qrs  # Display the plot
@@ -716,9 +862,10 @@ L.qrs <- ggplot(df.final[df.final$I.comp<10,], aes(x = r.max_I, y = I.comp, colo
   geom_line(data = pred.l, aes(x = r.max_I, y = I.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
   geom_line(data = pred.l, aes(x = r.max_I, y = I.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
 
-  labs(x = "Maximum exponential growth rate",    
+  labs(x = "Maximum exponential growth rate (µ max)",    
        y = "Competitive ability (1/R*)", 
-       color = "Evolutionary History") +  # labels
+       color = "Evolutionary History",
+       title = "A") +  # labels
   
   scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
                      labels = c("Ancestral", "Other", "Light")) +  
@@ -728,7 +875,8 @@ L.qrs <- ggplot(df.final[df.final$I.comp<10,], aes(x = r.max_I, y = I.comp, colo
     legend.title = element_text(size = 12, face = "bold"),  
     legend.text = element_text(size = 12, face = "plain"),  
     axis.title = element_text(size = 12, face = "bold"),  
-    axis.text = element_text(size = 10) # theme stuff
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff # theme stuff
   )
 
 L.qrs  # Display the plot
@@ -810,9 +958,10 @@ N.qrs <- ggplot(df.final, aes(x = r.max_N, y = N.comp, color = evol.bin)) +  # Q
   geom_line(data = pred.n, aes(x = r.max_N, y = N.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
   geom_line(data = pred.n, aes(x = r.max_N, y = N.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
   
-  labs(x = "Maximum exponential growth rate",    
+  labs(x = "Maximum exponential growth rate (µ max)",    
        y = "Competitive ability (1/R*)", 
-       color = "Evolutionary History") +  # labels
+       color = "Evolutionary History",
+       title = "B") +  # labels
   
   scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
                      labels = c("Ancestral", "Other", "Nitrogen")) +  
@@ -822,7 +971,8 @@ N.qrs <- ggplot(df.final, aes(x = r.max_N, y = N.comp, color = evol.bin)) +  # Q
     legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
     legend.text = element_text(size = 12, face = "plain"),  # Adjust text size
     axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
-    axis.text = element_text(size = 10)
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) 
 
 N.qrs  # Display the plot
@@ -895,9 +1045,10 @@ P.qrs <- ggplot(df.final, aes(x = r.max_P, y = P.comp, color = evol.bin)) +  # Q
   geom_line(data = pred.p, aes(x = r.max_P, y = P.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
   geom_line(data = pred.p, aes(x = r.max_P, y = P.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
   
-  labs(x = "Maximum exponential growth rate",    
+  labs(x = "Maximum exponential growth rate (µ max)",    
        y = "Competitive ability (1/R*)", 
-       color = "Evolutionary History") +  # labels
+       color = "Evolutionary History",
+       title = "C") +  # labels
   
   scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
                      labels = c("Ancestral", "Other", "Phosphorous")) +  
@@ -907,7 +1058,8 @@ P.qrs <- ggplot(df.final, aes(x = r.max_P, y = P.comp, color = evol.bin)) +  # Q
     legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
     legend.text = element_text(size = 12, face = "plain"),  # Adjust text size
     axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
-    axis.text = element_text(size = 10)
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) 
 
 P.qrs  # Display the plot
@@ -980,9 +1132,10 @@ S.qrs <- ggplot(df.final, aes(x = r.max_S, y = S.c.mod, color = evol.bin)) +  # 
   geom_line(data = pred.s, aes(x = r.max_S, y = S.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
   geom_line(data = pred.s, aes(x = r.max_S, y = S.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
   
-  labs(x = "Maximum exponential growth rate",    
+  labs(x = "Maximum exponential growth rate (µ max)",    
        y = "Salt tolerance (c)", 
-       color = "Evolutionary History") +  # labels
+       color = "Evolutionary History",
+       title = "D") +  # labels
   
   scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
                      labels = c("Ancestral", "Other", "Salt or Biotic x Salt")) +  
@@ -992,7 +1145,8 @@ S.qrs <- ggplot(df.final, aes(x = r.max_S, y = S.c.mod, color = evol.bin)) +  # 
     legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
     legend.text = element_text(size = 12, face = "plain"),  # Adjust text size
     axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
-    axis.text = element_text(size = 10)
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) 
 
 S.qrs  # Display the plot
@@ -1061,14 +1215,13 @@ legend_plot <- ggplot(legend_df, aes(x = x, y = y)) +
 
 legend_only <- get_legend(legend_plot)
 
-all_plots <- c(list(legend_only), plots_nolegend)
+all_plots <- c(plots_nolegend, list(legend_only))
 
 grad_toffs <- plot_grid(plotlist = all_plots,
           ncol = 2,
-          labels = c("A Legend", "B Light gradient", "C Nitrogen gradient", "D Phosphorous gradient", "E Salt gradient", "F Thermal gradient"),
           align = "hv")
 
-ggsave("figures/17_fig_2_intra-gradient_tradeoffs.pdf", grad_toffs, width = 8, height = 12) # Still looks off?.
+ggsave("figures/18_fig_3_intra-gradient_tradeoffs.jpeg", grad_toffs, width = 8, height = 12) # Still looks off?.
 
 # Then we will bring in inter-specific datasets and plot the position of their metrics on our plots
 
@@ -1076,7 +1229,7 @@ ggsave("figures/17_fig_2_intra-gradient_tradeoffs.pdf", grad_toffs, width = 8, h
 
 # Bringing in interspecific data sets
 
-
+###### Temperature ######
 
 # Figure 5: Inter-gradient trade-offs -------------------------------------
 
