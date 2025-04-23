@@ -1221,7 +1221,7 @@ grad_toffs <- plot_grid(plotlist = all_plots,
           ncol = 2,
           align = "hv")
 
-ggsave("figures/18_fig_3_intra-gradient_tradeoffs.jpeg", grad_toffs, width = 8, height = 12) # Still looks off?.
+ggsave("figures/18_fig_3_intra-gradient_tradeoffs.jpeg", grad_toffs, width = 8, height = 12)
 
 # Then we will bring in inter-specific datasets and plot the position of their metrics on our plots
 
@@ -1229,7 +1229,381 @@ ggsave("figures/18_fig_3_intra-gradient_tradeoffs.jpeg", grad_toffs, width = 8, 
 
 # Bringing in interspecific data sets
 
+df.thomas <- read.csv("data-processed/17_Thomas2012_TPCs.csv")
+head(df.thomas) # temperature only
+
+df.bestion.t <- read.csv("data-processed/18a_Bestion2018_TPCs.csv")
+head(df.bestion.t) # temperature
+
+df.bestion.p <- read.csv("data-processed/18c_Bestion2018_P_Monodss.csv")
+head(df.bestion.p) # phosphorous
+
+df.lewington.t <- read.csv("data-processed/19b_Lewington2019_TPCs.csv")
+head(df.lewington.t) # temperature
+
+df.lewington.n <- read.csv("data-processed/19e_Lewington2019_Nit_Monods.csv")
+head(df.lewington.n) # nitrogen, some negative R.mth scores here
+
+df.lewington.l <- read.csv("data-processed/19h_Lewington2019_Light_Monods.csv")
+head(df.lewington.l) # light, some negative R.mth scores here
+
+df.narwani <- read.csv("data-processed/20_Narwani2015_summmary.csv")
+head(df.narwani) # light, nitrogen, phosphate
+
+df.kontopoulos <- read.csv("data-processed/21a_Kontopoulos2020_TPCs.csv")
+head(df.kontopoulos) # temperature, low r.maxes
+
 ###### Temperature ######
+
+# We have thomas, bestion, lewington and kontopoulos
+
+sp.t <- ggplot(df.thomas, aes(x = r.max.raw, y = T.br.raw, colour = "Thomas et al., 2012")) + # Thomas 2012
+  geom_point(size = 2) +
+  geom_point(data= df.bestion.t, aes(x = r.max.raw, y = T.br.raw, colour = "Bestion et al., 2018"), size = 2) + # Bestion 2018
+  geom_point(data= df.lewington.t, aes(x = r.max.raw, y = T.br.raw, colour = "Lewington-Pearce et al., 2019"), size = 2) + # Lewington 2019
+  geom_point(data= df.kontopoulos, aes(x = r.max.raw, y = T.br.raw, colour = "Kontopoulos et al., 2020"), size = 2) + # Kontopoulos 2020
+  
+  geom_line(data = pred.t, aes(x = r.max_T, y = T.br.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  
+  labs(x = "Maximum exponential growth rate (µ max)",    
+       y = "Thermal breadth (°C)", 
+       title = "D") +  # labels
+  
+  scale_color_manual(values = c("chartreuse2", "maroon1", "gold1", "cornflowerblue"), 
+                     name = "Data set",
+                     labels = c("Bestion et al., 2018", "Kontopoulos et al., 2020", "Lewington-Pearce et al., 2019", "Thomas et al., 2012")) +  
+  theme_classic() +
+  theme(
+    legend.position = c(0.7, 0.8),  # Moves legend inside the plot (x, y) in [0,1] scale
+    legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
+    legend.text = element_text(size = 12, face = "plain"),  # Adjust text size
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  ) 
+
+sp.t  # Display the plot
+
+df.final.T.scaled <- df.final %>%
+  mutate(r.max_T.scaled = scale(r.max_T),
+         T.br.scaled = scale(T.br))
+
+quant.T.scaled <- rq(T.br.scaled ~ poly(r.max_T.scaled, 2),
+                     data = df.final.T.scaled, tau = 0.95)
+
+mean_rmax <- mean(df.final.T.scaled$r.max_T, na.rm = TRUE)
+sd_rmax   <- sd(df.final.T.scaled$r.max_T, na.rm = TRUE)
+
+pred.t2 <- pred.t %>%
+  mutate(r.max_T.scaled = (r.max_T - mean_rmax) / sd_rmax)
+
+pred.t2$T.br.scaled <- predict(quant.T.scaled, newdata = pred.t2)
+
+sp.t.scaled <- ggplot(df.thomas, aes(x = scale(r.max.raw), y = scale(T.br.raw), colour = "Thomas et al., 2012")) + # Thomas 2012
+  geom_point(size = 2) +
+  geom_point(data= df.bestion.t, aes(x = scale(r.max.raw), y = scale(T.br.raw), colour = "Bestion et al., 2018"), size = 2) + # Bestion 2018
+  geom_point(data= df.lewington.t, aes(x = scale(r.max.raw), y = scale(T.br.raw), colour = "Lewington-Pearce et al., 2019"), size = 2) + # Lewington 2019
+  geom_point(data= df.kontopoulos, aes(x = scale(r.max.raw), y = scale(T.br.raw), colour = "Kontopoulos et al., 2020"), size = 2) + # Kontopoulos 2020
+  
+  geom_line(data = pred.t2, aes(x = r.max_T.scaled, y = T.br.scaled), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  
+  labs(x = "Maximum exponential growth rate (µ max)",    
+       y = "Thermal breadth (°C)", 
+       title = "D") +  # labels
+  
+  scale_color_manual(values = c("chartreuse2", "maroon1", "gold1", "cornflowerblue"), 
+                     name = "Data set",
+                     labels = c("Bestion et al., 2018", "Kontopoulos et al., 2020", "Lewington-Pearce et al., 2019", "Thomas et al., 2012")) +  
+  theme_classic() +
+  theme(
+    legend.position = c(0.2, 0.8),  # Moves legend inside the plot (x, y) in [0,1] scale
+    legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
+    legend.text = element_text(size = 12, face = "plain"),  # Adjust text size
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  ) 
+
+sp.t.scaled
+
+###### Light ######
+
+# Only the Narwani data and Lewington
+
+sp.l <- ggplot(df.narwani, aes(x = umax.nitrate, y = Nstar, colour = "Narwani et al., 2015")) + # Narwani 2015
+  geom_point(size = 2) +
+  
+  geom_point(data= df.lewington.l, aes(x = r.max, y = R.mth, colour = "Lewington-Pearce et al., 2019"), size = 2) + # Lewington 2019
+  
+  geom_line(data = pred.l, aes(x = r.max_I, y = I.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  
+  labs(x = "Maximum exponential growth rate (µ max)",    
+       y = "Competitive ability (1/R*)", , 
+       title = "A") +  # labels
+  
+  scale_color_manual(values = c("gold1","darkgreen"), 
+                     name = "Data set",
+                     labels = c("Lewington-Pearce et al., 2019", "Narwani et al., 2015")) +  
+  theme_classic() +
+  theme(
+    legend.position = c(0.9, 0.9),  # Moves legend inside the plot (x, y) in [0,1] scale
+    legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
+    legend.text = element_text(size = 12, face = "plain"),  # Adjust text size
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  ) 
+
+sp.l  # Display the plot
+
+df.final.I.scaled <- df.final %>%
+  filter(I.comp < 10) %>% 
+  mutate(r.max_I.scaled = scale(r.max_I),
+         I.comp.scaled = scale(I.comp))
+
+quant.I.scaled <- rq(I.comp.scaled ~ poly(r.max_I.scaled, 2),
+                     data = df.final.I.scaled, tau = 0.95)
+
+mean_rmax <- mean(df.final.I.scaled$r.max_I, na.rm = TRUE)
+sd_rmax   <- sd(df.final.I.scaled$r.max_I, na.rm = TRUE)
+
+pred.l2 <- pred.l %>%
+  mutate(r.max_I.scaled = (r.max_I - mean_rmax) / sd_rmax)
+
+pred.l2$I.comp.scaled <- predict(quant.I.scaled, newdata = pred.l2)
+
+pred.l2 <- pred.l2 %>%
+  mutate(I.comp.scaled = ifelse(row_number() <= which.max(pred.l2$I.comp.scaled) & I.comp.scaled < max(I.comp.scaled), NA, I.comp.scaled))
+
+sp.l.scaled <- ggplot(df.narwani, aes(x = scale(umax.nitrate), y = scale(Nstar), colour = "Narwani et al., 2015")) + # Narwani 2015
+  geom_point(size = 2) +
+  
+  geom_point(data= df.lewington.l, aes(x = scale(r.max), y = scale(R.mth), colour = "Lewington-Pearce et al., 2019"), size = 2) + # Lewington 2019
+  
+  geom_line(data = pred.l2, aes(x = r.max_I.scaled, y = I.comp.scaled), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  
+  labs(x = "Maximum exponential growth rate (µ max)",    
+       y = "Competitive ability (1/R*)", , 
+       title = "A") +  # labels
+  
+  scale_color_manual(values = c("gold1","darkgreen"), 
+                     name = "Data set",
+                     labels = c("Lewington-Pearce et al., 2019", "Narwani et al., 2015")) +  
+  theme_classic() +
+  theme(
+    legend.position = c(0.25, 0.8),  # Moves legend inside the plot (x, y) in [0,1] scale
+    legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
+    legend.text = element_text(size = 12, face = "plain"),  # Adjust text size
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  ) 
+
+sp.l.scaled  # Display the plot
+
+###### Nitrogen ######
+
+# So we have Narwani and Lewington
+
+sp.n <- ggplot(df.narwani, aes(x = umax.light, y = Istar, colour = "Narwani et al., 2015")) + # Narwani 2015
+  geom_point(size = 2) +
+  
+  geom_point(data= df.lewington.n, aes(x = r.max, y = R.mth, colour = "Lewington-Pearce et al., 2019"), size = 2) + # Lewington 2019
+  
+  geom_line(data = pred.n, aes(x = r.max_N, y = N.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  
+  labs(x = "Maximum exponential growth rate (µ max)",    
+       y = "Competitive ability (1/R*)", , 
+       title = "B") +  # labels
+  
+  scale_color_manual(values = c("gold1", "darkgreen"), 
+                     name = "Data set",
+                     labels = c("Lewington-Pearce et al., 2019", "Narwani et al., 2015")) +  
+  
+  theme_classic() +
+  theme(
+    legend.position = c(0.7, 0.5),  # Moves legend inside the plot (x, y) in [0,1] scale
+    legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
+    legend.text = element_text(size = 12, face = "plain"),  # Adjust text size
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  ) 
+
+sp.n  # Display the plot
+
+df.final.N.scaled <- df.final %>%
+  mutate(r.max_N.scaled = scale(r.max_N),
+         N.comp.scaled = scale(N.comp))
+
+quant.N.scaled <- rq(N.comp.scaled ~ poly(r.max_N.scaled, 2),
+                     data = df.final.N.scaled, tau = 0.95)
+
+mean_rmax <- mean(df.final.N.scaled$r.max_N, na.rm = TRUE)
+sd_rmax   <- sd(df.final.N.scaled$r.max_N, na.rm = TRUE)
+
+pred.n2 <- pred.n %>%
+  mutate(r.max_N.scaled = (r.max_N - mean_rmax) / sd_rmax)
+
+pred.n2$N.comp.scaled <- predict(quant.N.scaled, newdata = pred.n2)
+
+sp.n.scaled <- ggplot(df.narwani, aes(x = scale(umax.light), y = scale(Istar), colour = "Narwani et al., 2015")) + # Narwani 2015
+  geom_point(size = 2) +
+  
+  geom_point(data= df.lewington.n, aes(x = scale(r.max), y = scale(R.mth), colour = "Lewington-Pearce et al., 2019"), size = 2) + # Lewington 2019
+  
+  geom_line(data = pred.n2, aes(x = r.max_N.scaled, y = N.comp.scaled), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  
+  labs(x = "Maximum exponential growth rate (µ max)",    
+       y = "Competitive ability (1/R*)", , 
+       title = "B") +  # labels
+  
+  scale_color_manual(values = c("gold1", "darkgreen"), 
+                     name = "Data set",
+                     labels = c("Lewington-Pearce et al., 2019", "Narwani et al., 2015")) +  
+  
+  theme_classic() +
+  theme(
+    legend.position = c(0.7, 0.5),  # Moves legend inside the plot (x, y) in [0,1] scale
+    legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
+    legend.text = element_text(size = 12, face = "plain"),  # Adjust text size
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  ) 
+
+sp.n.scaled  # Display the plot
+
+###### Phosphorous ######
+
+# Bestion and Narwani
+
+sp.p <- ggplot(df.narwani, aes(x = umax.phosphate, y = Pstar, colour = "Narwani et al., 2015")) + # Narwani 2015
+  geom_point(size = 2) +
+  
+  geom_point(data= df.bestion.p, aes(x = r.max, y = R.mth, colour = "Bestion et al., 2018"), size = 2) + # Bestion 2018
+  
+  geom_line(data = pred.p, aes(x = r.max_P, y = P.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  
+  labs(x = "Maximum exponential growth rate (µ max)",    
+       y = "Competitive ability (1/R*)", , 
+       title = "C") +  # labels
+  
+  scale_color_manual(values = c("chartreuse2", "darkgreen"), 
+                     name = "Data set",
+                     labels = c("Lewington-Pearce et al., 2019", "Narwani et al., 2015")) +  
+  
+  theme_classic() +
+  theme(
+    legend.position = c(0.3, 0.8),  # Moves legend inside the plot (x, y) in [0,1] scale
+    legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
+    legend.text = element_text(size = 12, face = "plain"),  # Adjust text size
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  ) 
+
+sp.p  # Display the plot
+
+df.final.P.scaled <- df.final %>%
+  mutate(r.max_P.scaled = scale(r.max_P),
+         P.comp.scaled = scale(P.comp))
+
+quant.P.scaled <- rq(P.comp.scaled ~ poly(r.max_P.scaled, 2),
+                     data = df.final.P.scaled, tau = 0.95)
+
+mean_rmax <- mean(df.final.P.scaled$r.max_P, na.rm = TRUE)
+sd_rmax   <- sd(df.final.P.scaled$r.max_P, na.rm = TRUE)
+
+pred.p2 <- pred.p %>%
+  mutate(r.max_P.scaled = (r.max_P - mean_rmax) / sd_rmax)
+
+pred.p2$P.comp.scaled <- predict(quant.P.scaled, newdata = pred.p2)
+
+sp.p.scaled <- ggplot(df.narwani, aes(x = scale(umax.phosphate), y = scale(Pstar), colour = "Narwani et al., 2015")) + # Narwani 2015
+  geom_point(size = 2) +
+  
+  geom_point(data= df.bestion.p, aes(x = scale(r.max), y = scale(R.mth), colour = "Bestion et al., 2018"), size = 2) + # Bestion 2018
+  
+  geom_line(data = pred.p2, aes(x = r.max_P.scaled, y = P.comp.scaled), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  
+  labs(x = "Maximum exponential growth rate (µ max)",    
+       y = "Competitive ability (1/R*)", , 
+       title = "C") +  # labels
+  
+  scale_color_manual(values = c("chartreuse2", "darkgreen"), 
+                     name = "Data set",
+                     labels = c("Lewington-Pearce et al., 2019", "Narwani et al., 2015")) +  
+  
+  theme_classic() +
+  theme(
+    legend.position = c(0.3, 0.8),  # Moves legend inside the plot (x, y) in [0,1] scale
+    legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
+    legend.text = element_text(size = 12, face = "plain"),  # Adjust text size
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  ) 
+
+sp.p.scaled  # Display the plot
+
+###### Make the figures ######
+
+plots2 <- list(sp.l, sp.n, sp.p, sp.t)
+
+plots2_nolegend <- lapply(plots2, function(p) p + theme(legend.position = "none"))
+
+legend_sp <- data.frame(
+  x = 1:5,
+  y = 1:5,
+  Dataset = factor(c(
+    "Bestion et al., 2018",
+    "Kontopoulos et al., 2020",
+    "Lewington-Pearce et al., 2019",
+    "Narwani et al., 2015",
+    "Thomas et al., 2012"
+  ))
+)
+
+legend_sp_plot <- ggplot(legend_sp, aes(x = x, y = y, color = Dataset)) +
+  geom_point(size = 3) +
+  scale_color_manual(
+    values = c("Bestion et al., 2018" = "chartreuse2",
+               "Kontopoulos et al., 2020" = "maroon1",
+               "Lewington-Pearce et al., 2019" = "gold1",
+               "Narwani et al., 2015" = "darkgreen",
+               "Thomas et al., 2012" = "cornflowerblue"),
+    name = "Data set"
+  ) +
+  theme_void() +
+  theme(
+    legend.title = element_text(size = 12, face = "bold"),
+    legend.text = element_text(size = 12),
+    legend.position = "right"
+  )
+
+
+sp_legend <- get_legend(legend_sp_plot)
+
+all_sp_plots <- c(plots2_nolegend, list(sp_legend))
+
+grad_sp_toffs <- plot_grid(plotlist = all_sp_plots,
+                        ncol = 2,
+                        align = "hv")
+
+ggsave("figures/19_fig_4a_sp_tradeoffs.jpeg", grad_sp_toffs, width = 8, height = 12)
+
+plots2.scaled <- list(sp.l.scaled, sp.n.scaled, sp.p.scaled, sp.t.scaled)
+
+plots2_nolegend.scaled <- lapply(plots2.scaled, function(p) p + theme(legend.position = "none"))
+
+all_sp_plots.scaled <- c(plots2_nolegend.scaled, list(sp_legend))
+
+grad_sp_toffs.scaled <- plot_grid(plotlist = all_sp_plots.scaled,
+                           ncol = 2,
+                           align = "hv")
+
+ggsave("figures/19_fig_4b_sp_tradeoffs_scaled.jpeg", grad_sp_toffs.scaled, width = 8, height = 12)
 
 # Figure 5: Inter-gradient trade-offs -------------------------------------
 
