@@ -263,7 +263,7 @@ df.r.p <- df.r.p %>%
 p.p1 <- ggplot(df.r.p[df.r.p$population.number==37,], aes(x = phos.lvl, y = r.exp, colour = population)) +
   geom_jitter(size = 2.5,width = 0.5, height = 0) + # small horizontal shift 
   scale_colour_manual(values = c("forestgreen")) +
-  ylim(-0.5, 2.5) +
+  ylim(-0.2, 1.8) +
   
   #geom_line(data = df.T.jags7, aes(x = temp, y= mean), colour = "darkorange1", size = 1) +
   #geom_line(data = df.T.jags18, aes(x = temp, y= mean), colour = "magenta2", size = 1) +
@@ -285,7 +285,7 @@ p.p1 <- ggplot(df.r.p[df.r.p$population.number==37,], aes(x = phos.lvl, y = r.ex
   
   geom_segment(aes(x = -Inf, xend = 50, y = 1.495213, yend = 1.495213), linetype = "dashed", colour = "black", size = 1.2) +
   geom_segment(aes(x = 1.1537846, xend = 1.1537846, 
-                   y = 0, yend = 0.56),
+                   y = -Inf, yend = 0.56),
                linetype = "dashed", colour = "black", size = 1.2) +
   
   
@@ -294,20 +294,19 @@ p.p1 <- ggplot(df.r.p[df.r.p$population.number==37,], aes(x = phos.lvl, y = r.ex
 
 p.p1
 
-p.p <- ggplot(df.r.p, aes(x = phos.lvl, y = r.exp, colour = population)) +
-  geom_jitter(size = 2.5,width = 0.5, height = 0) + # small horizontal shift 
+p.p2 <- ggplot(df.r.p[df.r.p$population.number==37,], aes(x = phos.lvl, y = r.exp, colour = population)) +
   scale_colour_manual(values = c("darkorange1", "magenta2", "forestgreen")) +
-  ylim(-0.5, 2.5) +
+  ylim(-0.2, 1.8) +
   
   geom_line(data = df.P.jags7, aes(x = phos, y= mean), colour = "darkorange1", size = 1) +
   geom_line(data = df.P.jags18, aes(x = phos, y= mean), colour = "magenta2", size = 1) +
   geom_line(data = df.P.jags37, aes(x = phos, y= mean), colour = "forestgreen", size = 1) +
   
-  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40", size = 0.6) +
-  
   labs(x = "Phosphorous concentration (µM)", 
        y = "Exponential growth rate (µ)",
-       title = "B") +
+       title = "E - Phosphorous") +
+  
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40", size = 0.6) +
   
   theme_classic() +
   theme(
@@ -317,7 +316,25 @@ p.p <- ggplot(df.r.p, aes(x = phos.lvl, y = r.exp, colour = population)) +
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
   ) 
 
-p.p
+p.p2
+
+p.p3 <- ggplot(df.final[df.final$Pop.fac %in% c("7", "17", "cc1690"),], aes(x = r.max_P, y = P.comp, colour = Pop.fac)) +
+  geom_point(size=4.5) +
+  scale_colour_manual(values = c("darkorange", "magenta","forestgreen")) +
+  
+  labs(x = "Maximum exponential growth rate (µ max)", 
+       y = "Competitive ability (1/P*)",
+       title = "F - Phosphorous") +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  # delete legend
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+  ) 
+
+p.p3
 
 # Salt
 
@@ -335,6 +352,40 @@ head(df.r.s) # population is the factor, population.number is the corresponding 
 df.r.s <- df.r.s %>% 
   filter(population.number %in% c(7, 18, 37)) %>% 
   print()
+
+p.s1 <- ggplot(df.r.s[df.r.s$population.number==37,], aes(x = salt.lvl, y = r.exp, colour = population)) +
+  geom_jitter(size = 2.5,width = 0.5, height = 0) + # small horizontal shift 
+  scale_colour_manual(values = c("forestgreen")) +
+  ylim(-0.2, 2) +
+  
+  #geom_line(data = df.T.jags7, aes(x = temp, y= mean), colour = "darkorange1", size = 1) +
+  #geom_line(data = df.T.jags18, aes(x = temp, y= mean), colour = "magenta2", size = 1) +
+  geom_line(data = df.S.jags37, aes(x = salt, y= mean), colour = "forestgreen", size = 1) +
+  
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40", size = 0.6) +
+  
+  labs(x = "Salt concentration (g/L)", 
+       y = "Exponential growth rate (µ)",
+       title = "G - Salt") +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  # delete legend
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+  ) +
+  
+  geom_segment(aes(x = -Inf, xend = 10, y = 1.609634, yend = 1.609634), linetype = "dashed", colour = "black", size = 1.2) +
+  geom_segment(aes(x = 3.706578, xend = 3.706578, 
+                   y = -Inf, yend = 1.609634/2),
+               linetype = "dashed", colour = "black", size = 1.2) +
+  
+  
+  annotate("text", x = 5, y = 1.75, label = "µ max", size = 4.5, fontface = "bold") +
+  annotate("text", x = 2.3, y = 0.5, label = "Salt tolerance (c)", size = 4.5, fontface = "bold")
+
+p.s1
 
 p.s <- ggplot(df.r.s, aes(x = salt.lvl, y = r.exp, colour = population)) +
   geom_jitter(size = 2.5,width = 0.5, height = 0) + # small horizontal shift 
