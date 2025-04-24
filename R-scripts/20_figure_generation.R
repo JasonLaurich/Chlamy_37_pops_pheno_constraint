@@ -820,6 +820,26 @@ T.qrs <- ggplot(df.final, aes(x = r.max_T, y = T.br, color = evol.bin)) +  # Qua
 
 T.qrs  # Display the plot
 
+# Quadrant-based statistical testing
+
+x.thresh.t <- mean(df.final$r.max_T)
+y.thresh.t <- mean(df.final$T.br)
+
+obs.cnt.t <- df.final %>%
+  filter(r.max_T > x.thresh.t, T.br > y.thresh.t) %>%
+  nrow()
+
+null.counts.t <- replicate(1000, {
+  shuffled.df <- df.final %>%
+    mutate(r.max_T = sample(r.max_T, rep= F),
+           T.br = sample(T.br, rep = F))
+  
+  sum(shuffled.df$r.max_T > x.thresh.t & shuffled.df$T.br > y.thresh.t)
+})
+
+p.val.t.quad <- mean(null.counts.t >= obs.cnt.t)
+p.val.t.quad # 0.896
+
 ###### Light ######
 
 df.final$shape <- ifelse(df.final$evol == "none", 22, 
@@ -919,6 +939,26 @@ for (i in 1:n_iter) { # Now we'll randomize and see how many light points should
 
 p_val_l <- mean(null_counts_l >= l.75) # 0.726
 
+# Quadrant-based statistical testing
+
+x.thresh.l <- mean(df.final[df.final$I.comp<10,]$r.max_I)
+y.thresh.l <- mean(df.final[df.final$I.comp<10,]$I.comp)
+
+obs.cnt.l <- df.final[df.final$I.comp<10,] %>%
+  filter(r.max_I > x.thresh.l, I.comp > y.thresh.l) %>%
+  nrow()
+
+null.counts.l <- replicate(1000, {
+  shuffled.df <- df.final[df.final$I.comp<10,] %>%
+    mutate(r.max_I = sample(r.max_I, rep= F),
+           I.comp = sample(I.comp, rep = F))
+  
+  sum(shuffled.df$r.max_I > x.thresh.l & shuffled.df$I.comp > y.thresh.l)
+})
+
+p.val.l.quad <- mean(null.counts.l >= obs.cnt.l)
+p.val.l.quad # 0.523
+
 ###### Nitrogen ######
 
 df.final$shape <- ifelse(df.final$evol == "none", 22, 
@@ -1008,6 +1048,26 @@ for (i in 1:n_iter) { # Now we'll randomize and see how many light points should
 
 p_val_n <- mean(null_counts_n >= n.75) # 0.354
 
+# Quadrant-based statistical testing
+
+x.thresh.n <- mean(df.final$r.max_N)
+y.thresh.n <- mean(df.final$N.comp)
+
+obs.cnt.n <- df.final %>%
+  filter(r.max_N > x.thresh.n, N.comp > y.thresh.n) %>%
+  nrow()
+
+null.counts.n <- replicate(1000, {
+  shuffled.df <- df.final %>%
+    mutate(r.max_N = sample(r.max_N, rep= F),
+           N.comp = sample(N.comp, rep = F))
+  
+  sum(shuffled.df$r.max_N > x.thresh.n & shuffled.df$N.comp > y.thresh.n)
+})
+
+p.val.n.quad <- mean(null.counts.n >= obs.cnt.n)
+p.val.n.quad # 0.92
+
 ###### Phosphorous ######
 
 df.final$shape <- ifelse(df.final$evol == "none", 22, 
@@ -1095,6 +1155,26 @@ for (i in 1:n_iter) { # Now we'll randomize and see how many light points should
 
 p_val_p <- mean(null_counts_p >= p.75) # 0.116
 
+# Quadrant-based statistical testing
+
+x.thresh.p <- mean(df.final$r.max_P)
+y.thresh.p <- mean(df.final$P.comp)
+
+obs.cnt.p <- df.final %>%
+  filter(r.max_P > x.thresh.p, P.comp > y.thresh.p) %>%
+  nrow()
+
+null.counts.p <- replicate(1000, {
+  shuffled.df <- df.final %>%
+    mutate(r.max_P = sample(r.max_P, rep= F),
+           P.comp = sample(P.comp, rep = F))
+  
+  sum(shuffled.df$r.max_P > x.thresh.p & shuffled.df$P.comp > y.thresh.p)
+})
+
+p.val.p.quad <- mean(null.counts.p >= obs.cnt.p)
+p.val.p.quad # 0.971
+
 ###### Salt ######
 
 df.final$shape <- ifelse(df.final$evol == "none", 22, 
@@ -1181,6 +1261,26 @@ for (i in 1:n_iter) { # Now we'll randomize and see how many light points should
 }
 
 p_val_s <- mean(null_counts_s >= s.75) # 0.001!
+
+# Quadrant-based statistical testing
+
+x.thresh.s <- mean(df.final$r.max_S)
+y.thresh.s <- mean(df.final$S.c.mod)
+
+obs.cnt.s <- df.final %>%
+  filter(r.max_S > x.thresh.s, S.c.mod > y.thresh.s) %>%
+  nrow()
+
+null.counts.s <- replicate(1000, {
+  shuffled.df <- df.final %>%
+    mutate(r.max_S = sample(r.max_S, rep= F),
+           S.c.mod = sample(S.c.mod, rep = F))
+  
+  sum(shuffled.df$r.max_S > x.thresh.s & shuffled.df$S.c.mod > y.thresh.s)
+})
+
+p.val.s.quad <- mean(null.counts.s >= obs.cnt.s)
+p.val.s.quad # 0.856
 
 # Figure 1 : all plots together
 
@@ -1607,5 +1707,428 @@ ggsave("figures/19_fig_4b_sp_tradeoffs_scaled.jpeg", grad_sp_toffs.scaled, width
 
 # Figure 5: Inter-gradient trade-offs -------------------------------------
 
+# I think for now we will limit this to competitive abilities, salt tolerance and thermal breadth.
+# We'll create a half-full grid. 
+# Order: light, nitrogen, phosphorous, salt, temperature
 
+###### Light comparisons ######
+
+# Light v Nitrogen
+
+df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
+                            ifelse(df.final$evol == "L", 'light', ifelse(df.final$evol == 'N', 'nit', 'other'))) # for testing regressions.
+
+pred.ln <- data.frame(N.comp = seq(min(df$N.comp), max(df$N.comp), length.out = 100)) # Dataframe to collect quantile info in
+
+quant.IN.95 <- rq(I.comp ~ poly(N.comp, 2), data = df.final[df.final$I.comp<10,], tau = 0.95) 
+pred.ln$I.comp.95 <- predict(quant.IN.95, newdata = pred.ln)
+
+quant.IN.75 <- rq(I.comp ~ poly(N.comp, 2), data = df.final[df.final$I.comp<10,], tau = 0.75) 
+pred.ln$I.comp.75 <- predict(quant.IN.75, newdata = pred.ln)
+
+df.final$evol.bin <- factor(df.final$evol.bin, levels = c("ancestral", "other", "light", "nit"))
+
+LN.qrs <- ggplot(df.final[df.final$I.comp<10,], aes(x = N.comp, y = I.comp, color = evol.bin)) +  # Quantiles plot
+  geom_point(size = 3) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.ln, aes(x = N.comp, y = I.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  geom_line(data = pred.ln, aes(x = N.comp, y = I.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
+  
+  labs(x = "Competitive ability (1/N*)",    
+       y = "Competitive ability (1/I*)", 
+       color = "Evolutionary History",
+       title = "A") +  # labels
+  
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3", "dodgerblue"), 
+                     labels = c("Ancestral", "Other", "Light", "Nitrogen")) +  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff # theme stuff
+  )
+
+LN.qrs  # Display the plot
+
+# Light v Phosphorous
+
+df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
+                            ifelse(df.final$evol == "L", 'light', ifelse(df.final$evol == 'P', 'phos', 'other'))) # for testing regressions.
+
+pred.lp <- data.frame(P.comp = seq(min(df$P.comp), max(df$P.comp), length.out = 100)) # Dataframe to collect quantile info in
+
+quant.IP.95 <- rq(I.comp ~ poly(P.comp, 2), data = df.final[df.final$I.comp<10,], tau = 0.95) 
+pred.lp$I.comp.95 <- predict(quant.IP.95, newdata = pred.lp)
+
+quant.IP.75 <- rq(I.comp ~ poly(P.comp, 2), data = df.final[df.final$I.comp<10,], tau = 0.75) 
+pred.lp$I.comp.75 <- predict(quant.IP.75, newdata = pred.lp)
+
+df.final$evol.bin <- factor(df.final$evol.bin, levels = c("ancestral", "other", "light", "phos"))
+
+LP.qrs <- ggplot(df.final[df.final$I.comp<10,], aes(x = P.comp, y = I.comp, color = evol.bin)) +  # Quantiles plot
+  geom_point(size = 3) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.lp, aes(x = P.comp, y = I.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  geom_line(data = pred.lp, aes(x = P.comp, y = I.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
+  
+  labs(x = "Competitive ability (1/P*)",    
+       y = "Competitive ability (1/I*)", 
+       color = "Evolutionary History",
+       title = "B") +  # labels
+  
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3", "dodgerblue"), 
+                     labels = c("Ancestral", "Other", "Light", "Phosphorous")) +  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff # theme stuff
+  )
+
+LP.qrs  # Display the plot
+
+par_frt_tolerant <- function(df, xvar, yvar, tolerance = 0.10) {
+  df <- df[order(-df[[xvar]], df[[yvar]]), ]
+  pareto_points <- df[1, ]
+  frontier_y <- df[1, yvar]
+  
+  for (i in 2:nrow(df)) {
+    threshold <- tail(pareto_points[[yvar]], 1) * (1 - tolerance)
+    if (df[i, yvar] >= threshold) {
+      pareto_points <- rbind(pareto_points, df[i, ])
+    }
+  }
+  
+  return(pareto_points)
+}
+
+par.res.LP <- par_frt(df.final[df.final$I.comp<10,], xvar = "P.comp", yvar = "I.comp")
+
+par.res.LP2 <- par_frt_tolerant(df.final[df.final$I.comp<10,], xvar = "P.comp", yvar = "I.comp")
+
+pred.lp.pf <- data.frame(P.comp = seq((min(par.res.LP$P.comp)-sd(par.res.LP$P.comp)/2), (max(par.res.LP$P.comp)+sd(par.res.LP$P.comp)/2), length.out = 100)) # New df for the par front data
+
+quant.IP.pf <- lm(I.comp ~ poly(P.comp, 2), data = par.res.LP) 
+pred.lp.pf$I.comp.pf <- predict(quant.IP.pf, newdata = pred.lp.pf)
+
+smooth.model <- smooth.spline(par.res.LP$P.comp, par.res.LP$I.comp, spar = 0.5)
+
+x.vals <- seq(min(par.res.LP$P.comp), max(par.res.LP$P.comp), length.out = 100)
+pred.curve <- data.frame(
+  P.comp = x.vals,
+  I.comp = predict(smooth.model, x = x.vals)$y
+)
+
+fit <- scam(I.comp ~ s(P.comp, bs = "mpd", k = 6), data = par.res.LP2)
+
+x.vals <- seq(min(par.res.LP$P.comp), max(par.res.LP$P.comp), length.out = 100)
+pred.curve <- data.frame(
+  P.comp = x.vals,
+  I.comp = predict(fit, newdata = data.frame(P.comp = x.vals))
+)
+
+pred.lp.pf$I.comp.pf2 <- predict(smooth.model, newdata = pred.lp.pf)
+
+LP.qrs2 <- ggplot(df.final[df.final$I.comp<10,], aes(x = P.comp, y = I.comp, color = evol.bin)) +  # Quantiles plot
+  geom_point(size = 3) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve, aes(x = P.comp, y = I.comp), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  geom_line(data = pred.lp, aes(x = P.comp, y = I.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
+  
+  labs(x = "Competitive ability (1/P*)",    
+       y = "Competitive ability (1/I*)", 
+       color = "Evolutionary History",
+       title = "B") +  # labels
+  
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3", "dodgerblue"), 
+                     labels = c("Ancestral", "Other", "Light", "Phosphorous")) +  
+  theme_classic() +
+  theme(
+    legend.position = "none",  # Move legend inside the plot
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff # theme stuff
+  )
+
+LP.qrs2
+
+examp.par.front <- plot_grid(LP.qrs, LP.qrs2)
+
+examp.par.front
+
+ggsave("figures/20b_pareto_front_options.jpeg", examp.par.front, width = 12, height = 8)
+
+# Light v salt
+
+df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
+                            ifelse(df.final$evol == "L", 'light', ifelse(df.final$evol %in% c("S", "BS"), 'salt', 'other'))) # for testing regressions.
+
+pred.ls <- data.frame(S.c.mod = seq(min(df$S.c.mod), max(df$S.c.mod), length.out = 100)) # Dataframe to collect quantile info in
+
+quant.IS.95 <- rq(I.comp ~ poly(S.c.mod, 2), data = df.final[df.final$I.comp<10,], tau = 0.95) 
+pred.ls$I.comp.95 <- predict(quant.IS.95, newdata = pred.ls)
+
+quant.IS.75 <- rq(I.comp ~ poly(S.c.mod, 2), data = df.final[df.final$I.comp<10,], tau = 0.75) 
+pred.ls$I.comp.75 <- predict(quant.IS.75, newdata = pred.ls)
+
+df.final$evol.bin <- factor(df.final$evol.bin, levels = c("ancestral", "other", "light", "phos"))
+
+LS.qrs <- ggplot(df.final[df.final$I.comp<10,], aes(x = S.c.mod, y = I.comp, color = evol.bin)) +  # Quantiles plot
+  geom_point(size = 3) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.ls, aes(x = S.c.mod, y = I.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  geom_line(data = pred.ls, aes(x = S.c.mod, y = I.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
+  
+  labs(x = "Salt tolerance (c)",    
+       y = "Competitive ability (1/I*)", 
+       color = "Evolutionary History",
+       title = "C") +  # labels
+  
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3", "dodgerblue"), 
+                     labels = c("Ancestral", "Other", "Light", "Salt or Biotic x Salt")) +  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff # theme stuff
+  )
+
+LS.qrs  # Display the plot
+
+# Light v temperature
+
+df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
+                            ifelse(df.final$evol == "L", 'light', 'other')) # for testing regressions.
+
+pred.lt <- data.frame(T.br = seq(min(df$T.br), max(df$T.br), length.out = 100)) # Dataframe to collect quantile info in
+
+quant.IT.95 <- rq(I.comp ~ poly(T.br, 2), data = df.final[df.final$I.comp<10,], tau = 0.95) 
+pred.lt$I.comp.95 <- predict(quant.IT.95, newdata = pred.lt)
+
+quant.IT.75 <- rq(I.comp ~ poly(T.br, 2), data = df.final[df.final$I.comp<10,], tau = 0.75) 
+pred.lt$I.comp.75 <- predict(quant.IT.75, newdata = pred.lt)
+
+df.final$evol.bin <- factor(df.final$evol.bin, levels = c("ancestral", "other", "light"))
+
+LT.qrs <- ggplot(df.final[df.final$I.comp<10,], aes(x = T.br, y = I.comp, color = evol.bin)) +  # Quantiles plot
+  geom_point(size = 3) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.lt, aes(x = T.br, y = I.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  geom_line(data = pred.lt, aes(x = T.br, y = I.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
+  
+  labs(x = "Thermal breadth (°C)",    
+       y = "Competitive ability (1/I*)", 
+       color = "Evolutionary History",
+       title = "D") +  # labels
+  
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3", "dodgerblue"), 
+                     labels = c("Ancestral", "Other", "Light", "Temperature")) +  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff # theme stuff
+  )
+
+LT.qrs  # Display the plot
+
+###### Nitrogen comparisons ######
+
+# N v P
+
+df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
+                            ifelse(df.final$evol == "N", 'nit', ifelse(df.final$evol == 'P', 'phos', 'other'))) # for testing regressions.
+
+pred.np <- data.frame(P.comp = seq(min(df$P.comp), max(df$P.comp), length.out = 100)) # Dataframe to collect quantile info in
+
+quant.NP.95 <- rq(N.comp ~ poly(P.comp, 2), data = df.final, tau = 0.95) 
+pred.np$N.comp.95 <- predict(quant.NP.95, newdata = pred.np)
+
+quant.NP.75 <- rq(N.comp ~ poly(P.comp, 2), data = df.final, tau = 0.75) 
+pred.np$N.comp.75 <- predict(quant.NP.75, newdata = pred.np)
+
+df.final$evol.bin <- factor(df.final$evol.bin, levels = c("ancestral", "other", "nit", "phos"))
+
+NP.qrs <- ggplot(df.final, aes(x = P.comp, y = N.comp, color = evol.bin)) +  # Quantiles plot
+  geom_point(size = 3) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.np, aes(x = P.comp, y = N.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  geom_line(data = pred.np, aes(x = P.comp, y = N.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
+  
+  labs(x = "Competitive ability (1/P*)",    
+       y = "Competitive ability (1/N*)", 
+       color = "Evolutionary History",
+       title = "E") +  # labels
+  
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3", "dodgerblue"), 
+                     labels = c("Ancestral", "Other", "Nitrogen", "Phosphorous")) +  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff # theme stuff
+  )
+
+NP.qrs  # Display the plot
+
+# Nit v Salt
+
+df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
+                            ifelse(df.final$evol == "N", 'nit', ifelse(df.final$evol %in% c("S", "BS"), 'salt', 'other')))
+
+pred.ns <- data.frame(S.c.mod = seq(min(df$S.c.mod), max(df$S.c.mod), length.out = 100)) # Dataframe to collect quantile info in
+
+quant.NS.95 <- rq(N.comp ~ poly(S.c.mod, 2), data = df.final, tau = 0.95) 
+pred.ns$N.comp.95 <- predict(quant.NP.95, newdata = pred.np)
+
+quant.NS.75 <- rq(N.comp ~ poly(S.c.mod, 2), data = df.final, tau = 0.75) 
+pred.ns$N.comp.75 <- predict(quant.NP.75, newdata = pred.np)
+
+df.final$evol.bin <- factor(df.final$evol.bin, levels = c("ancestral", "other", "nit", "salt"))
+
+NS.qrs <- ggplot(df.final, aes(x = S.c.mod, y = N.comp, color = evol.bin)) +  # Quantiles plot
+  geom_point(size = 3) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.ns, aes(x = S.c.mod, y = N.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  geom_line(data = pred.ns, aes(x = S.c.mod, y = N.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
+  
+  labs(x = "Salt tolerance (c)",    
+       y = "Competitive ability (1/N*)", 
+       color = "Evolutionary History",
+       title = "F") +  # labels
+  
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3", "dodgerblue"), 
+                     labels = c("Ancestral", "Other", "Nitrogen", "Salt or Biotic x Salt")) +  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff # theme stuff
+  )
+
+NS.qrs  # Display the plot
+
+# Nitrogen v temp
+
+df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
+                            ifelse(df.final$evol == "N", 'nit', 'other')) # for testing regressions.
+
+pred.nt <- data.frame(T.br = seq(min(df$T.br), max(df$T.br), length.out = 100)) # Dataframe to collect quantile info in
+
+quant.NT.95 <- rq(N.comp ~ poly(T.br, 2), data = df.final[df.final$N.comp<10,], tau = 0.95) 
+pred.nt$N.comp.95 <- predict(quant.NT.95, newdata = pred.nt)
+
+quant.NT.75 <- rq(N.comp ~ poly(T.br, 2), data = df.final[df.final$N.comp<10,], tau = 0.75) 
+pred.nt$N.comp.75 <- predict(quant.NT.75, newdata = pred.nt)
+
+df.final$evol.bin <- factor(df.final$evol.bin, levels = c("ancestral", "other", "light"))
+
+NT.qrs <- ggplot(df.final[df.final$N.comp<10,], aes(x = T.br, y = N.comp, color = evol.bin)) +  # Quantiles plot
+  geom_point(size = 3) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.nt, aes(x = T.br, y = N.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  geom_line(data = pred.nt, aes(x = T.br, y = N.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
+  
+  labs(x = "Thermal breadth (°C)",    
+       y = "Competitive ability (1/N*)", 
+       color = "Evolutionary History",
+       title = "G") +  # labels
+  
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
+                     labels = c("Ancestral", "Other", "Nitrogen")) +  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff # theme stuff
+  )
+
+NT.qrs  # Display the plot
+
+###### Phosphorous comparisons ######
+
+# P v salt
+
+df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
+                            ifelse(df.final$evol == "P", 'phos', ifelse(df.final$evol %in% c("S", "BS"), 'salt', 'other')))
+
+pred.ps <- data.frame(S.c.mod = seq(min(df$S.c.mod), max(df$S.c.mod), length.out = 100)) # Dataframe to collect quantile info in
+
+quant.PS.95 <- rq(P.comp ~ poly(S.c.mod, 2), data = df.final, tau = 0.95) 
+pred.ps$P.comp.95 <- predict(quant.PS.95, newdata = pred.ns)
+
+quant.PS.75 <- rq(P.comp ~ poly(S.c.mod, 2), data = df.final, tau = 0.75) 
+pred.ps$P.comp.75 <- predict(quant.PS.75, newdata = pred.ns)
+
+df.final$evol.bin <- factor(df.final$evol.bin, levels = c("ancestral", "other", "phos", "salt"))
+
+PS.qrs <- ggplot(df.final, aes(x = S.c.mod, y = P.comp, color = evol.bin)) +  # Quantiles plot
+  geom_point(size = 3) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.ps, aes(x = S.c.mod, y = P.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  geom_line(data = pred.ps, aes(x = S.c.mod, y = P.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
+  
+  labs(x = "Salt tolerance (c)",    
+       y = "Competitive ability (1/P*)", 
+       color = "Evolutionary History",
+       title = "H") +  # labels
+  
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3", "dodgerblue"), 
+                     labels = c("Ancestral", "Other", "Phosphorous", "Salt or Biotic x Salt")) +  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff # theme stuff
+  )
+
+PS.qrs  # Display the plot
+
+plot_grid(LN.qrs, LP.qrs, LS.qrs, LT.qrs, NP.qrs, NS.qrs, NT.qrs, PS.qrs)
+
+# P v T
+
+df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
+                            ifelse(df.final$evol == "P", 'phos', 'other')) # for testing regressions.
+
+pred.pt <- data.frame(T.br = seq(min(df$T.br), max(df$T.br), length.out = 100)) # Dataframe to collect quantile info in
+
+quant.PT.95 <- rq(N.comp ~ poly(T.br, 2), data = df.final[df.final$N.comp<10,], tau = 0.95) 
+pred.pt$N.comp.95 <- predict(quant.PT.95, newdata = pred.pt)
+
+quant.NT.75 <- rq(N.comp ~ poly(T.br, 2), data = df.final[df.final$N.comp<10,], tau = 0.75) 
+pred.pt$N.comp.75 <- predict(quant.NT.75, newdata = pred.pt)
+
+df.final$evol.bin <- factor(df.final$evol.bin, levels = c("ancestral", "other", "light"))
+
+NT.qrs <- ggplot(df.final[df.final$N.comp<10,], aes(x = T.br, y = N.comp, color = evol.bin)) +  # Quantiles plot
+  geom_point(size = 3) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.pt, aes(x = T.br, y = N.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
+  geom_line(data = pred.pt, aes(x = T.br, y = N.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
+  
+  labs(x = "Thermal breadth (°C)",    
+       y = "Competitive ability (1/N*)", 
+       color = "Evolutionary History",
+       title = "G") +  # labels
+  
+  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
+                     labels = c("Ancestral", "Other", "Phosphorous")) +  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff # theme stuff
+  )
+
+NT.qrs  # Display the plot
 
