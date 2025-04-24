@@ -3,7 +3,7 @@
 
 # We are going to generate "final" figures for the project here
 
-# Load packages -----------------------------------------------------------
+# Load packages, specify functions  -----------------------------------------------------------
 
 library(cowplot)
 library(tidyverse)
@@ -13,6 +13,42 @@ library(gridExtra)
 library(vegan)  # For PCA and RDA
 library(ggrepel)
 library(quantreg)
+library(scam)
+
+par_frt <- function(df, xvar, yvar) { # Simple Pareto front function / crude convex hull algorithm (one sided)
+  
+  df <- df[order(-df[[xvar]], df[[yvar]]), ]  
+  pareto_points <- df[1, ]  # Start with the first point
+  
+  for (i in 2:nrow(df)) {
+    if (df[i, yvar] > tail(pareto_points[[yvar]], 1)) {  # Ensure increasing y values
+      pareto_points <- rbind(pareto_points, df[i,])
+    }
+  }
+  
+  return(pareto_points)
+}
+
+par_frt_tolerant <- function(df, xvar, yvar, tolerance = 0.05) {
+  df <- df[order(-df[[xvar]], df[[yvar]]), ]
+  pareto_points <- df[1, ]
+  last_y <- df[1, yvar]
+  
+  for (i in 2:nrow(df)) {
+    current_y <- df[i, yvar]
+    threshold <- last_y * (1 - tolerance)  # local threshold
+    if (current_y >= threshold) {
+      pareto_points <- rbind(pareto_points, df[i, ])
+      if (current_y > last_y) last_y <- current_y  # update "best" y value
+    }
+  }
+  
+  return(pareto_points)
+}
+
+find_nearest_index <- function(x, ref_vec) { # Write a function to find the closest point to the actual r.max value in the pred data frame. 
+  which.min(abs(ref_vec - x))
+} # For significance testing based on location of points relative to a curve
 
 # Load and examine data ---------------------------------------------------
 
@@ -751,32 +787,49 @@ ggsave("figures/17_fig_2b_supp_rdas.jpeg", rdas, width = 16, height = 8) # PDF w
 
 # We'll need our full dataset for the start
 
-par_frt <- function(df, xvar, yvar) { # Simple Pareto front function / crude convex hull algorithm (one sided)
-  
-  df <- df[order(-df[[xvar]], df[[yvar]]), ]  
-  pareto_points <- df[1, ]  # Start with the first point
-  
-  for (i in 2:nrow(df)) {
-    if (df[i, yvar] > tail(pareto_points[[yvar]], 1)) {  # Ensure increasing y values
-      pareto_points <- rbind(pareto_points, df[i,])
-    }
-  }
-  
-  return(pareto_points)
-}
-
 ###### Temperature ######
 
-df.final$shape <- ifelse(df.final$evol == "none", 22, 16) # I want to add a shape column to the dataframe that I will update
-# The idea is to label un-evolved populations with a plus, and then later (not for T) relevant experimental evolution nutrient conditions with a star
+df.final$evol.bin <- ifelse(df.final$evol == "none", "ancestral", "evolved") # For binning into evolutionary treatments
 
-df.final$evol.bin <- ifelse(df.final$evol == "none", "ancestral", "evolved") # For regressions
+df.filt <- df.final # Filter out extreme outliers
 
-par.res.T <- par_frt(df, xvar = "r.max_T", yvar = "T.br")
+par.res.T <- par_frt(df.filt, xvar = "r.max_T", yvar = "T.br") # Get the raw Pareto Front
+
+fit <- scam(T.br ~ s(r.max_T, bs = "mpd", k = 6), data = par.res.T) # Fit a scam to the raw Pareto front
+
+x.vals <- seq(min(df.filt$r.max_T), max(df.filt$r.max_T), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.t <- data.frame( # Get the corresponding y values
+  r.max_T = x.vals,
+  T.br = predict(fit, newdata = data.frame(r.max_T = x.vals))
+)
+
+buffer <- 0.05  # 5% vertical tolerance - we'll include points within this range
+
+pred.curve.t$threshold <- pred.curve.t$T.br - pred.curve.t$T.br * buffer # calculate threshold
+
+df.filt$closest_idx <- sapply(df.filt$r.max_T, function(x) { # Match data in our df.filt to the predicted curve
+  which.min(abs(pred.curve.t$r.max_T - x))
+})
+
+df.filt$predicted_T.br <- pred.curve.t$T.br[df.filt$closest_idx] # Get the predicted T.br
+df.filt$threshold <- pred.curve.t$threshold[df.filt$closest_idx] # Get the threshold point
+
+df.filt$within_band <- df.filt$T.br >= df.filt$threshold # Label points based on proximity to curve
+df.filt2 <- df.filt[df.filt$within_band, ] # smaller subset of points close to the Pareto front
+
+fit2 <- scam(T.br ~ s(r.max_T, bs = "mpd", k = 6), data = df.filt2)
+
+pred.curve2 <- data.frame(
+  r.max_T = x.vals,
+  T.br = predict(fit2, newdata = data.frame(r.max_T = x.vals))
+)
 
 T_par <- ggplot(df.final, aes(x = r.max_T, y = T.br)) +  # Remove shape from aes() for regression
   geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
   geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
+  geom_line(data=pred.curve, aes(x=r.max_T, y= T.br), colour = "black", size=1) +
+  geom_line(data=pred.curve2, aes(x=r.max_T, y= T.br), colour="forestgreen", size = 1) +
   labs(x = "Maximum exponential growth rate", 
        y = "Thermal breadth", 
        title = "Thermal performance") +
@@ -785,40 +838,96 @@ T_par <- ggplot(df.final, aes(x = r.max_T, y = T.br)) +  # Remove shape from aes
   theme_classic() +
   theme(legend.position = "none")  # Remove legend
 
-T_par # Raw pareto front.
+T_par # Raw pareto fronts.
 
-pred.t <- data.frame(r.max_T = seq(min(df$r.max_T), max(df$r.max_T), length.out = 100)) # Dataframe to collect quantile info in
+# We have our 2 fits, now I want to remove the top 25% of points
 
-quant.T.95 <- rq(T.br ~ poly(r.max_T, 2), data = df, tau = 0.95) 
-pred.t$T.br.95 <- predict(quant.T.95, newdata = pred.t)
+df.filt <- df.filt %>% # Scale the data
+  mutate(
+    z.x = scale(r.max_T)[, 1],
+    z.y = scale(T.br)[, 1],
+  )
 
-quant.T.75 <- rq(T.br ~ poly(r.max_T, 2), data = df, tau = 0.75) 
-pred.t$T.br.75 <- predict(quant.T.75, newdata = pred.t)
+x.ref <- min(df.filt$z.x, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y, na.rm = TRUE) # Min y
 
-T.qrs <- ggplot(df.final, aes(x = r.max_T, y = T.br, color = evol.bin)) +  # Quantiles plot
-  geom_point(size = 3) +  # Scatter plot of raw data
+df.filt3 <- df.filt %>% # Filter out based on Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2)
+  ) %>%
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.T2 <- par_frt(df.filt3, xvar = "r.max_T", yvar = "T.br") # Pareto frontier on this data
+
+fit3 <- scam(T.br ~ s(r.max_T, bs = "mpd", k = 5), data = par.res.T2) # Model fit
+
+pred.curve3 <- data.frame( # predicted data frame
+  r.max_T = x.vals,
+  T.br = predict(fit3, newdata = data.frame(r.max_T = x.vals))
+)
+
+pred.curve3$threshold <- pred.curve3$T.br - pred.curve3$T.br * buffer # predicted threshold
+
+df.filt3$closest_idx <- sapply(df.filt3$r.max_T, function(x) { # Get closest ID
+  which.min(abs(pred.curve3$r.max_T - x))
+})
+
+df.filt3$predicted_T.br <- pred.curve3$T.br[df.filt3$closest_idx] # Get corresponding predicted T.br
+df.filt3$threshold <- pred.curve3$threshold[df.filt3$closest_idx] # Associated threshold
+
+df.filt3$within_band <- df.filt3$T.br >= df.filt3$threshold # Label based on proximity to PF
+df.filt4 <- df.filt3[df.filt3$within_band, ] # Filter to include only close points
+
+fit4 <- scam(T.br ~ s(r.max_T, bs = "mpd", k = 6), data = df.filt4) # Model PF on that
+
+pred.curve4 <- data.frame( # assemble a dataframe
+  r.max_T = x.vals,
+  T.br = predict(fit4, newdata = data.frame(r.max_T = x.vals))
+)
+
+T.scam <- ggplot(df.filt, aes(x = r.max_T, y = T.br, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
-  geom_line(data = pred.t, aes(x = r.max_T, y = T.br.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
-  geom_line(data = pred.t, aes(x = r.max_T, y = T.br.75), color = "black", size = 1.2, linetype = "dashed") +  
+  geom_line(data = pred.curve.t, aes(x = r.max_T, y = T.br), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  # geom_line(data = pred.curve2, aes(x = r.max_T, y = T.br), color = "black", size = 1.1, inherit.aes = FALSE) +
+  geom_line(data = pred.curve3, aes(x = r.max_T, y = T.br), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  # geom_line(data = pred.curve4, aes(x = r.max_T, y = T.br), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Maximum exponential growth rate (µ max)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "E") +  # labels
+       title = "E — Temperature") +  # labels
   
-  scale_color_manual(values = c("black", "goldenrod1"), 
-                     labels = c("Ancestral", "Evolved")) +  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("evolved" = 1,  # open circle
+               "ancestral" = 5)  # diamond
+  ) +
+  
   theme_classic() +
+  ylim(12,20) +
   theme(
-    legend.position = c(0.8, 0.85),  # Move legend inside the plot
-    legend.title = element_text(size = 12, face = "bold"),  
-    legend.text = element_text(size = 12, face = "plain"),  
+    legend.position = "none",  
     axis.title = element_text(size = 12, face = "bold"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
-T.qrs  # Display the plot
+T.scam  # Display the plot
 
 # Quadrant-based statistical testing
 
@@ -842,78 +951,137 @@ p.val.t.quad # 0.896
 
 ###### Light ######
 
-df.final$shape <- ifelse(df.final$evol == "none", 22, 
-                   ifelse(df.final$evol == "L", 8, 16)) # Ls are now equivalent to 8, for later mapping
-
 df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
-                      ifelse(df.final$evol == "L", 'light', 'other')) # for testing regressions.
+                            ifelse(df.final$evol == "L", 'light', 'other')) # for testing regressions.
 
-par.res.L <- par_frt(df.final[df.final$I.comp<10,], xvar = "r.max_I", yvar = "I.comp")
+df.filt <- df.final[df.final$I.comp <10, ] # Filter out extreme outliers
 
-L_par <- ggplot(df.final[df.final$I.comp<10,], aes(x = r.max_I, y = I.comp)) +  # Remove shape from aes() for regression
-  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
-  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
-  labs(x = "Maximum exponential growth rate", 
-       y = "Competitive ability (1/R*)", 
-       title = "Light limitation") +
-  scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
-  geom_line(data = par.res.L, aes(x = r.max_I, y = I.comp), color = "blue", size = 1) +  # Pareto frontier line
-  theme_classic() +
-  theme(legend.position = "none")  # Remove legend
+par.res.I <- par_frt(df.filt, xvar = "r.max_I", yvar = "I.comp") # Get the raw Pareto Front
 
-L_par # Raw pareto front.
+fit <- scam(I.comp ~ s(r.max_I, bs = "mpd", k = 6), data = par.res.I) # Fit a scam to the raw Pareto front
 
-pred.l <- data.frame(r.max_I = seq(min(df$r.max_I), max(df$r.max_I), length.out = 100)) # Dataframe to collect quantile info in
+x.vals <- seq(min(df.filt$r.max_I), max(df.filt$r.max_I), length.out = 100) # Generate an x sequence for plotting
 
-quant.I.95 <- rq(I.comp ~ poly(r.max_I, 2), data = df.final[df.final$I.comp<10,], tau = 0.95) 
-pred.l$I.comp.95 <- predict(quant.I.95, newdata = pred.l)
+pred.curve.i <- data.frame( # Get the corresponding y values
+  r.max_I = x.vals,
+  I.comp = predict(fit, newdata = data.frame(r.max_I = x.vals))
+)
 
-pred.l <- pred.l %>%
-  mutate(I.comp.95 = ifelse(row_number() <= which.max(pred.l$I.comp.95) & I.comp.95 < max(I.comp.95), NA, I.comp.95))
+pred.curve.i$threshold <- pred.curve.i$I.comp - pred.curve.i$I.comp * buffer # calculate threshold
 
-quant.I.75 <- rq(I.comp ~ poly(r.max_I, 2), data = df.final[df.final$I.comp<10,], tau = 0.75) 
-pred.l$I.comp.75 <- predict(quant.I.75, newdata = pred.l)
+df.filt$closest_idx <- sapply(df.filt$r.max_I, function(x) { # Match data in our df.filt to the predicted curve
+  which.min(abs(pred.curve.i$r.max_I - x))
+})
 
-df.final$evol.bin <- factor(df.final$evol.bin, levels = c("ancestral", "other", "light"))
+df.filt$predicted_I.comp <- pred.curve.i$I.comp[df.filt$closest_idx] # Get the predicted I.comp
+df.filt$threshold <- pred.curve.i$threshold[df.filt$closest_idx] # Get the threshold point
 
-L.qrs <- ggplot(df.final[df.final$I.comp<10,], aes(x = r.max_I, y = I.comp, color = evol.bin)) +  # Quantiles plot
-  geom_point(size = 3) +  # Scatter plot of raw data
-  
-  geom_line(data = pred.l, aes(x = r.max_I, y = I.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
-  geom_line(data = pred.l, aes(x = r.max_I, y = I.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
+df.filt$within_band <- df.filt$I.comp >= df.filt$threshold # Label points based on proximity to curve
+df.filt2 <- df.filt[df.filt$within_band, ] # smaller subset of points close to the Pareto front
 
-  labs(x = "Maximum exponential growth rate (µ max)",    
-       y = "Competitive ability (1/R*)", 
-       color = "Evolutionary History",
-       title = "A") +  # labels
-  
-  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
-                     labels = c("Ancestral", "Other", "Light")) +  
-  theme_classic() +
-  theme(
-    legend.position = c(0.25, 0.85),  # Move legend inside the plot
-    legend.title = element_text(size = 12, face = "bold"),  
-    legend.text = element_text(size = 12, face = "plain"),  
-    axis.title = element_text(size = 12, face = "bold"),  
-    axis.text = element_text(size = 10),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff # theme stuff
+fit2 <- scam(I.comp ~ s(r.max_I, bs = "mpd", k = 4), data = df.filt2)
+
+pred.curve2 <- data.frame(
+  r.max_I = x.vals,
+  I.comp = predict(fit2, newdata = data.frame(r.max_I = x.vals))
+)
+
+df.filt <- df.filt %>% # Scale the data
+  mutate(
+    z.x = scale(r.max_I)[, 1],
+    z.y = scale(I.comp)[, 1],
   )
 
-L.qrs  # Display the plot
+x.ref <- min(df.filt$z.x, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y, na.rm = TRUE) # Min y
 
-find_nearest_index <- function(x, ref_vec) { # Write a function to find the closest point to the actual r.max value in the pred data frame. 
-  which.min(abs(ref_vec - x))
-}
+df.filt3 <- df.filt %>% # Filter out based on Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2)
+  ) %>%
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
 
-l.75 <- df.final %>% # Now calculate the number of light points above that. 
-  filter(evol.bin == "light", I.comp < 10) %>%
+par.res.I2 <- par_frt(df.filt3, xvar = "r.max_I", yvar = "I.comp") # Pareto frontier on this data
+
+fit3 <- scam(I.comp ~ s(r.max_I, bs = "mpd", k = 4), data = par.res.I2) # Model fit
+
+pred.curve3 <- data.frame( # predicted data frame
+  r.max_I = x.vals,
+  I.comp = predict(fit3, newdata = data.frame(r.max_I = x.vals))
+)
+
+pred.curve3$threshold <- pred.curve3$I.comp - pred.curve3$I.comp * buffer # predicted threshold
+
+df.filt3$closest_idx <- sapply(df.filt3$r.max_I, function(x) { # Get closest ID
+  which.min(abs(pred.curve3$r.max_I - x))
+})
+
+df.filt3$predicted_I.comp <- pred.curve3$I.comp[df.filt3$closest_idx] # Get corresponding predicted I.comp
+df.filt3$threshold <- pred.curve3$threshold[df.filt3$closest_idx] # Associated threshold
+
+df.filt3$within_band <- df.filt3$I.comp >= df.filt3$threshold # Label based on proximity to PF
+df.filt4 <- df.filt3[df.filt3$within_band, ] # Filter to include only close points
+
+fit4 <- scam(I.comp ~ s(r.max_I, bs = "mpd", k = 2), data = df.filt4) # Model PF on that
+
+pred.curve4 <- data.frame( # assemble a dataframe
+  r.max_I = x.vals,
+  I.comp = predict(fit4, newdata = data.frame(r.max_I = x.vals))
+)
+
+I.scam <- ggplot(df.filt, aes(x = r.max_I, y = I.comp, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.i, aes(x = r.max_I, y = I.comp), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  # geom_line(data = pred.curve2, aes(x = r.max_I, y = I.comp), color = "black", size = 1.1) +
+  geom_line(data = pred.curve3, aes(x = r.max_I, y = I.comp), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  # geom_line(data = pred.curve4, aes(x = r.max_I, y = I.comp), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Maximum exponential growth rate (µ max)",    
+       y = "Competitive ability (1/I*)", 
+       color = "Evolutionary History",
+       title = "A — Light") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "light" = 16)  # filled circle
+  ) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+I.scam  # Display the plot
+
+l.75 <- df.filt %>% # Now calculate the number of light points above that. 
+  filter(evol.bin == "light") %>%
   rowwise() %>%
   mutate(
-    nearest_idx = find_nearest_index(r.max_I, pred.l$r.max_I),
-    I.comp.75.pred = pred.l$I.comp.75[nearest_idx]
+    nearest_idx = find_nearest_index(r.max_I, pred.curve3$r.max_I),
+    I.comp.pred = pred.curve3$I.comp[nearest_idx]
   ) %>%
   ungroup() %>%
-  filter(I.comp > I.comp.75.pred) %>%
+  filter(I.comp > I.comp.pred) %>%
   nrow()
 
 set.seed(123)  # for reproducibility
@@ -921,35 +1089,35 @@ n_iter <- 1000
 null_counts_l <- numeric(n_iter)
 
 for (i in 1:n_iter) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
-  df.shuff <- df.final %>%
-    filter(I.comp < 10) %>%
+  df.shuff <- df.filt %>%
     mutate(evol.shuff = sample(evol.bin, rep = F))
   
   null_counts_l[i] <- df.shuff %>%
     filter(evol.shuff == "light") %>%
     rowwise() %>%
     mutate(
-      nearest_idx = which.min(abs(pred.l$r.max_I - r.max_I)),
-      I.comp.75.pred = pred.l$I.comp.75[nearest_idx]
+      nearest_idx = which.min(abs(pred.curve3$r.max_I - r.max_I)),
+      I.comp.pred = pred.curve3$I.comp[nearest_idx]
     ) %>%
     ungroup() %>%
-    filter(I.comp > I.comp.75.pred) %>%
+    filter(I.comp > I.comp.pred) %>%
     nrow()
 }
 
-p_val_l <- mean(null_counts_l >= l.75) # 0.726
+p_val_l <- mean(null_counts_l >= l.75) 
+p_val_l # 0.378
 
 # Quadrant-based statistical testing
 
-x.thresh.l <- mean(df.final[df.final$I.comp<10,]$r.max_I)
-y.thresh.l <- mean(df.final[df.final$I.comp<10,]$I.comp)
+x.thresh.l <- mean(df.filt$r.max_I)
+y.thresh.l <- mean(df.filt$I.comp)
 
-obs.cnt.l <- df.final[df.final$I.comp<10,] %>%
+obs.cnt.l <- df.filt %>%
   filter(r.max_I > x.thresh.l, I.comp > y.thresh.l) %>%
   nrow()
 
 null.counts.l <- replicate(1000, {
-  shuffled.df <- df.final[df.final$I.comp<10,] %>%
+  shuffled.df <- df.filt %>%
     mutate(r.max_I = sample(r.max_I, rep= F),
            I.comp = sample(I.comp, rep = F))
   
@@ -957,108 +1125,177 @@ null.counts.l <- replicate(1000, {
 })
 
 p.val.l.quad <- mean(null.counts.l >= obs.cnt.l)
-p.val.l.quad # 0.523
+p.val.l.quad # 0.58
 
 ###### Nitrogen ######
 
-df.final$shape <- ifelse(df.final$evol == "none", 22, 
-                   ifelse(df.final$evol == "N", 8, 16)) # Ns are now equivalent to 8, for later mapping
-
 df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
-                      ifelse(df.final$evol == "N", 'nit', 'other')) # for testing regressions.
+                            ifelse(df.final$evol == "N", 'nitrogen', 'other')) # for testing regressions.
 
-par.res.N <- par_frt(df.final, xvar = "r.max_N", yvar = "N.comp")
+df.filt <- df.final[df.final$N.comp < 1, ] # Filter out extreme outliers
 
-N_par <- ggplot(df.final, aes(x = r.max_N, y = N.comp)) +  # Remove shape from aes() for regression
-  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
-  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
-  labs(x = "Maximum exponential growth rate", 
-       y = "Competitive ability (1/R*)", 
-       title = "Nitrogen limitation") +
-  scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
-  geom_line(data = par.res.N, aes(x = r.max_N, y = N.comp), color = "blue", size = 1) +  # Pareto frontier line
-  theme_classic() +
-  theme(legend.position = "none")  # Remove legend
+par.res.N <- par_frt(df.filt, xvar = "r.max_N", yvar = "N.comp") # Get the raw Pareto Front
 
-N_par # Raw pareto front.
+fit <- scam(N.comp ~ s(r.max_N, bs = "mpd", k = 5), data = par.res.N) # Fit a scam to the raw Pareto front
 
-pred.n <- data.frame(r.max_N = seq(min(df.final$r.max_N), max(df.final$r.max_N), length.out = 100)) # Dataframe to collect quantile info in
+x.vals <- seq(min(df.filt$r.max_N), max(df.filt$r.max_N), length.out = 100) # Generate an x sequence for plotting
 
-quant.N.95 <- rq(N.comp ~ poly(r.max_N, 2), data = df.final, tau = 0.95) 
-pred.n$N.comp.95 <- predict(quant.N.95, newdata = pred.n)
+pred.curve.n <- data.frame( # Get the corresponding y values
+  r.max_N = x.vals,
+  N.comp = predict(fit, newdata = data.frame(r.max_N = x.vals))
+)
 
-quant.N.75 <- rq(N.comp ~ poly(r.max_N, 2), data = df.final, tau = 0.75) 
-pred.n$N.comp.75 <- predict(quant.N.75, newdata = pred.n)
+pred.curve.n$threshold <- pred.curve.n$N.comp - pred.curve.n$N.comp * buffer # calculate threshold
 
-df.final$evol.bin <- factor(df.final$evol.bin, levels = c("ancestral", "other", "nit"))
+df.filt$closest_idx <- sapply(df.filt$r.max_N, function(x) { # Match data in our df.filt to the predicted curve
+  which.min(abs(pred.curve.n$r.max_N - x))
+})
 
-N.qrs <- ggplot(df.final, aes(x = r.max_N, y = N.comp, color = evol.bin)) +  # Quantiles plot
-  geom_point(size = 3) +  # Scatter plot of raw data
+df.filt$predicted_N.comp <- pred.curve.n$N.comp[df.filt$closest_idx] # Get the predicted N.comp
+df.filt$threshold <- pred.curve.n$threshold[df.filt$closest_idx] # Get the threshold point
+
+df.filt$within_band <- df.filt$N.comp >= df.filt$threshold # Label points based on proximity to curve
+df.filt2 <- df.filt[df.filt$within_band, ] # smaller subset of points close to the Pareto front
+
+fit2 <- scam(N.comp ~ s(r.max_N, bs = "mpd", k = 3), data = df.filt2)
+
+pred.curve2 <- data.frame(
+  r.max_N = x.vals,
+  N.comp = predict(fit2, newdata = data.frame(r.max_N = x.vals))
+)
+
+df.filt <- df.filt %>% # Scale the data
+  mutate(
+    z.x = scale(r.max_N)[, 1],
+    z.y = scale(N.comp)[, 1],
+  )
+
+x.ref <- min(df.filt$z.x, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y, na.rm = TRUE) # Min y
+
+df.filt3 <- df.filt %>% # Filter out based on Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2)
+  ) %>%
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.N2 <- par_frt(df.filt3, xvar = "r.max_N", yvar = "N.comp") # Pareto frontier on this data
+
+fit3 <- scam(N.comp ~ s(r.max_N, bs = "mpd", k = 5), data = par.res.N2) # Model fit
+
+pred.curve3 <- data.frame( # predicted data frame
+  r.max_N = x.vals,
+  N.comp = predict(fit3, newdata = data.frame(r.max_N = x.vals))
+)
+
+pred.curve3$threshold <- pred.curve3$N.comp - pred.curve3$N.comp * buffer # predicted threshold
+
+df.filt3$closest_idx <- sapply(df.filt3$r.max_N, function(x) { # Get closest ID
+  which.min(abs(pred.curve3$r.max_N - x))
+})
+
+df.filt3$predicted_N.comp <- pred.curve3$N.comp[df.filt3$closest_idx] # Get corresponding predicted N.comp
+df.filt3$threshold <- pred.curve3$threshold[df.filt3$closest_idx] # Associated threshold
+
+df.filt3$within_band <- df.filt3$N.comp >= df.filt3$threshold # Label based on proximity to PF
+df.filt4 <- df.filt3[df.filt3$within_band, ] # Filter to include only close points
+
+fit4 <- scam(N.comp ~ s(r.max_N, bs = "mpd", k = 6), data = df.filt4) # Model PF on that
+
+pred.curve4 <- data.frame( # assemble a dataframe
+  r.max_N = x.vals,
+  N.comp = predict(fit4, newdata = data.frame(r.max_N = x.vals))
+)
+
+N.scam <- ggplot(df.filt, aes(x = r.max_N, y = N.comp, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
-  geom_line(data = pred.n, aes(x = r.max_N, y = N.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
-  geom_line(data = pred.n, aes(x = r.max_N, y = N.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
+  geom_line(data = pred.curve.n, aes(x = r.max_N, y = N.comp), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  # geom_line(data = pred.curve2, aes(x = r.max_N, y = N.comp), color = "black", size = 1.1, inherit.aes = FALSE) +
+  geom_line(data = pred.curve3, aes(x = r.max_N, y = N.comp), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  # geom_line(data = pred.curve4, aes(x = r.max_N, y = N.comp), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Maximum exponential growth rate (µ max)",    
-       y = "Competitive ability (1/R*)", 
+       y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "B") +  # labels
+       title = "B — Nitrogen") +  # labels
   
-  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
-                     labels = c("Ancestral", "Other", "Nitrogen")) +  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "nitrogen" = 16)  # filled circle
+  ) +
+  
   theme_classic() +
   theme(
-    legend.position = c(0.35, 0.85),  # Moves legend inside the plot (x, y) in [0,1] scale
-    legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
-    legend.text = element_text(size = 12, face = "plain"),  # Adjust text size
-    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
-    axis.text = element_text(size = 10),
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
-  ) 
+  )
 
-N.qrs  # Display the plot
+N.scam  # Display the plot
 
-n.75 <- df.final %>% # Now calculate the number of light points above that. 
-  filter(evol.bin == "nit") %>%
+n.75 <- df.filt %>% # Now calculate the number of light points above that. 
+  filter(evol.bin == "nitrogen") %>%
   rowwise() %>%
   mutate(
-    nearest_idx = find_nearest_index(r.max_N, pred.n$r.max_N),
-    N.comp.75.pred = pred.n$N.comp.75[nearest_idx]
+    nearest_idx = find_nearest_index(r.max_N, pred.curve3$r.max_N),
+    N.comp.pred = pred.curve3$N.comp[nearest_idx]
   ) %>%
   ungroup() %>%
-  filter(N.comp > N.comp.75.pred) %>%
+  filter(N.comp > N.comp.pred) %>%
   nrow()
 
+set.seed(123)  # for reproducibility
+n_iter <- 1000
 null_counts_n <- numeric(n_iter)
 
 for (i in 1:n_iter) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
-  df.shuff <- df.final %>%
+  df.shuff <- df.filt %>%
     mutate(evol.shuff = sample(evol.bin, rep = F))
   
   null_counts_n[i] <- df.shuff %>%
-    filter(evol.shuff == "nit") %>%
+    filter(evol.shuff == "nitrogen") %>%
     rowwise() %>%
     mutate(
-      nearest_idx = which.min(abs(pred.n$r.max_N - r.max_N)),
-      N.comp.75.pred = pred.n$N.comp.75[nearest_idx]
+      nearest_idx = which.min(abs(pred.curve3$r.max_N - r.max_N)),
+      N.comp.pred = pred.curve3$N.comp[nearest_idx]
     ) %>%
     ungroup() %>%
-    filter(N.comp > N.comp.75.pred) %>%
+    filter(N.comp > N.comp.pred) %>%
     nrow()
 }
 
-p_val_n <- mean(null_counts_n >= n.75) # 0.354
+p_val_n <- mean(null_counts_n >= n.75) 
+p_val_n # 0.354
 
 # Quadrant-based statistical testing
 
-x.thresh.n <- mean(df.final$r.max_N)
-y.thresh.n <- mean(df.final$N.comp)
+x.thresh.n <- mean(df.filt$r.max_N)
+y.thresh.n <- mean(df.filt$N.comp)
 
-obs.cnt.n <- df.final %>%
+obs.cnt.n <- df.filt %>%
   filter(r.max_N > x.thresh.n, N.comp > y.thresh.n) %>%
   nrow()
 
 null.counts.n <- replicate(1000, {
-  shuffled.df <- df.final %>%
+  shuffled.df <- df.filt %>%
     mutate(r.max_N = sample(r.max_N, rep= F),
            N.comp = sample(N.comp, rep = F))
   
@@ -1066,106 +1303,177 @@ null.counts.n <- replicate(1000, {
 })
 
 p.val.n.quad <- mean(null.counts.n >= obs.cnt.n)
-p.val.n.quad # 0.92
+p.val.n.quad # 0.956
 
 ###### Phosphorous ######
 
-df.final$shape <- ifelse(df.final$evol == "none", 22, 
-                         ifelse(df.final$evol == "P", 8, 16)) # Ps are now equivalent to 8, for later mapping
-
 df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
-                            ifelse(df.final$evol == "P", 'phos', 'other')) # for testing regressions.
+                            ifelse(df.final$evol == "P", 'phosphorous', 'other')) # for testing regressions.
 
-par.res.P <- par_frt(df.final, xvar = "r.max_P", yvar = "P.comp")
+df.filt <- df.final # Filter out extreme outliers
 
-P_par <- ggplot(df.final, aes(x = r.max_P, y = P.comp)) +  # Remove shape from aes() for regression
-  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
-  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
-  labs(x = "Maximum exponential growth rate", 
-       y = "Competitive ability (1/R*)", 
-       title = "Phosphorous limitation") +
-  scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
-  geom_line(data = par.res.P, aes(x = r.max_P, y = P.comp), color = "blue", size = 1) +  # Pareto frontier line
-  theme_classic() +
-  theme(legend.position = "none")  # Remove legend
+par.res.P <- par_frt(df.filt, xvar = "r.max_P", yvar = "P.comp") # Get the raw Pareto Front
 
-P_par # Raw pareto front.
+fit <- scam(P.comp ~ s(r.max_P, bs = "mpd", k = 6), data = par.res.P) # Fit a scam to the raw Pareto front
 
-pred.p <- data.frame(r.max_P = seq(min(df.final$r.max_P), max(df.final$r.max_P), length.out = 100)) # Dataframe to collect quantile info in
+x.vals <- seq(min(df.filt$r.max_P), max(df.filt$r.max_P), length.out = 100) # Generate an x sequence for plotting
 
-quant.P.95 <- rq(P.comp ~ poly(r.max_P, 2), data = df.final, tau = 0.95) 
-pred.p$P.comp.95 <- predict(quant.P.95, newdata = pred.p)
+pred.curve.p <- data.frame( # Get the corresponding y values
+  r.max_P = x.vals,
+  P.comp = predict(fit, newdata = data.frame(r.max_P = x.vals))
+)
 
-quant.P.75 <- rq(P.comp ~ poly(r.max_P, 2), data = df.final, tau = 0.75) 
-pred.p$P.comp.75 <- predict(quant.P.75, newdata = pred.p)
+pred.curve.p$threshold <- pred.curve.p$P.comp - pred.curve.p$P.comp * buffer # calculate threshold
 
-P.qrs <- ggplot(df.final, aes(x = r.max_P, y = P.comp, color = evol.bin)) +  # Quantiles plot
-  geom_point(size = 3) +  # Scatter plot of raw data
+df.filt$closest_idx <- sapply(df.filt$r.max_P, function(x) { # Match data in our df.filt to the predicted curve
+  which.min(abs(pred.curve.p$r.max_P - x))
+})
+
+df.filt$predicted_P.comp <- pred.curve.p$P.comp[df.filt$closest_idx] # Get the predicted P.comp
+df.filt$threshold <- pred.curve.p$threshold[df.filt$closest_idx] # Get the threshold point
+
+df.filt$within_band <- df.filt$P.comp >= df.filt$threshold # Label points based on proximity to curve
+df.filt2 <- df.filt[df.filt$within_band, ] # smaller subset of points close to the Pareto front
+
+fit2 <- scam(P.comp ~ s(r.max_P, bs = "mpd", k = 6), data = df.filt2)
+
+pred.curve2 <- data.frame(
+  r.max_P = x.vals,
+  P.comp = predict(fit2, newdata = data.frame(r.max_P = x.vals))
+)
+
+df.filt <- df.filt %>% # Scale the data
+  mutate(
+    z.x = scale(r.max_P)[, 1],
+    z.y = scale(P.comp)[, 1],
+  )
+
+x.ref <- min(df.filt$z.x, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y, na.rm = TRUE) # Min y
+
+df.filt3 <- df.filt %>% # Filter out based on Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2)
+  ) %>%
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.P2 <- par_frt(df.filt3, xvar = "r.max_P", yvar = "P.comp") # Pareto frontier on this data
+
+fit3 <- scam(P.comp ~ s(r.max_P, bs = "mpd", k = 5), data = par.res.P2) # Model fit
+
+pred.curve3 <- data.frame( # predicted data frame
+  r.max_P = x.vals,
+  P.comp = predict(fit3, newdata = data.frame(r.max_P = x.vals))
+)
+
+pred.curve3$threshold <- pred.curve3$P.comp - pred.curve3$P.comp * buffer # predicted threshold
+
+df.filt3$closest_idx <- sapply(df.filt3$r.max_P, function(x) { # Get closest ID
+  which.min(abs(pred.curve3$r.max_P - x))
+})
+
+df.filt3$predicted_P.comp <- pred.curve3$P.comp[df.filt3$closest_idx] # Get corresponding predicted P.comp
+df.filt3$threshold <- pred.curve3$threshold[df.filt3$closest_idx] # Associated threshold
+
+df.filt3$within_band <- df.filt3$P.comp >= df.filt3$threshold # Label based on proximity to PF
+df.filt4 <- df.filt3[df.filt3$within_band, ] # Filter to include only close points
+
+fit4 <- scam(P.comp ~ s(r.max_P, bs = "mpd", k = 6), data = df.filt4) # Model PF on that
+
+pred.curve4 <- data.frame( # assemble a dataframe
+  r.max_P = x.vals,
+  N.comp = predict(fit4, newdata = data.frame(r.max_P = x.vals))
+)
+
+P.scam <- ggplot(df.filt, aes(x = r.max_P, y = P.comp, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
-  geom_line(data = pred.p, aes(x = r.max_P, y = P.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
-  geom_line(data = pred.p, aes(x = r.max_P, y = P.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
+  geom_line(data = pred.curve.p, aes(x = r.max_P, y = P.comp), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  # geom_line(data = pred.curve2, aes(x = r.max_P, y = P.comp), color = "black", size = 1.1, inherit.aes = FALSE) +
+  geom_line(data = pred.curve3, aes(x = r.max_P, y = P.comp), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  # geom_line(data = pred.curve4, aes(x = r.max_P, y = P.comp), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Maximum exponential growth rate (µ max)",    
-       y = "Competitive ability (1/R*)", 
+       y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "C") +  # labels
+       title = "C — Phosphorous") +  # labels
   
-  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
-                     labels = c("Ancestral", "Other", "Phosphorous")) +  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "phosphorous" = 16)  # filled circle
+  ) +
+  
   theme_classic() +
   theme(
-    legend.position = c(0.35, 0.85),  # Moves legend inside the plot (x, y) in [0,1] scale
-    legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
-    legend.text = element_text(size = 12, face = "plain"),  # Adjust text size
-    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
-    axis.text = element_text(size = 10),
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
-  ) 
+  )
 
-P.qrs  # Display the plot
+P.scam  # Display the plot
 
-p.75 <- df.final %>% # Now calculate the number of light points above that. 
-  filter(evol.bin == "phos") %>%
+p.75 <- df.filt %>% # Now calculate the number of P points above that. 
+  filter(evol.bin == "phosphorous") %>%
   rowwise() %>%
   mutate(
-    nearest_idx = find_nearest_index(r.max_P, pred.p$r.max_P),
-    P.comp.75.pred = pred.p$P.comp.75[nearest_idx]
+    nearest_idx = find_nearest_index(r.max_P, pred.curve3$r.max_P),
+    P.comp.pred = pred.curve3$P.comp[nearest_idx]
   ) %>%
   ungroup() %>%
-  filter(P.comp > P.comp.75.pred) %>%
+  filter(P.comp > P.comp.pred) %>%
   nrow()
 
+set.seed(123)  # for reproducibility
+n_iter <- 1000
 null_counts_p <- numeric(n_iter)
 
 for (i in 1:n_iter) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
-  df.shuff <- df.final %>%
+  df.shuff <- df.filt %>%
     mutate(evol.shuff = sample(evol.bin, rep = F))
   
   null_counts_p[i] <- df.shuff %>%
-    filter(evol.shuff == "phos") %>%
+    filter(evol.shuff == "phosphorous") %>%
     rowwise() %>%
     mutate(
-      nearest_idx = which.min(abs(pred.p$r.max_P - r.max_P)),
-      P.comp.75.pred = pred.p$P.comp.75[nearest_idx]
+      nearest_idx = which.min(abs(pred.curve3$r.max_P - r.max_P)),
+      P.comp.pred = pred.curve3$P.comp[nearest_idx]
     ) %>%
     ungroup() %>%
-    filter(P.comp > P.comp.75.pred) %>%
+    filter(P.comp > P.comp.pred) %>%
     nrow()
 }
 
-p_val_p <- mean(null_counts_p >= p.75) # 0.116
+p_val_p <- mean(null_counts_p >= p.75) 
+p_val_p # 0.433
 
 # Quadrant-based statistical testing
 
-x.thresh.p <- mean(df.final$r.max_P)
-y.thresh.p <- mean(df.final$P.comp)
+x.thresh.p <- mean(df.filt$r.max_P)
+y.thresh.p <- mean(df.filt$P.comp)
 
-obs.cnt.p <- df.final %>%
+obs.cnt.p <- df.filt %>%
   filter(r.max_P > x.thresh.p, P.comp > y.thresh.p) %>%
   nrow()
 
 null.counts.p <- replicate(1000, {
-  shuffled.df <- df.final %>%
+  shuffled.df <- df.filt %>%
     mutate(r.max_P = sample(r.max_P, rep= F),
            P.comp = sample(P.comp, rep = F))
   
@@ -1173,106 +1481,177 @@ null.counts.p <- replicate(1000, {
 })
 
 p.val.p.quad <- mean(null.counts.p >= obs.cnt.p)
-p.val.p.quad # 0.971
+p.val.p.quad # 0.977
 
 ###### Salt ######
 
-df.final$shape <- ifelse(df.final$evol == "none", 22, 
-                   ifelse(df.final$evol %in% c("S", "BS"), 8, 16)) # Ss and BSs are now equivalent to 8, for later mapping
-
 df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
-                      ifelse(df.final$evol %in% c("S", "BS"), 'salt', 'other')) # for testing regressions.
+                   ifelse(df.final$evol %in% c("S", "BS"), 'salt', 'other')) # Ss and BSs are now equivalent 
 
-par.res.S <- par_frt(df.final, xvar = "r.max_S", yvar = "S.c.mod")
+df.filt <- df.final # Filter out extreme outliers
 
-S_par <- ggplot(df.final, aes(x = r.max_S, y = S.c.mod)) +  # Remove shape from aes() for regression
-  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
-  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
-  labs(x = "Maximum exponential growth rate", 
-       y = "Competitive ability (1/R*)", 
-       title = "Salt stress") +
-  scale_shape_manual(values = c("16" = 16, "22" = 3, "8" = 8)) +  # Assign stars to 8, circles to 16, pluses to 22 +  # Keep custom shapes
-  geom_line(data = par.res.S, aes(x = r.max_S, y =S.c.mod), color = "blue", size = 1) +  # Pareto frontier line
-  theme_classic() +
-  theme(legend.position = "none")  # Remove legend
+par.res.S <- par_frt(df.filt, xvar = "r.max_S", yvar = "S.c.mod") # Get the raw Pareto Front
 
-S_par # Raw pareto front.
+fit <- scam(S.c.mod ~ s(r.max_S, bs = "mpd", k = 5), data = par.res.S) # Fit a scam to the raw Pareto front
 
-pred.s <- data.frame(r.max_S = seq(min(df.final$r.max_S), max(df.final$r.max_S), length.out = 100)) # Dataframe to collect quantile info in
+x.vals <- seq(min(df.filt$r.max_S), max(df.filt$r.max_S), length.out = 100) # Generate an x sequence for plotting
 
-quant.S.95 <- rq(S.c.mod ~ poly(r.max_S, 2), data = df.final, tau = 0.95) 
-pred.s$S.comp.95 <- predict(quant.S.95, newdata = pred.s)
+pred.curve.s <- data.frame( # Get the corresponding y values
+  r.max_S = x.vals,
+  S.c.mod = predict(fit, newdata = data.frame(r.max_S = x.vals))
+)
 
-quant.S.75 <- rq(S.c.mod ~ poly(r.max_S, 2), data = df.final, tau = 0.75) 
-pred.s$S.comp.75 <- predict(quant.S.75, newdata = pred.s)
+pred.curve.s$threshold <- pred.curve.s$S.c.mod - pred.curve.s$S.c.mod * buffer # calculate threshold
 
-S.qrs <- ggplot(df.final, aes(x = r.max_S, y = S.c.mod, color = evol.bin)) +  # Quantiles plot
-  geom_point(size = 3) +  # Scatter plot of raw data
+df.filt$closest_idx <- sapply(df.filt$r.max_S, function(x) { # Match data in our df.filt to the predicted curve
+  which.min(abs(pred.curve.s$r.max_S - x))
+})
+
+df.filt$predicted_S.c.mod <- pred.curve.s$S.c.mod[df.filt$closest_idx] # Get the predicted S.c.mod
+df.filt$threshold <- pred.curve.s$threshold[df.filt$closest_idx] # Get the threshold point
+
+df.filt$within_band <- df.filt$S.c.mod >= df.filt$threshold # Label points based on proximity to curve
+df.filt2 <- df.filt[df.filt$within_band, ] # smaller subset of points close to the Pareto front
+
+fit2 <- scam(S.c.mod ~ s(r.max_S, bs = "mpd", k = 6), data = df.filt2)
+
+pred.curve2 <- data.frame(
+  r.max_S = x.vals,
+  S.c.mod = predict(fit2, newdata = data.frame(r.max_S = x.vals))
+)
+
+df.filt <- df.filt %>% # Scale the data
+  mutate(
+    z.x = scale(r.max_S)[, 1],
+    z.y = scale(S.c.mod)[, 1],
+  )
+
+x.ref <- min(df.filt$z.x, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y, na.rm = TRUE) # Min y
+
+df.filt3 <- df.filt %>% # Filter out based on Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2)
+  ) %>%
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.S2 <- par_frt(df.filt3, xvar = "r.max_S", yvar = "S.c.mod") # Pareto frontier on this data
+
+fit3 <- scam(S.c.mod ~ s(r.max_S, bs = "mpd", k = 6), data = par.res.S2) # Model fit
+
+pred.curve3 <- data.frame( # predicted data frame
+  r.max_S = x.vals,
+  S.c.mod = predict(fit3, newdata = data.frame(r.max_S = x.vals))
+)
+
+pred.curve3$threshold <- pred.curve3$S.c.mod - pred.curve3$S.c.mod * buffer # predicted threshold
+
+df.filt3$closest_idx <- sapply(df.filt3$r.max_S, function(x) { # Get closest ID
+  which.min(abs(pred.curve3$r.max_S - x))
+})
+
+df.filt3$predicted_S.c.mod <- pred.curve3$S.c.mod[df.filt3$closest_idx] # Get corresponding predicted S.c.mod
+df.filt3$threshold <- pred.curve3$threshold[df.filt3$closest_idx] # Associated threshold
+
+df.filt3$within_band <- df.filt3$S.c.mod >= df.filt3$threshold # Label based on proximity to PF
+df.filt4 <- df.filt3[df.filt3$within_band, ] # Filter to include only close points
+
+fit4 <- scam(S.c.mod ~ s(r.max_S, bs = "mpd", k = 6), data = df.filt4) # Model PF on that
+
+pred.curve4 <- data.frame( # assemble a dataframe
+  r.max_S = x.vals,
+  S.c.mod = predict(fit4, newdata = data.frame(r.max_S = x.vals))
+)
+
+S.scam <- ggplot(df.filt, aes(x = r.max_S, y = S.c.mod, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
-  geom_line(data = pred.s, aes(x = r.max_S, y = S.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
-  geom_line(data = pred.s, aes(x = r.max_S, y = S.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
+  geom_line(data = pred.curve.s, aes(x = r.max_S, y = S.c.mod), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  # geom_line(data = pred.curve2, aes(x = r.max_S, y = S.c.mod), color = "black", size = 1.1, inherit.aes = FALSE) +
+  geom_line(data = pred.curve3, aes(x = r.max_S, y = S.c.mod), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  # geom_line(data = pred.curve4, aes(x = r.max_S, y = S.c.mod), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Maximum exponential growth rate (µ max)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "D") +  # labels
+       title = "D — Salt") +  # labels
   
-  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3"), 
-                     labels = c("Ancestral", "Other", "Salt or Biotic x Salt")) +  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "salt" = 16)  # filled circle
+  ) +
+  
   theme_classic() +
   theme(
-    legend.position = c(0.35, 0.85),  # Moves legend inside the plot (x, y) in [0,1] scale
-    legend.title = element_text(size = 12, face = "bold"),  # Adjust title size
-    legend.text = element_text(size = 12, face = "plain"),  # Adjust text size
-    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
-    axis.text = element_text(size = 10),
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
-  ) 
+  )
 
-S.qrs  # Display the plot
+S.scam  # Display the plot
 
-s.75 <- df.final %>% # Now calculate the number of light points above that. 
-  filter(evol.bin == 'salt') %>% 
+s.75 <- df.filt %>% # Now calculate the number of light points above that. 
+  filter(evol.bin == "salt") %>%
   rowwise() %>%
   mutate(
-    nearest_idx = find_nearest_index(r.max_S, pred.s$r.max_S),
-    S.comp.75.pred = pred.s$S.comp.75[nearest_idx]
+    nearest_idx = find_nearest_index(r.max_S, pred.curve3$r.max_S),
+    S.c.mod.pred = pred.curve3$S.c.mod[nearest_idx]
   ) %>%
   ungroup() %>%
-  filter(S.c.mod > S.comp.75.pred) %>%
+  filter(S.c.mod > S.c.mod.pred) %>%
   nrow()
 
+set.seed(123)  # for reproducibility
+n_iter <- 1000
 null_counts_s <- numeric(n_iter)
 
 for (i in 1:n_iter) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
-  df.shuff <- df.final %>%
+  df.shuff <- df.filt %>%
     mutate(evol.shuff = sample(evol.bin, rep = F))
   
   null_counts_s[i] <- df.shuff %>%
     filter(evol.shuff == "salt") %>%
     rowwise() %>%
     mutate(
-      nearest_idx = which.min(abs(pred.s$r.max_S - r.max_S)),
-      S.comp.75.pred = pred.s$S.comp.75[nearest_idx]
+      nearest_idx = which.min(abs(pred.curve3$r.max_S - r.max_S)),
+      S.c.mod.pred = pred.curve3$S.c.mod[nearest_idx]
     ) %>%
     ungroup() %>%
-    filter(S.c.mod > S.comp.75.pred) %>%
+    filter(S.c.mod > S.c.mod.pred) %>%
     nrow()
 }
 
-p_val_s <- mean(null_counts_s >= s.75) # 0.001!
+p_val_s <- mean(null_counts_s >= s.75) 
+p_val_s # 0
 
 # Quadrant-based statistical testing
 
-x.thresh.s <- mean(df.final$r.max_S)
-y.thresh.s <- mean(df.final$S.c.mod)
+x.thresh.s <- mean(df.filt$r.max_S)
+y.thresh.s <- mean(df.filt$S.c.mod)
 
-obs.cnt.s <- df.final %>%
+obs.cnt.s <- df.filt %>%
   filter(r.max_S > x.thresh.s, S.c.mod > y.thresh.s) %>%
   nrow()
 
 null.counts.s <- replicate(1000, {
-  shuffled.df <- df.final %>%
+  shuffled.df <- df.filt %>%
     mutate(r.max_S = sample(r.max_S, rep= F),
            S.c.mod = sample(S.c.mod, rep = F))
   
@@ -1280,30 +1659,42 @@ null.counts.s <- replicate(1000, {
 })
 
 p.val.s.quad <- mean(null.counts.s >= obs.cnt.s)
-p.val.s.quad # 0.856
+p.val.s.quad # 0.835
 
 # Figure 1 : all plots together
 
-plots <- list(L.qrs, N.qrs, P.qrs, S.qrs, T.qrs)
-
-plots_nolegend <- lapply(plots, function(p) p + theme(legend.position = "none"))
+plots <- list(I.scam, N.scam, P.scam, S.scam, T.scam)
 
 legend_df <- data.frame(
-  x = c(1, 2, 1, 2),
-  y = c(1, 1, 2, 2),
-  Group = factor(c("Ancestral", "Other", "Matching", "Matching")),
-  LineType = factor(c("QR 95%", "QR 75%", "QR 95%", "QR 75%"))
+  x = c(1, 2, 1, 2, 1, 2, 1, 2),
+  y = c(1, 1, 2, 2, 1, 1, 2, 2),
+  Group = factor(c("Ancestral", "Other", "Matching", "Matching", "Ancestral", "Other", "Matching", "Matching")),
+  Group2 = factor(c("Biotic depletion", "Biotic depletion x Salt", "Control", "Light limitation", "Nitrogen limitation", "Ancestral", "Phosphorous limitation", "Salt stress")),
+  LineType = factor(c("Outer", "Inner (75%)", "Outer", "Inner (75%)", "Outer", "Inner (75%)", "Outer", "Inner (75%)"))
 )
 
 legend_plot <- ggplot(legend_df, aes(x = x, y = y)) +
-  geom_point(aes(color = Group), size = 3) +
+  geom_point(aes(shape = Group, colour = Group2), size = 3, stroke = 1.5) +
   geom_line(aes(linetype = LineType), size = 1) +
-  scale_color_manual(values = c("Ancestral" = "black", 
-                                "Other" = "gold", 
-                                "Matching" = "orchid")) +
-  scale_linetype_manual(values = c("QR 95%" = "solid", "QR 75%" = "dashed"),
-                        labels = c("95th", "75th"),
-                        name = "Quantile regression") +
+  scale_shape_manual(name = NULL,
+                    values = c("Ancestral" = 5, 
+                    "Other" = 1, 
+                    "Matching" = 16)) +
+  
+  scale_color_manual(
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_linetype_manual(values = c("Outer" = "dashed", "Inner (75%)" = "solid"),
+                        labels = c("Outer", "Inner (75%)"),
+                        name = "Pareto front") +
   labs(linetype = "Quantile regression", color = "Evolutionary context") +
   theme_void() +
   theme(
@@ -1315,7 +1706,7 @@ legend_plot <- ggplot(legend_df, aes(x = x, y = y)) +
 
 legend_only <- get_legend(legend_plot)
 
-all_plots <- c(plots_nolegend, list(legend_only))
+all_plots <- c(plots, list(legend_only))
 
 grad_toffs <- plot_grid(plotlist = all_plots,
           ncol = 2,
@@ -1788,21 +2179,6 @@ LP.qrs <- ggplot(df.final[df.final$I.comp<10,], aes(x = P.comp, y = I.comp, colo
   )
 
 LP.qrs  # Display the plot
-
-par_frt_tolerant <- function(df, xvar, yvar, tolerance = 0.10) {
-  df <- df[order(-df[[xvar]], df[[yvar]]), ]
-  pareto_points <- df[1, ]
-  frontier_y <- df[1, yvar]
-  
-  for (i in 2:nrow(df)) {
-    threshold <- tail(pareto_points[[yvar]], 1) * (1 - tolerance)
-    if (df[i, yvar] >= threshold) {
-      pareto_points <- rbind(pareto_points, df[i, ])
-    }
-  }
-  
-  return(pareto_points)
-}
 
 par.res.LP <- par_frt(df.final[df.final$I.comp<10,], xvar = "P.comp", yvar = "I.comp")
 
