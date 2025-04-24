@@ -166,11 +166,45 @@ df.r.t <- df.r.t %>%
   filter(population.number %in% c(7, 18, 38)) %>% 
   print()
 
-p.t <- ggplot(df.r.t, aes(x = temperature, y = r.exp, colour = population)) +
+p.t1 <- ggplot(df.r.t[df.r.t$population.number==38,], aes(x = temperature, y = r.exp, colour = population)) +
   geom_jitter(size = 2.5,width = 0.5, height = 0) + # small horizontal shift 
-  scale_colour_manual(values = c("darkorange1", "magenta2", "forestgreen")) +
+  scale_colour_manual(values = c("forestgreen")) +
   ylim(-2, 7) +
+  xlim(0, 45) +
 
+  #geom_line(data = df.T.jags7, aes(x = temp, y= mean), colour = "darkorange1", size = 1) +
+  #geom_line(data = df.T.jags18, aes(x = temp, y= mean), colour = "magenta2", size = 1) +
+  geom_line(data = df.T.jags38, aes(x = temp, y= mean), colour = "forestgreen", size = 1) +
+  
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40", size = 0.6) +
+  
+  labs(x = "Temperature (°C)", 
+       y = "Exponential growth rate (µ)",
+       title = "A - Temperature") +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  # delete legend
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+  ) +
+  
+  geom_segment(aes(x = -Inf, xend = 33.34627, y = 3.556069, yend = 3.556069), linetype = "dashed", colour = "black", size = 1.2) +
+  geom_segment(aes(x = 21.8, xend = 21.8 + df.final[df.final$Pop.fac == "cc1690",]$T.br, 
+                   y = df.final[df.final$Pop.fac == "cc1690",]$r.max_T/2, yend = df.final[df.final$Pop.fac == "cc1690",]$r.max_T/2),
+              linetype = "dashed", colour = "black", size = 1.2) +
+                    
+  
+  annotate("text", x = 33.34627, y = 3.9, label = "µ max", size = 4.5, fontface = "bold") +
+  annotate("text", x = 30, y = df.final[df.final$Pop.fac == "cc1690",]$r.max_T/2 - 0.35, label = "Thermal breadth", size = 4.5, fontface = "bold")
+  
+p.t1
+
+p.t2 <- ggplot(df.r.t[df.r.t$population.number==38,], aes(x = temperature, y = r.exp, colour = population)) +
+  ylim(-2, 7) +
+  xlim(0, 45) +
+  
   geom_line(data = df.T.jags7, aes(x = temp, y= mean), colour = "darkorange1", size = 1) +
   geom_line(data = df.T.jags18, aes(x = temp, y= mean), colour = "magenta2", size = 1) +
   geom_line(data = df.T.jags38, aes(x = temp, y= mean), colour = "forestgreen", size = 1) +
@@ -179,7 +213,7 @@ p.t <- ggplot(df.r.t, aes(x = temperature, y = r.exp, colour = population)) +
   
   labs(x = "Temperature (°C)", 
        y = "Exponential growth rate (µ)",
-       title = "A") +
+       title = "B - Temperature") +
   
   theme_classic() +
   theme(
@@ -188,8 +222,26 @@ p.t <- ggplot(df.r.t, aes(x = temperature, y = r.exp, colour = population)) +
     axis.text = element_text(size = 10),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
   ) 
+  
+p.t2
 
-p.t
+p.t3 <- ggplot(df.final[df.final$Pop.fac %in% c("7", "17", "cc1690"),], aes(x = r.max_T, y = T.br, colour = Pop.fac)) +
+  geom_point(size=4.5) +
+  scale_colour_manual(values = c("darkorange", "magenta","forestgreen")) +
+  
+  labs(x = "Maximum exponential growth rate (µ max)", 
+       y = "Thermal breadth (°C)",
+       title = "C - Temperature") +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  # delete legend
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+  ) 
+  
+p.t3
 
 # Phosphorous
 
@@ -207,6 +259,40 @@ head(df.r.p) # population is the factor, population.number is the corresponding 
 df.r.p <- df.r.p %>% 
   filter(population.number %in% c(7, 18, 37)) %>% 
   print()
+
+p.p1 <- ggplot(df.r.p[df.r.p$population.number==37,], aes(x = phos.lvl, y = r.exp, colour = population)) +
+  geom_jitter(size = 2.5,width = 0.5, height = 0) + # small horizontal shift 
+  scale_colour_manual(values = c("forestgreen")) +
+  ylim(-0.5, 2.5) +
+  
+  #geom_line(data = df.T.jags7, aes(x = temp, y= mean), colour = "darkorange1", size = 1) +
+  #geom_line(data = df.T.jags18, aes(x = temp, y= mean), colour = "magenta2", size = 1) +
+  geom_line(data = df.P.jags37, aes(x = phos, y= mean), colour = "forestgreen", size = 1) +
+  
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40", size = 0.6) +
+  
+  labs(x = "Phosphorous concentration (µM)", 
+       y = "Exponential growth rate (µ)",
+       title = "D - Phosphorous") +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  # delete legend
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+  ) +
+  
+  geom_segment(aes(x = -Inf, xend = 50, y = 1.495213, yend = 1.495213), linetype = "dashed", colour = "black", size = 1.2) +
+  geom_segment(aes(x = 1.1537846, xend = 1.1537846, 
+                   y = 0, yend = 0.56),
+               linetype = "dashed", colour = "black", size = 1.2) +
+  
+  
+  annotate("text", x = 25, y = 1.65, label = "µ max", size = 4.5, fontface = "bold") +
+  annotate("text", x = 3, y = 0.3, label = "P*", size = 4.5, fontface = "bold")
+
+p.p1
 
 p.p <- ggplot(df.r.p, aes(x = phos.lvl, y = r.exp, colour = population)) +
   geom_jitter(size = 2.5,width = 0.5, height = 0) + # small horizontal shift 
