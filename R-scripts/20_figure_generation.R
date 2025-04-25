@@ -289,7 +289,7 @@ p.p1 <- ggplot(df.r.p[df.r.p$population.number==37,], aes(x = phos.lvl, y = r.ex
                linetype = "dashed", colour = "black", size = 1.2) +
   
   
-  annotate("text", x = 25, y = 1.65, label = "µ max", size = 4.5, fontface = "bold") +
+  annotate("text", x = 25, y = 1.6, label = "µ max", size = 4.5, fontface = "bold") +
   annotate("text", x = 3, y = 0.3, label = "P*", size = 4.5, fontface = "bold")
 
 p.p1
@@ -383,24 +383,23 @@ p.s1 <- ggplot(df.r.s[df.r.s$population.number==37,], aes(x = salt.lvl, y = r.ex
   
   
   annotate("text", x = 5, y = 1.75, label = "µ max", size = 4.5, fontface = "bold") +
-  annotate("text", x = 2.3, y = 0.5, label = "Salt tolerance (c)", size = 4.5, fontface = "bold")
+  annotate("text", x = 1.6, y = 0.5, label = "Salt tolerance (c)", size = 4.5, fontface = "bold")
 
 p.s1
 
-p.s <- ggplot(df.r.s, aes(x = salt.lvl, y = r.exp, colour = population)) +
-  geom_jitter(size = 2.5,width = 0.5, height = 0) + # small horizontal shift 
+p.s2 <- ggplot(df.r.p[df.r.p$population.number==37,], aes(x = salt.lvl, y = r.exp, colour = population)) +
   scale_colour_manual(values = c("darkorange1", "magenta2", "forestgreen")) +
-  ylim(-0.5, 2.5) +
+  ylim(-0.2, 2) +
   
   geom_line(data = df.S.jags7, aes(x = salt, y= mean), colour = "darkorange1", size = 1) +
   geom_line(data = df.S.jags18, aes(x = salt, y= mean), colour = "magenta2", size = 1) +
   geom_line(data = df.S.jags37, aes(x = salt, y= mean), colour = "forestgreen", size = 1) +
   
-  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40", size = 0.6) +
-  
   labs(x = "Salt concentration (g/L)", 
        y = "Exponential growth rate (µ)",
-       title = "C") +
+       title = "H - Salt") +
+  
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40", size = 0.6) +
   
   theme_classic() +
   theme(
@@ -410,13 +409,31 @@ p.s <- ggplot(df.r.s, aes(x = salt.lvl, y = r.exp, colour = population)) +
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
   ) 
 
-p.s
+p.s2
 
-fig.1 <- plot_grid(p.t, p.p, p.s, nrow = 1, align=hv, rel_widths = c(1,1,1))
+p.s3 <- ggplot(df.final[df.final$Pop.fac %in% c("7", "17", "cc1690"),], aes(x = r.max_S, y = S.c.mod, colour = Pop.fac)) +
+  geom_point(size=4.5) +
+  scale_colour_manual(values = c("darkorange", "magenta","forestgreen")) +
+  
+  labs(x = "Maximum exponential growth rate (µ max)", 
+       y = "Salt tolerance (c)",
+       title = "I - Salt") +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  # delete legend
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+  ) 
+
+p.s3
+
+fig.1 <- plot_grid(p.t1, p.t2, p.t3, p.p1, p.p2, p.p3, p.s1, p.s2, p.s3, nrow = 3, align='hv', rel_widths = c(1,1,1))
 
 fig.1
 
-ggsave("figures/16_fig_1_sample_models.jpeg", fig.1, width = 15, height = 5) # PDF was rendering weird
+ggsave("figures/16_fig_1_sample_models.jpeg", fig.1, width = 15, height = 15) # PDF was rendering weird
 
 # Figure 2: PCAs and RDAs -----------------------------------------------------------
 
