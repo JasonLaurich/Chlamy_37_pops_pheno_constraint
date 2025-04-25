@@ -1083,6 +1083,48 @@ T.scam <- ggplot(df.filt, aes(x = r.max_T, y = T.br, color = evol.plt, shape = e
 
 T.scam  # Display the plot
 
+T.scam.PF <- ggplot(df.filt, aes(x = r.max_T, y = T.br, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.t, aes(x = r.max_T, y = T.br), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  # geom_line(data = pred.curve2, aes(x = r.max_T, y = T.br), color = "black", size = 1.1, inherit.aes = FALSE) +
+  # geom_line(data = pred.curve3, aes(x = r.max_T, y = T.br), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  # geom_line(data = pred.curve4, aes(x = r.max_T, y = T.br), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Maximum exponential growth rate (µ max)",    
+       y = "Thermal breadth (°C)", 
+       color = "Evolutionary History",
+       title = "E — Temperature") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("evolved" = 1,  # open circle
+               "ancestral" = 5)  # diamond
+  ) +
+  
+  theme_classic() +
+  ylim(12,20) +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+T.scam.PF  # Display the plot
+
 # Quadrant-based statistical testing
 
 x.thresh.t <- mean(df.final$r.max_T)
@@ -1226,6 +1268,48 @@ I.scam <- ggplot(df.filt, aes(x = r.max_I, y = I.comp, color = evol.plt, shape =
   )
 
 I.scam  # Display the plot
+
+I.scam.PF <- ggplot(df.filt, aes(x = r.max_I, y = I.comp, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.i, aes(x = r.max_I, y = I.comp), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  # geom_line(data = pred.curve2, aes(x = r.max_I, y = I.comp), color = "black", size = 1.1) +
+  # geom_line(data = pred.curve3, aes(x = r.max_I, y = I.comp), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  # geom_line(data = pred.curve4, aes(x = r.max_I, y = I.comp), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Maximum exponential growth rate (µ max)",    
+       y = "Competitive ability (1/I*)", 
+       color = "Evolutionary History",
+       title = "A — Light") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "light" = 16)  # filled circle
+  ) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+I.scam.PF  # Display the plot
 
 l.75 <- df.filt %>% # Now calculate the number of light points above that. 
   filter(evol.bin == "light") %>%
@@ -1405,6 +1489,48 @@ N.scam <- ggplot(df.filt, aes(x = r.max_N, y = N.comp, color = evol.plt, shape =
 
 N.scam  # Display the plot
 
+N.scam.PF <- ggplot(df.filt, aes(x = r.max_N, y = N.comp, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.n, aes(x = r.max_N, y = N.comp), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  # geom_line(data = pred.curve2, aes(x = r.max_N, y = N.comp), color = "black", size = 1.1, inherit.aes = FALSE) +
+  # geom_line(data = pred.curve3, aes(x = r.max_N, y = N.comp), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  # geom_line(data = pred.curve4, aes(x = r.max_N, y = N.comp), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Maximum exponential growth rate (µ max)",    
+       y = "Competitive ability (1/N*)", 
+       color = "Evolutionary History",
+       title = "B — Nitrogen") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "nitrogen" = 16)  # filled circle
+  ) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+N.scam.PF  # Display the plot
+
 n.75 <- df.filt %>% # Now calculate the number of light points above that. 
   filter(evol.bin == "nitrogen") %>%
   rowwise() %>%
@@ -1582,6 +1708,48 @@ P.scam <- ggplot(df.filt, aes(x = r.max_P, y = P.comp, color = evol.plt, shape =
   )
 
 P.scam  # Display the plot
+
+P.scam.PF <- ggplot(df.filt, aes(x = r.max_P, y = P.comp, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.p, aes(x = r.max_P, y = P.comp), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  # geom_line(data = pred.curve2, aes(x = r.max_P, y = P.comp), color = "black", size = 1.1, inherit.aes = FALSE) +
+  # geom_line(data = pred.curve3, aes(x = r.max_P, y = P.comp), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  # geom_line(data = pred.curve4, aes(x = r.max_P, y = P.comp), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Maximum exponential growth rate (µ max)",    
+       y = "Competitive ability (1/P*)", 
+       color = "Evolutionary History",
+       title = "C — Phosphorous") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "phosphorous" = 16)  # filled circle
+  ) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+P.scam.PF  # Display the plot
 
 p.75 <- df.filt %>% # Now calculate the number of P points above that. 
   filter(evol.bin == "phosphorous") %>%
@@ -1761,6 +1929,48 @@ S.scam <- ggplot(df.filt, aes(x = r.max_S, y = S.c.mod, color = evol.plt, shape 
 
 S.scam  # Display the plot
 
+S.scam.PF <- ggplot(df.filt, aes(x = r.max_S, y = S.c.mod, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.s, aes(x = r.max_S, y = S.c.mod), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  # geom_line(data = pred.curve2, aes(x = r.max_S, y = S.c.mod), color = "black", size = 1.1, inherit.aes = FALSE) +
+  # geom_line(data = pred.curve3, aes(x = r.max_S, y = S.c.mod), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  # geom_line(data = pred.curve4, aes(x = r.max_S, y = S.c.mod), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Maximum exponential growth rate (µ max)",    
+       y = "Salt tolerance (c)", 
+       color = "Evolutionary History",
+       title = "D — Salt") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "salt" = 16)  # filled circle
+  ) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+S.scam.PF  # Display the plot
+
 s.75 <- df.filt %>% # Now calculate the number of light points above that. 
   filter(evol.bin == "salt") %>%
   rowwise() %>%
@@ -1867,6 +2077,63 @@ grad_toffs <- plot_grid(plotlist = all_plots,
           align = "hv")
 
 ggsave("figures/18_fig_3_intra-gradient_tradeoffs.jpeg", grad_toffs, width = 8, height = 12)
+
+# ggsave("figures/18_fig_3a_salt_no_PF_example.jpeg", S.scam, width = 4, height = 4)
+
+legend_df.PF <- data.frame(
+  x = c(1, 2, 1, 2, 1, 2, 1, 2),
+  y = c(1, 1, 2, 2, 1, 1, 2, 2),
+  Group = factor(c("Ancestral", "Other", "Matching", "Matching", "Ancestral", "Other", "Matching", "Matching")),
+  Group2 = factor(c("Biotic depletion", "Biotic depletion x Salt", "Control", "Light limitation", "Nitrogen limitation", "Ancestral", "Phosphorous limitation", "Salt stress"))
+)
+
+legend_df.PF$LineType <- "Pareto front"  # Add dummy column
+
+legend_plot.PF <- ggplot(legend_df.PF, aes(x = x, y = y)) +
+  geom_point(aes(shape = Group, colour = Group2), size = 3, stroke = 1.5) +
+  geom_line(aes(linetype = LineType), size = 1, colour = "black") +  # Map linetype here
+  scale_shape_manual(name = NULL,
+                     values = c("Ancestral" = 5, 
+                                "Other" = 1, 
+                                "Matching" = 16)) +
+  
+  scale_color_manual(
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_linetype_manual(
+    name = NULL,
+    values = c("Pareto front" = "solid")
+  ) +
+  
+  labs(color = "Evolutionary context") +
+  
+  theme_void() +
+  theme(
+    legend.title = element_text(size = 12, face = "bold"),
+    legend.text = element_text(size = 12),
+    legend.key.size = unit(1.2, "lines")
+  )
+
+
+legend_only.PF <- get_legend(legend_plot.PF, return_all = T)
+
+plots.PF <- list(I.scam.PF, N.scam.PF, P.scam.PF, S.scam.PF, T.scam.PF)
+
+all_plots.PF <- c(plots.PF, list(legend_only.PF))
+
+grad_toffs.PF <- plot_grid(plotlist = all_plots.PF,
+                        ncol = 2,
+                        align = "hv")
+
+ggsave("figures/18_fig_3b_intra-gradient_tradeoffs_PFonly.jpeg", grad_toffs.PF, width = 8, height = 12)
 
 # Then we will bring in inter-specific datasets and plot the position of their metrics on our plots
 
