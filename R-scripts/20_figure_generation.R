@@ -19,6 +19,9 @@ library(vegan)  # For PCA and RDA
 library(ggrepel)
 library(quantreg)
 library(scam)
+library(lme4)
+library(emmeans)
+library(lmerTest)
 
 par_frt <- function(df, xvar, yvar) { # Simple Pareto front function / crude convex hull algorithm (one sided)
   
@@ -34,26 +37,28 @@ par_frt <- function(df, xvar, yvar) { # Simple Pareto front function / crude con
   return(pareto_points)
 }
 
-par_frt_tolerant <- function(df, xvar, yvar, tolerance = 0.05) {
-  df <- df[order(-df[[xvar]], df[[yvar]]), ]
-  pareto_points <- df[1, ]
-  last_y <- df[1, yvar]
-  
-  for (i in 2:nrow(df)) {
-    current_y <- df[i, yvar]
-    threshold <- last_y * (1 - tolerance)  # local threshold
-    if (current_y >= threshold) {
-      pareto_points <- rbind(pareto_points, df[i, ])
-      if (current_y > last_y) last_y <- current_y  # update "best" y value
-    }
-  }
-  
-  return(pareto_points)
-}
-
 find_nearest_index <- function(x, ref_vec) { # Write a function to find the closest point to the actual r.max value in the pred data frame. 
   which.min(abs(ref_vec - x))
 } # For significance testing based on location of points relative to a curve
+
+point_line_distance <- function(x0, y0, x1, y1, x2, y2) {
+  numerator <- abs((y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1)
+  denominator <- sqrt((y2 - y1)^2 + (x2 - x1)^2)
+  numerator / denominator
+} # Function to compute perpendicular distance from point to line segment
+
+lactin2 <- function(temp, cf.a, cf.b, cf.delta_t, cf.tmax) {
+  exp(cf.a * temp) - exp(cf.a * cf.tmax - ((cf.tmax - temp) / cf.delta_t)) + cf.b
+}
+
+find_roots <- function(cf.a, cf.b, cf.delta_t, cf.tmax) {
+  fn <- function(temp) lactin2(temp, cf.a, cf.b, cf.delta_t, cf.tmax) - target
+  
+  root1 <- tryCatch(uniroot(fn, lower = 5, upper = cf.tmax - 10)$root, error = function(e) NA)
+  root2 <- tryCatch(uniroot(fn, lower = cf.tmax - 10, upper = 45)$root, error = function(e) NA)
+  
+  c(root1, root2)
+}
 
 # Load and examine data ---------------------------------------------------
 
@@ -143,6 +148,112 @@ df.final$anc.plt <- factor(df$anc,
                                        "Population 4", 
                                        "Population 5", 
                                        "Mixed population"))
+
+df.tpc <- read_csv('data-processed//09.5_TPC_Bayes_model_fit_stats.csv') # Load the data with the TPC shape parameters
+
+df.tpc <- df.tpc %>% # Pivot to wide format
+  filter(Model == 'Lactin 2', Pop.fac != 'cc1629') %>% 
+  select(Pop.fac, Parameter, mean) %>%
+  pivot_wider(names_from = Parameter, values_from = mean)
+
+df.tpc.roots <- df.tpc %>%
+  mutate(roots = pmap(list(cf.a, cf.b, cf.delta_t, cf.tmax), find_roots)) %>%
+  transmute(
+    Pop.fac,
+    T.min.0.56 = map_dbl(roots, 1),
+    T.max.0.56 = map_dbl(roots, 2)
+  )
+
+df.final <- df.final %>%
+  left_join(
+    df.tpc.roots %>% 
+      select(Pop.fac, T.min.0.56, T.max.0.56), 
+    by = "Pop.fac"
+  ) %>%
+  mutate(T.br.0.56 = T.max.0.56 - T.min.0.56)
+
+# Statistical analysis ----------------------------------------------------
+
+df.anc <- df.final %>%   # Isolate ancestral values
+  filter(Pop.fac %in% unique(df.final$anc)) %>%
+  select(Pop.fac, T.br.0.56, r.max_T, r.max_I, I.comp, r.max_N, N.comp, r.max_P, P.comp, r.max_S, S.c.mod) %>%
+  rename(
+    anc = Pop.fac,
+    T.br.0.56_anc = T.br.0.56,
+    r.max_T_anc = r.max_T,
+    r.max_I_anc = r.max_I,
+    I.comp_anc = I.comp,
+    r.max_N_anc = r.max_N,
+    N.comp_anc = N.comp,
+    r.max_P_anc = r.max_P,
+    P.comp_anc = P.comp,
+    r.max_S_anc = r.max_S,
+    S.c.mod_anc = S.c.mod
+  )
+
+df.delta <- df.final %>%   # Calculate parameter changes
+  left_join(df.anc, by = "anc") %>%
+  mutate(
+    delta_T.br.0.56 = T.br.0.56 - T.br.0.56_anc,
+    delta_r.max_T = r.max_T - r.max_T_anc,
+    delta_r.max_I = r.max_I - r.max_I_anc,
+    delta_I.comp = I.comp - I.comp_anc,
+    delta_r.max_N = r.max_N - r.max_N_anc,
+    delta_N.comp = N.comp - N.comp_anc,
+    delta_r.max_P = r.max_P - r.max_P_anc,
+    delta_P.comp = P.comp - P.comp_anc,
+    delta_r.max_S = r.max_S - r.max_S_anc,
+    delta_S.c.mod = S.c.mod - S.c.mod_anc
+  ) %>% 
+  filter(evol != 'none')
+
+df.delta <- df.delta %>% # Convert to factors
+  mutate(evol = factor(evol), anc = factor(anc))
+
+traits <- c("delta_T.br.0.56", "delta_r.max_T", "delta_r.max_I", "delta_I.comp",
+            "delta_r.max_N", "delta_N.comp", "delta_r.max_P", "delta_P.comp",
+            "delta_r.max_S", "delta_S.c.mod")  # Traits to analyze
+
+stat.sum.df <- data.frame(  # We'll create a dataframe to store model results
+  trait = character(),      # trait
+  evol.p = numeric(),       # p-value (evolutionary environment)
+  anc.prop.var = numeric(), # proportion of variance explained by ancestry
+  em.B = numeric(),         # emmean (Biotic depletion)
+  em.BS = numeric(),        # emmean (Biotic depletion x Salt)
+  em.C = numeric(),         # emmean (Control)
+  em.L = numeric(),         # emmean (Light)
+  em.N = numeric(),         # emmean (Nitrogen)
+  em.P = numeric(),         # emmean (Phosphorous)
+  em.S = numeric(),         # emmean (Salt)
+  stringsAsFactors = FALSE  # Avoid factor conversion
+)
+
+for (i in traits){
+  
+  model <- lmer(as.formula(paste(i, "~ evol + (1|anc)")), data = df.delta)
+  
+  anova.mod <- anova(model)
+  
+  var.cor <- as.data.frame(VarCorr(model))
+  
+  emm <- as.data.frame(emmeans(model, "evol")) # emmeans
+  
+  stat.sum.df <- rbind(stat.sum.df, data.frame(                            # Add model outputs
+    trait = i,                                                             # trait
+    evol.p = anova.mod$`Pr(>F)`,                                           # p-value (evolutionary environment)
+    anc.prop.var = var.cor$vcov[1]/(var.cor$vcov[1] + var.cor$vcov[2]),    # proportion of variance explained by ancestry
+    em.B = emm$emmean[1],                                                  # emmean (Biotic depletion)
+    em.BS = emm$emmean[2],                                                 # emmean (Biotic depletion x Salt)
+    em.C = emm$emmean[3],                                                  # emmean (Control)
+    em.L = emm$emmean[4],                                                  # emmean (Light)
+    em.N = emm$emmean[5],                                                  # emmean (Nitrogen)
+    em.P = emm$emmean[6],                                                  # emmean (Phosphorous)
+    em.S = emm$emmean[7]                                                   # emmean (Salt)
+  )
+  )
+}
+
+write.csv(stat.sum.df, "data-processed/25_stats_effects_evol_anc_traits.csv") # Save stats results table
 
 # Figure 1: Representation of model fits ----------------------------------
 
@@ -950,11 +1061,61 @@ ggsave("figures/17_fig_2b_supp_rdas.jpeg", rdas, width = 16, height = 8) # PDF w
 
 df.final$evol.bin <- ifelse(df.final$evol == "none", "ancestral", "evolved") # For binning into evolutionary treatments
 
-df.filt <- df.final # Filter out extreme outliers
+df.filt <- df.final %>% 
+  mutate(
+    z.y = scale(T.br)[, 1],
+    z.x = scale(r.max_T)[, 1]
+  ) # Add in scaled data for outlier detection, Pareto point addition, and 75th quantile calculation
+
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+df.filt <- df.filt %>% 
+  filter(abs(z.x) < 6, abs(z.y) < 6) # Error trimming
+
+df.filt <- df.filt %>% 
+  mutate(
+    z.y = scale(T.br)[, 1],
+    z.x = scale(r.max_T)[, 1]
+  ) # Recalculate after removing errors
 
 par.res.T <- par_frt(df.filt, xvar = "r.max_T", yvar = "T.br") # Get the raw Pareto Front
 
-fit <- scam(T.br ~ s(r.max_T, bs = "mpd", k = 6), data = par.res.T) # Fit a scam to the raw Pareto front
+buffer <- 0.1 # Buffer (in SD) for point inclusion in the pareto fronts.
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.T) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.T$z.x[i]
+  y1 <- par.res.T$z.y[i]
+  x2 <- par.res.T$z.x[i + 1]
+  y2 <- par.res.T$z.y[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.T$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x, z.y, x1, y1, x2, y2),
+      in_x_range = between(z.x, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.T2 <- bind_rows(par.res.T, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit <- scam(T.br ~ s(r.max_T, bs = "mpd", k = 6), data = par.res.T2) # Fit a scam to the raw Pareto front
 
 x.vals <- seq(min(df.filt$r.max_T), max(df.filt$r.max_T), length.out = 100) # Generate an x sequence for plotting
 
@@ -963,43 +1124,7 @@ pred.curve.t <- data.frame( # Get the corresponding y values
   T.br = predict(fit, newdata = data.frame(r.max_T = x.vals))
 )
 
-buffer <- 0.05  # 5% vertical tolerance - we'll include points within this range
-
-pred.curve.t$threshold <- pred.curve.t$T.br - pred.curve.t$T.br * buffer # calculate threshold
-
-df.filt$closest_idx <- sapply(df.filt$r.max_T, function(x) { # Match data in our df.filt to the predicted curve
-  which.min(abs(pred.curve.t$r.max_T - x))
-})
-
-df.filt$predicted_T.br <- pred.curve.t$T.br[df.filt$closest_idx] # Get the predicted T.br
-df.filt$threshold <- pred.curve.t$threshold[df.filt$closest_idx] # Get the threshold point
-
-df.filt$within_band <- df.filt$T.br >= df.filt$threshold # Label points based on proximity to curve
-df.filt2 <- df.filt[df.filt$within_band, ] # smaller subset of points close to the Pareto front
-
-fit2 <- scam(T.br ~ s(r.max_T, bs = "mpd", k = 6), data = df.filt2)
-
-pred.curve2 <- data.frame(
-  r.max_T = x.vals,
-  T.br = predict(fit2, newdata = data.frame(r.max_T = x.vals))
-)
-
-T_par <- ggplot(df.final, aes(x = r.max_T, y = T.br)) +  # Remove shape from aes() for regression
-  geom_point(aes(shape = as.factor(shape)), size = 2) +  # Keep shape only for points
-  geom_smooth(method = "lm", se = FALSE, color = "red", size = 1, linetype = "dashed") +  # Single regression
-  geom_line(data=pred.curve, aes(x=r.max_T, y= T.br), colour = "black", size=1) +
-  geom_line(data=pred.curve2, aes(x=r.max_T, y= T.br), colour="forestgreen", size = 1) +
-  labs(x = "Maximum exponential growth rate", 
-       y = "Thermal breadth", 
-       title = "Thermal performance") +
-  scale_shape_manual(values = c(16, 3)) +  # Keep custom shapes
-  geom_line(data = par.res.T, aes(x = r.max_T, y = T.br), color = "blue", size = 1) +  # Pareto frontier line
-  theme_classic() +
-  theme(legend.position = "none")  # Remove legend
-
-T_par # Raw pareto fronts.
-
-# We have our 2 fits, now I want to remove the top 25% of points
+# OK we have our PF, now we want to slice off the upper 75th quantile.
 
 df.filt <- df.filt %>% # Scale the data
   mutate(
@@ -1010,7 +1135,7 @@ df.filt <- df.filt %>% # Scale the data
 x.ref <- min(df.filt$z.x, na.rm = TRUE) # Min x
 y.ref <- min(df.filt$z.y, na.rm = TRUE) # Min y
 
-df.filt3 <- df.filt %>% # Filter out based on Euclidean distance from min
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
   mutate(
     distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2)
   ) %>%
@@ -1018,42 +1143,45 @@ df.filt3 <- df.filt %>% # Filter out based on Euclidean distance from min
   slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
   select(-distance)
 
-par.res.T2 <- par_frt(df.filt3, xvar = "r.max_T", yvar = "T.br") # Pareto frontier on this data
+par.res.T3 <- par_frt(df.filt2, xvar = "r.max_T", yvar = "T.br") # Pareto frontier on this data
 
-fit3 <- scam(T.br ~ s(r.max_T, bs = "mpd", k = 5), data = par.res.T2) # Model fit
+buff.pts <- data.frame() # This will hold our extra data to potentially add
 
-pred.curve3 <- data.frame( # predicted data frame
+for (i in 1:(nrow(par.res.T3) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.T$r.max_T.z[i]
+  y1 <- par.res.T$T.br.z[i]
+  x2 <- par.res.T$r.max_T.z[i + 1]
+  y2 <- par.res.T$T.br.z[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.T$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(r.max_T.z, T.br.z, x1, y1, x2, y2),
+      in_x_range = between(r.max_T.z, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(T.br.z, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.T4 <- bind_rows(par.res.T3, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit2 <- scam(T.br ~ s(r.max_T, bs = "mpd", k = 6), data = par.res.T4) # Model fit
+
+pred.curve.t2 <- data.frame( # predicted data frame
   r.max_T = x.vals,
-  T.br = predict(fit3, newdata = data.frame(r.max_T = x.vals))
-)
-
-pred.curve3$threshold <- pred.curve3$T.br - pred.curve3$T.br * buffer # predicted threshold
-
-df.filt3$closest_idx <- sapply(df.filt3$r.max_T, function(x) { # Get closest ID
-  which.min(abs(pred.curve3$r.max_T - x))
-})
-
-df.filt3$predicted_T.br <- pred.curve3$T.br[df.filt3$closest_idx] # Get corresponding predicted T.br
-df.filt3$threshold <- pred.curve3$threshold[df.filt3$closest_idx] # Associated threshold
-
-df.filt3$within_band <- df.filt3$T.br >= df.filt3$threshold # Label based on proximity to PF
-df.filt4 <- df.filt3[df.filt3$within_band, ] # Filter to include only close points
-
-fit4 <- scam(T.br ~ s(r.max_T, bs = "mpd", k = 6), data = df.filt4) # Model PF on that
-
-pred.curve4 <- data.frame( # assemble a dataframe
-  r.max_T = x.vals,
-  T.br = predict(fit4, newdata = data.frame(r.max_T = x.vals))
+  T.br = predict(fit2, newdata = data.frame(r.max_T = x.vals))
 )
 
 T.scam <- ggplot(df.filt, aes(x = r.max_T, y = T.br, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.t, aes(x = r.max_T, y = T.br), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  # geom_line(data = pred.curve2, aes(x = r.max_T, y = T.br), color = "black", size = 1.1, inherit.aes = FALSE) +
-  geom_line(data = pred.curve3, aes(x = r.max_T, y = T.br), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
-  # geom_line(data = pred.curve4, aes(x = r.max_T, y = T.br), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
-  
+  geom_line(data = pred.curve.t2, aes(x = r.max_T, y = T.br), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+
   labs(x = "Maximum exponential growth rate (µ max)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
@@ -1092,9 +1220,6 @@ T.scam.PF <- ggplot(df.filt, aes(x = r.max_T, y = T.br, color = evol.plt, shape 
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.t, aes(x = r.max_T, y = T.br), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  # geom_line(data = pred.curve2, aes(x = r.max_T, y = T.br), color = "black", size = 1.1, inherit.aes = FALSE) +
-  # geom_line(data = pred.curve3, aes(x = r.max_T, y = T.br), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
-  # geom_line(data = pred.curve4, aes(x = r.max_T, y = T.br), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Maximum exponential growth rate (µ max)",    
        y = "Thermal breadth (°C)", 
@@ -1132,28 +1257,56 @@ T.scam.PF  # Display the plot
 
 # Quadrant-based statistical testing
 
-x.thresh.t <- mean(df.final$r.max_T)
-y.thresh.t <- mean(df.final$T.br)
+x.thresh.t <- mean(df.filt$r.max_T)
+y.thresh.t <- mean(df.filt$T.br)
 
-obs.cnt.t <- df.final %>%
-  filter(r.max_T > x.thresh.t, T.br > y.thresh.t) %>%
+obs.cnt.t <- df.filt %>%
+  filter(z.x > 0, z.y > 0) %>%
   nrow()
 
 null.counts.t <- replicate(1000, {
-  shuffled.df <- df.final %>%
-    mutate(r.max_T = sample(r.max_T, rep= F),
-           T.br = sample(T.br, rep = F))
+  shuffled.df <- df.filt %>%
+    mutate(z.x = sample(z.x, rep= F),
+           z.y = sample(z.y, rep = F))
   
-  sum(shuffled.df$r.max_T > x.thresh.t & shuffled.df$T.br > y.thresh.t)
+  sum(shuffled.df$z.x > 0 & shuffled.df$z.y > 0)
 })
 
 p.val.t.quad <- mean(null.counts.t >= obs.cnt.t)
-p.val.t.quad # 0.896
+p.val.t.quad # 0.899
 
 ###### Light ######
 
 df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
                             ifelse(df.final$evol == "L", 'light', 'other')) # for testing regressions.
+
+df.filt <- df.final %>% 
+  mutate(
+    z.y = scale(I.comp)[, 1],
+    z.x = scale(r.max_I)[, 1]
+  ) # Add in scaled data for outlier detection, Pareto point addition, and 75th quantile calculation
+
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(T.br.z)) %>% slice_head(n = 3),
+      arrange(., T.br.z) %>% slice_head(n = 3),
+      arrange(., desc(r.max_T.z)) %>% slice_head(n = 3),
+      arrange(., r.max_T.z) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+df.filt <- df.filt %>% 
+  filter(abs(T.br.z) < 6, abs(r.max_T.z) < 6) # Error trimming
+
+df.filt <- df.filt %>% 
+  mutate(
+    T.br.z = scale(T.br)[, 1],
+    r.max_T.z = scale(r.max_T)[, 1]
+  ) # Recalculate after removing errors
+
+par.res.T <- par_frt(df.filt, xvar = "r.max_T", yvar = "T.br") # Get the raw Pareto Front
 
 df.filt <- df.final[df.final$I.comp <10, ] # Filter out extreme outliers
 
