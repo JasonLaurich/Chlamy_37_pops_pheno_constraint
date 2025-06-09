@@ -2249,7 +2249,7 @@ S.scam.PF <- ggplot(df.filt, aes(x = r.max_S, y = S.c.mod, color = evol.plt, sha
 S.scam.PF  # Display the plot
 
 df.filt <- df.filt %>%
-  mutate(par.stat = if_else(Pop.fac %in% par.res.P2$Pop.fac, "Y", "N"))
+  mutate(par.stat = if_else(Pop.fac %in% par.res.P$Pop.fac, "Y", "N"))
 
 p.par <- ggplot(df.filt, aes(x = r.max_P, y = P.comp, colour = par.stat)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 2, stroke = 1.5) +  # Scatter plot of raw data
