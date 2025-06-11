@@ -306,8 +306,6 @@ Thigh <- uniroot(lactin2_halfmax, interval = c(T_opt, Tmax), cf.a = cf.a,
 
 ############# Fit TPCs and save the summary statistics #######################
 
-r <- sample(1:194, 12, rep = F) # OK so for these ID's, we're going to save them and plot them
-
 thomas.summ.df <- data.frame(   # We'll create a dataframe to store the data as we fit models.
   Pop.id = numeric(),       # Population id
   DIC = numeric(),          # DIC
@@ -328,25 +326,52 @@ fit.df <- data.frame(       # Save model fit estimates for examination
   stringsAsFactors = FALSE            
 )
 
-plot.list <- list() # Initialize a plot list to save things to (for pops j)
-
 # Let's do larger models for the final things (10 times larger)
 ni.fit <- 330000    # iterations / chain
 nb.fit <- 30000     # burn in periods for each chain
 nt.fit <- 300       # thinning interval : (330,000 - 30,000) / 300 = 1000 posterior estimates / chain
 nc.fit <- 3         # number of chains, total of 3,000 estimates for each model. 
 
-# I need to run this in chunks so that I can save the output periodically. Read the follow files to get the dfs we can add to.
+parameters.lactin2 <- c("cf.a", "cf.b", "cf.tmax", "cf.delta_t", "cf.sigma", "r.pred") # repeated here
 
-thomas.summ.df <- read.csv("data-processed/17_Thomas2012_TPCs.csv") # TPC parameters
-fit.df <- read.csv("data-processed/17a_Thomas2012_TPCs_fits.csv")   # Model fit details
+inits.lactin.cust<- function() { # Pulling initial values centres from the start_vals function in rTPC
+  list(
+    cf.a = rnorm(1, mean = start.vals.lac[1], sd = 0.05),
+    cf.tmax = rnorm(1, mean = start.vals.lac[3], sd = 1),
+    cf.delta_t = rnorm(1, mean = start.vals.lac[4], sd = 1),
+    cf.b = rnorm(1, mean = start.vals.lac[2], sd = 0.05),
+    cf.sigma = runif(1, 0.1, 2)
+  )
+}
 
-for (i in 188:194){
+for (i in 154:194){ # For each species
   
-  df.i <- subset(mat[[i]])
+  df.i <- df %>%
+    filter(id.number == i, !is.na(Growth.rate)) %>% 
+    arrange(Temperature)
+  
+  max.temp <- max(df.i$Temperature, na.rm = TRUE)
+  temp.at.max.growth <- df.i$Temperature[which.max(df.i$Growth.rate)]
+  
+  if (temp.at.max.growth == max.temp) {
+    new_row <- df.i %>%
+      filter(Temperature == max.temp) %>%
+      mutate(
+        Temperature = max.temp + 5,
+        Growth.rate = 0
+      )
+    
+    df.i <- bind_rows(df.i, new_row)
+  }
+  
   
   trait <- df.i$Growth.rate     # format the data for jags
   N.obs <- length(trait)
+  temp <- df.i$Temperature
+  
+  Temp.xs <- seq(min(df.i$Temperature) - 5, max(df.i$Temperature) + 5, 0.1) # Temperature gradient we're interested in - upped the granularity here
+  N.Temp.xs <-length(Temp.xs) # We'll reset this internally since the gradient varies substantially
+  
   temp <- df.i$Temperature
   
   jag.data <- list(trait = trait, N.obs = N.obs, temp = temp, Temp.xs = Temp.xs, N.Temp.xs = N.Temp.xs)
@@ -355,7 +380,7 @@ for (i in 188:194){
   
   lac_jag <- jags(
     data = jag.data, 
-    inits = inits.lactin.thomas.cust, 
+    inits = inits.lactin.cust, 
     parameters.to.save = parameters.lactin2, 
     model.file = "lactin2_thomas.txt",
     n.thin = nt.fit, 
@@ -366,31 +391,13 @@ for (i in 188:194){
     working.directory = getwd()
   ) # ~ 10 min to run?
   
+  print(paste("Done", i, "of 194"))
+  
   df.jags <- data.frame(lac_jag$BUGSoutput$summary)[-c(1:6),]   # generate the sequence of r.pred values
-  df.jags$temp <- seq(-5, 45, 0.1)
+  df.jags$temp <- seq(min(df.i$Temperature) - 5, max(df.i$Temperature) + 5, 0.1)
   
-  if(i %in% r){
-    
-    save(lac_jag, file = paste0("R2jags-objects/thomas2012_pop_", i, "_lactin2.RData")) # save the lactin2 model
-    
-    p <- ggplot(data = df.jags, aes(x = temp)) +
-      geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "gold", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
-      geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
-      geom_point(data = df.i, aes(x = jitter(Temperature, 0.5), y = Growth.rate), color = "grey9", size = 2) + # Add observed data points with jitter for Temp
-      scale_x_continuous(limits = c(-5, 45)) + 
-      scale_y_continuous(limits = c(-2, 5)) + # Customize the axes and labels +
-      labs(
-        x = expression(paste("Temperature (", degree, "C)")),
-        y = "Growth rate") +
-      theme_classic() +
-      geom_hline(yintercept = 0)
-    
-    plot.list[[paste0("Population_", j)]] <- p
-    
-  }
-  
-  thomas.summ.df <- rbind(thomas.summ.df, data.frame(                                  # Add summary data
-    Pop.id = i,                                                                        # Population name 
+  thomas.summ.df <- rbind(thomas.summ.df, data.frame(                        # Add summary data
+    Sp.id = i,                                                                         # Species name 
     DIC = lac_jag$BUGSoutput$DIC,                                                      # DIC
     T.min.raw = df.jags$temp[min(which(df.jags$mean > 0))],                            # Minimum T
     T.max.raw = df.jags$temp[max(which(df.jags$mean > 0))],                            # Maximum T
@@ -402,7 +409,7 @@ for (i in 188:194){
   
   for (j in 1:6){
     fit.df <- rbind(fit.df, data.frame(                         # Model performance data
-      Pop.id = i,                                               # Population id       
+      Sp.id = i,                                                # Species id   
       Parameter = rownames(lac_jag$BUGSoutput$summary)[j],      # Model parameter (e.g. cf.a, cf.tmax, etc.)
       mean = lac_jag$BUGSoutput$summary[j,1],                   # Posterior mean
       Rhat = lac_jag$BUGSoutput$summary[j,8],                   # Rhat values
@@ -417,7 +424,8 @@ write.csv(fit.df, "data-processed/17a_Thomas2012_TPCs_fits.csv") # Save model fi
 
 ################### Examining the summary data ################################################
 
-# OK the plot.list didn't work, let's upload the objects we saved and plot them. 
+thomas.summ.df <- read.csv("data-processed/17_Thomas2012_TPCs.csv") # TPC parameters
+fit.df <- read.csv("data-processed/17a_Thomas2012_TPCs_fits.csv")   # Model fit details
 
 # How do these estimates compare to those calculated and presented by Thomas et al in their supplement?
 # Let's compare Tbr to niche breadth. 

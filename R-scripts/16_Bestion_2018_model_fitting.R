@@ -84,20 +84,32 @@ inits.lactin.cust<- function() { # Pulling initial values centres from the start
   )
 }
 
-Temp.xs <- seq(-5, 45, 0.1) # Temperature gradient we're interested in - upped the granularity here
-N.Temp.xs <-length(Temp.xs)
-
-# Scenedesmus isn't working for some reason, so we'll skip to Raphidocelis
-
-i <- 'Raphidocelis'
-
 for (i in unique(df.t.p30$Sp.fac)){ # Most species don't have a rich enough dataset at P50, so we're starting with 30
   
-  df.i <- df.t.p30[df.t.p30$Sp.fac == i, ]
+  df.i <- df.t.p30 %>%
+    filter(Sp.fac == i, !is.na(mu)) %>% 
+    arrange(Temperature_c)
   
-  trait <- df.i$mu      # format the data for jags
+  max.temp <- max(df.i$Temperature_c, na.rm = TRUE)
+  temp.at.max.growth <- df.i$Temperature_c[which.max(df.i$mu)]
+  
+  if (temp.at.max.growth == max.temp) {
+    new_row <- df.i %>%
+      filter(Temperature_c == max.temp) %>%
+      mutate(
+        Temperature_c = max.temp + 5,
+        mu = 0
+      )
+    
+    df.i <- bind_rows(df.i, new_row)
+  }
+  
+  trait <- df.i$mu     # format the data for jags
   N.obs <- length(trait)
   temp <- df.i$Temperature_c
+  
+  Temp.xs <- seq(min(df.i$Temperature_c) - 5, max(df.i$Temperature_c) + 5, 0.1) # Temperature gradient we're interested in - upped the granularity here
+  N.Temp.xs <-length(Temp.xs) # We'll reset this internally since the gradient varies substantially
   
   jag.data <- list(trait = trait, N.obs = N.obs, temp = temp, Temp.xs = Temp.xs, N.Temp.xs = N.Temp.xs)
   
@@ -116,13 +128,14 @@ for (i in unique(df.t.p30$Sp.fac)){ # Most species don't have a rich enough data
     working.directory = getwd()
   ) # ~ 10 min to run?
   
-  df.jags <- data.frame(lac_jag$BUGSoutput$summary)[-c(1:6),]   # generate the sequence of r.pred values
-  df.jags$temp <- seq(-5, 45, 0.1)
+  print(paste("Done", i))
   
-  bestion.summ.df <- rbind(bestion.summ.df, data.frame(                                # Add summary data
+  df.jags <- data.frame(lac_jag$BUGSoutput$summary)[-c(1:6),]   # generate the sequence of r.pred values
+  df.jags$temp <- seq(min(df.i$Temperature_c) - 5, max(df.i$Temperature_c) + 5, 0.1)
+  
+  bestion.summ.df <- rbind(bestion.summ.df, data.frame(                        # Add summary data
     Sp.id = i,                                                                         # Species name 
     DIC = lac_jag$BUGSoutput$DIC,                                                      # DIC
-    P.conc = 30,                                                                       # Phosphorous concentration
     T.min.raw = df.jags$temp[min(which(df.jags$mean > 0))],                            # Minimum T
     T.max.raw = df.jags$temp[max(which(df.jags$mean > 0))],                            # Maximum T
     T.br.raw = df.jags$temp[max(which(df.jags$mean > (max(df.jags$mean) / 2)))] - 
@@ -134,7 +147,6 @@ for (i in unique(df.t.p30$Sp.fac)){ # Most species don't have a rich enough data
   for (j in 1:6){
     fit.df <- rbind(fit.df, data.frame(                         # Model performance data
       Sp.id = i,                                                # Species id   
-      P.conc = 30,                                              # Phosphorous
       Parameter = rownames(lac_jag$BUGSoutput$summary)[j],      # Model parameter (e.g. cf.a, cf.tmax, etc.)
       mean = lac_jag$BUGSoutput$summary[j,1],                   # Posterior mean
       Rhat = lac_jag$BUGSoutput$summary[j,8],                   # Rhat values
@@ -149,7 +161,7 @@ write.csv(fit.df, "data-processed/18b_Bestion2018_TPCs_fits.csv") # Save model f
 
 #################### Run the Monod curves for P ##############################
 
-inits.monod <- function() { # In case I want to play with these in the future
+inits.monod <- function() { # Set the initial values for our Monod curve
   list(
     r_max = runif(1, 0.1, 5), # Initial guess for r_max
     K_s = runif(1, 0.1, 5),   # Initial guess for K_s
@@ -157,13 +169,7 @@ inits.monod <- function() { # In case I want to play with these in the future
   )
 }
 
-parameters.monod <- c("r_max", "K_s", "sigma", "r_pred_new") # Model parameters
-
-# Repeat these here so that I can run this section independently.
-ni.fit <- 330000    # iterations / chain
-nb.fit <- 30000     # burn in periods for each chain
-nt.fit <- 300       # thinning interval : (330,000 - 30,000) / 300 = 1000 posterior estimates / chain
-nc.fit <- 3         # number of chains, total of 3,000 estimates for each model. 
+parameters.monod <- c("r_max", "K_s", "sigma", "r_pred_new") # Save these
 
 bestion.summ.P.df <- data.frame(   # We'll create a dataframe to store the data as we fit models.
   Sp.id = numeric(),        # Species ID
@@ -187,62 +193,65 @@ fit.P.df <- data.frame(     # Save model fit estimates for examination
   stringsAsFactors = FALSE            
 )
 
-S.pred <- seq(0, 50, 0.1) # Phosphorous gradient we are interested in here (concentration) - we'll keep N.S.pred consistent across abiotic gradients for now
-N.S.pred <-length(S.pred) # Knock this down to 500 levels for the interspecific data sets too. 
-
-i <- 'Raphidocelis' # For testing
-
-for (i in unique(df.t20$Sp.fac)){ # For each species, data at 20 C
+for (i in unique(df.t20$Sp.fac)){ # For each species
   
-  df.i <- df.t20[df.t20$Sp.fac == i, ]
+  df.i <- df %>%
+    filter(Sp.fac == i, !is.na(growth.rate)) %>%
+    arrange(Phosphate_c)
+    
+    trait <- df.i$mu      # format the data for jags
+    N.obs <- length(trait)
+    phos <- df.i$Phosphate_c
+    
+    S.pred <- seq(min(df.i$Phosphate_c) - 5, max(df.i$Phosphate_c) + 5, 0.1) # Phosphate gradient we're interested in - upped the granularity here
+    S.pred <- S.pred[S.pred >= 0]  # Cut off values below 0
+    N.S.pred <-length(S.pred) # We'll reset this internally since the gradient varies substantially
   
-  trait <- df.i$mu      # format the data for jags
-  N.obs <- length(trait)
-  phos <- df.i$Phosphate_c
-  
-  jag.data <- list(trait = trait, N.obs = N.obs, S = phos, S.pred = S.pred, N.S.pred = N.S.pred)
-  
-  monod_jag <- jags( # Run the phosphorous Monod function. 
-    data = jag.data,
-    inits = inits.monod,
-    parameters.to.save = parameters.monod,
-    model.file = "monod.txt",
-    n.thin = nt.fit,
-    n.chains = nc.fit,
-    n.burnin = nb.fit,
-    n.iter = ni.fit,
-    DIC = TRUE,
-    working.directory = getwd()
-  )
-  
-  df.jags <- data.frame(monod_jag$BUGSoutput$summary)[-c(1:3,505),]   # generate the sequence of r.pred values
-  df.jags$phos <- seq(0, 50, 0.1)
-  
-  bestion.summ.P.df <- rbind(bestion.summ.P.df, data.frame(                                     # Add summary data
-    Sp.id = i,                                                                                  # Species name 
-    DIC = monod_jag$BUGSoutput$DIC,                                                             # DIC
-    Temp = 20,                                                                                  # Temperature
-    K.s = monod_jag$BUGSoutput$summary[1,1],                                                    # Half-saturation constant
-    r.max = monod_jag$BUGSoutput$summary[3,1],                                                  # Maximum population growth rate
-    R.jag = df.jags$phos[which(df.jags$mean > 0.56)[1]],                                        # Minimum resource requirement for positive growth (from jags model)
-    R.mth = 0.56*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.56)   # Minimum resource requirement for positive growth (from math)                                                   
-  ))
-  
-  phos_sum <- monod_jag$BUGSoutput$summary[c(1:3, 505),] # Have to create a new frame for summaries (not listed 1 to 6)
-  
-  for (j in 1:4){
-    fit.P.df <- rbind(fit.P.df, data.frame(      # Model performance data
-      Grad = "Phosphorous limitation",         # Abiotic gradient
-      Sp.id = i,                               # Species       
-      Temp = 20,                               # Temperature
-      Parameter = rownames(phos_sum)[j],       # Model parameter (e.g. K_s, r_max, etc.)
-      mean = phos_sum[j,1],                    # Posterior mean
-      Rhat = phos_sum[j,8],                    # Rhat values
-      n.eff = phos_sum[j,9]                  # Sample size estimates (should be ~3000)
+    jag.data <- list(trait = trait, N.obs = N.obs, S = phos, S.pred = S.pred, N.S.pred = N.S.pred)
+    
+    monod_jag <- jags( # Run the light Monod function. 
+      data = jag.data,
+      inits = inits.monod,
+      parameters.to.save = parameters.monod,
+      model.file = "monod.txt",
+      n.thin = nt.fit,
+      n.chains = nc.fit,
+      n.burnin = nb.fit,
+      n.iter = ni.fit,
+      DIC = TRUE,
+      working.directory = getwd()
+    )
+    
+    print(paste("Done", i))
+    
+    df.jags <- data.frame(monod_jag$BUGSoutput$summary)[-c(1:3, (max(df.i$Phosphate_c) - S.pred[1])/0.5 + 9),]   # generate the sequence of r.pred values
+    df.jags$phos <- seq(S.pred[1], max(df.i$Phosphate_fact) + 5, 0.1)
+    
+    bestion.summ.P.df <- rbind(bestion.summ.P.df, data.frame(                                   # Add summary data
+      Sp.id = i,                                                                                # Species name 
+      DIC = monod_jag$BUGSoutput$DIC,                                                           # DIC
+      Temp = 20,                                                                                # Temperature
+      K.s = monod_jag$BUGSoutput$summary[1,1],                                                  # Half-saturation constant
+      r.max = monod_jag$BUGSoutput$summary[3,1],                                                # Maximum population growth rate
+      R.jag = df.jags$phos[which(df.jags$mean > 0.1)[1]],                                      # Minimum resource requirement for positive growth (from jags model)
+      R.mth = 0.1*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.1)   # Minimum resource requirement for positive growth (from math)
     ))
-  }
-  
-}  
+    
+    phos_sum <- monod_jag$BUGSoutput$summary[c(1:3, (max(df.i$Phosphate_c) - S.pred[1])/0.5 + 9),] # Have to create a new frame for summaries (not listed 1 to 6)
+    
+    for (j in 1:4){
+      fit.P.df <- rbind(fit.P.df, data.frame(      # Model performance data
+        Grad = "Phosphorous limitation",         # Abiotic gradient
+        Sp.id = i,                               # Species       
+        Temp = 20,                               # Temperature
+        Parameter = rownames(phos_sum)[j],       # Model parameter (e.g. K_s, r_max, etc.)
+        mean = phos_sum[j,1],                    # Posterior mean
+        Rhat = phos_sum[j,8],                    # Rhat values
+        n.eff = phos_sum[j,9]                  # Sample size estimates (should be ~3000)
+      ))
+      
+    }
+}
 
 write.csv(bestion.summ.P.df, "data-processed/18c_Bestion2018_P_Monodss.csv") # Save Bestion 2018 TPC summary table
 write.csv(fit.P.df, "data-processed/18d_Bestion2018_P_Monods_fits.csv") # Save model fit summary table
