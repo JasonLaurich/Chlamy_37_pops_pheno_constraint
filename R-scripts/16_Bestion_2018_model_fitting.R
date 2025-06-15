@@ -195,8 +195,8 @@ fit.P.df <- data.frame(     # Save model fit estimates for examination
 
 for (i in unique(df.t20$Sp.fac)){ # For each species
   
-  df.i <- df %>%
-    filter(Sp.fac == i, !is.na(growth.rate)) %>%
+  df.i <- df.t20 %>%
+    filter(Sp.fac == i, !is.na(mu)) %>%
     arrange(Phosphate_c)
     
     trait <- df.i$mu      # format the data for jags
@@ -209,7 +209,7 @@ for (i in unique(df.t20$Sp.fac)){ # For each species
   
     jag.data <- list(trait = trait, N.obs = N.obs, S = phos, S.pred = S.pred, N.S.pred = N.S.pred)
     
-    monod_jag <- jags( # Run the light Monod function. 
+    monod_jag <- jags( # Run the phosphorous Monod function. 
       data = jag.data,
       inits = inits.monod,
       parameters.to.save = parameters.monod,
@@ -225,7 +225,7 @@ for (i in unique(df.t20$Sp.fac)){ # For each species
     print(paste("Done", i))
     
     df.jags <- data.frame(monod_jag$BUGSoutput$summary)[-c(1:3, (max(df.i$Phosphate_c) - S.pred[1])/0.5 + 9),]   # generate the sequence of r.pred values
-    df.jags$phos <- seq(S.pred[1], max(df.i$Phosphate_fact) + 5, 0.1)
+    df.jags$phos <- seq(S.pred[1], max(df.i$Phosphate_c) + 5, 0.1)
     
     bestion.summ.P.df <- rbind(bestion.summ.P.df, data.frame(                                   # Add summary data
       Sp.id = i,                                                                                # Species name 
@@ -237,7 +237,7 @@ for (i in unique(df.t20$Sp.fac)){ # For each species
       R.mth = 0.1*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.1)   # Minimum resource requirement for positive growth (from math)
     ))
     
-    phos_sum <- monod_jag$BUGSoutput$summary[c(1:3, (max(df.i$Phosphate_c) - S.pred[1])/0.5 + 9),] # Have to create a new frame for summaries (not listed 1 to 6)
+    phos_sum <- monod_jag$BUGSoutput$summary[c(1:3, (max(df.i$Phosphate_c) - S.pred[1])/0.1 + 9),] # Have to create a new frame for summaries (not listed 1 to 6)
     
     for (j in 1:4){
       fit.P.df <- rbind(fit.P.df, data.frame(      # Model performance data
@@ -253,5 +253,5 @@ for (i in unique(df.t20$Sp.fac)){ # For each species
     }
 }
 
-write.csv(bestion.summ.P.df, "data-processed/18c_Bestion2018_P_Monodss.csv") # Save Bestion 2018 TPC summary table
+write.csv(bestion.summ.P.df, "data-processed/18c_Bestion2018_P_Monods.csv") # Save Bestion 2018 TPC summary table
 write.csv(fit.P.df, "data-processed/18d_Bestion2018_P_Monods_fits.csv") # Save model fit summary table

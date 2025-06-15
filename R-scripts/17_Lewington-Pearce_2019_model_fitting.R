@@ -198,16 +198,31 @@ inits.lactin.cust<- function() { # Pulling initial values centres from the start
   )
 }
 
-Temp.xs <- seq(-5, 45, 0.1) # Temperature gradient we're interested in - upped the granularity here
-N.Temp.xs <-length(Temp.xs)
-
 for (i in unique(df.r.exp$Sp.id)){ # For each species
   
   df.i <- df.r.exp %>% 
-    filter(Sp.id == i, !is.na(r.exp))
+    filter(Sp.id == i, !is.na(r.exp)) %>% 
+    arrange(temperature)
+  
+  max.temp <- max(df.i$temperature, na.rm = TRUE)
+  temp.at.max.growth <- df.i$temperature[which.max(df.i$r.exp)]
+  
+  if (temp.at.max.growth == max.temp) {
+    new_row <- df.i %>%
+      filter(temperature == max.temp) %>%
+      mutate(
+        temperature = max.temp + 5,
+        r.exp = 0
+      )
+    
+    df.i <- bind_rows(df.i, new_row)
+  }
   
   trait <- df.i$r.exp     # format the data for jags
   N.obs <- length(trait)
+  
+  Temp.xs <- seq(min(df.i$temperature) - 5, max(df.i$temperature) + 5, 0.1) # Temperature gradient we're interested in - upped the granularity here
+  N.Temp.xs <-length(Temp.xs) # We'll reset this internally since the gradient varies substantially
   
   temp <- df.i$temperature
   
@@ -228,10 +243,12 @@ for (i in unique(df.r.exp$Sp.id)){ # For each species
     working.directory = getwd()
   ) # ~ 10 min to run?
   
-  df.jags <- data.frame(lac_jag$BUGSoutput$summary)[-c(1:6),]   # generate the sequence of r.pred values
-  df.jags$temp <- seq(-5, 45, 0.1)
+  print(paste("Done", i))
   
-  lewington.summ.df <- rbind(lewington.summ.df, data.frame(                            # Add summary data
+  df.jags <- data.frame(lac_jag$BUGSoutput$summary)[-c(1:6),]   # generate the sequence of r.pred values
+  df.jags$temp <- seq(min(df.i$temperature) - 5, max(df.i$temperature) + 5, 0.1)
+  
+  lewington.summ.df <- rbind(lewington.summ.df, data.frame(                        # Add summary data
     Sp.id = i,                                                                         # Species name 
     DIC = lac_jag$BUGSoutput$DIC,                                                      # DIC
     T.min.raw = df.jags$temp[min(which(df.jags$mean > 0))],                            # Minimum T
@@ -389,12 +406,6 @@ fit.df <- data.frame(       # Save model fit estimates for examination
   stringsAsFactors = FALSE            
 )
 
-# Put these here too, in case we want to run this section separately
-ni.fit <- 330000    # iterations / chain
-nb.fit <- 30000     # burn in periods for each chain
-nt.fit <- 300       # thinning interval : (330,000 - 30,000) / 300 = 1000 posterior estimates / chain
-nc.fit <- 3         # number of chains, total of 3,000 estimates for each model. 
-
 inits.monod <- function() { # Set the initial values for our Monod curve
   list(
     r_max = runif(1, 0.1, 5), # Initial guess for r_max
@@ -405,24 +416,24 @@ inits.monod <- function() { # Set the initial values for our Monod curve
 
 parameters.monod <- c("r_max", "K_s", "sigma", "r_pred_new") # Save these
 
-S.pred <- seq(0, 1000, 0.5) # Nitrogen gradient we are interested in here (concentration)
-N.S.pred <-length(S.pred)   # We will keep this to also have 500 levels in the gradient?
-# This won't really work - the problem with nitrogen is the combination of wide range of []s and
-# fine-grained resolution at the lower end. We're going to estimate r every 0.5 so 2000 levels. 
-
 for (i in unique(df.r.exp.n$Sp.id)){ # For each species
   
-  df.i <- df.r.exp.n %>% 
-    filter(Sp.id == i, !is.na(r.exp))
+  df.i <- df.r.exp.n %>%
+    filter(Sp.id == i, !is.na(r.exp)) %>%
+    arrange(nit)
   
-  trait <- df.i$r.exp     # format the data for jags
+  trait <- df.i$r.exp    # format the data for jags
   N.obs <- length(trait)
   
   nit <- df.i$nit
   
+  S.pred <- seq(min(df.i$nit) - 50, max(df.i$nit) + 50, 1) # Nitrogen gradient we're interested in - upped the granularity here
+  S.pred <- S.pred[S.pred >= 0]  # Cut off values below 0
+  N.S.pred <-length(S.pred) # We'll reset this internally since the gradient varies substantially
+  
   jag.data <- list(trait = trait, N.obs = N.obs, S = nit, S.pred = S.pred, N.S.pred = N.S.pred)
   
-  monod_jag <- jags( # Run the phosphorous Monod function. 
+  monod_jag <- jags( # Run the light Monod function. 
     data = jag.data,
     inits = inits.monod,
     parameters.to.save = parameters.monod,
@@ -435,38 +446,33 @@ for (i in unique(df.r.exp.n$Sp.id)){ # For each species
     working.directory = getwd()
   )
   
-  df.jags <- data.frame(monod_jag$BUGSoutput$summary)[-c(1:3,2005),]   # generate the sequence of r.pred values
-  df.jags$nit <- seq(0, 1000, 0.5)
+  print(paste("Done", i))
+  
+  df.jags <- data.frame(monod_jag$BUGSoutput$summary)[-c(1:3, (max(df.i$nit) - S.pred[1])/1 + 50 + 4),]   # generate the sequence of r.pred values
+  df.jags$light <- seq(S.pred[1], max(df.i$nit) + 50, 1)
   
   lewington.summ.df.n <- rbind(lewington.summ.df.n, data.frame(                                 # Add summary data
     Sp.id = i,                                                                                  # Species name 
     DIC = monod_jag$BUGSoutput$DIC,                                                             # DIC
     K.s = monod_jag$BUGSoutput$summary[1,1],                                                    # Half-saturation constant
     r.max = monod_jag$BUGSoutput$summary[3,1],                                                  # Maximum population growth rate
-    R.jag = df.jags$nit[which(df.jags$mean > 0.56)[1]],                                        # Minimum resource requirement for positive growth (from jags model)
-    R.mth = 0.56*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.56)   # Minimum resource requirement for positive growth (from math)
+    R.jag = df.jags$light[which(df.jags$mean > 0.1)[1]],                                       # Minimum resource requirement for positive growth (from jags model)
+    R.mth = 0.1*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.1)   # Minimum resource requirement for positive growth (from math)
   ))
   
-  nit_sum <- monod_jag$BUGSoutput$summary[c(1:3, 2005),] # Have to create a new frame for summaries (not listed 1 to 6)
+  nit_sum <- monod_jag$BUGSoutput$summary[c(1:3, (max(df.i$nit) - S.pred[1])/1 + 50 + 4),] # Have to create a new frame for summaries (not listed 1 to 6)
   
   for (j in 1:4){
-    fit.df <- rbind(fit.df, data.frame(        # Model performance data
-      Sp.id = i,                               # Species       
-      Parameter = rownames(nit_sum)[j],        # Model parameter (e.g. K_s, r_max, etc.)
-      mean = nit_sum[j,1],                     # Posterior mean
-      Rhat = nit_sum[j,8],                     # Rhat values
-      n.eff = nit_sum[j,9]                     # Sample size estimates (should be ~3000)
+    fit.df <- rbind(fit.df, data.frame(          # Model performance data
+      Sp.id = i,                                 # Species       
+      Parameter = rownames(nit_sum)[j],          # Model parameter (e.g. K_s, r_max, etc.)
+      mean = nit_sum[j,1],                       # Posterior mean
+      Rhat = nit_sum[j,8],                       # Rhat values
+      n.eff = nit_sum[j,9]                       # Sample size estimates (should be ~3000)
     ))
-  
+    
   }
 }
-
-# These numbers seem suspect. Need to investigate further
-df.r.exp.n
-lewington.summ.df.n
-
-# There are no 0 N levels for most species, which means the growths are positive for many 
-# even at the lowest N levels. 
 
 write.csv(lewington.summ.df.n, "data-processed/19e_Lewington2019_Nit_Monods.csv") # Save Lewington-Pearce 2019 N Monod summary table
 write.csv(fit.df, "data-processed/19f_Lewington2019_Nit_Monod_fits.csv") # Save model fit summary table
@@ -601,34 +607,20 @@ fit.df <- data.frame(       # Save model fit estimates for examination
   stringsAsFactors = FALSE            
 )
 
-# Put these here too, in case we want to run this section separately
-ni.fit <- 330000    # iterations / chain
-nb.fit <- 30000     # burn in periods for each chain
-nt.fit <- 300       # thinning interval : (330,000 - 30,000) / 300 = 1000 posterior estimates / chain
-nc.fit <- 3         # number of chains, total of 3,000 estimates for each model. 
-
-inits.monod <- function() { # Set the initial values for our Monod curve
-  list(
-    r_max = runif(1, 0.1, 5), # Initial guess for r_max
-    K_s = runif(1, 0.1, 5),   # Initial guess for K_s
-    sigma = runif(1, 0.1, 1)  # Initial guess for error
-  )
-}
-
-parameters.monod <- c("r_max", "K_s", "sigma", "r_pred_new") # Save these
-
-S.pred <- seq(0, 150, 0.3) # Light gradient we are interested in here
-N.S.pred <-length(S.pred)   # We will keep this to also have 500 levels in the gradient?
-
 for (i in unique(df.r.exp.l$Sp.id)){ # For each species
   
   df.i <- df.r.exp.l %>% 
-    filter(Sp.id == i, !is.na(r.exp))
+    filter(Sp.id == i, !is.na(r.exp)) %>% 
+    arrange(light)
   
-  trait <- df.i$r.exp     # format the data for jags
+  trait <- df.i$r.exp    # format the data for jags
   N.obs <- length(trait)
   
   light <- df.i$light
+  
+  S.pred <- seq(min(df.i$light) - 5, max(df.i$light) + 5, 0.25) # Light gradient we're interested in - upped the granularity here
+  S.pred <- S.pred[S.pred >= 0]  # Cut off values below 0
+  N.S.pred <-length(S.pred) # We'll reset this internally since the gradient varies substantially
   
   jag.data <- list(trait = trait, N.obs = N.obs, S = light, S.pred = S.pred, N.S.pred = N.S.pred)
   
@@ -645,19 +637,21 @@ for (i in unique(df.r.exp.l$Sp.id)){ # For each species
     working.directory = getwd()
   )
   
-  df.jags <- data.frame(monod_jag$BUGSoutput$summary)[-c(1:3,505),]   # generate the sequence of r.pred values
-  df.jags$light <- seq(0, 150, 0.3)
+  print(paste("Done", i))
+  
+  df.jags <- data.frame(monod_jag$BUGSoutput$summary)[-c(1:3, (max(df.i$light) - S.pred[1])/0.25 + 5 + 4),]   # generate the sequence of r.pred values
+  df.jags$light <- seq(S.pred[1], max(df.i$light) + 5, 0.5)
   
   lewington.summ.df.l <- rbind(lewington.summ.df.l, data.frame(                                 # Add summary data
     Sp.id = i,                                                                                  # Species name 
     DIC = monod_jag$BUGSoutput$DIC,                                                             # DIC
     K.s = monod_jag$BUGSoutput$summary[1,1],                                                    # Half-saturation constant
     r.max = monod_jag$BUGSoutput$summary[3,1],                                                  # Maximum population growth rate
-    R.jag = df.jags$light[which(df.jags$mean > 0.56)[1]],                                       # Minimum resource requirement for positive growth (from jags model)
-    R.mth = 0.56*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.56)   # Minimum resource requirement for positive growth (from math)
+    R.jag = df.jags$light[which(df.jags$mean > 0.1)[1]],                                       # Minimum resource requirement for positive growth (from jags model)
+    R.mth = 0.1*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.1)   # Minimum resource requirement for positive growth (from math)
   ))
   
-  light_sum <- monod_jag$BUGSoutput$summary[c(1:3, 505),] # Have to create a new frame for summaries (not listed 1 to 6)
+  light_sum <- monod_jag$BUGSoutput$summary[c(1:3, (max(df.i$light) - S.pred[1])/0.25 + 5 + 4),] # Have to create a new frame for summaries (not listed 1 to 6)
   
   for (j in 1:4){
     fit.df <- rbind(fit.df, data.frame(          # Model performance data
@@ -670,13 +664,6 @@ for (i in unique(df.r.exp.l$Sp.id)){ # For each species
     
   }
 }
-
-# These numbers seem suspect. Need to investigate further
-df.r.exp.l
-lewington.summ.df.l
-
-# There are no 0 N levels for most species, which means the growths are positive for many 
-# even at the lowest N levels. 
 
 write.csv(lewington.summ.df.l, "data-processed/19h_Lewington2019_Light_Monods.csv") # Save Lewington-Pearce 2019 Light Monod summary table
 write.csv(fit.df, "data-processed/19i_Lewington2019_Light_Monod_fits.csv") # Save model fit summary table

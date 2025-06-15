@@ -37,17 +37,15 @@ inits.lactin.cust<- function() { # Pulling initial values centres from the start
   list(
     cf.a = rnorm(1, mean = start.vals.lac[1], sd = 0.05),
     cf.tmax = rnorm(1, mean = start.vals.lac[3], sd = 1),
-    cf.delta_t = start.vals.lac[4],                         # For now I changed this to deal with starting values of cf.delta_t too close to 0. Causing failure
+    cf.delta_t = rnorm(1, mean = start.vals.lac[4], sd = 1),
     cf.b = rnorm(1, mean = start.vals.lac[2], sd = 0.05),
     cf.sigma = runif(1, 0.1, 2)
   )
 }
 
-Temp.xs <- seq(-5, 45, 0.1) # Temperature gradient we're interested in - upped the granularity here
-N.Temp.xs <-length(Temp.xs)
-
 kontopoulos.summ.df <- data.frame(   # We'll create a dataframe to store the data as we fit models.
-  Sp.id = numeric(),                 # Species ID
+  Sp.id = numeric(),                 # Species ID (unique)
+  Sp.name = character(),             # Species name
   DIC = numeric(),                   # DIC
   T.min.raw = numeric(),             # Minimum T (Jags raw)
   T.max.raw = numeric(),             # Maximum T (Jags raw)
@@ -66,23 +64,40 @@ fit.df <- data.frame(       # Save model fit estimates for examination
   stringsAsFactors = FALSE            
 )
 
-for (i in unique(df$Sp.fac)){ # For each species
+df <- df %>%
+  mutate(unique.id = paste(Species_standardised, Reference, sep = "_")) # So that each entry is treated seperately!
+
+for (i in unique(df$unique.id)[686:length(unique(df$unique.id))]) { # This allows me to start part-way through the list
   
-  df.i <- df %>% 
-    filter(Sp.fac == i, !is.na(Trait_value))
+  df.i <- df %>%
+    filter(unique.id == i, !is.na(Trait_value)) %>%
+    arrange(Temperature)
+  
+  max.temp <- max(df.i$Temperature, na.rm = TRUE)
+  temp.at.max.growth <- df.i$Temperature[which.max(df.i$Trait_value)]
+  
+  if (temp.at.max.growth == max.temp) {
+    new_row <- df.i %>%
+      filter(Temperature == max.temp) %>%
+      mutate(
+        Temperature = max.temp + 5,
+        Trait_value = 0
+      )
+    
+    df.i <- bind_rows(df.i, new_row)
+  }
   
   trait <- df.i$Trait_value     # format the data for jags
   N.obs <- length(trait)
+  
+  Temp.xs <- seq(min(df.i$Temperature) - 5, max(df.i$Temperature) + 5, 0.1) # Temperature gradient we're interested in - upped the granularity here
+  N.Temp.xs <-length(Temp.xs) # We'll reset this internally since the gradient varies substantially
   
   temp <- df.i$Temperature
   
   jag.data <- list(trait = trait, N.obs = N.obs, temp = temp, Temp.xs = Temp.xs, N.Temp.xs = N.Temp.xs)
   
   start.vals.lac <- get_start_vals(df.i$Temperature, df.i$Trait_value, model_name = 'lactin2_1995')
-  
-  if (start.vals.lac["delta_t"] < 0.1) {
-    start.vals.lac["delta_t"] <- 0.1
-  }
   
   lac_jag <- jags(
     data = jag.data, 
@@ -97,11 +112,14 @@ for (i in unique(df$Sp.fac)){ # For each species
     working.directory = getwd()
   ) # ~ 10 min to run?
   
+  print(paste("Done", i))
+  
   df.jags <- data.frame(lac_jag$BUGSoutput$summary)[-c(1:6),]   # generate the sequence of r.pred values
-  df.jags$temp <- seq(-5, 45, 0.1)
+  df.jags$temp <- seq(min(df.i$Temperature) - 5, max(df.i$Temperature) + 5, 0.1)
   
   kontopoulos.summ.df <- rbind(kontopoulos.summ.df, data.frame(                        # Add summary data
-    Sp.id = i,                                                                         # Species name 
+    Sp.id = i,                                                                         # Species id (unique)
+    Sp.name = df.i$Species_standardised[1],                                            # Species name
     DIC = lac_jag$BUGSoutput$DIC,                                                      # DIC
     T.min.raw = df.jags$temp[min(which(df.jags$mean > 0))],                            # Minimum T
     T.max.raw = df.jags$temp[max(which(df.jags$mean > 0))],                            # Maximum T
@@ -121,6 +139,8 @@ for (i in unique(df$Sp.fac)){ # For each species
       stringsAsFactors = FALSE            
     ))
   }
+  
+  print(nrow(kontopoulos.summ.df))
 }
 
 write.csv(kontopoulos.summ.df, "data-processed/21a_Kontopoulos2020_TPCs.csv") # Save Kontopoulos 2020 TPC summary table

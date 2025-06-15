@@ -1,44 +1,669 @@
-"","Sp.id","DIC","T.min.raw","T.max.raw","T.br.raw","T.opt.raw","r.max.raw"
-"1","Actinocyclus octonarius",-88.1282959348181,4.7,30.9,16.5,29.1,5.34987552800498e-06
-"2","Actinoptychus senarius",-143.314228516338,-0.3,30.9,16.4,29.6,8.67880323232257e-06
-"3","Gymnodinium sanguineum",-3522.44198454713,4.7,34.6,19.8,24.2,4.03539953205912e-06
-"4","Alexandrium catenella",-301.099067277239,8.4,30.4,13.4,27.4,8.0650119557643e-06
-"5","Alexandrium catenella ",-60.7173776331496,9.7,16.1,4.5,13.3,3.00039703489722e-06
-"6","Alexandrium fundyense",-489.397513611451,1.6,24.4,14.7,17.1,3.39474775435262e-06
-"7","Alexandrium minutum",-201.2472969123,7,25.7,11.8,22.7,3.93361484768427e-06
-"8","Alexandrium monilatum",-189.835714283967,15.3,31.6,11.2,28.7,8.16275639575381e-06
-"9","Alexandrium ostenfeldii",-547.427697717587,8.8,26.3,11.8,20.9,2.29734603581052e-06
-"10","Amphidinium klebsii",-274.446635731163,16,36.5,13.7,29,3.42852902272235e-06
-"11","Amphidinium",-133.807573119823,4.4,35.5,19.7,29.1,5.32300443180149e-06
-"12","Amphiprora paludosa",-147.373951233491,1.1,30.7,14.1,27.5,2.15760882626935e-05
-"13","Amphiprora",-278.883880386884,11,34,15.1,30.1,8.80732482055396e-06
-"14","Dolichospermum flosaquae",-343.70623930432,-5,39.6,32.7,24.3,5.11337904026156e-06
-"15","Aphanizomenon flosaquae",-1647.79337810244,5,35.5,19.5,25.9,7.65103873641559e-06
-"16","Asterionella formosa",-1219.77414356981,-0.7,30.1,21.5,21.3,1.11869517758132e-05
-"17","Asterionellopsis glacialis",-1216.74039149583,-5,37.2,26.1,25.7,1.53602017351402e-05
-"18","Aulacoseira granulata",-191.383312117618,-0.5,30.8,15.7,29.2,1.03924389810142e-05
-"19","Odontella aurita",-340.088543471435,-5,20.1,16.3,12.4,1.011543160779e-05
-"20","Odontella regia",-45.7517682827904,4.8,25.8,14.6,17,8.34104880392175e-06
-"21","Odontella sinensis",-230.097636879679,-0.7,31.1,19.6,29.3,8.54794560894217e-06
-"22","Cyclococcolithus leptoporus",-279.266823450425,6.4,24.9,12.9,17,4.76747002016893e-06
-"23","Ceratium furca",-1018.68834400467,5.1,33.3,18.9,23,4.36437770855371e-06
-"24","Ceratium furcoides",-387.470198563905,8.8,30.1,14.5,21.7,2.3066914801614e-06
-"25","Ceratium fusus",-795.867634739014,6.7,32.1,15.7,26.4,4.14969838614381e-06
-"26","Chaetoceros calcitrans",-725.098934132411,4.5,29.3,15.1,25.6,2.59342656145841e-05
-"27","Chaetoceros curvisetum",249.992045885783,NA,NA,NA,17.8,-0.00884202448498519
-"28","Chaetoceros debilis",217.458574816313,NA,NA,NA,14.6,-0.010100804679687
-"29","Chaetoceros diadema",224.633770341186,NA,NA,NA,4.8,-0.00287409578017162
-"30","Chaetoceros gracilis",-883.718691885787,-0.199999999999999,36.5,20.5,30.8,2.2901172448137e-05
-"31","Chaetoceros pseudocurvisetus",-214.445275940141,13.4,34.8,14.2,27.2,1.69440951244117e-05
-"32","Chaetoceros simplex",-845.918831314204,6.3,26.3,10.9,25.5,2.28604227635663e-05
-"33","Chaetoceros",-1296.7726226796,-2.2,41.4,25.1,30,3.27809249310374e-05
-"34","Chaetoceros teres",192.131699464047,NA,NA,NA,9,-0.00395253788035792
-"35","Chattonella marina",-1149.4486183962,10.4,35,17,27.9,5.77722000727059e-06
-"36","Chlamydomonas alpina",-392.320969096399,0.300000000000001,19.8,13,12.7,8.02786021335556e-06
-"37","Chlamydomonas globosa",-363.363954998532,-1.2,20.9,12.3,20,1.46775583348697e-05
-"38","Chlamydomonas intermedia",-210.177428402552,-5,20,15.9,16.9,1.27620513155846e-05
-"39","Chlamydomonas subcaudata",-408.688504324908,-5,19.3,15.7,11.8,9.38899486335705e-06
-"40","Chlamydomonas",-366.208132314357,-5,30.1,33.5,18.2,4.67154071406279e-06
-"41","Chlorella ellipsoidea",-40.8814070488477,16.9,28.4,8.1,23.2,5.55636556356688e-06
-"42","Chlorella",-2055.73877438578,-5,39.4,39.6,19.4,6.82805640807268e-06
-"43","Chlorella pyrenoidosa",-187.457955204841,12.8,39.8,14,38.9,4.77698505913252e-05
+"","Sp.id","Sp.name","DIC","T.min.raw","T.max.raw","T.br.raw","T.opt.raw","r.max.raw"
+"1","Actinocyclus octonarius_Baars (1981)","Actinocyclus octonarius",-118.669808826701,4.8,35.1,20.5,29.5,6.69568354476432e-06
+"2","Actinoptychus senarius_Baars (1981)","Actinoptychus senarius",-162.889478935054,-0.899999999999999,35,19.8,29.9,8.59903682129178e-06
+"3","Gymnodinium sanguineum_Thomas et al. (1973)","Gymnodinium sanguineum",-411.342801579988,10.7,30.7,13.6,22.9,3.16720677857623e-06
+"4","Gymnodinium sanguineum_Boyd et al. (2013)","Gymnodinium sanguineum",-3166.74784670305,10,34.5,21.1,24.5,4.21102333286674e-06
+"5","Alexandrium catenella_Laabir et al. (2011)","Alexandrium catenella",-126.652043985849,10,32.7,16.6,23.2,7.46071422264659e-06
+"6","Alexandrium catenella _Navarro et al. (2006)","Alexandrium catenella ",15.7128289286172,8.9,15.1,4.4,12.2,0.000148317739158283
+"7","Alexandrium fundyense_Etheridge and Roesler (2005)","Alexandrium fundyense",-237.466581375565,1.7,25,15.5,16.7,3.26929071506154e-06
+"8","Alexandrium minutum_Cannon (1993)","Alexandrium minutum",-203.970075105443,7.7,28.2,12.8,22.1,3.9552897437515e-06
+"9","Alexandrium monilatum_Juhl (2005)","Alexandrium monilatum",-223.893846893052,10,36,16.1,33.7,6.61416663604136e-06
+"10","Alexandrium ostenfeldii_Jensen and Moestrup (1997)","Alexandrium ostenfeldii",-263.150042104461,8.8,26.3,12,20.9,2.25228995951471e-06
+"11","Amphidinium klebsii_Morton et al. (1992)","Amphidinium klebsii",-274.079420388672,15.7,36.5,13.6,29.2,3.41672642579748e-06
+"12","Amphidinium_Kitaya et al. (2008)","Amphidinium",-130.071260548907,16,36.8,18.8,28.5,5.29953509623901e-06
+"13","Amphiprora paludosa_Admiraal (1977)","Amphiprora paludosa",-151.951855144655,0.9,30.8,17.1,28.4,1.97997763652061e-05
+"14","Amphiprora_Hulburt (1982)","Amphiprora",-275.561446004351,9.4,34,16.5,27.4,8.06822348358479e-06
+"15","Dolichospermum flosaquae_Foy et al. (1976)","Dolichospermum flosaquae",-243.721704318201,2.5,28.9,17.6,19.6,6.29329244467532e-06
+"16","Aphanizomenon flosaquae_Foy et al. (1976)","Aphanizomenon flosaquae",-306.416202872555,2.5,34.6,19.7,25.3,1.16622428511346e-05
+"17","Asterionella formosa_Butterwick et al. (2005)","Asterionella formosa",-492.382464974174,-3,30,21.5,21.7,1.29118663442325e-05
+"18","Asterionella formosa_Suzuki and Takahashi (1995)","Asterionella formosa",-144.726000555189,0.2,30.1,19.1,21.2,1.35574822652353e-05
+"19","Asterionellopsis glacialis_Hulburt (1982)","Asterionellopsis glacialis",-915.496241098774,-4,34.5,24.7,32.4,1.51553155256012e-05
+"20","Aulacoseira granulata_Coles and Jones (2000)","Aulacoseira granulata",-91.7922153357344,10,34.9,16.1,27.2,9.80512628167113e-06
+"21","Odontella aurita_Baars (1981)","Odontella aurita",-153.979479609742,-5.1,20.2,16.8,11.7,9.97971522471745e-06
+"22","Odontella regia_Baars (1981)","Odontella regia",-39.9659556601307,6.9,25.5,12.8,18,9.58873886854755e-06
+"23","Odontella sinensis_Baars (1981)","Odontella sinensis",-88.191569633929,9.2,35.1,18.1,27.1,8.45213471014224e-06
+"24","Cyclococcolithus leptoporus_Buitenhuis et al. (2008)","Cyclococcolithus leptoporus",-279.28408384135,6,24.9,12.7,18.2,4.86879608956407e-06
+"25","Ceratium furca_Baek et al. (2008)","Ceratium furca",-603.342123121889,10,32,15.4,25,6.04896378359143e-06
+"26","Ceratium furca_Meeson and Sweeney (1982)","Ceratium furca",-49.0971683785263,NA,NA,NA,19.8,-1.52374407246097e-06
+"27","Ceratium furcoides_Butterwick et al. (2005)","Ceratium furcoides",-397.10714632717,8.7,30,14.3,22.4,2.37050575257962e-06
+"28","Ceratium fusus_Baek et al. (2008)","Ceratium fusus",-591.359721811729,8.6,31.9,14.9,27.4,4.96403343253385e-06
+"29","Chaetoceros calcitrans_Thompson et al. (1992)","Chaetoceros calcitrans",-391.804797383676,5.4,30,13.2,26.2,3.44833520067402e-05
+"30","Chaetoceros curvisetum_Reay et al. (1999)","Chaetoceros curvisetum",-41.5634205323813,12,23.1,7.8,18.3,5.71313269691005e-06
+"31","Chaetoceros debilis_Baars (1981)","Chaetoceros debilis",219.153933553072,NA,NA,NA,15.1,-0.011759948316432
+"32","Chaetoceros diadema_Baars (1981)","Chaetoceros diadema",-30.6100614701824,-1.2,11.1,8.6,6.1,1.24446381790178e-05
+"33","Chaetoceros gracilis_Thompson et al. (1992)","Chaetoceros gracilis",-424.802724683028,6.7,30,15.9,21,1.87105623688979e-05
+"34","Chaetoceros pseudocurvisetus_Suzuki and Takahashi (1995)","Chaetoceros pseudocurvisetus",-86.6001547836254,14.2,34.7,13.5,27.6,1.59260258025524e-05
+"35","Chaetoceros simplex_Montagnes and Franklin (2001)","Chaetoceros simplex",-181.994979109755,9.5,30,12.2,25.4,1.47368769428711e-05
+"36","Chaetoceros simplex_Thompson et al. (1992)","Chaetoceros simplex",-375.468800299765,6.9,30,13.7,24.8,2.60066706320727e-05
+"37","Chaetoceros_Lomas and Glibert (1999)","Chaetoceros",-81.1956314529462,1.3,25.2,14.3,20.6,1.20580487978818e-05
+"38","Chaetoceros_Renaud et al. (2002)","Chaetoceros",-91.0092782432066,20,37.4,15.8,30.7,1.00382016063037e-05
+"39","Chaetoceros_Suzuki and Takahashi (1995)","Chaetoceros",-97.7122037022944,-5,14.7,17.1,5.8,5.86946718351142e-06
+"40","Chaetoceros_Thomas (1966)","Chaetoceros",-697.442615229052,9.5,40,20.3,32.9,4.53918848389285e-05
+"41","Chaetoceros teres_Baars (1981)","Chaetoceros teres",-27.4103902227106,2.8,17.7,10.7,11.9,7.87883747740122e-05
+"42","Chattonella marina_Kahn (1998)","Chattonella marina",-256.031491552359,8.7,34.7,17.4,25.1,4.79062927729031e-06
+"43","Chattonella marina_Wang et al. (2011)","Chattonella marina",-98.2191573529996,12.6,30.7,13,26.7,2.4263130848805e-06
+"44","Chattonella marina_Nakamura (1983)","Chattonella marina",-353.175157540642,11,31,12.7,26.1,5.04989932184617e-06
+"45","Chlamydomonas alpina_Seaburg et al. (1981)","Chlamydomonas alpina",-388.026212451352,0.300000000000001,20.3,13.8,12,7.61078061089739e-06
+"46","Chlamydomonas globosa_Seaburg et al. (1981)","Chlamydomonas globosa",-362.317375358533,-2.3,21,12.2,19.7,1.46134087385817e-05
+"47","Chlamydomonas intermedia_Seaburg et al. (1981)","Chlamydomonas intermedia",-197.590307062514,-6,20.2,13.4,14.5,1.29842874464893e-05
+"48","Chlamydomonas subcaudata_Seaburg et al. (1981)","Chlamydomonas subcaudata",-398.88128174005,-6,19.4,16.5,12.9,9.14032107032358e-06
+"49","Chlamydomonas_Teoh et al. (2004)","Chlamydomonas",-291.693713850874,-1,30.4,27,11.9,3.62344264306723e-06
+"50","Chlorella ellipsoidea_Cho et al. (2007)","Chlorella ellipsoidea",-39.1918345050027,19.9,32,8.3,27.4,5.57191745620759e-06
+"51","Chlorella_James et al. (1989)","Chlorella",-962.906179444278,10,37.6,25,26.5,1.80174911524185e-06
+"52","Chlorella sorokiniana_Vona et al. (2004)","Chlorella sorokiniana",-73.8805931197754,15,38.7,19.4,28.8,2.66720656269184e-05
+"53","Chlorella_Teoh et al. (2004)","Chlorella",-143.152265779866,-1,30.6,27.7,23.1,3.32866088057935e-06
+"54","Chlorella vulgaris_Dauta et al. (1990)","Chlorella vulgaris",-264.6078174666,5,35.5,20.9,33.2,1.57618884927533e-05
+"55","Chlorella vulgaris_Mayo (1997)","Chlorella vulgaris",-297.202228469643,5,40.4,35.2,29.9,3.89688935899923e-06
+"56","Chroomonas salina_Hobson (1974)","Chroomonas salina",-75.9339713693345,5,30,19,22.2,2.10713150036736e-05
+"57","Prymnesium polylepis_Edvardsen (1992)","Prymnesium polylepis",-1205.31501928073,4,26.5,15.2,18.6,7.77046638853497e-06
+"58","Closterium acerosum_Moss (1973)","Closterium acerosum",-300.033855027003,0,30,21.1,19.3,2.34033848620574e-06
+"59","Closterium acutum_Coesel et al. (1990)","Closterium acutum",-143.573127173796,5.2,35,19.9,24,1.03014037061861e-05
+"60","Closterium limneticum_Coesel et al. (1990)","Closterium limneticum",-160.941550567986,7.5,35,17.9,30.6,8.29164776229839e-06
+"61","Coccolithus pelagicus_Buitenhuis et al. (2008)","Coccolithus pelagicus",-203.049019533656,1.2,23.4,14.5,16.2,4.61243976979845e-06
+"62","Pontosphaera huxleyi_Paasche (1967)","Pontosphaera huxleyi",-231.828114895787,9.9,27.2,12.1,22.2,1.33711301586842e-05
+"63","Cochlodinium polykrikoides_Kim et al. (2004)","Cochlodinium polykrikoides",-94.8899239451717,9.8,30.1,14.5,23.9,3.61479625361723e-06
+"64","Cochlodinium polykrikoides_Yamatogi (2005)","Cochlodinium polykrikoides",-2446.61895656559,10.1,30.5,11.3,28.8,6.68025584817777e-06
+"65","Coelastrum microporum_Bouterfas et al. (2002)","Coelastrum microporum",-114.277054148221,10,39.9,22.8,31.6,1.46919647519781e-05
+"66","Thalassiosira guillardii_Guillard & Ryther (1962)","Thalassiosira guillardii",-239.176791681135,-0.2,28,18.6,18.1,1.80420272197596e-05
+"67","Coolia monotis_Morton et al. (1992)","Coolia monotis",-194.638401572929,18,35.1,11.4,30.8,1.38674683953848e-06
+"68","Chaetoceros criophilus_Fiala & Oriol (1990)","Chaetoceros criophilus",-320.824354507758,-5,6.8,8.1,3.2,2.36126852493094e-06
+"69","Coscinodiscus concinnus_Baars (1981)","Coscinodiscus concinnus",-181.516975600051,-3.3,20.4,15.8,11.9,6.80688613262151e-06
+"70","Coscinodiscus granii_Baars (1981)","Coscinodiscus granii",-125.756064371325,2.4,35,20.1,25.8,8.69931012718212e-06
+"71","Coscinodiscus jonesianus_Baars (1981)","Coscinodiscus jonesianus",-39.5207802615058,7,32.9,17.7,23,9.14929566799173e-05
+"72","Coscinodiscus pavillardii_Baars (1981)","Coscinodiscus pavillardii",-4.8828980904956,18.6,32.3,9.5,26.4,4.34445557961088e-05
+"73","Actinocyclus normanii_Baars (1981)","Actinocyclus normanii",-84.7011637768494,11,34,21.3,26.5,3.75886915058149e-06
+"74","Coscinodiscus_Montagnes and Franklin (2001)","Coscinodiscus",-99.1109778761211,6.7,26.5,13.1,19.6,3.32947626247538e-06
+"75","Cosmarium abbreviatum_Coesel et al. (1990)","Cosmarium abbreviatum",-133.100200662753,6.1,30.6,17.6,24.7,5.10086562114647e-06
+"76","Cosmarium biretum_Coesel et al. (1990)","Cosmarium biretum",-163.173879959453,5,35,18.2,28.6,4.15087703298236e-06
+"77","Cosmarium botrytis_Moss (1973)","Cosmarium botrytis",-360.964339812983,-1,35,25.1,24.9,1.83361138881335e-06
+"78","Cosmarium_Coesel et al. (1990)","Cosmarium",-143.290940065712,5,30.8,14.5,29.5,6.57527348976876e-06
+"79","Cosmarium_Moss (1973)","Cosmarium",-358.289306191893,-1,35,23,27,3.44649501455769e-06
+"80","Cosmarium subprotumidum_Bouterfas et al. (2002)","Cosmarium subprotumidum",-278.096721720424,10,39.9,20.9,37.6,1.0061481184993e-05
+"81","Crocosphaera watsonii_Boyd et al. (2013)","Crocosphaera watsonii",-1759.95143922114,20.3,34.9,9.7,29.6,5.62717528201294e-06
+"82","Cryptomonas erosa_Morgan and Kalff (1979)","Cryptomonas erosa",-78.4820432251113,1.6,28.5,16.1,23.9,8.75155152305256e-06
+"83","Cryptomonas marssonii_Butterwick et al. (2005)","Cryptomonas marssonii",-512.63600527592,-3,29.9,22.4,18.2,6.45936958108063e-06
+"84","Cryptomonas ovata_Cloern (1977)","Cryptomonas ovata",-47.1124237626973,12.1,26.5,10.3,21.7,1.09000919817406e-05
+"85","Cryptomonas_Renaud et al. (2002)","Cryptomonas",-101.03146089041,20,33,12.1,26.6,3.52150726290553e-06
+"86","Cryptomonas_Throndsen (1976)","Cryptomonas",-195.972831394799,3,26.5,13.1,22.6,1.15789416452418e-05
+"87","Cyclotella cryptica_Montagnes and Franklin (2001)","Cyclotella cryptica",-129.988716935682,5,30,21.4,20.4,8.20938934526227e-06
+"88","Cyclotella meneghiniana_Mitrovic et al. (2010)","Cyclotella meneghiniana",-538.280023231021,8,28.8,15.6,24.7,1.00763767219179e-05
+"89","Cyclotella nana_Guillard and Ryther (1962)","Cyclotella nana",-24.9529302300814,NA,NA,NA,23.6,-1.0952400124304e-05
+"90","Cylindrotheca closterium_Maddux & Jones (1964)","Cylindrotheca closterium",-190.578789501549,5,31.4,20.7,24.8,6.1194605490134e-06
+"91","Cylindrotheca closterium_Renaud et al. (1995)","Cylindrotheca closterium",-254.672879794507,11.5,35.3,16.1,26.4,4.16603102927829e-06
+"92","Dactyliosolen fragilissimus_Ignatiades & Smayda (1970)","Dactyliosolen fragilissimus",-2397.04522815959,2,33.2,23.4,21.1,8.49451070975032e-06
+"93","Desmidium swartzii_Moss (1973)","Desmidium swartzii",-378.032033213823,-1,36.2,25,23.4,1.55666707144653e-06
+"94","Detonula confervacea_Guillard & Ryther (1962)","Detonula confervacea",-35.5089262855419,8.6,19.8,8,15.1,2.32521537862745e-05
+"95","Detonula confervacea_Smayda (1969)","Detonula confervacea",-257.301678250147,-3,16.3,13.4,10.1,6.96896518627868e-06
+"96","Detonula confervacea_Suzuki and Takahashi (1995)","Detonula confervacea",-120.278685116787,-6.8,14.9,12.4,9.6,1.11644894353688e-05
+"97","Dinobryon divergens_Butterwick et al. (2005)","Dinobryon divergens",-523.074037171099,-2.8,29.7,21.7,17.9,5.15356219233276e-06
+"98","Ditylum brightwellii_Baars (1981)","Ditylum brightwellii",-119.852099034195,-5,30.9,25.1,22.7,1.2319612193936e-05
+"99","Ditylum brightwellii_Montagnes and Franklin (2001)","Ditylum brightwellii",-137.081150961836,4,26.1,19.5,23,8.64765356113225e-06
+"100","Ditylum brightwellii_Paasche (1968)","Ditylum brightwellii",-188.596955672363,8,32,23.4,28.4,1.81733814987851e-05
+"101","Dunaliella tertiolecta_Reay et al. (1999)","Dunaliella tertiolecta",-157.50942565959,5,28.7,18.7,19.6,2.10211577320513e-05
+"102","Dunaliella tertiolecta_Sosik and Mitchell (1994)","Dunaliella tertiolecta",-75.4189267929241,7,32.8,19,24.1,1.6589926206302e-05
+"103","Dunaliella tertiolecta_Thompson et al. (1992)","Dunaliella tertiolecta",-335.121167201712,8.8,30,14.6,23.8,1.76695110581072e-05
+"104","Pontosphaera huxleyi_Buitenhuis et al. (2008)","Pontosphaera huxleyi",-279.503991839818,3.4,25.4,11.8,22.1,1.70685868698822e-05
+"105","Pontosphaera huxleyi_Conte et al. (1998)","Pontosphaera huxleyi",-1600.99221709046,1,27.8,17.8,22.7,1.00854195275678e-05
+"106","Pontosphaera huxleyi_Rhodes et al. (1995)","Pontosphaera huxleyi",-185.684353829779,8.3,29.9,15.2,22.9,1.10973494165729e-05
+"107","Pontosphaera huxleyi_Watabe & Wilbur (1966)","Pontosphaera huxleyi",-180.190117518251,2,27.5,17.1,22.9,1.04217856479919e-05
+"108","Pontosphaera huxleyi_Mjaaland (1956)","Pontosphaera huxleyi",-581.219044489221,6,27.2,13.8,20.4,4.87601767705838e-06
+"109","Eucampia zodiacus_Nishikawa & Yamaguchi (2006)","Eucampia zodiacus",-165.78028439587,3.9,30,18.7,23.3,3.32175621413561e-05
+"110","Eudorina californica_Moss (1973)","Eudorina californica",-134.467504488584,9.4,34.3,16.8,24.8,2.89403415000744e-06
+"111","Eutreptiella gymnastica_Throndsen (1976)","Eutreptiella gymnastica",-226.600638554283,0,26.3,16.6,19.3,1.77926450070338e-05
+"112","Fibrocapsa japonica_de Boer et al. (2005)","Fibrocapsa japonica",-1172.74106614206,6.1,33.3,18.3,23.1,3.79271823581214e-06
+"113","Fibrocapsa japonica_Khan et al. (1996)","Fibrocapsa japonica",-100.931453822161,5,30.5,19.3,28.1,6.04262332718242e-06
+"114","Fragilaria barbararum_Karsten et al. (2005)","Fragilaria barbararum",-82.9156586823189,-3.1,20.1,15.5,13.2,1.06413079610998e-05
+"115","Fragilaria crotonensis_Dauta et al. (1990)","Fragilaria crotonensis",-294.454573817272,5,37,28.2,25.3,5.42410611265222e-06
+"116","Grammonema striatula_Karsten et al. (2005)","Grammonema striatula",-79.6420876626604,-0.8,19.9,12,14.6,1.4231697789166e-05
+"117","Fragilariopsis cylindrus_Fiala & Oriol (1990)","Fragilariopsis cylindrus",-382.819731452287,-5,10.3,14.2,4.9,5.90314969370956e-06
+"118","Fragilariopsis kerguelensis_Fiala & Oriol (1990)","Fragilariopsis kerguelensis",-328.442088619866,-5,8,8.7,3.9,5.75588935897609e-06
+"119","Gambierdiscus toxicus_Morton et al. (1992)","Gambierdiscus toxicus",-228.99836136597,16.3,34.7,12.4,27.9,1.15797216140808e-06
+"120","Gephyrocapsa oceanica_Buitenhuis et al. (2008)","Gephyrocapsa oceanica",-266.094555210943,9.5,30,14,22.1,1.0602496202248e-05
+"121","Gephyrocapsa oceanica_Conte et al. (1998)","Gephyrocapsa oceanica",-363.696220103673,6.8,30.9,14.9,23.7,1.11426279088724e-05
+"122","Gephyrocapsa oceanica_Rhodes et al. (1995)","Gephyrocapsa oceanica",-125.20362130859,0.4,29.6,19.3,19.5,1.1553857905189e-05
+"123","Gephyrocapsa oceanica_Bollmann et al. (2010)","Gephyrocapsa oceanica",-757.183918925639,12,30.9,15.2,26.3,1.46472650448418e-05
+"124","Gonatozygon monotaenium_Moss (1973)","Gonatozygon monotaenium",-297.963440051299,7.7,34.8,18,25.4,3.61685349059844e-06
+"125","Lingulodinium polyedrum_Meeson and Sweeney (1982)","Lingulodinium polyedrum",-38.0675881322699,6.6,20.5,9.7,14.7,5.12900649769572e-06
+"126","Gonyaulax tamarensis_Langdon (1987)","Gonyaulax tamarensis",-39.6618708631475,0.6,20.6,13.8,13.2,7.93698919152679e-05
+"127","Alexandrium tamarense_Watras et al. (1982)","Alexandrium tamarense",-463.496853770606,2.9,26.3,15.8,18.7,3.94575503009379e-06
+"128","Guinardia flaccida_Baars (1981)","Guinardia flaccida",-35.2214107772906,7.4,24.1,11.4,17.9,1.87973671313762e-05
+"129","Gyrodinium aureolum_Nielsen & Tonseth (1991)","Gyrodinium aureolum",-107.196954101676,8.8,23.8,9,21.4,5.00131328220711e-06
+"130","Gymnodinium catenatum_Band-Schmidt (2004)","Gymnodinium catenatum",-388.247144576752,5,32.5,19.4,26.7,2.12766892927068e-06
+"131","Gymnodinium catenatum_Bravo and Anderson (1994)","Gymnodinium catenatum",-327.773768135524,8.9,29,12.3,25.2,4.35693341254176e-06
+"132","Gymnodinium corollarium_Sundstrom et al. (2009)","Gymnodinium corollarium",-133.57972452345,-5,10.5,12.9,4.2,3.33294802190694e-06
+"133","Gymnodinium_Thomas (1966)","Gymnodinium",-1232.29731305557,11.2,33.2,14.6,25.6,9.75699649334844e-06
+"134","Gyrodinium instriatum_Nagasoe et al. (2006)","Gyrodinium instriatum",-94.6067414788234,8.6,32.7,14.8,26.1,5.69787752821475e-06
+"135","Haematococcus droebakensis_Moss (1973)","Haematococcus droebakensis",-340.274117425068,-1,32.9,29,19.4,4.93786853835456e-06
+"136","Haematococcus pluvialis_Fan et al. (1994)","Haematococcus pluvialis",-233.997151227849,15,33.1,17.5,27,1.04544970674824e-05
+"137","Streptotheca thamensis_Chin et al. (1965)","Streptotheca thamensis",-90.2775670722864,5.1,30.5,16.8,25.1,8.0867956733156e-06
+"138","Katodinium rotundatum_Throndsen (1976)","Katodinium rotundatum",-227.005947951083,0,29.1,20.2,19.2,1.51795755935471e-05
+"139","Heterocapsa triquetra_Aelion (1985)","Heterocapsa triquetra",-105.654646139318,3,22,14.1,19.8,1.01103642934993e-05
+"140","Heteromastix pyriformis_Throndsen (1976)","Heteromastix pyriformis",-201.952744890693,3,28,19.3,20.1,1.55809252958648e-05
+"141","Heterosigma akashiwo_Ono (2000)","Heterosigma akashiwo",-156.637773808439,5,30.7,16.5,28.6,1.00059577168032e-05
+"142","Isochrysis galbana_Montagnes and Franklin (2001)","Isochrysis galbana",-84.6940857712282,8,29,12.9,23,9.14668487864742e-06
+"143","Isochrysis galbana_Renaud et al. (1995)","Isochrysis galbana",-126.131482601192,7.7,35,19.2,26.8,7.91003753470905e-06
+"144","Isochrysis galbana_Renaud et al. (2002)","Isochrysis galbana",-124.119508425541,20,35,12.8,29.1,1.07132554528306e-05
+"145","Isochrysis galbana_Thompson et al. (1992)","Isochrysis galbana",-332.593612714275,5.5,30.7,16.3,22.5,1.24874327729895e-05
+"146","Gonyostomum semen_Rengefors et al. (2012)","Gonyostomum semen",-519.07421508243,-2,28.3,20.3,17.3,5.23305749156647e-07
+"147","Isochrysis_Renaud et al. (1995)","Isochrysis",-125.704908842714,5,35.3,27.1,25.4,4.14012893129736e-06
+"148","Gymnodinium breve_McKay et al. (2006)","Gymnodinium breve",-800.318495662187,9.5,30.3,14.4,24.1,1.87573273161126e-06
+"149","Gymnodinium mikimotoi_Yamaguchi (1989)","Gymnodinium mikimotoi",-185.837765272416,7.6,34.1,17.8,24.2,5.24490752857912e-06
+"150","Gymnodinium veneficum_Nielsen (1996)","Gymnodinium veneficum",-232.91963779563,3.5,27.1,16.1,17.9,4.40917944543012e-06
+"151","Klebsormidium_Teoh et al. (2004)","Klebsormidium",-306.02743147505,-1,30.5,26.6,16.3,2.21987912347095e-06
+"152","Koliella antarctica_Vona et al. (2004)","Koliella antarctica",-30.3082575262709,8.3,18.9,7.1,14.8,2.47318599845618e-06
+"153","Lauderia annulata_Baars (1981)","Lauderia annulata",-89.1466957513525,1.4,27.3,17.4,17.7,1.57525462925029e-05
+"154","Leonella granifera_Meier et al. (2004)","Leonella granifera",-980.452149305971,13.7,31.9,12.4,27.9,3.10354835638893e-06
+"155","Leptocylindrus danicus_Verity (1982)","Leptocylindrus danicus",-37.8388180594684,4.1,19.3,10.7,12.7,3.9629027688595e-05
+"156","Leptocylindrus danicus_Hulburt (1982)","Leptocylindrus danicus",-249.020462339147,10.1,34,17.4,26.6,1.06957994395747e-05
+"157","Men. 5 (Diatom)_Hulburt (1982)","Men. 5 (Diatom)",-396.931776386022,7.1,37.1,17.9,28.7,1.89050842433766e-05
+"158","Merismopedia tenuissima_Coles and Jones (2000)","Merismopedia tenuissima",-92.2031599761933,10,34.6,16.9,26.4,6.98898226532293e-06
+"159","Mesotaenium kramstae_Moss (1973)","Mesotaenium kramstae",-381.332426282763,-0.8,34.3,21.6,24.2,5.71738554138162e-06
+"160","Micrasterias americana_Moss (1973)","Micrasterias americana",-364.780527535635,-1,38.2,27.4,25.6,1.35856827235872e-06
+"161","Microcystis aeruginosa_Chu et al. (2007)","Microcystis aeruginosa",-191.637836521728,13.5,35,13.2,28.9,9.4994769865637e-06
+"162","Microcystis aeruginosa_Coles and Jones (2000)","Microcystis aeruginosa",-84.3619548467955,10,33.1,18.8,22.4,7.51598215105963e-06
+"163","Microcystis aeruginosa_Imai et al. (2009)","Microcystis aeruginosa",-40.4508685641715,NA,NA,NA,30.7,-1.2585340683116e-06
+"164","Microcystis aeruginosa_van der Westhuizen and Eloff (1985)","Microcystis aeruginosa",-125.238480098999,11.9,36.5,11.9,35.3,7.72898694396171e-06
+"165","Microcystis wesenbergii_Imai et al. (2009)","Microcystis wesenbergii",-94.6857676074083,15,40,24.5,27.6,1.58044079342001e-06
+"166","Micromonas_Throndsen (1976)","Micromonas",-155.054480999121,-1,30.1,23.5,18,2.66514695055611e-05
+"167","Micromonas_Lovejoy et al. (2007)","Micromonas",-351.199223895893,-5,15.4,14.4,6.8,4.27244098768744e-06
+"168","Picochlorum oculatum_Cho et al. (2007)","Picochlorum oculatum",-39.3216171287603,20.1,31.3,7,30.5,0.00021175913547231
+"169","Nannochloris_Thomas (1966)","Nannochloris",-414.402695840468,11,40,28.2,30.1,2.83996857685199e-05
+"170","Nannochloropsis oceanica_Sandnes et al. (2005)","Nannochloropsis oceanica",-363.563531306952,9.5,35.2,20.7,26.8,1.60531722603948e-05
+"171","Nannochloropsis_James et al. (1989)","Nannochloropsis",-786.384166858925,10,35.6,22.5,22.3,1.35219060387583e-06
+"172","Navicula arenaria_Admiraal (1977)","Navicula arenaria",-124.711956738885,-0.8,25.5,16.3,19.6,1.12732195441711e-05
+"173","Navicula pelliculosa_Chalifour and Juneau (2011)","Navicula pelliculosa",-51.0317577944639,5,25.4,17.2,13.1,1.22410709513795e-05
+"174","Navicula_Baars (1981)","Navicula",237.986388289568,NA,NA,NA,15.2,-0.0119743949866999
+"175","Ceratium furca_Nordli (1957)","Ceratium furca",-261.956177787429,5.7,25.5,13.1,21.4,2.72553262159187e-06
+"176","Ceratium fusus_Nordli (1957)","Ceratium fusus",-230.183538888302,3.3,27.2,16,18.5,2.08085271819615e-06
+"177","Ceratium lineatum_Nordli (1957)","Ceratium lineatum",-273.89459900078,2.8,25.6,13.9,23,2.7752554877594e-06
+"178","Ceratium tripos_Montressor & Tomas (1988)","Ceratium tripos",-105.875249121495,0,25.6,25.3,19.4,2.19839185046539e-06
+"179","Pseudo-nitzschia americana_Miller and Kamykowski (1986)","Pseudo-nitzschia americana",-47.4609495144474,9.9,24.5,10.2,18.2,1.42563074260485e-05
+"180","Nitzschia dissipata_Admiraal (1977)","Nitzschia dissipata",-135.253914458301,4.6,30.1,15,24.7,1.68682887469018e-05
+"181","Nitzschia paleacea_Renaud et al. (1995)","Nitzschia paleacea",-135.660631331775,5,30,18.1,19.6,4.47466011565187e-06
+"182","Nitzschia seriata_Smith et al. (1994)","Nitzschia seriata",-154.505514995265,-6.6,12.8,10.8,9.4,6.5190221119928e-06
+"183","Nitzschia sigma_Admiraal (1977)","Nitzschia sigma",-161.835955334248,-1,30.1,21.4,22.3,4.27841758940873e-06
+"184","Odontella mobilensis_Hulburt (1982)","Odontella mobilensis",-175.163293924905,11.9,34.7,14.4,27.7,1.50234183336866e-05
+"185","Olisthodiscus luteus_Langdon (1987)","Olisthodiscus luteus",-80.2074078864749,5,29.9,21.1,25.1,8.80006887919347e-06
+"186","Olisthodiscus luteus_Throndsen (1976)","Olisthodiscus luteus",-193.835301109786,0.8,20.6,13.4,16.6,9.98453815050567e-06
+"187","Olisthodiscus luteus_Tomas (1978)","Olisthodiscus luteus",-566.174087533459,0,33.9,19.5,26.1,1.09126079754246e-05
+"188","Planktothrix agardhii_Foy (1983)","Planktothrix agardhii",-433.032303549095,4.9,28.2,15.1,20.3,2.5590055566595e-06
+"189","Planktothrix agardhii_Foy et al. (1976)","Planktothrix agardhii",-303.07467194172,4.9,35,21.1,26.4,1.14131092315881e-05
+"190","Planktothrix agardhii_Post et al. (1985)","Planktothrix agardhii",-194.805881411958,4.7,36.5,21.4,28.3,1.07549763878586e-05
+"191","Planktothrix mougeotii_Chu et al. (2007)","Planktothrix mougeotii",-189.710873471327,10,35.1,17.7,25.6,6.06352397637061e-06
+"192","Limnothrix redekei_Foy (1983)","Limnothrix redekei",-405.007929117957,0.5,23.9,12.9,22.4,2.33048403571611e-06
+"193","Limnothrix redekei_Foy et al. (1976)","Limnothrix redekei",-116.307604961599,1.9,30.3,20.3,22.5,1.18371699014489e-05
+"194","Oscillatoria_Coles and Jones (2000)","Oscillatoria",-31.193247023818,25.7,26.9,0.800000000000001,26.3,1.67749017035123e-07
+"195","Ostreococcus_Kulk et al. (2012)","Ostreococcus",208.00051864605,NA,NA,NA,19.9,-0.00663950726784194
+"196","Ostreopsis heptagona_Morton et al. (1992)","Ostreopsis heptagona",-203.952651227524,15.8,30.7,10.2,24.7,1.30662450753816e-06
+"197","Ostreopsis siamensis_Morton et al. (1992)","Ostreopsis siamensis",-223.560505454356,14.8,32.4,11.9,25.6,1.65399607140873e-06
+"198","Pandorina morum_Moss (1973)","Pandorina morum",-334.469981274848,-1,33.9,26.2,19.7,3.82289868040543e-06
+"199","Pavlova lutheri_Thompson et al. (1992)","Pavlova lutheri",-366.077249212639,7.8,30,15,23.8,2.08434038432719e-05
+"200","Pediastrum duplex_Moss (1973)","Pediastrum duplex",-133.065503265636,-1,30,22.5,20.3,2.42567412467885e-06
+"201","Pelagomonas calceolata_Kulk et al. (2012)","Pelagomonas calceolata",-44.8962106888269,14.6,27.4,9.1,22,3.68243911159029e-06
+"202","Peridinium_Barker (1935)","Peridinium",-963.340613692442,3.6,29.3,16.8,20.4,6.57060220355695e-06
+"203","Pernambugia tuberosa_Meier et al. (2004)","Pernambugia tuberosa",-951.06493818757,8.3,31.8,20.3,24.7,2.72600295294781e-06
+"204","Phaeocystis antarctica_Wang et al. (2010)","Phaeocystis antarctica",-128.491866729643,-2.1,8.1,6.4,5.1,2.66418478245167e-06
+"205","Phaeocystis globosa_Wang et al. (2010)","Phaeocystis globosa",-142.422907481575,6.9,32.6,17.6,27.2,6.85026956247864e-06
+"206","Phaeocystis pouchetii_Grimm & Weisse (1985)","Phaeocystis pouchetii",-219.206419310574,3.6,20.9,11.1,17.5,2.62754602905027e-05
+"207","Phaeodactylum tricornutum_Fawley (1984)","Phaeodactylum tricornutum",-438.314180703304,9,25.9,14.5,22.7,1.6790983488714e-05
+"208","Phaeodactylum tricornutum_Johnston (1996)","Phaeodactylum tricornutum",-180.208469346426,5,26.5,15.4,23.2,8.38071521997528e-06
+"209","Phaeodactylum tricornutum_Krabs et al. (2011)","Phaeodactylum tricornutum",-172.36135736428,7,30.1,18.8,20.4,8.05282663612251e-06
+"210","Phaeodactylum tricornutum_Kudo et al. (2000)","Phaeodactylum tricornutum",-86.5775186125014,0.8,25.3,16.5,16,1.81842982435977e-05
+"211","Phaeodactylum tricornutum_Li and Morris (1982)","Phaeodactylum tricornutum",-74.8277908873497,2.3,25.2,13,21,1.37717888748068e-05
+"212","Phaeodactylum tricornutum_Montagnes and Franklin (2001)","Phaeodactylum tricornutum",-244.225382772361,3,25.7,15.4,23.7,1.4512315652327e-05
+"213","Phaeodactylum tricornutum_Morris and Glover (1974)","Phaeodactylum tricornutum",-32.8792858591922,4.6,21.9,11.9,15,2.98638914985051e-05
+"214","Phaeodactylum tricornutum_Ryther (1954)","Phaeodactylum tricornutum",-283.185582747295,0,29.2,25.8,15.5,3.44874408130562e-06
+"215","Phaeodactylum tricornutum_Thompson et al. (1992)","Phaeodactylum tricornutum",-319.472162399037,5,30,18,24.9,1.77059301123122e-05
+"216","Nannochloris atomus_Ryther (1954)","Nannochloris atomus",-292.551985762898,5.2,30.4,17.3,23.9,6.37711731470746e-06
+"217","Porphyridium purpureum_Dermoun and Chaumont (1992)","Porphyridium purpureum",-144.325801006882,0,38.2,23.7,27.2,1.72667693692131e-05
+"218","Proboscia inermis_Boyd et al. (2013)","Proboscia inermis",-1140.99188941466,-3.2,7.7,7.4,3.9,3.77714528839711e-06
+"219","Prochlorococcus marinus_Johnson et al. (2006)","Prochlorococcus marinus",-957.305402133803,10.1,32.7,14.4,25.6,5.32814796059042e-06
+"220","Prochlorococcus marinus_Kulk et al. (2012)","Prochlorococcus marinus",-25.8968952668627,16.1,29.1,9.1,23.8,5.72164938186483e-05
+"221","Prochlorococcus marinus_Zinser et al. (2007)","Prochlorococcus marinus",-991.790235371631,8.8,30.4,15,24.7,4.64490180219194e-06
+"222","Prochlorococcus marinus_Moore et al. (1995)","Prochlorococcus marinus",-806.675925520243,12,28,10.8,23.8,6.4040893183587e-06
+"223","Prochlorococcus_Kulk et al. (2012)","Prochlorococcus",-18.0061484544248,17,28.2,7.7,23.7,3.40797214728556e-06
+"224","Prorocentrum concavum_Morton et al. (1992)","Prorocentrum concavum",-199.881743030897,18.2,33.1,10.2,27.3,1.58729686992772e-06
+"225","Prorocentrum dentatum_Xu et al. (2010)","Prorocentrum dentatum",-124.187224566438,9.5,32.4,15.6,23.5,7.84634984179557e-06
+"226","Prorocentrum donghaiense_Boyd et al. (2013)","Prorocentrum donghaiense",-407.620667322651,10,30.8,17.3,26.9,6.61770891438325e-06
+"227","Prorocentrum gracile_Barker (1935)","Prorocentrum gracile",-438.309645875533,7.7,24.7,11.8,17.7,6.37506560499839e-06
+"228","Prorocentrum lima_Morton et al. (1992)","Prorocentrum lima",-221.513986802213,15.8,34.5,12.6,27.7,1.67532391899817e-06
+"229","Prorocentrum mexicanum_Morton et al. (1992)","Prorocentrum mexicanum",-192.383026969953,16,34.9,16.2,24.5,1.20913472055557e-06
+"230","Prorocentrum micans_Barker (1935)","Prorocentrum micans",-980.775337289628,5.1,30,13.9,27.1,6.87990452052804e-06
+"231","Prorocentrum minimum_Grzebyk and Berland (1996)","Prorocentrum minimum",-1792.19852612529,6,31.5,17.4,24.2,7.73717574079056e-06
+"232","Prorocentrum minimum_Lomas and Glibert (1999)","Prorocentrum minimum",-77.1815329833844,1,25.1,14.1,20.7,9.97328274459029e-06
+"233","Prymnesium parvum_Larsen and Bryant (1998)","Prymnesium parvum",-441.850015558132,1.3,34.9,21.1,25.4,4.93732320628026e-06
+"234","Pseudo-nitzschia granii_El-Sabaawi & Harrison (2006)","Pseudo-nitzschia granii",-339.295207661314,3,21.2,13.7,14.8,9.39903180416224e-06
+"235","Pseudo-nitzschia multiseries_Lewis et al. (1993)","Pseudo-nitzschia multiseries",-101.737276844479,1.4,26,13.8,22.6,5.31187829100926e-06
+"236","Pseudo-nitzschia turgiduloides_Fiala & Oriol (1990)","Pseudo-nitzschia turgiduloides",-336.945628625629,-2.5,9,7.8,4.6,5.560795146104e-06
+"237","Pseudo-nitzschia pseudodelicatissima_Lundholm et al. (1997)","Pseudo-nitzschia pseudodelicatissima",-137.959912566488,4.9,30.1,17.1,23.3,2.04601951084292e-05
+"238","Pseudo-nitzschia seriata_Stapleford and Smith (1996)","Pseudo-nitzschia seriata",-174.042243947549,-6.5,11.6,16.2,10,5.41236977659993e-06
+"239","Pseudopedinella pyriformis_Throndsen (1976)","Pseudopedinella pyriformis",-180.773700600895,0,25.4,19.7,15.1,1.02254419268172e-05
+"240","Pyramimonas disomata_Throndsen (1976)","Pyramimonas disomata",-115.517623582834,3,28.1,18.1,19.8,1.08326654971064e-05
+"241","Pyrodinium bahamense_Usup et al. (1994)","Pyrodinium bahamense",-704.255834041837,17,38.2,18.8,27.8,2.77350155037988e-06
+"242","Proboscia indica_Baars (1981)","Proboscia indica",226.356227134306,NA,NA,NA,20.6,-0.0181180381518249
+"243","Rhizosolenia robusta_Baars (1981)","Rhizosolenia robusta",-39.2990991522429,10.1,25.3,10.4,19.8,5.93964783890581e-06
+"244","Rhizosolenia setigera_Baars (1981)","Rhizosolenia setigera",-93.4326661175903,-5.6,20.8,16.2,15.9,1.07210352509641e-05
+"245","Rhizosolenia setigera_Hulburt (1982)","Rhizosolenia setigera",-660.320387736687,-1.5,34.5,22.6,26.4,1.04411182343844e-05
+"246","Rhizosolenia stolterfothii_Baars (1981)","Rhizosolenia stolterfothii",170.741657995706,NA,NA,NA,17.2,-0.00906272629012512
+"247","Rhodomonas salina_Montagnes and Franklin (2001)","Rhodomonas salina",-98.9383439020651,4,28.2,19.2,18.6,1.0348979192242e-05
+"248","Roya anglica_Moss (1973)","Roya anglica",-305.222958558773,2.9,30,17.4,23.1,2.52241877669176e-06
+"249","Scenedesmus acutus_Staehr and Birkeland (2006)","Scenedesmus acutus",-33.022721657296,17.5,29.7,8.2,26.1,5.46179255121767e-06
+"250","Scenedesmus acutus_Chalifour and Juneau (2011)","Scenedesmus acutus",-45.5311408889016,13.5,28.7,10.6,22.6,8.37725914354053e-06
+"251","Scenedesmus acutus_Hodaifa et al. (2010)","Scenedesmus acutus",-87.7176076001683,10.1,35.1,23.1,32.5,5.27477378482587e-06
+"252","Scenedesmus acutus_Martinez et al. (1999)","Scenedesmus acutus",-20.4520607860031,22.1,35,9.3,31.1,1.79465693397929e-05
+"253","Scenedesmus quadricauda_Moss (1973)","Scenedesmus quadricauda",-163.206952267404,7.2,35.1,20,26.8,2.56798867990047e-06
+"254","Scrippsiella trochoidea_Binder & Anderson (1987)","Scrippsiella trochoidea",-801.685695805074,-3,25.2,19.7,16.4,5.39061638842591e-06
+"255","Selenastrum minutum_Bouterfas et al. (2002)","Selenastrum minutum",-276.737057049351,10,40,23.1,30.9,1.85640233988446e-05
+"256","Skeletonema ardens_Kaeriyama et al. (2011)","Skeletonema ardens",-1153.98272248971,5,39.9,19.7,35.2,2.33670011293694e-05
+"257","Skeletonema costatum_Baars (1981)","Skeletonema costatum",218.079446718414,NA,NA,NA,12.5,-0.0149613470129895
+"258","Skeletonema costatum_Chin et al. (1965)","Skeletonema costatum",-214.710730169635,4.9,35.1,20.6,28.7,5.12370273899267e-07
+"259","Skeletonema costatum_Curl & McLeod (1961)","Skeletonema costatum",-234.321420161648,3,34.4,21,23,1.0850072278382e-05
+"260","Skeletonema costatum_Falkowski (1977)","Skeletonema costatum",-122.436303547078,-2.3,30.8,20.1,24.9,1.47932050041996e-05
+"261","Skeletonema costatum_Gao et al. (2000)","Skeletonema costatum",-35.004242591325,16,30.8,10.2,28.6,3.57768157136462e-05
+"262","Skeletonema costatum_Hulburt (1982)","Skeletonema costatum",-1328.00981496906,-4,31,23.4,25.5,1.26535134905695e-05
+"263","Skeletonema costatum_Jorgense (1968)","Skeletonema costatum",-84.0346121610523,2,24.9,16.2,16.6,1.67009242119587e-05
+"264","Skeletonema costatum_Kaeriyama et al. (2011)","Skeletonema costatum",-224.863554102568,5,35,21.5,28.8,1.52763815785918e-05
+"265","Skeletonema costatum_Langdon (1987)","Skeletonema costatum",-109.788772869385,0.2,30,17.2,23.7,3.0748923183979e-05
+"266","Skeletonema costatum_Montagnes and Franklin (2001)","Skeletonema costatum",-105.109363076031,4.2,26.2,17.5,22.3,1.00091127191529e-05
+"267","Skeletonema costatum_Suzuki and Takahashi (1995)","Skeletonema costatum",-168.195909552416,-0.9,35,23.7,28.2,1.34450710215008e-05
+"268","Skeletonema costatum_Yoder (1979)","Skeletonema costatum",-254.338038054664,-1.1,27,14.5,22.2,2.77738725689373e-05
+"269","Skeletonema japonicum_Kaeriyama et al. (2011)","Skeletonema japonicum",-996.0981337949,5,30,18,23.9,1.8591765945552e-05
+"270","Skeletonema_Kaeriyama et al. (2011)","Skeletonema",-590.99747719061,5,35,24.1,26.6,1.97496224298574e-05
+"271","Skeletonema menzellii_Kaeriyama et al. (2011)","Skeletonema menzellii",-1079.55481991479,5,39.8,26.9,29.3,2.05856672466213e-05
+"272","Skeletonema pseudocostatum_Kaeriyama et al. (2011)","Skeletonema pseudocostatum",-265.963391408366,5,35,21.6,26.5,1.9689904127221e-05
+"273","Skeletonema tropicum_Hulburt (1982)","Skeletonema tropicum",-641.449045909082,7.4,34.5,17.7,30.4,1.6827310359014e-05
+"274","Skeletonema tropicum_Hulburt and Guillard (1968)","Skeletonema tropicum",-203.886903010205,8.7,31.9,11.5,30.2,2.18674562492168e-05
+"275","Skeletonema tropicum_Kaeriyama et al. (2011)","Skeletonema tropicum",-1173.43974624683,5,34.9,16.5,30.8,1.85758916342762e-05
+"276","Staurastrum anatinum_Coesel et al. (1990)","Staurastrum anatinum",-138.218475918848,5,35,21.2,25.1,3.05422178527983e-06
+"277","Staurastrum avicula_Coesel et al. (1990)","Staurastrum avicula",-135.844825267107,6.2,30.7,14.3,28.8,4.91986934784388e-06
+"278","Staurastrum avicula_Coesel et al. (1990)","Staurastrum avicula",-138.915802425946,6.1,30.7,14.3,28.8,4.91751993928941e-06
+"279","Staurastrum chaetoceras_Coesel et al. (1990)","Staurastrum chaetoceras",-128.988298497778,9.6,35,17.8,28.8,9.11588504930871e-06
+"280","Staurastrum cingulum_Butterwick et al. (2005)","Staurastrum cingulum",-473.646873408862,-0.5,34.9,13.1,30.5,9.53318356998388e-06
+"281","Staurastrum cingulum_Coesel et al. (1990)","Staurastrum cingulum",-155.143112708987,5,34.9,21.6,25.1,5.67704270728464e-06
+"282","Staurastrum pingue_Coesel et al. (1990)","Staurastrum pingue",-157.635340609896,5,35,20,29.2,6.77228981354841e-06
+"283","Staurastrum pingue_Dauta et al. (1990)","Staurastrum pingue",-263.964856166469,5,35.4,21.9,32.1,8.28912083343009e-06
+"284","Staurastrum planctonicum_Coesel et al. (1990)","Staurastrum planctonicum",-151.567609894654,9.4,35.4,17.3,25.9,8.28737756246154e-06
+"285","Staurodesmus cuspidatus_Coesel et al. (1990)","Staurodesmus cuspidatus",-129.55616616537,6,30.6,16.6,26.4,3.48368483681342e-06
+"286","Stellarima microtrias_Fiala & Oriol (1990)","Stellarima microtrias",-237.323452853391,-4,8,8.5,4.3,6.74612815922113e-06
+"287","Stephanodiscus hantzschii_Suzuki and Takahashi (1995)","Stephanodiscus hantzschii",-148.530648368235,2.9,34.7,19.7,25.4,1.37793677342346e-05
+"288","Stephanopyxis palmeriana_Baars (1981)","Stephanopyxis palmeriana",255.405352093099,NA,NA,NA,20.7,-0.0130229748662767
+"289","Stephanopyxis palmeriana_Schone (1982)","Stephanopyxis palmeriana",-93.4913872726818,9.2,26.4,11.7,19.9,1.20449822059716e-05
+"290","Stichococcus cylindricus_Ryther (1954)","Stichococcus cylindricus",-137.009665599367,4.8,32.2,18.2,22.7,3.9390294658292e-06
+"291","Synechococcus_Boyd et al. (2013)","Synechococcus",-480.430891214456,10,35.7,16.9,33.3,7.70841444946819e-06
+"292","Synechococcus_Moore et al. (1995)","Synechococcus",-546.755839321626,11.6,34.8,16.5,27.1,8.12170303583764e-06
+"293","Synechocystis minima_Dauta et al. (1990)","Synechocystis minima",-322.914411650019,5,40,20.6,33.4,1.50934785057019e-05
+"294","Synedra_Fiala & Oriol (1990)","Synedra",-243.065167465783,-3,8.2,7.4,4.5,4.93153867718668e-06
+"295","Tetraselmis_Maddux & Jones (1964)","Tetraselmis",-190.40662134781,5,33.3,18.5,25.3,4.37317533561317e-06
+"296","Thalassionema nitzschioides_Hulburt (1982)","Thalassionema nitzschioides",-400.051353553246,-4,34.4,22.7,24.3,1.21570766094701e-05
+"297","Thalassiosira allenii_Aydin et al. (2009)","Thalassiosira allenii",-79.5735461657595,10.4,24.9,8.5,20.9,7.86526142105441e-06
+"298","Thalassiosira curviseriata_Popovich et al. (1999)","Thalassiosira curviseriata",-89.9010494835021,2,25.3,16,16,1.33705464029442e-05
+"299","Thalassiosira decipiens_Baars (1981)","Thalassiosira decipiens",-100.010391450289,-1.4,25,17.7,17.3,1.22753217728995e-05
+"300","Thalassiosira eccentrica_Baars (1981)","Thalassiosira eccentrica",-118.950118391758,1,30.9,25,20.9,9.26004585184215e-06
+"301","Thalassiosira eccentrica_Montagnes and Franklin (2001)","Thalassiosira eccentrica",-117.010987386566,7.9,30,12,25,6.09577345215495e-06
+"302","Thalassiosira weissflogii_Hobson (1974)","Thalassiosira weissflogii",-169.313389134897,10.1,30.2,14.1,24.1,1.91662373573752e-05
+"303","Thalassiosira hendeyi_Baars (1981)","Thalassiosira hendeyi",-25.3894382317831,18.7,25.1,4.4,22.5,5.47490390450747e-06
+"304","Thalassiosira levanderi_Baars (1981)","Thalassiosira levanderi",-44.9801879259634,0.5,16.3,11,9.9,1.19445654345924e-05
+"305","Thalassiosira nordenskioeldii_Baars (1981)","Thalassiosira nordenskioeldii",-172.730552954909,-6.5,19.7,15.2,13.1,1.09046885943719e-05
+"306","Thalassiosira nordenskioeldii_Suzuki and Takahashi (1995)","Thalassiosira nordenskioeldii",-147.85566948542,-6,20,15.7,14.3,1.12964431538296e-05
+"307","Thalassiosira nordenskioeldii_Durbin (1974)","Thalassiosira nordenskioeldii",-310.965593629253,-4,15.5,13.4,10.2,1.18328587677156e-05
+"308","Thalassiosira pseudonana_Berges et al. (2002)","Thalassiosira pseudonana",-172.104235502211,5.3,30.1,16.7,20.8,2.14670262014597e-05
+"309","Thalassiosira pseudonana_Brand et al. (1981)","Thalassiosira pseudonana",-1237.72781222712,10.8,29.1,12.1,22.5,2.54679042344833e-05
+"310","Thalassiosira pseudonana_Goldman and Carpenter (1974)","Thalassiosira pseudonana",-39.974888165859,13.6,26.6,9.1,20.8,1.41694301330171e-05
+"311","Thalassiosira pseudonana_Guillard & Ryther (1962)","Thalassiosira pseudonana",-420.339386904449,-1,29.9,16.9,23.8,2.27309248011722e-05
+"312","Thalassiosira pseudonana_Thompson et al. (1992)","Thalassiosira pseudonana",-465.810269593331,5,30,16.8,25,2.04932911975801e-05
+"313","Thalassiosira pseudonana_Boyd et al. (2013)","Thalassiosira pseudonana",-4317.67523160687,5,32.7,20.9,29.1,1.33027286438634e-05
+"314","Thalassiosira rotula_Baars (1981)","Thalassiosira rotula",-184.901494019646,-3,26.5,20.4,18.6,1.64171029677621e-05
+"315","Thalassiosira rotula_Krawiec (1982)","Thalassiosira rotula",-995.677914020313,-4.6,30.5,18.7,24.8,1.28239970318033e-05
+"316","Thalassiosira rotula_Boyd et al. (2013)","Thalassiosira rotula",-2374.24144428247,-1,29.9,20.5,20,8.99786832388247e-06
+"317","Thalassiosira weissflogii_Boyd et al. (2013)","Thalassiosira weissflogii",-375.683330004524,4.2,25.8,13.7,19.4,7.40855865751139e-06
+"318","Thalassiosira weissflogii_Lomas and Glibert (1999)","Thalassiosira weissflogii",-21.8736539892477,13.7,25.1,7.9,20.7,4.54554742108757e-05
+"319","Thalassiosira weissflogii_Montagnes and Franklin (2001)","Thalassiosira weissflogii",-96.4111808076085,4.3,26.5,15.2,17.6,6.63608284477465e-06
+"320","Thalassiosira weissflogii_Strzepek and Price (2000)","Thalassiosira weissflogii",-172.834882442255,10.5,34,14.9,30,2.56823011961646e-05
+"321","Tribonema_Butterwick et al. (2005)","Tribonema",-554.139438158266,0.4,30.3,19.9,19.6,4.09470839842363e-06
+"322","Trichodesmium erythraeum_Breitbarth et al. (2007)","Trichodesmium erythraeum",-515.575892653774,15.4,35.7,13.8,27.8,2.09142632752595e-06
+"323","Trichodesmium erythraeum_Chappell & Webb (2010)","Trichodesmium erythraeum",-279.489108051659,19,31.6,12.5,28,6.5556909722422e-06
+"324","Trichodesmium erythraeum_Boyd et al. (2013)","Trichodesmium erythraeum",-1994.09769786695,11.8,35.2,15.8,26.5,2.56568435843013e-06
+"325","Trichodesmium radians_Chappell & Webb (2010)","Trichodesmium radians",-196.092526384997,19.9,31.4,8.5,27.7,3.8551310013168e-06
+"326","Tychonema bourrellyi_Butterwick et al. (2005)","Tychonema bourrellyi",-398.751613954589,-3,34.9,25.2,31.2,8.07219797563424e-06
+"327","Unidentified prymnesiophyte strain NT19_Renaud et al. (2002)","Unidentified prymnesiophyte strain NT19",-129.04845572873,20,35,14,27.3,6.31949941795338e-06
+"328","Volvox aureus_Moss (1973)","Volvox aureus",-306.518275265084,6.6,31.7,15.4,24.4,1.89475646202997e-06
+"329","Nitzschia frigida_Suzuki & Takahashi (1995)","Nitzschia frigida",-35.6052742231836,0.4,5.9,3.6,4,2.38925369828237e-05
+"330","Anabaena_Lurling et al. (2013)","Anabaena",-92.9174391429252,15,36.9,18.3,27.2,8.47271833053316e-06
+"331","Aphanizomenon gracile_Lurling et al. (2013)","Aphanizomenon gracile",-122.435908890959,15,35.7,18,33.7,8.78216900445171e-06
+"332","Cylindrospermopsis raciborskii_Lurling et al. (2013)","Cylindrospermopsis raciborskii",-89.7377034224689,15,35.7,20.5,28.7,7.71153954072125e-06
+"333","Microcystis aeruginosa_Lurling et al. (2013)","Microcystis aeruginosa",-239.639595973719,15,35.6,20.4,28.3,9.9652322021326e-06
+"334","Planktothrix agardhii_Lurling et al. (2013)","Planktothrix agardhii",-186.095590239343,15,37,16.9,29.3,8.55184679232387e-06
+"335","Synechococcus elongatus_Lurling et al. (2013)","Synechococcus elongatus",-157.528233333112,15,40,17.8,35.5,1.00348134224903e-05
+"336","Ankistrodesmus falcatus_Lurling et al. (2013)","Ankistrodesmus falcatus",-131.526766541267,15,35.1,19.8,28.9,8.33818391030316e-06
+"337","Chlamydomonas reinhardtii_Lurling et al. (2013)","Chlamydomonas reinhardtii",-83.2429196098967,15,37.3,14,30.5,1.6896780872504e-05
+"338","Desmodesmus bicellularis_Lurling et al. (2013)","Desmodesmus bicellularis",-115.471068734549,15,39.5,21.5,27.1,1.03077891168257e-05
+"339","Desmodesmus quadricauda_Lurling et al. (2013)","Desmodesmus quadricauda",-118.786282445248,15,35.2,16.9,33,8.70354602063385e-06
+"340","Selenastrum minutum_Lurling et al. (2013)","Selenastrum minutum",-85.5520250969517,15,32.9,13.8,16.4,1.19951031385767e-05
+"341","Scenedesmus acuminatus_Lurling et al. (2013)","Scenedesmus acuminatus",-123.146916073964,15,35.8,20.6,30.1,8.60957628461047e-06
+"342","Scenedesmus longus_Lurling et al. (2013)","Scenedesmus longus",-114.808119508635,15,40,24.7,31.7,5.44831716482921e-06
+"343","Scenedesmus acutus_Lurling et al. (2013)","Scenedesmus acutus",-126.549922773287,15,40,22,26.8,8.47059064338065e-06
+"344","Chlorella_Ong et al. (2010)","Chlorella",-264.672981542084,20,41.3,18.9,31.4,6.78626064860164e-06
+"345","Scenedesmus_Xin et al. (2011)","Scenedesmus",-32.0823985824347,5,26,14.9,16.9,4.87799878298791e-05
+"346","Scenedesmus quadricauda_Zargar et al. (2006)","Scenedesmus quadricauda",-85.4381118419622,21,40.9,15.7,23.3,4.86058470737339e-06
+"347","Synechococcus_Malinsky-Rushansky et al. (2002)","Synechococcus",-360.489020792345,9,33,17.1,30.3,1.40608798492286e-05
+"348","Mychonastes homosphaera_Malinsky-Rushansky et al. (2002)","Mychonastes homosphaera",-403.477608999953,9,28.9,18.8,22,1.40854540989393e-05
+"349","Cylindrospermopsis raciborskii_Briand et al. (2004)","Cylindrospermopsis raciborskii",-2088.54228393918,10,40,21.6,34.8,4.78671186477717e-06
+"350","Cylindrospermopsis raciborskii_Soares et al. (2013)","Cylindrospermopsis raciborskii",-119.525038042244,12.3,37,16.6,32.6,8.30417200688438e-06
+"351","Sphaerospermopsis aphanizomenoides_Mehnert et al. (2010)","Sphaerospermopsis aphanizomenoides",-362.743929553637,8.1,37.9,19.2,28.1,4.43111441605112e-06
+"352","Cylindrospermopsis raciborskii_Mehnert et al. (2010)","Cylindrospermopsis raciborskii",-338.41665933675,5,39.8,25.2,31.1,3.19798007663854e-06
+"353","Anabaena bergii_Mehnert et al. (2010)","Anabaena bergii",-340.13055982605,6.8,37.5,20.1,26.8,2.74680796455235e-06
+"354","Aphanizomenon gracile_Mehnert et al. (2010)","Aphanizomenon gracile",-338.636880816704,5,33.8,19.7,25,3.43048877934959e-06
+"355","Aphanizomenon flosaquae_Mehnert et al. (2010)","Aphanizomenon flosaquae",-334.092465328598,5,31.2,19,22.5,2.91013607071437e-06
+"356","Anabaena macrospora_Mehnert et al. (2010)","Anabaena macrospora",-385.787172185509,5.3,34.8,20.7,24.9,2.13722288222077e-06
+"357","Aphanizomenon ovalisporum_Mehnert et al. (2010)","Aphanizomenon ovalisporum",-384.758350494022,5.8,39.8,23.5,33.6,3.2357423373495e-06
+"358","Phormidium_Tang et al. (1997)","Phormidium",-4669.23005927531,0,40,39.8,38.2,1.380743312322e-06
+"359","Oscillatoria_Tang et al. (1997)","Oscillatoria",-531.268729911215,0,34.3,26.1,21.4,2.13149064980695e-06
+"360","Anabaena ucrainica_Tsuijimura & Okubo (2003)","Anabaena ucrainica",-239.985063610275,6.7,32.8,13.1,31.5,9.28339014430267e-06
+"361","Aphanizomenon flosaquae_Tsujimura et al. (2001)","Aphanizomenon flosaquae",-419.800373964363,0,32.7,23.7,24.8,5.91680824591828e-06
+"362","Synechocystis_Tasakal et al. (1996)","Synechocystis",-111.684117381014,15,41,23.6,30.7,1.03282259723102e-05
+"363","Cylindrospermopsis raciborskii_Saker et al. (1999)","Cylindrospermopsis raciborskii",-321.989657294729,16,34.7,14.7,30,7.04450537221092e-06
+"364","Scenedesmus acutus_Lurling & Donk (1999)","Scenedesmus acutus",-34.62424429226,9.3,27.2,12.4,19.5,3.16075534611934e-06
+"365","Anabaena spiroides_Seki et al. (1981)","Anabaena spiroides",-235.990717076415,11,40.6,25.6,23.6,5.45286509613363e-06
+"366","Anabaena_Nalewajko & Murphy (2001)","Anabaena",-232.617416403113,15,35.2,20,32.9,7.99287694974287e-06
+"367","Microcystis aeruginosa_Nalewajko & Murphy (2001)","Microcystis aeruginosa",-259.452556271766,15,35.4,16.3,33.5,1.39990664102062e-05
+"368","Phormidium simplicissimum_Venter et al. (2003)","Phormidium simplicissimum",-298.434719442187,15,38.6,20.7,26.6,1.89450923832843e-06
+"369","Apedinella radians_Throndsen (1976)","Apedinella radians",-172.36630382945,5,25.7,13.1,22.8,1.58098073074379e-05
+"370","Asterionellopsis glacialis_Karentz & Smayda (1984) from Teng (unpubl.)","Asterionellopsis glacialis",-319.455765609611,-1.2,33.2,23,20.7,2.22017627273691e-05
+"371","Calciodinellum albatrosianum_Meier et al. (2004)","Calciodinellum albatrosianum",-584.692532670634,7.3,31.2,18.4,29.5,1.59811101849107e-06
+"372","Chaetoceros deflandrei_Fiala & Oriol (1990)","Chaetoceros deflandrei",-278.131323308359,-3,16.3,15.8,10,6.73915593990981e-06
+"373","Chaetoceros deflandrei_Jacques (1983)","Chaetoceros deflandrei",-88.3007801990255,-2,15.2,11.6,10.2,5.51096691653833e-06
+"374","Chaetoceros didymus_Hulburt (1982)","Chaetoceros didymus",-512.233694838598,3.5,34,23,23.9,1.28863610897973e-05
+"375","Chaetoceros lorenzianus_Hulburt (1982)","Chaetoceros lorenzianus",-999.189129254176,3.5,36.7,19.3,29.2,1.38596633947028e-05
+"376","Pseudo-nitzschia americana_Miller & Kamykowski (1986a)","Pseudo-nitzschia americana",-193.966672097334,5.9,30.5,13.2,27.2,2.74185965133191e-05
+"377","Synechococcus_Mackey et al. (2013)","Synechococcus",-1053.6261108624,13.5,32,13.2,25.9,8.2993451786391e-06
+"378","Cosmarium crenatum_Stamenkovi? and Hanelt (2013)","Cosmarium crenatum",-219.794970789473,-4.4,35.7,26.6,23,2.38242829861996e-06
+"379","Cosmarium punctulatum_Stamenkovi? and Hanelt (2013)","Cosmarium punctulatum",-436.359918232243,-4.4,35.6,27.9,21.6,2.49439411862075e-06
+"380","Cosmarium regnesii_Stamenkovi? and Hanelt (2013)","Cosmarium regnesii",-198.915103114678,-3.9,37.2,25.4,29,3.42470464653083e-06
+"381","Cosmarium meneghinii_Stamenkovi? and Hanelt (2013)","Cosmarium meneghinii",-209.268622285228,-3.1,35.8,24.4,23.7,3.88377935071093e-06
+"382","Cosmarium beatum_Stamenkovi? and Hanelt (2013)","Cosmarium beatum",-212.563332366198,-4.4,36.2,26.6,22.3,2.78531513869006e-06
+"383","Chattonella marina_Yamaguchi et al. (2010)","Chattonella marina",-484.996679107416,10,35,16,30.3,8.60606551029837e-06
+"384","Ostreopsis ovata_Yamaguchi et al. (2012)","Ostreopsis ovata",-148.631813101198,11.7,35.1,16.2,27,6.31759941663358e-06
+"385","Heterocapsa circularisquama_Yamaguchi et al. (1997)","Heterocapsa circularisquama",-152.807394087428,7.8,35,17,28.8,9.19925869509117e-06
+"386","Heterocapsa triquetra_Yamaguchi et al. (1997)","Heterocapsa triquetra",-124.830585521774,0,30.1,25.9,19.3,6.02313661602872e-06
+"387","Pseudochattonella verruculosa_Yamaguchi et al. (1997)","Pseudochattonella verruculosa",-112.934314913414,0,30.1,20.7,22,9.15574675776119e-06
+"388","Cyclotella cryptica_Montagnes & Franklin (2001)","Cyclotella cryptica",-130.16838778367,5,30,20.3,22,8.62306380994907e-06
+"389","Ditylum brightwellii_Montagnes & Franklin (2001)","Ditylum brightwellii",-139.697119479492,4,30,22.1,21,8.49760576230885e-06
+"390","Phaeodactylum tricornutum_Montagnes & Franklin (2001)","Phaeodactylum tricornutum",-125.488678425451,3,25.6,16.6,22.1,1.17421982117717e-05
+"391","Thalassiosira eccentrica_Montagnes & Franklin (2001)","Thalassiosira eccentrica",-121.714134674733,5,30,16.8,24.4,6.20459620516128e-06
+"392","Thalassiosira weissflogii_Montagnes & Franklin (2001)","Thalassiosira weissflogii",-97.7944847834166,4.7,26.1,15.3,20.1,6.85627271082693e-06
+"393","Coscinodiscus_Montagnes & Franklin (2001)","Coscinodiscus",-103.996789686473,5,25.9,15,20.6,3.33513955963329e-06
+"394","Skeletonema costatum_Montagnes & Franklin (2001)","Skeletonema costatum",-99.4934670072553,4,25.8,21.6,21.1,9.02625042389782e-06
+"395","Chaetoceros simplex_Montagnes & Franklin (2001)","Chaetoceros simplex",-183.718793454207,8.6,30,14.7,25.5,1.33918881032195e-05
+"396","Isochrysis galbana_Montagnes & Franklin (2001)","Isochrysis galbana",-99.5186149761484,8,30.1,17.8,20.2,8.85263700131839e-06
+"397","Rhodomonas salina_Montagnes & Franklin (2001)","Rhodomonas salina",-93.8696131182878,3,25.9,22.5,18.6,9.88867596445368e-06
+"398","Stephanodiscus hantzschii_Ahlgren (1987)","Stephanodiscus hantzschii",-35.6948845107263,6.1,16.7,7.4,11.8,3.8967546145944e-05
+"399","Microcystis aeruginosa_Imai et al. (2009a)","Microcystis aeruginosa",-47.5454593694083,20.3,35,10.4,29.1,5.58776466051041e-06
+"400","Microcystis wesenbergii_Imai et al. (2009a)","Microcystis wesenbergii",-96.7010926376363,15,39.9,23.5,28,1.9443166409726e-06
+"401","Microcystis aeruginosa_Watanabe & Oishi (1985)","Microcystis aeruginosa",-15.923843400807,16.3,36.5,13.1,30.8,7.25579854824789e-05
+"402","Trichormus variabilis_Collins & Boylen (1982)","Trichormus variabilis",-144.463316033662,5,40.2,24,33.8,1.02626034569577e-05
+"403","Scenedesmus_Rhee & Gotham (1981)","Scenedesmus",-282.368164723627,0.8,25.9,13.6,23.3,1.7063966391756e-05
+"404","Asterionella formosa_Rhee & Gotham (1981)","Asterionella formosa",-243.596612907052,6.4,25,10.7,21.4,1.25154588239269e-05
+"405","Stephanodiscus hantzschii_van Donk & Kilham (1990)","Stephanodiscus hantzschii",-123.719148119635,0,25,15.4,18.6,9.46642079305709e-06
+"406","Fragilaria crotonensis_van Donk & Kilham (1990)","Fragilaria crotonensis",-131.908089308383,0.1,25.2,16.3,16.8,7.24403170124459e-06
+"407","Asterionella formosa_van Donk & Kilham (1990)","Asterionella formosa",-128.383701329028,0,25.2,18.8,14.9,8.32649273935255e-06
+"408","Nostoc muscorum_Kratz & Myers (1955)","Nostoc muscorum",-22.4992564083158,25,35.5,7.1,33.3,6.52019928251224e-05
+"409","Trichormus variabilis_Kratz & Myers (1955)","Trichormus variabilis",-74.6540378514448,20,37.9,13.5,35.1,2.74151608124947e-05
+"410","Microcystis aeruginosa_Coles & Jones (2000)","Microcystis aeruginosa",-73.4886297184721,12.9,35,12.1,32.9,1.44292359234333e-05
+"411","Merismopedia tenuissima_Coles & Jones (2000)","Merismopedia tenuissima",-85.6913861359266,10,35,19.3,31.8,6.44157280075835e-06
+"412","Oscillatoria_Coles & Jones (2000)","Oscillatoria",-38.1707210373979,10,28.5,15.2,19.3,1.20870522132662e-05
+"413","Aulacoseira granulata_Coles & Jones (2000)","Aulacoseira granulata",-92.6218018010576,10,35,18.9,26.6,9.65704250650204e-06
+"414","Chaetoceros pseudocurvisetus_Suzuki & Takahashi (1995)","Chaetoceros pseudocurvisetus",-84.007917101438,12.3,34.1,14.6,26.1,1.26695048428165e-05
+"415","Stephanodiscus hantzschii_Suzuki & Takahashi (1995)","Stephanodiscus hantzschii",-142.888804700217,0,35,25.3,24.7,1.15887086900714e-05
+"416","Skeletonema costatum_Suzuki & Takahashi (1995)","Skeletonema costatum",-162.222293295622,-3,35,22.4,28.9,1.48364327037944e-05
+"417","Asterionella formosa_Suzuki & Takahashi (1995)","Asterionella formosa",-143.217577197025,-1.3,30.1,20.3,21.8,1.35594446390081e-05
+"418","Thalassiosira nordenskioeldii_Suzuki & Takahashi (1995)","Thalassiosira nordenskioeldii",-148.124716243046,-6,20,16.2,12.8,1.1292537804792e-05
+"419","Detonula confervacea_Suzuki & Takahashi (1995)","Detonula confervacea",-128.042288994029,-6.8,15,14.7,8.6,1.02256723726538e-05
+"420","Chaetoceros_Suzuki & Takahashi (1995)","Chaetoceros",-94.6647815018106,-5,14.8,15.7,7,6.11995838667682e-06
+"421","Aulacoseira baicalensis_Richardson et al. (2000)","Aulacoseira baicalensis",-35.7498235076229,5.5,10.7,3.6,8.3,6.91381611926286e-06
+"422","Synechocystis limnetica_Richardson et al. (2000)","Synechocystis limnetica",-101.53438147635,3.7,18.6,10.5,13.9,3.48940041702107e-06
+"423","Chlorella_Novak & Brune (1985)","Chlorella",-86.1525630091634,10,36.7,23.7,24.4,6.04377263124483e-06
+"424","Raphidocelis subcapitata_Novak & Brune (1985)","Raphidocelis subcapitata",-48.6045253259987,10,34.8,17.6,24.3,6.67086482276599e-06
+"425","Desmodesmus quadricaudatus_Novak & Brune (1985)","Desmodesmus quadricaudatus",-86.495303416575,10,38.9,21.6,29.3,5.47212871866075e-06
+"426","Oscillatoria_Novak & Brune (1985)","Oscillatoria",-33.3637818976456,NA,NA,NA,22.1,-3.09211116591569e-06
+"427","Microcoleus vaginatus_Novak & Brune (1985)","Microcoleus vaginatus",-40.2615744098435,18.1,26.4,5.8,22.6,2.61011347383963e-06
+"428","Stephanodiscus hantzschii_Foy & Gibson (1993)","Stephanodiscus hantzschii",-147.625015220637,-1,25,21.8,22.4,4.78255920443349e-06
+"429","Stephanodiscus astraea_Foy & Gibson (1993)","Stephanodiscus astraea",-135.093091513978,-1,24.6,18.6,16.8,2.73605862740922e-06
+"430","Aulacoseira subarctica_Foy & Gibson (1993)","Aulacoseira subarctica",-148.947619898075,-1,24.7,16,19.7,1.81720119348271e-06
+"431","Anabaena_Rapala & Sivonen (1998)","Anabaena",-754.140149826863,5,32.1,21.8,24.2,6.60685872490227e-06
+"432","Aphanizomenon flosaquae_Yamamoto & Nakahara (2005)","Aphanizomenon flosaquae",-617.895683318459,3,36.9,19.2,30,9.7107561631619e-06
+"433","Golenkinia radiata_Yamamoto & Nakahara (2005)","Golenkinia radiata",-597.987722931222,2.6,32.6,19,29.7,1.43225883568261e-05
+"434","Chlorella_Yamamoto & Nakahara (2005)","Chlorella",-626.859354800347,7.4,36.3,17.3,28.6,1.3958524921925e-05
+"435","Skeletonema tropicum_Hulburt & Guillard (1968)","Skeletonema tropicum",-357.141882042769,12.3,35.7,15.9,26.8,1.84508128051528e-05
+"436","Cryptomonas pyrenoidifera_Cloern (1977)","Cryptomonas pyrenoidifera",-47.498169391661,11.2,25.9,10.5,20.2,1.04237534036627e-05
+"437","Dunaliella tertiolecta_Sosik & Mitchell (1994)","Dunaliella tertiolecta",-207.84635394507,8.9,33.2,16.4,24.1,2.13425018887833e-05
+"438","Botryococcus braunii_Qin & Li (2006)","Botryococcus braunii",-120.693273996827,15,30.6,15.5,27.7,9.90911462791084e-07
+"439","Volvox aureus_Senft et al. (1981)","Volvox aureus",-124.733435374788,0,30.8,21,23.9,6.06885351012081e-06
+"440","Volvox globator_Senft et al. (1981)","Volvox globator",-120.172242492622,3.2,30.1,19.4,20.9,5.89713819483687e-06
+"441","Cryptomonas erosa_Morgan & Kalff (1979)","Cryptomonas erosa",-86.425233676779,5.5,28.6,13.2,23.2,7.93231818198878e-06
+"442","Coelastrum astroideum_Bouterfas et al. (2002)","Coelastrum astroideum",-120.87731405997,10.1,40,19.3,32.5,1.8605836471351e-05
+"443","Chloroidea ellipsoideum_Cho et al. (2007)","Chloroidea ellipsoideum",-47.6688428660988,15.7,30.4,9.5,27.2,1.17439925708313e-05
+"444","Nannochloropsis oculata_Cho et al. (2007)","Nannochloropsis oculata",-46.4509954527899,10,31.2,15.7,22.3,7.04679245543649e-06
+"445","Skeletonema costatum_Jï¿½rgensen (1968)","Skeletonema costatum",-80.0953302116858,2.1,25.1,16.1,17.7,1.73200291315384e-05
+"446","Rhodomonas_Renaud et al. (2002)","Rhodomonas",-103.358438085223,20,35.2,14.4,27.7,2.91259637007186e-06
+"447","Chaetoceros_Lomas & Glibert (1999)","Chaetoceros",-37.8679471731431,6.8,23.6,11.6,17.3,1.60859487206208e-05
+"448","Thalassiosira weissflogii_Lomas & Glibert (1999)","Thalassiosira weissflogii",-39.0312473033457,8.6,24.7,11,18.3,1.50826072928763e-05
+"449","Prorocentrum minimum_Lomas & Glibert (1999)","Prorocentrum minimum",-46.7349217840909,1.9,23.8,15.2,14.8,2.80888144666391e-05
+"450","Gyrodinium uncatenum_Lomas & Glibert (1999)","Gyrodinium uncatenum",-95.6535600659036,9.2,25.2,10.5,20.1,3.27350971529825e-06
+"451","Aphanizomenon flosaquae_Uehlinger (1981)","Aphanizomenon flosaquae",-96.7853999050468,8.9,31.7,16.4,26.2,7.78520105156551e-06
+"452","Dunaliella tertiolecta_Eppley & Sloan (1966)","Dunaliella tertiolecta",-43.9049960959073,10.8,23.4,8.9,18,9.08032605517398e-06
+"453","Asterionella formosa_Talling (1955)","Asterionella formosa",205.581494986683,NA,NA,NA,16.6,-0.0248583166194455
+"454","Anabaena_Vincent & Silvester (1979)","Anabaena",-43.4160738488902,16.5,33.5,11.8,26.4,1.06793476297179e-05
+"455","Chlorella_Vincent & Silvester (1979)","Chlorella",-35.5068608167479,17,34.8,12.2,28.7,4.42562120608049e-05
+"456","Alexandrium tamarense_Ogata et al. (1987)","Alexandrium tamarense",-44.7965493290856,9.7,21.8,8.3,16.8,1.3422283699915e-05
+"457","Desmodesmus quadricaudatus_Zargar et al. (2006)","Desmodesmus quadricaudatus",-89.4612614155919,21,39.2,18,37.5,4.96477189929433e-06
+"458","Dunaliella viridis_Jimï¿½nez & Niell (1991)","Dunaliella viridis",-30.4352962251394,NA,NA,NA,31.5,-1.65357157629799e-05
+"459","Dunaliella viridis_Chang et al. (1986)","Dunaliella viridis",-87.423404420081,3,35.1,27.8,21.8,6.4918298904124e-06
+"460","Dunaliella salina_Chang et al. (1986)","Dunaliella salina",-99.2548626263427,3,34,25.2,20.8,7.14433380473609e-06
+"461","Synura sphagnicola_Healey (1983)","Synura sphagnicola",-184.25911741234,3,22.7,12.9,16.6,2.88962284435263e-06
+"462","Microcystis aeruginosa_Kappers (1984) thesis","Microcystis aeruginosa",-85.3031515597396,12.5,25,8.6,21.2,5.31547438233857e-06
+"463","Microcystis aeruginosa_van der Westhuizen & Eloff (1985)","Microcystis aeruginosa",-123.975377328788,12.7,36.5,16.1,31.5,6.94363967521111e-06
+"464","Mallomonas crassisquama_Lee et al. (2007b)","Mallomonas crassisquama",-182.217530673401,4.1,24.7,13.8,17.1,5.41348039937719e-06
+"465","Mallomonas elongata_Lee et al. (2007b)","Mallomonas elongata",-184.796171403937,1,25.1,15.9,18.6,5.58823861311688e-06
+"466","Mallomonas tonsurata_Lee et al. (2007b)","Mallomonas tonsurata",-150.476032745471,9.3,25.2,10.9,21.1,4.28412624643796e-06
+"467","Thalassiosira curviseriata_Popovich & Gayoso (1999)","Thalassiosira curviseriata",-79.7597572547045,3.8,25,13.9,18.8,1.70804131174022e-05
+"468","Microcystis ichthyoblabe_Sabour et al. (2009)","Microcystis ichthyoblabe",-150.368175191865,5,39.9,30,28.2,1.28624065187272e-05
+"469","Sphaerospermopsis aphanizomenoides_Sabour et al. (2009)","Sphaerospermopsis aphanizomenoides",-144.242943517099,5.5,40,22.6,32.2,1.18175047508438e-05
+"470","Dunaliella_Thomas & Dodson (1974)","Dunaliella",18.9491828217196,NA,NA,NA,23.5,-0.278195533465845
+"471","Planktothrix agardhii_Talbot et al. (1991)","Planktothrix agardhii",-179.796191274921,0,39.9,38.9,28.2,5.91164615873917e-06
+"472","Ankistrodesmus falcatus_Talbot et al. (1991)","Ankistrodesmus falcatus",-176.618992497173,0,39.9,39.7,25.5,1.21922757279555e-05
+"473","Hymenomonas carterae_Blankley & Lewin (1976)","Hymenomonas carterae",-324.947746641606,8,27.7,13.4,20,3.52775631964884e-06
+"474","Alexandrium ostenfeldii_Jensen & Moestrup (1997)","Alexandrium ostenfeldii",-264.598918641107,9,26.3,12,20.6,2.27000617638845e-06
+"475","Stichococcus_Ryther (1954)","Stichococcus",-133.720980538266,4,30.7,18.8,23.4,3.77369470374778e-06
+"476","Phaeodactylum tricornutum_Spencer (1954)","Phaeodactylum tricornutum",-82.2215278837485,5.1,30.1,17.6,22.1,1.77841753891334e-05
+"477","Monoraphidium convolutum_Eddy (1956)","Monoraphidium convolutum",257.558499515086,NA,NA,NA,26.4,-0.0252326378985483
+"478","Monoraphidium contortum_Eddy (1956)","Monoraphidium contortum",-79.71721596635,12,33.5,15.6,26.9,1.58208048636306e-05
+"479","Mucidosphaerium pulchellum_Eddy (1956)","Mucidosphaerium pulchellum",-113.709618551437,12,36.5,17.6,27,2.312295187623e-05
+"480","Dunaliella bioculata_Eddy (1956)","Dunaliella bioculata",-33.978164683091,27.1,36.8,6.7,34.6,2.1835809311796e-05
+"481","Dunaliella primolecta_Eddy (1956)","Dunaliella primolecta",-22.0438539381836,NA,NA,NA,28.7,-0.00011364416658309
+"482","Gyrodinium aureolum_Nielsen & Tï¿½nseth (1991)","Gyrodinium aureolum",-122.536825974572,7.5,23.2,13.3,21.1,1.29419067099232e-06
+"483","Gyrodinium uncatenum_Anderson (1985)","Gyrodinium uncatenum",-473.493157713545,8.6,35.2,18.5,27.8,5.21291941182399e-06
+"484","Chlorella sorokiniana_Sorokin (1960)","Chlorella sorokiniana",-149.508193119926,20.4,47,8.4,47,0.00011240578589769
+"485","Chlorella vulgaris_Sorokin (1960)","Chlorella vulgaris",-29.6647841217726,20.1,28,5.6,24.4,2.79086996281245e-05
+"486","Odontella aurita_Baars (1986)","Odontella aurita",-181.308871037824,-3.1,17.2,13.7,9.6,9.56799507745312e-06
+"487","Phaeodactylum tricornutum_Li (1980)","Phaeodactylum tricornutum",-79.0541768008176,2.7,30.1,15.2,25.7,1.33925443302983e-05
+"488","Monodus subterranea_Fogg et al. (1959)","Monodus subterranea",-19.4522605828575,14.4,29.7,10.5,23.8,2.19593709072789e-06
+"489","Ceratium furca_Weiler & Eppley (1979)","Ceratium furca",-135.061457582582,10,28.9,12.4,22.9,6.21885639073467e-06
+"490","Stephanodiscus medius_Mechling (1982)","Stephanodiscus medius",286.030521567802,NA,NA,NA,16,-0.00726276991028379
+"491","Lingulodinium polyedrum_Meeson (1982)","Lingulodinium polyedrum",-42.5377272221743,5,21.1,13.8,12.3,5.47886462501517e-05
+"492","Mallomonas acaroides_Lee (2007a)","Mallomonas acaroides",-138.399743288884,9.1,23.9,10.6,20.2,2.51292124005186e-06
+"493","Mallomonas caudata_Lee (2007a)","Mallomonas caudata",-458.29079621357,4,23.8,12.6,19.2,2.96149773229154e-06
+"494","Mallomonas areolata_Lee (2007a)","Mallomonas areolata",-137.39107602691,4.1,23.7,10.6,21.2,4.01561908176604e-06
+"495","Synura petersenii_Kim et al. (2008)","Synura petersenii",-537.721792888855,4,32,25,18.4,4.74841011810441e-06
+"496","Prymnesium parvum_Larsen & Bryant (1998)","Prymnesium parvum",-705.806599829127,0,34.8,22,24.5,3.77230712155728e-06
+"497","Pseudo-nitzschia multiseries_Lewis (1993)","Pseudo-nitzschia multiseries",-108.215464996745,0,25.9,18.8,22.6,4.69180788108952e-06
+"498","Thalassiosira oceanica_Guillard & Ryther (1962)","Thalassiosira oceanica",-111.488089109134,5.5,30.1,17.5,22.3,1.21220603708006e-05
+"499","Dunaliella_Van Auken & McNulty (1973)","Dunaliella",-245.401109732313,0,40,31.9,28.7,4.71081708962733e-06
+"500","Leptolyngbya tenuis_Fujimoto et al. (1997)","Leptolyngbya tenuis",17.6460078145063,NA,NA,NA,27.5,-0.353905810974908
+"501","Koliella antarctica_Vona (2004)","Koliella antarctica",-31.0219589444386,NA,NA,NA,13.9,-6.89243014034565e-06
+"502","Prymnesium parvum_Baker et al. (2007)","Prymnesium parvum",265.184172945017,NA,NA,NA,23.9,-0.0415238125055665
+"503","Pycnococcus provasolii_Iriarte & Purdie (1993)","Pycnococcus provasolii",275.427118248484,NA,NA,NA,16.3,-0.00864331066544741
+"504","Chaetoceros calcitrans_Thompson (1992)","Chaetoceros calcitrans",-418.402707602039,8.1,30,15.8,23.2,2.84939604932198e-05
+"505","Chaetoceros gracilis_Thompson (1992)","Chaetoceros gracilis",-515.562512002479,5,30,16.9,24.7,1.88494146451193e-05
+"506","Chaetoceros simplex_Thompson (1992)","Chaetoceros simplex",-367.687106543001,8.4,30,15.2,23.2,2.56585007578356e-05
+"507","Phaeodactylum tricornutum_Thompson (1992)","Phaeodactylum tricornutum",-419.004517923605,5,30,17.2,23.5,1.77176059726713e-05
+"508","Dunaliella tertiolecta_Thompson (1992)","Dunaliella tertiolecta",-432.211095383127,8.8,30,14.3,25.6,1.83569278447152e-05
+"509","Pavlova lutheri_Thompson (1992)","Pavlova lutheri",-421.467493862174,6.2,30,13.4,27,2.44336598344785e-05
+"510","Alexandrium tamarense_Langdon (1988)","Alexandrium tamarense",-103.01597526412,0,25,15.5,19.2,5.027447167775e-06
+"511","Pavlova lutheri_Goldman (1979)","Pavlova lutheri",-13.557569117277,18.7,27.7,6.2,24.6,1.26893206419499e-05
+"512","Euglena gracilis_Cook (1966)","Euglena gracilis",-216.407630041072,10,34.5,15.8,30.6,1.45081918995069e-05
+"513","Coscinodiscus pavillardii_Findlay (1972)","Coscinodiscus pavillardii",18.4692587337553,19,31.8,8.9,26.9,1.64998977888114e-05
+"514","Rhodomonas salina_Hobson (1974)","Rhodomonas salina",-79.7411839232839,5,30.1,14.7,27.3,1.09103387904961e-05
+"515","Pavlova_Throndsen (1976)","Pavlova",228.054249153763,NA,NA,NA,15.4,-0.00874579417605402
+"516","Eutreptiella_Throndsen (1976)","Eutreptiella",208.170206139713,NA,NA,NA,17.4,-0.00591791206842397
+"517","Amphidinium carteri_Throndsen (1976)","Amphidinium carteri",214.739830371118,NA,NA,NA,19.8,-0.0110457211030467
+"518","Micromonas pusilla_Throndsen (1976)","Micromonas pusilla",-14.7945068197508,14.5,28.5,9.7,23,0.000117446389177479
+"519","Ochromonas minima_Throndsen (1976)","Ochromonas minima",-84.5714234830963,6.8,33.2,17.6,23.5,2.08334186697621e-05
+"520","Gyrodinium estuariale_Throndsen (1976)","Gyrodinium estuariale",242.75707313982,NA,NA,NA,16.9,-0.0111908281016241
+"521","Pavlova lutheri_Yanase & Imai (1968)","Pavlova lutheri",-139.665495128383,12,29.3,15.9,19.3,2.39661248273787e-06
+"522","Tetraselmis_Yanase & Imai (1968)","Tetraselmis",-144.315565119332,12,29.8,17.5,25.2,2.82336777697333e-06
+"523","Cylindrotheca closterium_Yanase & Imai (1968)","Cylindrotheca closterium",-144.646905839224,12,32.8,18.5,23,2.8454254429095e-06
+"524","Chaetoceros calcitrans_Yanase & Imai (1968)","Chaetoceros calcitrans",-143.32185205786,12,33.9,19.5,24.1,5.58929476174221e-06
+"525","Skeletonema marinoi_Hulburt (1982)","Skeletonema marinoi",-251.005854168215,-0.8,31.2,21.6,22.7,1.35374607135426e-05
+"526","Odontella mobiliensis_Hulburt (1982)","Odontella mobiliensis",-164.429224770775,10.8,34.5,16.1,29.8,1.3043089719562e-05
+"527","Coscinodiscus excentricus_Hulburt (1982)","Coscinodiscus excentricus",-167.073869110995,6,37.5,22.6,26.3,6.59824556286855e-06
+"528","Thalassiosira rotula_Schï¿½ne (1972)","Thalassiosira rotula",-4.15758399700636,NA,NA,NA,16.7,-1.11265012649477e-05
+"529","Asterionella formosa_Bruning (1991)","Asterionella formosa",-120.376818975001,-3,21.8,24.6,16,8.33717775119415e-07
+"530","Chloroidea ellipsoideum_Tamiya et al. (1955)","Chloroidea ellipsoideum",-49.0040411923462,18,30.3,7.5,28.1,1.34240936338137e-06
+"531","Pontosphaera huxleyi_Schouten et al. (2006)","Pontosphaera huxleyi",195.303939942123,NA,NA,NA,16.4,-0.00891715608047946
+"532","Gephyrocapsa oceanica_Schouten et al. (2006)","Gephyrocapsa oceanica",231.610012281272,NA,NA,NA,21.3,-0.0213247933043638
+"533","Alexandrium catenella_Ogata et al. (1989)","Alexandrium catenella",-51.3858582121072,12.3,28.3,11.2,21.4,7.67462954711376e-06
+"534","Alexandrium tamiyavanichi_Ogata et al. (1989)","Alexandrium tamiyavanichi",-44.0487657566908,18.7,33.9,10.4,27.8,5.88091597493728e-06
+"535","Gymnodinium catenatum_Ogata et al. (1989)","Gymnodinium catenatum",-47.871999896633,12.5,31.7,12.7,25,1.0956916152609e-05
+"536","Rhizosolenia robusta_Schï¿½ne (1982)","Rhizosolenia robusta",-117.430230672671,9.1,28.1,12.4,24,9.13432088991304e-06
+"537","Proboscia indica_Schï¿½ne (1982)","Proboscia indica",227.474501841863,NA,NA,NA,18.3,-0.00524335417687257
+"538","Stephanopyxis palmeriana_Schï¿½ne (1982)","Stephanopyxis palmeriana",-89.0028270102326,7.9,24,12.2,18.6,1.06077019402544e-05
+"539","Thalassiosira rotula_Schï¿½ne (1982)","Thalassiosira rotula",-127.04088456099,5,28,19.4,24.2,1.59578380277478e-05
+"540","Skeletonema costatum_Mortain-Bertrand et al. (1988)","Skeletonema costatum",20.2782585420831,NA,NA,NA,16.5,-0.231530019702012
+"541","Syracosphaera pulchra_Buitenhuis et al. (2008)","Syracosphaera pulchra",272.126392387207,NA,NA,NA,20.3,-0.0123824563390865
+"542","Prorocentrum minimum_Grzebyk & Berland (1996)","Prorocentrum minimum",-1804.6464025194,7.9,32.1,16.1,23.4,8.08780733278874e-06
+"543","Synura petersenii_Saxby-Rouen et al. (1997)","Synura petersenii",-49.028143230181,10.2,24.8,10.5,18.5,8.76342057073054e-06
+"544","Planktothrix agardhii_Briand et al. (2004)","Planktothrix agardhii",-106.265693939226,10,35.5,22.1,25.2,4.50162935242028e-06
+"545","Gymnodinium catenatum_Bravo & Anderson (1994)","Gymnodinium catenatum",-321.587259566385,10.2,29.2,13.8,23.3,4.02139001702152e-06
+"546","Microcystis aeruginosa_Krï¿½ger & Eloff (1978)","Microcystis aeruginosa",-1141.74038147602,7,37.4,20.9,30,3.00981899997686e-06
+"547","Anacystis incerta_Krï¿½ger & Eloff (1978)","Anacystis incerta",-637.300356906221,5.5,36.7,28,28.5,3.1594002364644e-06
+"548","Ceratium tripos_Nordli (1957)","Ceratium tripos",-106.166386489167,0,25.7,23.2,18.8,2.32580407901603e-06
+"549","Planktothrix agardhii_Ahlgren (1978)","Planktothrix agardhii",-187.315369883499,7.5,32.5,17.8,25.6,6.62577429729549e-06
+"550","Prochlorococcus marinus_Johnson (2006)","Prochlorococcus marinus",-939.529345297186,6.5,33.7,18.5,23.1,4.69056665512136e-06
+"551","Planktothrix agardhii_van Liere (1979)","Planktothrix agardhii",-214.735909375524,15,36.3,21,30.1,7.20715071049393e-06
+"552","Crocosphaera watsonii_Falcï¿½n (2005)","Crocosphaera watsonii",-452.967256170517,24.4,31.1,4.6,29,1.0137102051504e-05
+"553","Acutodesmus obliquus_Martï¿½nez et al. (1999)","Acutodesmus obliquus",-32.9241398876347,23,35.4,8.5,32.3,7.87537041395182e-06
+"554","Nitzschia holsatica_Mï¿½ller (1971)","Nitzschia holsatica",-79.4347606230824,10,34.3,21.5,22.5,2.42614792984201e-05
+"555","Fragilaria crotonensis_Mï¿½ller (1971)","Fragilaria crotonensis",-80.5379501742231,10,30.5,20,20.7,1.90612589445535e-05
+"556","Fragilaria capucina_Mï¿½ller (1971)","Fragilaria capucina",-17.6027856495535,16,26.5,7.4,22.3,8.56508326114404e-05
+"557","Diatoma tenue_Mï¿½ller (1971)","Diatoma tenue",-37.1430736961296,10,24.3,10.1,18,4.03244033318358e-05
+"558","Synedra acus_Mï¿½ller (1971)","Synedra acus",255.171561310168,NA,NA,NA,19.2,-0.0170303246918995
+"559","Chaetoceros gracilis_Mortensen et al. (1988)","Chaetoceros gracilis",-165.78964354508,11.5,36.3,13,33.8,2.98171178881967e-05
+"560","Navicula_Teoh et al. (2004)","Navicula",-137.620268077311,-1,33.3,30.4,17,3.51189471576233e-06
+"561","Chaetoceros_Fiala & Oriol (1990)","Chaetoceros",-155.110235431375,-3,16.1,18,9.7,5.94004428854671e-06
+"562","Chaetoceros_Reay et al. (1999)","Chaetoceros",20.0762470316583,2.8,10.7,5.5,7.7,8.2746126730922e-06
+"563","Chaetoceros curvisetus_Reay et al. (1999)","Chaetoceros curvisetus",-53.0740711830968,12.3,25,8.9,19.3,2.48158177577361e-06
+"564","Aphanizomenon ovalisporum_Hadas et al. (2002)","Aphanizomenon ovalisporum",265.553445807168,NA,NA,NA,24.6,-0.0273721202940916
+"565","Cryptomonas czosnowskii_Ojala (1993)","Cryptomonas czosnowskii",-174.944951388891,3.3,31,18.8,23.6,1.41562784608056e-05
+"566","Cryptomonas curvata_Ojala (1993)","Cryptomonas curvata",-103.44769705509,2.3,22.4,12,20,8.94984989296331e-06
+"567","Peridinium bipes_Kishimoto et al. (1998)","Peridinium bipes",-107.325920352181,1.9,25.7,17.2,19.6,1.19176645672117e-06
+"568","Chlamydomonas reinhardtii_McCombie (1960)","Chlamydomonas reinhardtii",-216.124889019955,3.5,34.9,17.9,29.7,9.04604986435267e-07
+"569","Spirulina platensis_Tedesco & Duerr (1989)","Spirulina platensis",-27.9472917775678,30.7,37.1,4.5,34.2,3.62949173278505e-06
+"570","Spirulina platensis_Islam et al. (2003)","Spirulina platensis",-166.976622868528,15,40,22.2,32.2,1.27561841498943e-06
+"571","Arthrospira fusiformis_Islam et al. (2003)","Arthrospira fusiformis",-169.091701437951,15,40.6,18.5,32.1,1.51814711725151e-06
+"572","Staurastrum anatinum_Coesel & Wardenaar (1990)","Staurastrum anatinum",-143.01320209727,5,31,13.7,27.2,2.62279197333134e-06
+"573","Staurodesmus cuspidatus_Coesel & Wardenaar (1990)","Staurodesmus cuspidatus",-145.747429644568,5,30.6,16.6,25.8,2.61720901637798e-06
+"574","Cosmarium abbreviatum_Coesel & Wardenaar (1990)","Cosmarium abbreviatum",-148.806132964159,5,33,20.9,22.4,2.88519314612215e-06
+"575","Staurastrum avicula_Coesel & Wardenaar (1990)","Staurastrum avicula",-147.982248381294,5,30.7,18.7,24,2.4193494229184e-06
+"576","Staurastrum cingulum_Coesel & Wardenaar (1990)","Staurastrum cingulum",-141.638888869875,5,30.6,18.9,26.1,2.66030570970143e-06
+"577","Cosmarium biretum_Coesel & Wardenaar (1990)","Cosmarium biretum",-141.885107543094,5,34.8,26.5,21.1,2.18930730301082e-06
+"578","Cosmarium kjellmanii_Coesel & Wardenaar (1990)","Cosmarium kjellmanii",-140.714086584484,5,30.7,18.6,24.3,3.46005628930917e-06
+"579","Closterium limneticum_Coesel & Wardenaar (1990)","Closterium limneticum",-145.20771809042,6.8,34.3,17,26.3,4.57817064380676e-06
+"580","Staurastrum chaetoceras_Coesel & Wardenaar (1990)","Staurastrum chaetoceras",-140.868042458533,6.1,33.2,17.7,24.1,3.4844706466651e-06
+"581","Staurastrum pingue_Coesel & Wardenaar (1990)","Staurastrum pingue",-142.649654369553,5,30.7,17.7,27.1,3.33211659333313e-06
+"582","Staurastrum planctonicum_Coesel & Wardenaar (1990)","Staurastrum planctonicum",-138.925945009519,5,34,20.6,22.5,3.2232143748076e-06
+"583","Closterium acutum_Coesel & Wardenaar (1990)","Closterium acutum",-139.704208448508,5,30.7,19.3,25.9,4.89643940436166e-06
+"584","Phaeocystis pouchetii_Wang et al. (2010)","Phaeocystis pouchetii",-95.8150223243936,2.4,12.1,6.5,8.7,4.43715716396135e-06
+"585","Gymnodinium corollarium_Sundstrï¿½m et al. (2009)","Gymnodinium corollarium",-136.266311715616,-5,10.3,12.3,3.7,3.3987989528813e-06
+"586","Alexandrium fundyense_Etheridge & Roesler (2005)","Alexandrium fundyense",-236.514545215867,2.6,24,14.3,16.1,3.40951425395024e-06
+"587","Amphidinium carteri_Seguel (1957) dissertation","Amphidinium carteri",-92.9669699244553,5,30,20.8,20.8,4.92977657408194e-06
+"588","Chlamydomonas_Seguel (1957) dissertation","Chlamydomonas",-85.3930883041904,-5,20.4,17,14.9,7.49856041864299e-06
+"589","Pseudo-nitzschia multiseries_Seguel (1957) dissertation","Pseudo-nitzschia multiseries",-39.2720942915092,5.6,20.4,10.1,14.7,1.23715990842972e-05
+"590","Entomoneis_Seguel (1957) dissertation","Entomoneis",-107.526741434093,-5,17.8,16.3,15,5.15762640049631e-06
+"591","Eutreptiella pomquetensis_Seguel (1957) dissertation","Eutreptiella pomquetensis",-89.5742280479549,-2.3,15.2,10.9,10.5,5.06340460626403e-06
+"592","Ceratium schrankii_Montressor & Tomas (1988)","Ceratium schrankii",276.262807852795,NA,NA,NA,20.9,-0.0124591220528785
+"593","Fibrocapsa japonica_Khan (1996)","Fibrocapsa japonica",-106.937101872546,5,33.1,20.6,21.9,5.60632021868406e-06
+"594","Skeletonema costatum_Chin (1965)","Skeletonema costatum",-218.72614716423,6.9,34.4,18.5,24.2,6.26831074487981e-07
+"595","Odontella sinensis_Chin (1965)","Odontella sinensis",-155.311978222642,5,35,21.4,26.5,8.38859515807911e-06
+"596","Streptotheca thamensis_Chin (1965)","Streptotheca thamensis",-90.5858244780962,8.7,30.5,14.3,27.2,1.04151481100598e-05
+"597","Phaeodactylum tricornutum_Raimbault (1984)","Phaeodactylum tricornutum",-206.462226204897,0,29.9,18.5,23.7,1.66336581361741e-05
+"598","Chaetoceros affinis_Raimbault (1984)","Chaetoceros affinis",-186.201056394787,6.1,30.1,17.2,23.5,1.2368038598423e-05
+"599","Coscinodiscus wailesii_Nishikawa & Yamaguchi (2008)","Coscinodiscus wailesii",-85.1842590689672,4.9,25.1,12.8,19.7,1.08436277425895e-05
+"600","Skeletonema marinoi/dohrnii_Kaeriyama et al. (2011)","Skeletonema marinoi/dohrnii",-695.289607524196,5,35,25.9,24.7,1.90425220865722e-05
+"601","Alexandrium catenella_Navarro et al. (2006)","Alexandrium catenella",-44.3061389597592,12.3,17.6,3.2,16.9,4.49325738517838e-05
+"602","Phaeodactylum tricornutum_Krï¿½bs et al. (2011)","Phaeodactylum tricornutum",-40.0268108726961,16,30.4,9.7,27.1,1.74209118715382e-05
+"603","Anabaena cylindrica_Lï¿½rling et al. (2013)","Anabaena cylindrica",-90.3021176496494,15,36.8,18.5,27.2,8.32747526008334e-06
+"604","Aphanizomenon gracile_Lï¿½rling et al. (2013)","Aphanizomenon gracile",-124.076111041088,15,40,18.5,32.4,9.45421131988702e-06
+"605","Cylindrospermopsis raciborskii_Lï¿½rling et al. (2013)","Cylindrospermopsis raciborskii",-84.1870690015197,15,40,24.2,29.8,6.70663381402809e-06
+"606","Microcystis aeruginosa_Lï¿½rling et al. (2013)","Microcystis aeruginosa",-246.235537569252,15,35.6,18.2,31.5,1.08036942126259e-05
+"607","Planktothrix agardhii_Lï¿½rling et al. (2013)","Planktothrix agardhii",-184.620069905507,15,35.4,18.4,29.8,8.2537935247132e-06
+"608","Monoraphidium griffithii_Lï¿½rling et al. (2013)","Monoraphidium griffithii",-125.48178207583,15,35.2,19.6,25.3,8.22071809436265e-06
+"609","Chlamydomonas reinhardtii_Lï¿½rling et al. (2013)","Chlamydomonas reinhardtii",-87.6413463808169,15,35.8,20.6,28.8,1.36021487388838e-05
+"610","Desmodesmus bicellularis_Lï¿½rling et al. (2013)","Desmodesmus bicellularis",-111.70170916255,15,39.1,20.2,22.8,1.0099614271803e-05
+"611","Selenastrum minutum_Lï¿½rling et al. (2013)","Selenastrum minutum",-83.2291961253668,15,34.7,16.7,26.9,9.02605335167443e-06
+"612","Scenedesmus acuminatus_Lï¿½rling et al. (2013)","Scenedesmus acuminatus",-116.574878094307,15,39.7,20.7,23.3,8.66278028587541e-06
+"613","Desmodesmus maximus_Lï¿½rling et al. (2013)","Desmodesmus maximus",-118.654542825324,15,39.9,19.5,36.4,8.05572924452125e-06
+"614","Synechococcus elongatus_Lï¿½rling et al. (2013)","Synechococcus elongatus",-154.847805649732,15,39.9,17.9,31.3,9.16315209384689e-06
+"615","Chlorella vulgaris_Teoh et al. (2013)","Chlorella vulgaris",-271.495421135825,-1,38.5,39.1,26.3,3.18821290890046e-06
+"616","Ostreococcus_Kulk et al (2012)","Ostreococcus",202.802983917167,NA,NA,NA,19.5,-0.0124333602270688
+"617","Pelagomonas calceolata_Kulk et al (2012)","Pelagomonas calceolata",-53.9205321828978,14,25.6,8.2,20.4,4.41390317804805e-06
+"618","Acutodesmus obliquus_Huisman et al. (1980)","Acutodesmus obliquus",-26.4062987884536,16.7,24.5,5.5,21,5.23525870757583e-06
+"619","Desmodesmus quadricaudatus_Komï¿½rek & Ruzicka (1969)","Desmodesmus quadricaudatus",-220.908638362045,5,37.7,18.5,35.4,1.41609045042392e-05
+"620","Raphidocelis subcapitata_Fujimoto et al. (1994)","Raphidocelis subcapitata",-49.9698480328175,10.8,30.6,14.2,25.3,6.84848975667968e-06
+"621","Microcystis viridis_Ohkubo et al. (1991)","Microcystis viridis",-138.431756798095,5,35,21.4,25.9,1.13466998203455e-06
+"622","Anabaena ucrainica_Tsujimura et al. (2003a)","Anabaena ucrainica",-244.123238406035,6.9,32.7,15.8,29.5,8.4112980332859e-06
+"623","Cymbella mongolica_Tsujimura et al. (2003b)","Cymbella mongolica",-157.757108029149,0,32.1,27.3,12.6,1.25328819305356e-06
+"624","Pseudodidymocystis planctonica_Tsujimura et al. (2003b)","Pseudodidymocystis planctonica",-149.665864815951,0,30.2,26.8,16.3,1.82479471429098e-06
+"625","Monoraphidium contortum_Tsujimura et al. (2003b)","Monoraphidium contortum",-145.585152823302,0,30.1,25.8,12.8,3.52074236733655e-06
+"626","Closterium parvulum_Tsujimura et al. (2003b)","Closterium parvulum",-141.18762023696,0,30.1,21.7,18.5,2.2548101120617e-06
+"627","Acutodesmus obliquus_Lï¿½rling et al. (1999)","Acutodesmus obliquus",-47.0377568972715,11,28.9,10.6,26.7,2.79981890246816e-05
+"628","Synechocystis_Tasaka et al. (1996)","Synechocystis",-108.044227757158,15,40.6,22.8,28.7,1.53193403061093e-05
+"629","Chlorogonium_Lee et al. (1985)","Chlorogonium",-14.6870808677912,20,23.7,2.2,20,4.71060874823202e-06
+"630","Chlorella_Hu et al. (2008)","Chlorella",-89.3215910284214,15.1,41.1,15.4,34.2,2.61005906182086e-06
+"631","Micractinium pusillum_Bouarab et al. (2002)","Micractinium pusillum",-120.035805453315,10,40.3,21,38.9,4.8824616775284e-06
+"632","Acutodesmus obliquus_Dauta (1982a)","Acutodesmus obliquus",-79.3314768466342,10,36.8,23.7,24.2,1.59816728179634e-05
+"633","Mucidosphaerium pulchellum_Dauta (1982a)","Mucidosphaerium pulchellum",-79.1056091259248,11.6,32.8,13.7,30.6,1.56915483445568e-05
+"634","Fragilaria bidens_Dauta (1982a)","Fragilaria bidens",-154.991385616334,5,33.2,20.3,23.2,1.18749715519418e-05
+"635","Desmodesmus abundans_Benider et al. (2001)","Desmodesmus abundans",-136.12918160381,5,39.9,27.6,29,1.67909278193399e-05
+"636","Scenedesmus dimorphus_Benider et al. (2001)","Scenedesmus dimorphus",-144.915035958394,5,40,19.9,31.5,1.72278254922821e-05
+"637","Scenedesmus ecornis_Benider et al. (2001)","Scenedesmus ecornis",-112.967733186584,7.8,35.5,15.7,31.3,2.31422790901829e-05
+"638","Pleurotaenium trabecula_Moss (1973)","Pleurotaenium trabecula",-177.775059312281,1.3,35,20.5,25.4,1.31208743301868e-06
+"639","Pleodorina californica_Moss (1973)","Pleodorina californica",-129.547564845946,5,33.5,22.2,21.7,1.79055554253175e-06
+"640","Pediastrum boryanum_Moss (1973)","Pediastrum boryanum",-136.581697559439,2.4,30,18,20.5,2.86349268091243e-06
+"641","Lobochlamys segnis_Seaburg et al. (1981)","Lobochlamys segnis",-196.030996941685,-4.6,20.7,15.6,13.6,1.18852944117327e-05
+"642","Chlorella_Ukeles et al. (1961)","Chlorella",-77.8812632884332,3,28,16.2,20,4.29255476021187e-05
+"643","Microcystis flosaquae_Bouchamma et al. (2004)","Microcystis flosaquae",-109.103396777897,10,39.9,29.2,27.1,1.12246012353284e-05
+"644","Chroococcus minutus_Bouchamma et al. (2004)","Chroococcus minutus",-85.3159650247779,10,35.5,25.2,27.1,1.26382349346341e-05
+"645","Planktothrix agardhii_Bouchamma et al. (2004)","Planktothrix agardhii",-74.8800105673178,10,36.7,14,31.4,1.331187575969e-05
+"646","Oocystis_Csavina et al. (2011)","Oocystis",-124.549571632957,10,40.6,25.1,29.6,2.5450974409233e-06
+"647","Amphora_Csavina et al. (2011)","Amphora",-133.495792878569,10,36.3,21,14.7,1.05733117574606e-06
+"648","Peridinium bipes_Nishibori et al. (1991)","Peridinium bipes",-118.859975561041,1.7,25.9,15.7,23.3,1.6566288569675e-06
+"649","Ochromonas_Wilken et al. (2013)","Ochromonas",-143.937960707741,8,35.2,18.9,24.8,3.32939805746397e-06
+"650","Haptolina ericina_Rhodes & Burke (1996)","Haptolina ericina",-89.3457024490755,6.1,25.2,13.5,19,6.42897949410441e-06
+"651","Haptolina hirta_Rhodes & Burke (1996)","Haptolina hirta",-94.1846331369586,6.9,25.1,12.4,18.2,4.86225259032778e-06
+"652","Chrysochromulina acantha_Rhodes & Burke (1996)","Chrysochromulina acantha",-90.5638977812761,9.5,30,14.7,23.5,4.08370519262306e-06
+"653","Chrysochromulina simplex_Rhodes & Burke (1996)","Chrysochromulina simplex",-88.6664081964629,10.5,30.2,13.6,26.2,6.42477775308405e-06
+"654","Cylindrospermopsis raciborskii_Saker & Griffiths (2000)","Cylindrospermopsis raciborskii",-652.626311502369,15,35.4,13.4,33.2,7.05907721830934e-06
+"655","Chlorella pyrenoidosa_Fogg (1987) ","Chlorella pyrenoidosa",-87.7590870425099,5,30.3,21.5,21.7,9.03674148847393e-06
+"656","Chlamydomonas acidophila_Gerloff-Elias et al. (2006)","Chlamydomonas acidophila",-35.4692108962596,17.6,30.9,8.9,25.8,1.98196459848267e-05
+"657","Oocystis borgei_Xianghu (2002)","Oocystis borgei",-158.111330121602,5,32.9,24.9,26.6,9.76900219512645e-06
+"658","Closterium ehrenbergii_Kasai & Ichimura (1990)","Closterium ehrenbergii",-2269.46883588804,0,39,34.3,18.9,1.42063609245631e-06
+"659","Haematococcus pluvialis_Bao-Yu et al. (2003)","Haematococcus pluvialis",-459.786282635067,5,28.7,16.6,25.4,7.14260285739612e-06
+"660","Acutodesmus obliquus_Derraz et al. (1995)","Acutodesmus obliquus",-82.2349570575457,15.4,35.4,12.9,33.1,2.06569867436312e-05
+"661","Microcystis aeruginosa_Boumnich et al. (2001)","Microcystis aeruginosa",-42.9114487442728,16.3,30.1,9.4,24.7,8.76389060786562e-06
+"662","Pseudochattonella farcimen_Skjelbred et al. (2012)","Pseudochattonella farcimen",21.0777901597691,NA,NA,NA,19.3,-0.261221695680326
+"663","Cosmarium crenatum_Stamenkovi? et al. (2013)","Cosmarium crenatum",-219.141379304816,-4.4,35.6,27.4,22.7,2.36049829792637e-06
+"664","Cosmarium punctulatum_Stamenkovi? et al. (2013)","Cosmarium punctulatum",-437.142241386132,-4.4,35.7,25.3,23.4,2.57277712964894e-06
+"665","Cosmarium regnesii_Stamenkovi? et al. (2013)","Cosmarium regnesii",-200.098961240321,-4.4,37.1,29.3,24.5,3.44370203966702e-06
+"666","Cosmarium meneghinii_Stamenkovi? et al. (2013)","Cosmarium meneghinii",-208.144009652374,-4.4,35.6,25.6,23.1,3.75981634055673e-06
+"667","Cosmarium beatum_Stamenkovi? et al. (2013)","Cosmarium beatum",-215.213911688443,1.3,37.1,23.9,26.4,2.77546627956554e-06
+"668","Gonyostomum semen_Rengefors et al. (2012)","Gonyostomum semen",-519.599992285909,-1,28.2,19.9,16.9,5.32849920605881e-07
