@@ -60,7 +60,7 @@ find_roots <- function(cf.a, cf.b, cf.delta_t, cf.tmax) {
   c(root1, root2)
 }
 
-buffer <- 0.2 # Buffer (in SD) for point inclusion in the pareto fronts.
+buffer <- 0.3 # Buffer (in SD) for point inclusion in the pareto fronts.
 
 # Load and examine data ---------------------------------------------------
 
@@ -1070,12 +1070,18 @@ df.filt <- df.final %>%
     z.x = r.max_T
   ) # Specify the x and y variables
 
-x.ref <- min(df.filt$z.x, na.rm = TRUE) # Min x
-y.ref <- min(df.filt$z.y, na.rm = TRUE) # Min y
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # Scale for the point addition algorithm. 
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 
 df.filt <- df.filt %>% # Calculate Euclidean distance from min
   mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
     dist.sc = distance/mean(distance)
   ) %>%
   arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
@@ -1092,22 +1098,25 @@ df.filt%>%
   print() # Display the outliers
 
 df.filt <- df.filt %>% 
-  filter(dist.sc < 5) # Error trimming
-
-df.filt <- df.filt %>% # Calculate Euclidean distance from min
-  mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
-    dist.sc = distance/mean(distance)
-  ) %>%
-  arrange(distance) # Recalculate after removing errors
+  filter(dist.sc < 2.4) # Error trimming
 
 df.filt <- df.filt %>% 
   mutate(
     z.y2 = scale(z.y)[, 1],
     z.x2 = scale(z.x)[, 1]
-  ) # Scale for the point addition algorithm. 
+  ) # re-scale for the point addition algorithm.
 
-par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
 
 buff.pts <- data.frame() # This will hold our extra data to potentially add
 
@@ -1133,7 +1142,7 @@ for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
 
 par.res.2 <- bind_rows(par.res.1, buff.pts) %>% distinct() # Add these to my existing PF
 
-fit <- scam(z.y ~ s(z.x, bs = "mpd", k = 4), data = par.res.2) # Fit a scam to the raw Pareto front
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.2)), data = par.res.2) # Fit a scam to the raw Pareto front
 
 x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
 
@@ -1173,7 +1182,7 @@ for (i in 1:(nrow(par.res.3) - 1)) { # Loop over each segment (slope)
 
 par.res.4 <- bind_rows(par.res.3, buff.pts) %>% distinct() # Add these to my existing PF
 
-fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = 6), data = par.res.4) # Model fit
+fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.4)), data = par.res.4) # Model fit
 
 pred.curve.2 <- data.frame( # predicted data frame
   z.x = x.vals,
@@ -1251,12 +1260,18 @@ df.filt <- df.final %>%
     z.x = r.max_I
   ) # Specify the x and y variables
 
-x.ref <- min(df.filt$z.x, na.rm = TRUE) # Min x
-y.ref <- min(df.filt$z.y, na.rm = TRUE) # Min y
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # Scale for the point addition algorithm. 
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 
 df.filt <- df.filt %>% # Calculate Euclidean distance from min
   mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
     dist.sc = distance/mean(distance)
   ) %>%
   arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
@@ -1273,22 +1288,25 @@ df.filt%>%
   print() # Display the outliers
 
 df.filt <- df.filt %>% 
-  filter(dist.sc < 5) # Error trimming
-
-df.filt <- df.filt %>% # Calculate Euclidean distance from min
-  mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
-    dist.sc = distance/mean(distance)
-  ) %>%
-  arrange(distance) # Recalculate after removing errors
+  filter(dist.sc < 2.4) # Error trimming
 
 df.filt <- df.filt %>% 
   mutate(
     z.y2 = scale(z.y)[, 1],
     z.x2 = scale(z.x)[, 1]
-  ) # Scale for the point addition algorithm. 
+  ) # re-scale for the point addition algorithm.
 
-par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
 
 buff.pts <- data.frame() # This will hold our extra data to potentially add
 
@@ -1314,7 +1332,7 @@ for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
 
 par.res.2 <- bind_rows(par.res.1, buff.pts) %>% distinct() # Add these to my existing PF
 
-fit <- scam(z.y ~ s(z.x, bs = "mpd", k = 6), data = par.res.2) # Fit a scam to the raw Pareto front
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.2)), data = par.res.2) # Fit a scam to the raw Pareto front
 
 x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
 
@@ -1354,7 +1372,7 @@ for (i in 1:(nrow(par.res.3) - 1)) { # Loop over each segment (slope)
 
 par.res.4 <- bind_rows(par.res.3, buff.pts) %>% distinct() # Add these to my existing PF
 
-fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = 6), data = par.res.4) # Model fit
+fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.4)), data = par.res.4) # Model fit
 
 pred.curve.2 <- data.frame( # predicted data frame
   z.x = x.vals,
@@ -1435,7 +1453,7 @@ for (i in 1:n_iter) { # Now we'll randomize and see how many light points should
     nrow()
 }
 
-mean(null_counts>= n.75) # p = 0.579
+mean(null_counts>= n.75) # p = 0.422
 
 # Quadrant-based statistical testing
 
@@ -1467,12 +1485,18 @@ df.filt <- df.final %>%
     z.x = r.max_N
   ) # Specify the x and y variables
 
-x.ref <- min(df.filt$z.x, na.rm = TRUE) # Min x
-y.ref <- min(df.filt$z.y, na.rm = TRUE) # Min y
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # Scale for the point addition algorithm. 
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 
 df.filt <- df.filt %>% # Calculate Euclidean distance from min
   mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
     dist.sc = distance/mean(distance)
   ) %>%
   arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
@@ -1489,22 +1513,25 @@ df.filt%>%
   print() # Display the outliers
 
 df.filt <- df.filt %>% 
-  filter(dist.sc < 5) # Error trimming
-
-df.filt <- df.filt %>% # Calculate Euclidean distance from min
-  mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
-    dist.sc = distance/mean(distance)
-  ) %>%
-  arrange(distance) # Recalculate after removing errors
+  filter(dist.sc < 2.4) # Error trimming
 
 df.filt <- df.filt %>% 
   mutate(
     z.y2 = scale(z.y)[, 1],
     z.x2 = scale(z.x)[, 1]
-  ) # Scale for the point addition algorithm. 
+  ) # re-scale for the point addition algorithm.
 
-par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
 
 buff.pts <- data.frame() # This will hold our extra data to potentially add
 
@@ -1530,7 +1557,7 @@ for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
 
 par.res.2 <- bind_rows(par.res.1, buff.pts) %>% distinct() # Add these to my existing PF
 
-fit <- scam(z.y ~ s(z.x, bs = "mpd", k = 6), data = par.res.2) # Fit a scam to the raw Pareto front
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.2)), data = par.res.2) # Fit a scam to the raw Pareto front
 
 x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
 
@@ -1570,7 +1597,7 @@ for (i in 1:(nrow(par.res.3) - 1)) { # Loop over each segment (slope)
 
 par.res.4 <- bind_rows(par.res.3, buff.pts) %>% distinct() # Add these to my existing PF
 
-fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = 6), data = par.res.4) # Model fit
+fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.4)), data = par.res.4) # Model fit
 
 pred.curve.2 <- data.frame( # predicted data frame
   z.x = x.vals,
@@ -1651,7 +1678,7 @@ for (i in 1:n_iter) { # Now we'll randomize and see how many light points should
     nrow()
 }
 
-mean(null_counts>= n.75) # p = 0.791
+mean(null_counts>= n.75) # p = 0.549
 
 # Quadrant-based statistical testing
 
@@ -1683,12 +1710,18 @@ df.filt <- df.final %>%
     z.x = r.max_P
   ) # Specify the x and y variables
 
-x.ref <- min(df.filt$z.x, na.rm = TRUE) # Min x
-y.ref <- min(df.filt$z.y, na.rm = TRUE) # Min y
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # Scale for the point addition algorithm. 
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 
 df.filt <- df.filt %>% # Calculate Euclidean distance from min
   mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
     dist.sc = distance/mean(distance)
   ) %>%
   arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
@@ -1705,22 +1738,25 @@ df.filt%>%
   print() # Display the outliers
 
 df.filt <- df.filt %>% 
-  filter(dist.sc < 5) # Error trimming
-
-df.filt <- df.filt %>% # Calculate Euclidean distance from min
-  mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
-    dist.sc = distance/mean(distance)
-  ) %>%
-  arrange(distance) # Recalculate after removing errors
+  filter(dist.sc < 2.4) # Error trimming
 
 df.filt <- df.filt %>% 
   mutate(
     z.y2 = scale(z.y)[, 1],
     z.x2 = scale(z.x)[, 1]
-  ) # Scale for the point addition algorithm. 
+  ) # re-scale for the point addition algorithm.
 
-par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
 
 buff.pts <- data.frame() # This will hold our extra data to potentially add
 
@@ -1746,7 +1782,7 @@ for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
 
 par.res.2 <- bind_rows(par.res.1, buff.pts) %>% distinct() # Add these to my existing PF
 
-fit <- scam(z.y ~ s(z.x, bs = "mpd", k = 6), data = par.res.2) # Fit a scam to the raw Pareto front
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.2)), data = par.res.2) # Fit a scam to the raw Pareto front
 
 x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
 
@@ -1786,7 +1822,7 @@ for (i in 1:(nrow(par.res.3) - 1)) { # Loop over each segment (slope)
 
 par.res.4 <- bind_rows(par.res.3, buff.pts) %>% distinct() # Add these to my existing PF
 
-fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = 4), data = par.res.4) # Model fit
+fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.4)), data = par.res.4) # Model fit
 
 pred.curve.2 <- data.frame( # predicted data frame
   z.x = x.vals,
@@ -1823,7 +1859,7 @@ P.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = evol.plt, shape = evol.b
                "phosphorous" = 16)  # filled circle
   ) +
   
-  ylim(0, 6) +
+  ylim(0, 2.7) +
   
   theme_classic() +
   theme(
@@ -1867,7 +1903,7 @@ for (i in 1:n_iter) { # Now we'll randomize and see how many light points should
     nrow()
 }
 
-mean(null_counts>= n.75) # p = 0.024!
+mean(null_counts>= n.75) # p = 0.15
 
 # Quadrant-based statistical testing
 
@@ -1909,7 +1945,7 @@ p.par <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = par.stat)) +  # We'll la
                "N" = "black")
   ) +
   
-  ylim(0, 6) +
+  ylim(0, 2.7) +
   xlim(1.22, 1.64) +
   
   theme_classic() +
@@ -1949,7 +1985,7 @@ p.par2 <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = par.stat)) +  # We'll l
                "N" = "black")
   ) +
   
-  ylim(0, 6) +
+  ylim(0, 2.7) +
   xlim(1.22, 1.64) +
   
   theme_classic() +
@@ -1981,7 +2017,7 @@ p.par3 <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = par.stat)) +  # We'll l
                "added" = "forestgreen")
   ) +
   
-  ylim(0, 6) +
+  ylim(0, 2.7) +
   xlim(1.22, 1.64) +
   
   theme_classic() +
@@ -2009,12 +2045,18 @@ df.filt <- df.final %>%
     z.x = r.max_S
   ) # Specify the x and y variables
 
-x.ref <- min(df.filt$z.x, na.rm = TRUE) # Min x
-y.ref <- min(df.filt$z.y, na.rm = TRUE) # Min y
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # Scale for the point addition algorithm. 
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 
 df.filt <- df.filt %>% # Calculate Euclidean distance from min
   mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
     dist.sc = distance/mean(distance)
   ) %>%
   arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
@@ -2031,22 +2073,25 @@ df.filt%>%
   print() # Display the outliers
 
 df.filt <- df.filt %>% 
-  filter(dist.sc < 5) # Error trimming
-
-df.filt <- df.filt %>% # Calculate Euclidean distance from min
-  mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
-    dist.sc = distance/mean(distance)
-  ) %>%
-  arrange(distance) # Recalculate after removing errors
+  filter(dist.sc < 2.4) # Error trimming
 
 df.filt <- df.filt %>% 
   mutate(
     z.y2 = scale(z.y)[, 1],
     z.x2 = scale(z.x)[, 1]
-  ) # Scale for the point addition algorithm. 
+  ) # re-scale for the point addition algorithm.
 
-par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
 
 buff.pts <- data.frame() # This will hold our extra data to potentially add
 
@@ -2072,7 +2117,7 @@ for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
 
 par.res.2 <- bind_rows(par.res.1, buff.pts) %>% distinct() # Add these to my existing PF
 
-fit <- scam(z.y ~ s(z.x, bs = "mpd", k = 6), data = par.res.2) # Fit a scam to the raw Pareto front
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.2)), data = par.res.2) # Fit a scam to the raw Pareto front
 
 x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
 
@@ -2112,7 +2157,7 @@ for (i in 1:(nrow(par.res.3) - 1)) { # Loop over each segment (slope)
 
 par.res.4 <- bind_rows(par.res.3, buff.pts) %>% distinct() # Add these to my existing PF
 
-fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = 6), data = par.res.4) # Model fit
+fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = par.res.4), data = par.res.4) # Model fit
 
 pred.curve.2 <- data.frame( # predicted data frame
   z.x = x.vals,
@@ -2338,12 +2383,18 @@ df.filt <- df.int %>%
     z.x = r.max.raw
   )
 
-x.ref <- min(df.filt$z.x, na.rm = TRUE) # Min x
-y.ref <- min(df.filt$z.y, na.rm = TRUE) # Min y
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # Scale for the point addition algorithm. 
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 
 df.filt <- df.filt %>% # Calculate Euclidean distance from min
   mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
     dist.sc = distance/mean(distance)
   ) %>%
   arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
@@ -2360,22 +2411,25 @@ df.filt%>%
   print() # Display the outliers
 
 df.filt <- df.filt %>% 
-  filter(dist.sc < 5) # Error trimming
-
-df.filt <- df.filt %>% # Calculate Euclidean distance from min
-  mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
-    dist.sc = distance/mean(distance)
-  ) %>%
-  arrange(distance) # Recalculate after removing errors
+  filter(dist.sc < 2.4) # Error trimming
 
 df.filt <- df.filt %>% 
   mutate(
     z.y2 = scale(z.y)[, 1],
     z.x2 = scale(z.x)[, 1]
-  ) # Scale for the point addition algorithm. 
+  ) # re-scale for the point addition algorithm.
 
-par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
 
 buff.pts <- data.frame() # This will hold our extra data to potentially add
 
@@ -2401,7 +2455,7 @@ for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
 
 par.res.2 <- bind_rows(par.res.1, buff.pts) %>% distinct() # Add these to my existing PF
 
-fit <- scam(z.y ~ s(z.x, bs = "mpd", k = 6), data = par.res.2) # Fit a scam to the raw Pareto front
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.2)), data = par.res.2) # Fit a scam to the raw Pareto front
 
 x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
 
@@ -2418,55 +2472,53 @@ df.filt2 <- df.final %>%
     z.x = r.max_T
   ) # Specify the x and y variables
 
-x.ref <- min(df.filt2$z.x, na.rm = TRUE) # Min x
-y.ref <- min(df.filt2$z.y, na.rm = TRUE) # Min y
-
-df.filt2 <- df.filt2 %>% # Calculate Euclidean distance from min
-  mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
-    dist.sc = distance/mean(distance)
-  ) %>%
-  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
-
-df.filt2%>%
-  { 
-    bind_rows(
-      arrange(., desc(z.y)) %>% slice_head(n = 3),
-      arrange(., z.y) %>% slice_head(n = 3),
-      arrange(., desc(z.x)) %>% slice_head(n = 3),
-      arrange(., z.x) %>% slice_head(n = 3)
-    )
-  } %>%
-  print() # Display the outliers
-
-df.filt2 <- df.filt2 %>% 
-  filter(dist.sc < 5) # Error trimming
-
-df.filt2 <- df.filt2 %>% # Calculate Euclidean distance from min
-  mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
-    dist.sc = distance/mean(distance)
-  ) %>%
-  arrange(distance) # Recalculate after removing errors
-
 df.filt2 <- df.filt2 %>% 
   mutate(
     z.y2 = scale(z.y)[, 1],
     z.x2 = scale(z.x)[, 1]
   ) # Scale for the point addition algorithm. 
 
-par.res.3 <- par_frt(df.filt2[df.filt2$dist.sc < 2,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+x.ref <- min(df.filt2$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt2$z.y2, na.rm = TRUE) # Min y
+
+df.filt2 <- df.filt2 %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
+
+df.filt2 <- df.filt2 %>% 
+  filter(dist.sc < 2.4) # Error trimming
+
+df.filt2 <- df.filt2 %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # re-scale for the point addition algorithm.
+
+x.ref <- min(df.filt2$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt2$z.y2, na.rm = TRUE) # Min y
+
+df.filt2 <- df.filt2 %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.3 <- par_frt(df.filt2[df.filt2$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
 
 buff.pts <- data.frame() # This will hold our extra data to potentially add
 
-for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
-  x1 <- par.res.1$z.x2[i]
-  y1 <- par.res.1$z.y2[i]
-  x2 <- par.res.1$z.x2[i + 1]
-  y2 <- par.res.1$z.y2[i + 1]
+for (i in 1:(nrow(par.res.3) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.3$z.x2[i]
+  y1 <- par.res.3$z.y2[i]
+  x2 <- par.res.3$z.x2[i + 1]
+  y2 <- par.res.3$z.y2[i + 1]
   
   df.cand <- df.filt2 %>% # Check all other points
-    filter(!X %in% par.res.1$X) %>%  # Exclude existing Pareto points
+    filter(!X %in% par.res.3$X) %>%  # Exclude existing Pareto points
     rowwise() %>%
     mutate(
       dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
@@ -2481,7 +2533,7 @@ for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
 
 par.res.4 <- bind_rows(par.res.3, buff.pts) %>% distinct() # Add these to my existing PF
 
-fit <- scam(z.y ~ s(z.x, bs = "mpd", k = 4), data = par.res.4) # Fit a scam to the raw Pareto front
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.4)), data = par.res.4) # Fit a scam to the raw Pareto front
 
 x.vals <- seq(min(df.filt2$z.x), max(df.filt2$z.x), length.out = 100) # Generate an x sequence for plotting
 
@@ -2550,12 +2602,18 @@ df.filt <- df.int %>%
     z.x = r.max
   )
 
-x.ref <- min(df.filt$z.x, na.rm = TRUE) # Min x
-y.ref <- min(df.filt$z.y, na.rm = TRUE) # Min y
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # Scale for the point addition algorithm. 
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 
 df.filt <- df.filt %>% # Calculate Euclidean distance from min
   mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
     dist.sc = distance/mean(distance)
   ) %>%
   arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
@@ -2572,22 +2630,25 @@ df.filt%>%
   print() # Display the outliers
 
 df.filt <- df.filt %>% 
-  filter(dist.sc < 5) # Error trimming
-
-df.filt <- df.filt %>% # Calculate Euclidean distance from min
-  mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
-    dist.sc = distance/mean(distance)
-  ) %>%
-  arrange(distance) # Recalculate after removing errors
+  filter(dist.sc < 2.4) # Error trimming
 
 df.filt <- df.filt %>% 
   mutate(
     z.y2 = scale(z.y)[, 1],
     z.x2 = scale(z.x)[, 1]
-  ) # Scale for the point addition algorithm. 
+  ) # re-scale for the point addition algorithm.
 
-par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
 
 buff.pts <- data.frame() # This will hold our extra data to potentially add
 
@@ -2613,7 +2674,7 @@ for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
 
 par.res.2 <- bind_rows(par.res.1, buff.pts) %>% distinct() # Add these to my existing PF
 
-fit <- scam(z.y ~ s(z.x, bs = "mpd", k = 4), data = par.res.2) # Fit a scam to the raw Pareto front
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.2)), data = par.res.2) # Fit a scam to the raw Pareto front
 
 x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
 
@@ -2630,55 +2691,53 @@ df.filt2 <- df.final %>%
     z.x = r.max_I
   ) # Specify the x and y variables
 
-x.ref <- min(df.filt2$z.x, na.rm = TRUE) # Min x
-y.ref <- min(df.filt2$z.y, na.rm = TRUE) # Min y
-
-df.filt2 <- df.filt2 %>% # Calculate Euclidean distance from min
-  mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
-    dist.sc = distance/mean(distance)
-  ) %>%
-  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
-
-df.filt2%>%
-  { 
-    bind_rows(
-      arrange(., desc(z.y)) %>% slice_head(n = 3),
-      arrange(., z.y) %>% slice_head(n = 3),
-      arrange(., desc(z.x)) %>% slice_head(n = 3),
-      arrange(., z.x) %>% slice_head(n = 3)
-    )
-  } %>%
-  print() # Display the outliers
-
-df.filt2 <- df.filt2 %>% 
-  filter(dist.sc < 5) # Error trimming
-
-df.filt2 <- df.filt2 %>% # Calculate Euclidean distance from min
-  mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
-    dist.sc = distance/mean(distance)
-  ) %>%
-  arrange(distance) # Recalculate after removing errors
-
 df.filt2 <- df.filt2 %>% 
   mutate(
     z.y2 = scale(z.y)[, 1],
     z.x2 = scale(z.x)[, 1]
   ) # Scale for the point addition algorithm. 
 
-par.res.3 <- par_frt(df.filt2[df.filt2$dist.sc < 2,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+x.ref <- min(df.filt2$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt2$z.y2, na.rm = TRUE) # Min y
+
+df.filt2 <- df.filt2 %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
+
+df.filt2 <- df.filt2 %>% 
+  filter(dist.sc < 2.4) # Error trimming
+
+df.filt2 <- df.filt2 %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # re-scale for the point addition algorithm.
+
+x.ref <- min(df.filt2$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt2$z.y2, na.rm = TRUE) # Min y
+
+df.filt2 <- df.filt2 %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.3 <- par_frt(df.filt2[df.filt2$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
 
 buff.pts <- data.frame() # This will hold our extra data to potentially add
 
-for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
-  x1 <- par.res.1$z.x2[i]
-  y1 <- par.res.1$z.y2[i]
-  x2 <- par.res.1$z.x2[i + 1]
-  y2 <- par.res.1$z.y2[i + 1]
+for (i in 1:(nrow(par.res.3) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.3$z.x2[i]
+  y1 <- par.res.3$z.y2[i]
+  x2 <- par.res.3$z.x2[i + 1]
+  y2 <- par.res.3$z.y2[i + 1]
   
   df.cand <- df.filt2 %>% # Check all other points
-    filter(!X %in% par.res.1$X) %>%  # Exclude existing Pareto points
+    filter(!X %in% par.res.3$X) %>%  # Exclude existing Pareto points
     rowwise() %>%
     mutate(
       dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
@@ -2693,7 +2752,7 @@ for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
 
 par.res.4 <- bind_rows(par.res.3, buff.pts) %>% distinct() # Add these to my existing PF
 
-fit <- scam(z.y ~ s(z.x, bs = "mpd", k = 5), data = par.res.4) # Fit a scam to the raw Pareto front
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.4)), data = par.res.4) # Fit a scam to the raw Pareto front
 
 x.vals <- seq(min(df.filt2$z.x), max(df.filt2$z.x), length.out = 100) # Generate an x sequence for plotting
 
@@ -2772,12 +2831,18 @@ df.filt <- df.int %>%
     z.x = r.max
   )
 
-x.ref <- min(df.filt$z.x, na.rm = TRUE) # Min x
-y.ref <- min(df.filt$z.y, na.rm = TRUE) # Min y
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # Scale for the point addition algorithm. 
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 
 df.filt <- df.filt %>% # Calculate Euclidean distance from min
   mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
     dist.sc = distance/mean(distance)
   ) %>%
   arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
@@ -2794,22 +2859,25 @@ df.filt%>%
   print() # Display the outliers
 
 df.filt <- df.filt %>% 
-  filter(dist.sc < 5) # Error trimming
-
-df.filt <- df.filt %>% # Calculate Euclidean distance from min
-  mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
-    dist.sc = distance/mean(distance)
-  ) %>%
-  arrange(distance) # Recalculate after removing errors
+  filter(dist.sc < 2.4) # Error trimming
 
 df.filt <- df.filt %>% 
   mutate(
     z.y2 = scale(z.y)[, 1],
     z.x2 = scale(z.x)[, 1]
-  ) # Scale for the point addition algorithm. 
+  ) # re-scale for the point addition algorithm.
 
-par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
 
 buff.pts <- data.frame() # This will hold our extra data to potentially add
 
@@ -2833,9 +2901,9 @@ for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
   buff.pts <- bind_rows(buff.pts, df.cand)
 }
 
-par.res.2 <- bind_rows(par.res.1, buff.pts) %>% distinct() # Add these to my existing PF
+par.res.2 <- bind_rows(par.res.1, buff.pts, df.filt[c(23,25),]) %>% distinct() # Add these to my existing PF
 
-fit <- scam(z.y ~ s(z.x, bs = "mpd", k = 4), data = par.res.2) # Fit a scam to the raw Pareto front
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.2)), data = par.res.2) # Fit a scam to the raw Pareto front
 
 x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
 
@@ -2852,55 +2920,53 @@ df.filt2 <- df.final %>%
     z.x = r.max_N
   ) # Specify the x and y variables
 
-x.ref <- min(df.filt2$z.x, na.rm = TRUE) # Min x
-y.ref <- min(df.filt2$z.y, na.rm = TRUE) # Min y
-
-df.filt2 <- df.filt2 %>% # Calculate Euclidean distance from min
-  mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
-    dist.sc = distance/mean(distance)
-  ) %>%
-  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
-
-df.filt2%>%
-  { 
-    bind_rows(
-      arrange(., desc(z.y)) %>% slice_head(n = 3),
-      arrange(., z.y) %>% slice_head(n = 3),
-      arrange(., desc(z.x)) %>% slice_head(n = 3),
-      arrange(., z.x) %>% slice_head(n = 3)
-    )
-  } %>%
-  print() # Display the outliers
-
-df.filt2 <- df.filt2 %>% 
-  filter(dist.sc < 5) # Error trimming
-
-df.filt2 <- df.filt2 %>% # Calculate Euclidean distance from min
-  mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
-    dist.sc = distance/mean(distance)
-  ) %>%
-  arrange(distance) # Recalculate after removing errors
-
 df.filt2 <- df.filt2 %>% 
   mutate(
     z.y2 = scale(z.y)[, 1],
     z.x2 = scale(z.x)[, 1]
   ) # Scale for the point addition algorithm. 
 
-par.res.3 <- par_frt(df.filt2[df.filt2$dist.sc < 2,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+x.ref <- min(df.filt2$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt2$z.y2, na.rm = TRUE) # Min y
+
+df.filt2 <- df.filt2 %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
+
+df.filt2 <- df.filt2 %>% 
+  filter(dist.sc < 2.4) # Error trimming
+
+df.filt2 <- df.filt2 %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # re-scale for the point addition algorithm.
+
+x.ref <- min(df.filt2$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt2$z.y2, na.rm = TRUE) # Min y
+
+df.filt2 <- df.filt2 %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.3 <- par_frt(df.filt2[df.filt2$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
 
 buff.pts <- data.frame() # This will hold our extra data to potentially add
 
-for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
-  x1 <- par.res.1$z.x2[i]
-  y1 <- par.res.1$z.y2[i]
-  x2 <- par.res.1$z.x2[i + 1]
-  y2 <- par.res.1$z.y2[i + 1]
+for (i in 1:(nrow(par.res.3) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.3$z.x2[i]
+  y1 <- par.res.3$z.y2[i]
+  x2 <- par.res.3$z.x2[i + 1]
+  y2 <- par.res.3$z.y2[i + 1]
   
   df.cand <- df.filt2 %>% # Check all other points
-    filter(!X %in% par.res.1$X) %>%  # Exclude existing Pareto points
+    filter(!X %in% par.res.3$X) %>%  # Exclude existing Pareto points
     rowwise() %>%
     mutate(
       dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
@@ -2915,7 +2981,7 @@ for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
 
 par.res.4 <- bind_rows(par.res.3, buff.pts) %>% distinct() # Add these to my existing PF
 
-fit <- scam(z.y ~ s(z.x, bs = "mpd", k = 5), data = par.res.4) # Fit a scam to the raw Pareto front
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.4)), data = par.res.4) # Fit a scam to the raw Pareto front
 
 x.vals <- seq(min(df.filt2$z.x), max(df.filt2$z.x), length.out = 100) # Generate an x sequence for plotting
 
@@ -2995,12 +3061,18 @@ df.filt <- df.int %>%
     z.x = r.max
   )
 
-x.ref <- min(df.filt$z.x, na.rm = TRUE) # Min x
-y.ref <- min(df.filt$z.y, na.rm = TRUE) # Min y
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # Scale for the point addition algorithm. 
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 
 df.filt <- df.filt %>% # Calculate Euclidean distance from min
   mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
     dist.sc = distance/mean(distance)
   ) %>%
   arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
@@ -3017,22 +3089,25 @@ df.filt%>%
   print() # Display the outliers
 
 df.filt <- df.filt %>% 
-  filter(dist.sc < 5) # Error trimming
-
-df.filt <- df.filt %>% # Calculate Euclidean distance from min
-  mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
-    dist.sc = distance/mean(distance)
-  ) %>%
-  arrange(distance) # Recalculate after removing errors
+  filter(dist.sc < 2.4) # Error trimming
 
 df.filt <- df.filt %>% 
   mutate(
     z.y2 = scale(z.y)[, 1],
     z.x2 = scale(z.x)[, 1]
-  ) # Scale for the point addition algorithm. 
+  ) # re-scale for the point addition algorithm.
 
-par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
 
 buff.pts <- data.frame() # This will hold our extra data to potentially add
 
@@ -3058,9 +3133,9 @@ for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
 
 par.res.2 <- bind_rows(par.res.1, buff.pts) %>% distinct() # Add these to my existing PF
 
-fit <- scam(z.y ~ s(z.x, bs = "mpd", k = 6), data = par.res.2) # Fit a scam to the raw Pareto front
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.2)), data = par.res.2) # Fit a scam to the raw Pareto front
 
-x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+x.vals <- seq(min(df.filt[df.filt$dist.sc < 2.1,]$z.x), max(df.filt[df.filt$dist.sc < 2.1,]$z.x), length.out = 100) # Generate an x sequence for plotting
 
 pred.curve.1 <- data.frame( # Get the corresponding y values
   z.x = x.vals,
@@ -3075,55 +3150,53 @@ df.filt2 <- df.final %>%
     z.x = r.max_P
   ) # Specify the x and y variables
 
-x.ref <- min(df.filt2$z.x, na.rm = TRUE) # Min x
-y.ref <- min(df.filt2$z.y, na.rm = TRUE) # Min y
-
-df.filt2 <- df.filt2 %>% # Calculate Euclidean distance from min
-  mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
-    dist.sc = distance/mean(distance)
-  ) %>%
-  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
-
-df.filt2%>%
-  { 
-    bind_rows(
-      arrange(., desc(z.y)) %>% slice_head(n = 3),
-      arrange(., z.y) %>% slice_head(n = 3),
-      arrange(., desc(z.x)) %>% slice_head(n = 3),
-      arrange(., z.x) %>% slice_head(n = 3)
-    )
-  } %>%
-  print() # Display the outliers
-
-df.filt2 <- df.filt2 %>% 
-  filter(dist.sc < 5) # Error trimming
-
-df.filt2 <- df.filt2 %>% # Calculate Euclidean distance from min
-  mutate(
-    distance = sqrt((z.x - x.ref)^2 + (z.y - y.ref)^2),
-    dist.sc = distance/mean(distance)
-  ) %>%
-  arrange(distance) # Recalculate after removing errors
-
 df.filt2 <- df.filt2 %>% 
   mutate(
     z.y2 = scale(z.y)[, 1],
     z.x2 = scale(z.x)[, 1]
   ) # Scale for the point addition algorithm. 
 
-par.res.3 <- par_frt(df.filt2[df.filt2$dist.sc < 2,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+x.ref <- min(df.filt2$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt2$z.y2, na.rm = TRUE) # Min y
+
+df.filt2 <- df.filt2 %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
+
+df.filt2 <- df.filt2 %>% 
+  filter(dist.sc < 2.4) # Error trimming
+
+df.filt2 <- df.filt2 %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # re-scale for the point addition algorithm.
+
+x.ref <- min(df.filt2$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt2$z.y2, na.rm = TRUE) # Min y
+
+df.filt2 <- df.filt2 %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.3 <- par_frt(df.filt2[df.filt2$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
 
 buff.pts <- data.frame() # This will hold our extra data to potentially add
 
-for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
-  x1 <- par.res.1$z.x2[i]
-  y1 <- par.res.1$z.y2[i]
-  x2 <- par.res.1$z.x2[i + 1]
-  y2 <- par.res.1$z.y2[i + 1]
+for (i in 1:(nrow(par.res.3) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.3$z.x2[i]
+  y1 <- par.res.3$z.y2[i]
+  x2 <- par.res.3$z.x2[i + 1]
+  y2 <- par.res.3$z.y2[i + 1]
   
   df.cand <- df.filt2 %>% # Check all other points
-    filter(!X %in% par.res.1$X) %>%  # Exclude existing Pareto points
+    filter(!X %in% par.res.3$X) %>%  # Exclude existing Pareto points
     rowwise() %>%
     mutate(
       dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
@@ -3138,7 +3211,7 @@ for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
 
 par.res.4 <- bind_rows(par.res.3, buff.pts) %>% distinct() # Add these to my existing PF
 
-fit <- scam(z.y ~ s(z.x, bs = "mpd", k = 5), data = par.res.4) # Fit a scam to the raw Pareto front
+fit <- lm(z.y ~ z.x, data = par.res.4) # Fit a scam to the raw Pareto front
 
 x.vals <- seq(min(df.filt2$z.x), max(df.filt2$z.x), length.out = 100) # Generate an x sequence for plotting
 
@@ -3240,26 +3313,135 @@ ggsave("figures/19_fig_4a_sp_tradeoffs.jpeg", grad_sp_toffs, width = 8, height =
 df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
                             ifelse(df.final$evol == "L", 'light', ifelse(df.final$evol == 'N', 'nit', 'other'))) # for testing regressions.
 
-df.filt <- df.final[df.final$I.comp < 10,] # Filter out extreme outliers
+df.filt <- df.final %>% 
+  mutate(
+    z.y = I.comp,
+    z.x = N.comp
+  ) # Specify the x and y variables
 
-par.res.LN <- par_frt(df.filt[df.filt$N.comp < 0.9, ], xvar = "N.comp", yvar = "I.comp") # Get the raw Pareto Front
-par.res.LN <- rbind(par.res.LN, df.filt[25, ])
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # Scale for the point addition algorithm. 
 
-fit <- scam(I.comp ~ s(N.comp, bs = "mpd", k = 5), data = par.res.LN) # Fit a scam to the raw Pareto front
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 
-x.vals <- seq(min(df.filt$N.comp), max(df.filt$N.comp), length.out = 100) # Generate an x sequence for plotting
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
 
-pred.curve.ln <- data.frame( # Get the corresponding y values
-  N.comp = x.vals,
-  I.comp = predict(fit, newdata = data.frame(N.comp = x.vals))
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+df.filt <- df.filt %>% 
+  filter(dist.sc < 2.4) # Error trimming
+
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # re-scale for the point addition algorithm.
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.1$z.x2[i]
+  y1 <- par.res.1$z.y2[i]
+  x2 <- par.res.1$z.x2[i + 1]
+  y2 <- par.res.1$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.1$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.2 <- bind_rows(par.res.1, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.2)), data = par.res.2) # Fit a scam to the raw Pareto front
+
+x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.1 <- data.frame( # Get the corresponding y values
+  z.x = x.vals,
+  z.y = predict(fit, newdata = data.frame(z.x = x.vals))
 )
 
-LN.scam.PF <- ggplot(df.filt, aes(x = N.comp, y = I.comp, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.3 <- par_frt(df.filt2, xvar = "z.x", yvar = "z.y") # Pareto frontier on this data
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.3) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.3$z.x2[i]
+  y1 <- par.res.3$z.y2[i]
+  x2 <- par.res.3$z.x2[i + 1]
+  y2 <- par.res.3$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.3$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.4 <- bind_rows(par.res.3, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.4)), data = par.res.4) # Model fit
+
+pred.curve.2 <- data.frame( # predicted data frame
+  z.x = x.vals,
+  z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
+)
+
+LN.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.ln, aes(x = N.comp, y = I.comp), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  
-  ylim(0.1, 0.6) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   
   labs(x = "Competitive ability (1/N*)",    
        y = "Competitive ability (1/I*)", 
@@ -3286,6 +3468,8 @@ LN.scam.PF <- ggplot(df.filt, aes(x = N.comp, y = I.comp, color = evol.plt, shap
                "light" = 16)  # filled circle
   ) +
   
+  ylim(0.04,0.21) +
+  
   theme_classic() +
   theme(
     legend.position = "none",  
@@ -3296,30 +3480,172 @@ LN.scam.PF <- ggplot(df.filt, aes(x = N.comp, y = I.comp, color = evol.plt, shap
 
 LN.scam.PF  # Display the plot
 
+n.75 <- df.filt %>% # Now calculate the number of light points above that. 
+  filter(evol.bin %in% c("light", "nit")) %>%
+  rowwise() %>%
+  mutate(
+    nearest_idx = find_nearest_index(z.x, pred.curve.2$z.x),
+    z.y.pred = pred.curve.2$z.y[nearest_idx]
+  ) %>%
+  ungroup() %>%
+  filter(z.y > z.y.pred) %>%
+  nrow()
+
+n_iter <- 1000
+null_counts <- numeric(n_iter)
+
+for (i in 1:n_iter) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
+  df.shuff <- df.filt %>%
+    mutate(evol.shuff = sample(evol.bin, rep = F))
+  
+  null_counts[i] <- df.shuff %>%
+    filter(evol.shuff %in% c("light", "nit")) %>%
+    rowwise() %>%
+    mutate(
+      nearest_idx = which.min(abs(pred.curve.2$z.x - z.x)),
+      z.y.pred = pred.curve.2$z.y[nearest_idx]
+    ) %>%
+    ungroup() %>%
+    filter(z.y > z.y.pred) %>%
+    nrow()
+}
+
+mean(null_counts>= n.75) # p = 0.253
+
 ###### Light v Phosphorous ######
 
 df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
                             ifelse(df.final$evol == "L", 'light', ifelse(df.final$evol == 'P', 'phos', 'other'))) # for testing regressions.
 
-df.filt <- df.final[df.final$I.comp < 10,] # Filter out extreme outliers
+df.filt <- df.final %>% 
+  mutate(
+    z.y = I.comp,
+    z.x = P.comp
+  ) # Specify the x and y variables
 
-par.res.LP <- par_frt(df.filt, xvar = "P.comp", yvar = "I.comp") # Get the raw Pareto Front
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # Scale for the point addition algorithm. 
 
-fit <- scam(I.comp ~ s(P.comp, bs = "mpd", k = 5), data = par.res.LP) # Fit a scam to the raw Pareto front
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 
-x.vals <- seq(min(df.filt$P.comp), max(df.filt$P.comp), length.out = 100) # Generate an x sequence for plotting
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
 
-pred.curve.lp <- data.frame( # Get the corresponding y values
-  P.comp = x.vals,
-  I.comp = predict(fit, newdata = data.frame(P.comp = x.vals))
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+df.filt <- df.filt %>% 
+  filter(dist.sc < 2.4) # Error trimming
+
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # re-scale for the point addition algorithm.
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.1$z.x2[i]
+  y1 <- par.res.1$z.y2[i]
+  x2 <- par.res.1$z.x2[i + 1]
+  y2 <- par.res.1$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.1$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.2 <- bind_rows(par.res.1, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.2)), data = par.res.2) # Fit a scam to the raw Pareto front
+
+x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.1 <- data.frame( # Get the corresponding y values
+  z.x = x.vals,
+  z.y = predict(fit, newdata = data.frame(z.x = x.vals))
 )
 
-LP.scam.PF <- ggplot(df.filt, aes(x = P.comp, y = I.comp, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.3 <- par_frt(df.filt2, xvar = "z.x", yvar = "z.y") # Pareto frontier on this data
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.3) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.3$z.x2[i]
+  y1 <- par.res.3$z.y2[i]
+  x2 <- par.res.3$z.x2[i + 1]
+  y2 <- par.res.3$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.3$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.4 <- bind_rows(par.res.3, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit2 <- lm(z.y ~ z.x, data = par.res.4) # Model fit
+
+pred.curve.2 <- data.frame( # predicted data frame
+  z.x = x.vals,
+  z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
+)
+
+LP.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.lp, aes(x = P.comp, y = I.comp), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  
-  ylim(0.1, 0.6) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   
   labs(x = "Competitive ability (1/P*)",    
        y = "Competitive ability (1/I*)", 
@@ -3346,6 +3672,8 @@ LP.scam.PF <- ggplot(df.filt, aes(x = P.comp, y = I.comp, color = evol.plt, shap
                "light" = 16)  # filled circle
   ) +
   
+  ylim(0.04,0.21) +
+  
   theme_classic() +
   theme(
     legend.position = "none",  
@@ -3356,31 +3684,172 @@ LP.scam.PF <- ggplot(df.filt, aes(x = P.comp, y = I.comp, color = evol.plt, shap
 
 LP.scam.PF  # Display the plot
 
+n.75 <- df.filt %>% # Now calculate the number of light points above that. 
+  filter(evol.bin %in% c("light", "phos")) %>%
+  rowwise() %>%
+  mutate(
+    nearest_idx = find_nearest_index(z.x, pred.curve.2$z.x),
+    z.y.pred = pred.curve.2$z.y[nearest_idx]
+  ) %>%
+  ungroup() %>%
+  filter(z.y > z.y.pred) %>%
+  nrow()
+
+n_iter <- 1000
+null_counts <- numeric(n_iter)
+
+for (i in 1:n_iter) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
+  df.shuff <- df.filt %>%
+    mutate(evol.shuff = sample(evol.bin, rep = F))
+  
+  null_counts[i] <- df.shuff %>%
+    filter(evol.shuff %in% c("light", "phos")) %>%
+    rowwise() %>%
+    mutate(
+      nearest_idx = which.min(abs(pred.curve.2$z.x - z.x)),
+      z.y.pred = pred.curve.2$z.y[nearest_idx]
+    ) %>%
+    ungroup() %>%
+    filter(z.y > z.y.pred) %>%
+    nrow()
+}
+
+mean(null_counts>= n.75) # p = 0.439
+
 ###### Light v salt ######
 
 df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
                             ifelse(df.final$evol == "L", 'light', ifelse(df.final$evol %in% c("S", "BS"), 'salt', 'other'))) # for testing regressions.
 
-df.filt <- df.final[df.final$I.comp < 10,] # Filter out extreme outliers
+df.filt <- df.final %>% 
+  mutate(
+    z.y = I.comp,
+    z.x = S.c.mod
+  ) # Specify the x and y variables
 
-par.res.LS <- par_frt(df.filt[df.filt$S.c.mod < 7,], xvar = "S.c.mod", yvar = "I.comp") # Get the raw Pareto Front
-par.res.LS
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # Scale for the point addition algorithm. 
 
-fit <- scam(I.comp ~ s(S.c.mod, bs = "mpd", k = 6), data = par.res.LS) # Fit a scam to the raw Pareto front
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 
-x.vals <- seq(min(df.filt$S.c.mod), max(df.filt$S.c.mod), length.out = 100) # Generate an x sequence for plotting
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
 
-pred.curve.ls <- data.frame( # Get the corresponding y values
-  S.c.mod = x.vals,
-  I.comp = predict(fit, newdata = data.frame(S.c.mod = x.vals))
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+df.filt <- df.filt %>% 
+  filter(dist.sc < 2.4) # Error trimming
+
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # re-scale for the point addition algorithm.
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.1$z.x2[i]
+  y1 <- par.res.1$z.y2[i]
+  x2 <- par.res.1$z.x2[i + 1]
+  y2 <- par.res.1$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.1$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.2 <- bind_rows(par.res.1, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.2)), data = par.res.2) # Fit a scam to the raw Pareto front
+
+x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.1 <- data.frame( # Get the corresponding y values
+  z.x = x.vals,
+  z.y = predict(fit, newdata = data.frame(z.x = x.vals))
 )
 
-LS.scam.PF <- ggplot(df.filt, aes(x = S.c.mod, y = I.comp, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.3 <- par_frt(df.filt2, xvar = "z.x", yvar = "z.y") # Pareto frontier on this data
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.3) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.3$z.x2[i]
+  y1 <- par.res.3$z.y2[i]
+  x2 <- par.res.3$z.x2[i + 1]
+  y2 <- par.res.3$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.3$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.4 <- bind_rows(par.res.3, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.4)), data = par.res.4) # Model fit
+
+pred.curve.2 <- data.frame( # predicted data frame
+  z.x = x.vals,
+  z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
+)
+
+LS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.ls, aes(x = S.c.mod, y = I.comp), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  
-  # ylim(0.1, 0.6) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   
   labs(x = "Salt tolerance (c)",    
        y = "Competitive ability (1/I*)", 
@@ -3407,6 +3876,8 @@ LS.scam.PF <- ggplot(df.filt, aes(x = S.c.mod, y = I.comp, color = evol.plt, sha
                "light" = 16)  # filled circle
   ) +
   
+  ylim(0.04,0.21) +
+  
   theme_classic() +
   theme(
     legend.position = "none",  
@@ -3417,64 +3888,172 @@ LS.scam.PF <- ggplot(df.filt, aes(x = S.c.mod, y = I.comp, color = evol.plt, sha
 
 LS.scam.PF  # Display the plot
 
-pred.ls <- data.frame(S.c.mod = seq(min(df$S.c.mod), max(df$S.c.mod), length.out = 100)) # Dataframe to collect quantile info in
+n.75 <- df.filt %>% # Now calculate the number of light points above that. 
+  filter(evol.bin %in% c("light", "salt")) %>%
+  rowwise() %>%
+  mutate(
+    nearest_idx = find_nearest_index(z.x, pred.curve.2$z.x),
+    z.y.pred = pred.curve.2$z.y[nearest_idx]
+  ) %>%
+  ungroup() %>%
+  filter(z.y > z.y.pred) %>%
+  nrow()
 
-quant.IS.95 <- rq(I.comp ~ poly(S.c.mod, 2), data = df.final[df.final$I.comp<10,], tau = 0.95) 
-pred.ls$I.comp.95 <- predict(quant.IS.95, newdata = pred.ls)
+n_iter <- 1000
+null_counts <- numeric(n_iter)
 
-quant.IS.75 <- rq(I.comp ~ poly(S.c.mod, 2), data = df.final[df.final$I.comp<10,], tau = 0.75) 
-pred.ls$I.comp.75 <- predict(quant.IS.75, newdata = pred.ls)
-
-df.final$evol.bin <- factor(df.final$evol.bin, levels = c("ancestral", "other", "light", "phos"))
-
-LS.qrs <- ggplot(df.final[df.final$I.comp<10,], aes(x = S.c.mod, y = I.comp, color = evol.bin)) +  # Quantiles plot
-  geom_point(size = 3) +  # Scatter plot of raw data
+for (i in 1:n_iter) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
+  df.shuff <- df.filt %>%
+    mutate(evol.shuff = sample(evol.bin, rep = F))
   
-  geom_line(data = pred.ls, aes(x = S.c.mod, y = I.comp.95), color = "black", size = 1.2) +  # Adding all quantile regression lines as black lines
-  geom_line(data = pred.ls, aes(x = S.c.mod, y = I.comp.75), color = "black", size = 1.2, linetype = "dashed") +  
-  
-  labs(x = "Salt tolerance (c)",    
-       y = "Competitive ability (1/I*)", 
-       color = "Evolutionary History",
-       title = "C") +  # labels
-  
-  scale_color_manual(values = c("black", "goldenrod1", "mediumorchid3", "dodgerblue"), 
-                     labels = c("Ancestral", "Other", "Light", "Salt or Biotic x Salt")) +  
-  theme_classic() +
-  theme(
-    legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
-    axis.text = element_text(size = 10),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff # theme stuff
-  )
+  null_counts[i] <- df.shuff %>%
+    filter(evol.shuff %in% c("light", "salt")) %>%
+    rowwise() %>%
+    mutate(
+      nearest_idx = which.min(abs(pred.curve.2$z.x - z.x)),
+      z.y.pred = pred.curve.2$z.y[nearest_idx]
+    ) %>%
+    ungroup() %>%
+    filter(z.y > z.y.pred) %>%
+    nrow()
+}
 
-LS.qrs  # Display the plot
+mean(null_counts>= n.75) # p = 0.175
 
 ###### Light v temperature ######
 
 df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
                             ifelse(df.final$evol == "L", 'light', 'other')) # for testing regressions.
 
-df.filt <- df.final[df.final$I.comp < 10,] # Filter out extreme outliers
+df.filt <- df.final %>% 
+  mutate(
+    z.y = I.comp,
+    z.x = T.br.0.56
+  ) # Specify the x and y variables
 
-par.res.LT <- par_frt(df.filt, xvar = "T.br", yvar = "I.comp") # Get the raw Pareto Front
-par.res.LT
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # Scale for the point addition algorithm. 
 
-fit <- scam(I.comp ~ s(T.br, bs = "mpd", k = 6), data = par.res.LT) # Fit a scam to the raw Pareto front
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 
-x.vals <- seq(min(df.filt$T.br), max(df.filt$T.br), length.out = 100) # Generate an x sequence for plotting
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
 
-pred.curve.lt <- data.frame( # Get the corresponding y values
-  T.br = x.vals,
-  I.comp = predict(fit, newdata = data.frame(T.br = x.vals))
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+df.filt <- df.filt %>% 
+  filter(dist.sc < 2.4) # Error trimming
+
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # re-scale for the point addition algorithm.
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.1$z.x2[i]
+  y1 <- par.res.1$z.y2[i]
+  x2 <- par.res.1$z.x2[i + 1]
+  y2 <- par.res.1$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.1$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.2 <- bind_rows(par.res.1, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.2)), data = par.res.2) # Fit a scam to the raw Pareto front
+
+x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.1 <- data.frame( # Get the corresponding y values
+  z.x = x.vals,
+  z.y = predict(fit, newdata = data.frame(z.x = x.vals))
 )
 
-LT.scam.PF <- ggplot(df.filt, aes(x = T.br, y = I.comp, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.3 <- par_frt(df.filt2, xvar = "z.x", yvar = "z.y") # Pareto frontier on this data
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.3) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.3$z.x2[i]
+  y1 <- par.res.3$z.y2[i]
+  x2 <- par.res.3$z.x2[i + 1]
+  y2 <- par.res.3$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.3$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.4 <- bind_rows(par.res.3, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.4)), data = par.res.4) # Model fit
+
+pred.curve.2 <- data.frame( # predicted data frame
+  z.x = x.vals,
+  z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
+)
+
+LT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.lt, aes(x = T.br, y = I.comp), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  
-  ylim(0.1, 0.6) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   
   labs(x = "Thermal breadth (°C)",    
        y = "Competitive ability (1/I*)", 
@@ -3500,6 +4079,8 @@ LT.scam.PF <- ggplot(df.filt, aes(x = T.br, y = I.comp, color = evol.plt, shape 
                "light" = 16)  # filled circle
   ) +
   
+  ylim(0.04,0.21) +
+  
   theme_classic() +
   theme(
     legend.position = "none",  
@@ -3510,6 +4091,38 @@ LT.scam.PF <- ggplot(df.filt, aes(x = T.br, y = I.comp, color = evol.plt, shape 
 
 LT.scam.PF  # Display the plot
 
+n.75 <- df.filt %>% # Now calculate the number of light points above that. 
+  filter(evol.bin %in% c("light")) %>%
+  rowwise() %>%
+  mutate(
+    nearest_idx = find_nearest_index(z.x, pred.curve.2$z.x),
+    z.y.pred = pred.curve.2$z.y[nearest_idx]
+  ) %>%
+  ungroup() %>%
+  filter(z.y > z.y.pred) %>%
+  nrow()
+
+n_iter <- 1000
+null_counts <- numeric(n_iter)
+
+for (i in 1:n_iter) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
+  df.shuff <- df.filt %>%
+    mutate(evol.shuff = sample(evol.bin, rep = F))
+  
+  null_counts[i] <- df.shuff %>%
+    filter(evol.shuff %in% c("light")) %>%
+    rowwise() %>%
+    mutate(
+      nearest_idx = which.min(abs(pred.curve.2$z.x - z.x)),
+      z.y.pred = pred.curve.2$z.y[nearest_idx]
+    ) %>%
+    ungroup() %>%
+    filter(z.y > z.y.pred) %>%
+    nrow()
+}
+
+mean(null_counts>= n.75) # p = 0.353
+
 ###### Nitrogen comparisons ######
 
 ###### N v P ######
@@ -3517,30 +4130,135 @@ LT.scam.PF  # Display the plot
 df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
                             ifelse(df.final$evol == "N", 'nit', ifelse(df.final$evol == "P", 'phos', 'other'))) # for testing regressions.
 
-df.filt <- df.final # Filter out extreme outliers
+df.filt <- df.final %>% 
+  mutate(
+    z.y = N.comp,
+    z.x = P.comp
+  ) # Specify the x and y variables
 
-par.res.NP <- par_frt(df.filt[df.filt$P.comp < 4 & df.filt$N.comp < 0.58, ], xvar = "P.comp", yvar = "N.comp") # Get the raw Pareto Front
-par.res.NP
-par.res.NP <- rbind(par.res.NP, df.filt[c(19,29),])
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # Scale for the point addition algorithm. 
 
-fit <- scam(N.comp ~ s(P.comp, bs = "mpd", k = 6), data = par.res.NP) # Fit a scam to the raw Pareto front
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 
-x.vals <- seq(min(df.filt$P.comp), max(df.filt$P.comp), length.out = 100) # Generate an x sequence for plotting
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
 
-pred.curve.np <- data.frame( # Get the corresponding y values
-  P.comp = x.vals,
-  N.comp = predict(fit, newdata = data.frame(P.comp = x.vals))
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+df.filt <- df.filt %>% 
+  filter(dist.sc < 2.4) # Error trimming
+
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # re-scale for the point addition algorithm.
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.1$z.x2[i]
+  y1 <- par.res.1$z.y2[i]
+  x2 <- par.res.1$z.x2[i + 1]
+  y2 <- par.res.1$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.1$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.2 <- bind_rows(par.res.1, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.2)), data = par.res.2) # Fit a scam to the raw Pareto front
+
+x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.1 <- data.frame( # Get the corresponding y values
+  z.x = x.vals,
+  z.y = predict(fit, newdata = data.frame(z.x = x.vals))
 )
 
-NP.scam.PF <- ggplot(df.filt, aes(x = P.comp, y = N.comp, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.3 <- par_frt(df.filt2, xvar = "z.x", yvar = "z.y") # Pareto frontier on this data
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.3) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.3$z.x2[i]
+  y1 <- par.res.3$z.y2[i]
+  x2 <- par.res.3$z.x2[i + 1]
+  y2 <- par.res.3$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.3$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.4 <- bind_rows(par.res.3, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit2 <- lm(z.y ~ z.x, data = par.res.4) # Model fit
+
+pred.curve.2 <- data.frame( # predicted data frame
+  z.x = x.vals,
+  z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
+)
+
+NP.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.np, aes(x = P.comp, y = N.comp), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  # geom_line(data = pred.curve2, aes(x = r.max_I, y = I.comp), color = "black", size = 1.1) +
-  # geom_line(data = pred.curve3, aes(x = r.max_I, y = I.comp), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
-  # geom_line(data = pred.curve4, aes(x = r.max_I, y = I.comp), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
-  
-  ylim(0,1.1) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   
   labs(x = "Competitive ability (1/P*)",    
        y = "Competitive ability (1/N*)", 
@@ -3563,9 +4281,11 @@ NP.scam.PF <- ggplot(df.filt, aes(x = P.comp, y = N.comp, color = evol.plt, shap
     name = "Evolutionary status",
     values = c("other" = 1,  # open circle
                "ancestral" = 5, # diamond
-               "nit" = 16,
-               "phos" = 16)  # filled circle
+               "phos" = 16,
+               "nit" = 16)  # filled circle
   ) +
+  
+  #ylim(0.04,0.21) +
   
   theme_classic() +
   theme(
@@ -3577,32 +4297,172 @@ NP.scam.PF <- ggplot(df.filt, aes(x = P.comp, y = N.comp, color = evol.plt, shap
 
 NP.scam.PF  # Display the plot
 
+n.75 <- df.filt %>% # Now calculate the number of light points above that. 
+  filter(evol.bin %in% c("nit", "phos")) %>%
+  rowwise() %>%
+  mutate(
+    nearest_idx = find_nearest_index(z.x, pred.curve.2$z.x),
+    z.y.pred = pred.curve.2$z.y[nearest_idx]
+  ) %>%
+  ungroup() %>%
+  filter(z.y > z.y.pred) %>%
+  nrow()
+
+n_iter <- 1000
+null_counts <- numeric(n_iter)
+
+for (i in 1:n_iter) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
+  df.shuff <- df.filt %>%
+    mutate(evol.shuff = sample(evol.bin, rep = F))
+  
+  null_counts[i] <- df.shuff %>%
+    filter(evol.shuff %in% c("nit", "phos")) %>%
+    rowwise() %>%
+    mutate(
+      nearest_idx = which.min(abs(pred.curve.2$z.x - z.x)),
+      z.y.pred = pred.curve.2$z.y[nearest_idx]
+    ) %>%
+    ungroup() %>%
+    filter(z.y > z.y.pred) %>%
+    nrow()
+}
+
+mean(null_counts>= n.75) # p = 0.024
+
 ###### Nit v Salt ######
 
 df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
                             ifelse(df.final$evol == "N", 'nit', ifelse(df.final$evol %in% c("S", "BS"), 'salt', 'other')))
 
-df.filt <- df.final # Filter out extreme outliers
+df.filt <- df.final %>% 
+  mutate(
+    z.y = N.comp,
+    z.x = S.c.mod
+  ) # Specify the x and y variables
 
-par.res.NS <- par_frt(df.filt, xvar = "S.c.mod", yvar = "N.comp") # Get the raw Pareto Front
-par.res.NS
-par.res.NS <- rbind(par.res.NS, df.filt[24,])
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # Scale for the point addition algorithm. 
 
-fit <- scam(N.comp ~ s(S.c.mod, bs = "mpd", k = 5), data = par.res.NS) # Fit a scam to the raw Pareto front
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 
-x.vals <- seq(min(df.filt$S.c.mod), max(df.filt$S.c.mod), length.out = 100) # Generate an x sequence for plotting
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
 
-pred.curve.ns <- data.frame( # Get the corresponding y values
-  S.c.mod = x.vals,
-  N.comp = predict(fit, newdata = data.frame(S.c.mod = x.vals))
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+df.filt <- df.filt %>% 
+  filter(dist.sc < 2.4) # Error trimming
+
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # re-scale for the point addition algorithm.
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.1$z.x2[i]
+  y1 <- par.res.1$z.y2[i]
+  x2 <- par.res.1$z.x2[i + 1]
+  y2 <- par.res.1$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.1$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.2 <- bind_rows(par.res.1, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.2)), data = par.res.2) # Fit a scam to the raw Pareto front
+
+x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.1 <- data.frame( # Get the corresponding y values
+  z.x = x.vals,
+  z.y = predict(fit, newdata = data.frame(z.x = x.vals))
 )
 
-NS.scam.PF <- ggplot(df.filt, aes(x = S.c.mod, y = N.comp, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.3 <- par_frt(df.filt2, xvar = "z.x", yvar = "z.y") # Pareto frontier on this data
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.3) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.3$z.x2[i]
+  y1 <- par.res.3$z.y2[i]
+  x2 <- par.res.3$z.x2[i + 1]
+  y2 <- par.res.3$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.3$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.4 <- bind_rows(par.res.3, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit2 <- lm(z.y ~ z.x, data = par.res.4) # Model fit
+
+pred.curve.2 <- data.frame( # predicted data frame
+  z.x = x.vals,
+  z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
+)
+
+NS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.ns, aes(x = S.c.mod, y = N.comp), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  
-  ylim(0,1.1) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   
   labs(x = "Salt tolerance (c)",    
        y = "Competitive ability (1/N*)", 
@@ -3625,9 +4485,11 @@ NS.scam.PF <- ggplot(df.filt, aes(x = S.c.mod, y = N.comp, color = evol.plt, sha
     name = "Evolutionary status",
     values = c("other" = 1,  # open circle
                "ancestral" = 5, # diamond
-               "nit" = 16,
-               "salt" = 16)  # filled circle
+               "salt" = 16,
+               "nit" = 16)  # filled circle
   ) +
+  
+  #ylim(0.04,0.21) +
   
   theme_classic() +
   theme(
@@ -3639,34 +4501,174 @@ NS.scam.PF <- ggplot(df.filt, aes(x = S.c.mod, y = N.comp, color = evol.plt, sha
 
 NS.scam.PF  # Display the plot
 
-###### Nitrogen v temp ######
+n.75 <- df.filt %>% # Now calculate the number of light points above that. 
+  filter(evol.bin %in% c("salt", "nit")) %>%
+  rowwise() %>%
+  mutate(
+    nearest_idx = find_nearest_index(z.x, pred.curve.2$z.x),
+    z.y.pred = pred.curve.2$z.y[nearest_idx]
+  ) %>%
+  ungroup() %>%
+  filter(z.y > z.y.pred) %>%
+  nrow()
+
+n_iter <- 1000
+null_counts <- numeric(n_iter)
+
+for (i in 1:n_iter) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
+  df.shuff <- df.filt %>%
+    mutate(evol.shuff = sample(evol.bin, rep = F))
+  
+  null_counts[i] <- df.shuff %>%
+    filter(evol.shuff %in% c("salt", "nit")) %>%
+    rowwise() %>%
+    mutate(
+      nearest_idx = which.min(abs(pred.curve.2$z.x - z.x)),
+      z.y.pred = pred.curve.2$z.y[nearest_idx]
+    ) %>%
+    ungroup() %>%
+    filter(z.y > z.y.pred) %>%
+    nrow()
+}
+
+mean(null_counts>= n.75) # p = 0.22
+
+###### N v Temp ######
 
 df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
                             ifelse(df.final$evol == "N", 'nit', 'other')) # for testing regressions.
 
-df.filt <- df.final # Filter out extreme outliers
+df.filt <- df.final %>% 
+  mutate(
+    z.y = N.comp,
+    z.x = T.br.0.56
+  ) # Specify the x and y variables
 
-par.res.NT <- par_frt(df.filt, xvar = "T.br", yvar = "N.comp") # Get the raw Pareto Front
-par.res.NT
-par.res.NT <- rbind(par.res.NT, df.filt[21,])
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # Scale for the point addition algorithm. 
 
-fit <- scam(N.comp ~ s(T.br, bs = "mpd", k = 6), data = par.res.NT) # Fit a scam to the raw Pareto front
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 
-x.vals <- seq(min(df.filt$T.br), max(df.filt$T.br), length.out = 100) # Generate an x sequence for plotting
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
 
-pred.curve.nt <- data.frame( # Get the corresponding y values
-  T.br = x.vals,
-  N.comp = predict(fit, newdata = data.frame(T.br = x.vals))
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+df.filt <- df.filt %>% 
+  filter(dist.sc < 2.4) # Error trimming
+
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # re-scale for the point addition algorithm.
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.1$z.x2[i]
+  y1 <- par.res.1$z.y2[i]
+  x2 <- par.res.1$z.x2[i + 1]
+  y2 <- par.res.1$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.1$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.2 <- bind_rows(par.res.1, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.2)), data = par.res.2) # Fit a scam to the raw Pareto front
+
+x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.1 <- data.frame( # Get the corresponding y values
+  z.x = x.vals,
+  z.y = predict(fit, newdata = data.frame(z.x = x.vals))
 )
 
-NT.scam.PF <- ggplot(df.filt, aes(x = T.br, y = N.comp, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.3 <- par_frt(df.filt2, xvar = "z.x", yvar = "z.y") # Pareto frontier on this data
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.3) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.3$z.x2[i]
+  y1 <- par.res.3$z.y2[i]
+  x2 <- par.res.3$z.x2[i + 1]
+  y2 <- par.res.3$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.3$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.4 <- bind_rows(par.res.3, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit2 <- lm(z.y ~ z.x, data = par.res.4) # Model fit
+
+pred.curve.2 <- data.frame( # predicted data frame
+  z.x = x.vals,
+  z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
+)
+
+NT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.nt, aes(x = T.br, y = N.comp), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   
-  ylim(0,1.1) +
-  
-  labs(x = "Thermal breadth (°C)",    
+  labs(x = "Thermal breadth  (°C)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
        title = "G — Nitrogen ~ Temperature") +  # labels
@@ -3690,6 +4692,8 @@ NT.scam.PF <- ggplot(df.filt, aes(x = T.br, y = N.comp, color = evol.plt, shape 
                "nit" = 16)  # filled circle
   ) +
   
+  #ylim(0.04,0.21) +
+  
   theme_classic() +
   theme(
     legend.position = "none",  
@@ -3700,6 +4704,38 @@ NT.scam.PF <- ggplot(df.filt, aes(x = T.br, y = N.comp, color = evol.plt, shape 
 
 NT.scam.PF  # Display the plot
 
+n.75 <- df.filt %>% # Now calculate the number of light points above that. 
+  filter(evol.bin %in% c("nit")) %>%
+  rowwise() %>%
+  mutate(
+    nearest_idx = find_nearest_index(z.x, pred.curve.2$z.x),
+    z.y.pred = pred.curve.2$z.y[nearest_idx]
+  ) %>%
+  ungroup() %>%
+  filter(z.y > z.y.pred) %>%
+  nrow()
+
+n_iter <- 1000
+null_counts <- numeric(n_iter)
+
+for (i in 1:n_iter) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
+  df.shuff <- df.filt %>%
+    mutate(evol.shuff = sample(evol.bin, rep = F))
+  
+  null_counts[i] <- df.shuff %>%
+    filter(evol.shuff %in% c("nit")) %>%
+    rowwise() %>%
+    mutate(
+      nearest_idx = which.min(abs(pred.curve.2$z.x - z.x)),
+      z.y.pred = pred.curve.2$z.y[nearest_idx]
+    ) %>%
+    ungroup() %>%
+    filter(z.y > z.y.pred) %>%
+    nrow()
+}
+
+mean(null_counts>= n.75) # p = 0.68
+
 ###### Phosphorous comparisons ######
 
 ###### P v salt ######
@@ -3707,25 +4743,135 @@ NT.scam.PF  # Display the plot
 df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
                             ifelse(df.final$evol == "P", 'phos', ifelse(df.final$evol %in% c("S", "BS"), 'salt', 'other')))
 
-df.filt <- df.final # Filter out extreme outliers
+df.filt <- df.final %>% 
+  mutate(
+    z.y = P.comp,
+    z.x = S.c.mod
+  ) # Specify the x and y variables
 
-par.res.PS <- par_frt(df.filt[df.filt$P.comp <4,], xvar = "S.c.mod", yvar = "P.comp") # Get the raw Pareto Front
-par.res.PS
-par.res.PS <- rbind(par.res.PS, df.filt[20,])
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # Scale for the point addition algorithm. 
 
-fit <- scam(P.comp ~ s(S.c.mod, bs = "mpd", k = 5), data = par.res.PS) # Fit a scam to the raw Pareto front
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 
-x.vals <- seq(min(df.filt$S.c.mod), max(df.filt$S.c.mod), length.out = 100) # Generate an x sequence for plotting
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
 
-pred.curve.ps <- data.frame( # Get the corresponding y values
-  S.c.mod = x.vals,
-  P.comp = predict(fit, newdata = data.frame(S.c.mod = x.vals))
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+df.filt <- df.filt %>% 
+  filter(dist.sc < 2.4) # Error trimming
+
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # re-scale for the point addition algorithm.
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.1$z.x2[i]
+  y1 <- par.res.1$z.y2[i]
+  x2 <- par.res.1$z.x2[i + 1]
+  y2 <- par.res.1$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.1$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.2 <- bind_rows(par.res.1, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.2)), data = par.res.2) # Fit a scam to the raw Pareto front
+
+x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.1 <- data.frame( # Get the corresponding y values
+  z.x = x.vals,
+  z.y = predict(fit, newdata = data.frame(z.x = x.vals))
 )
 
-PS.scam.PF <- ggplot(df.filt, aes(x = S.c.mod, y = P.comp, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.3 <- par_frt(df.filt2, xvar = "z.x", yvar = "z.y") # Pareto frontier on this data
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.3) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.3$z.x2[i]
+  y1 <- par.res.3$z.y2[i]
+  x2 <- par.res.3$z.x2[i + 1]
+  y2 <- par.res.3$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.3$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.4 <- bind_rows(par.res.3, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit2 <- lm(z.y ~ z.x, data = par.res.4) # Model fit
+
+pred.curve.2 <- data.frame( # predicted data frame
+  z.x = x.vals,
+  z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
+)
+
+PS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.ps, aes(x = S.c.mod, y = P.comp), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   
   labs(x = "Salt tolerance (c)",    
        y = "Competitive ability (1/P*)", 
@@ -3748,9 +4894,11 @@ PS.scam.PF <- ggplot(df.filt, aes(x = S.c.mod, y = P.comp, color = evol.plt, sha
     name = "Evolutionary status",
     values = c("other" = 1,  # open circle
                "ancestral" = 5, # diamond
-               "phos" = 16,
-               "salt" = 16)  # filled circle
+               "salt" = 16,
+               "phos" = 16)  # filled circle
   ) +
+  
+  #ylim(0.04,0.21) +
   
   theme_classic() +
   theme(
@@ -3762,31 +4910,174 @@ PS.scam.PF <- ggplot(df.filt, aes(x = S.c.mod, y = P.comp, color = evol.plt, sha
 
 PS.scam.PF  # Display the plot
 
+n.75 <- df.filt %>% # Now calculate the number of light points above that. 
+  filter(evol.bin %in% c("salt", "phos")) %>%
+  rowwise() %>%
+  mutate(
+    nearest_idx = find_nearest_index(z.x, pred.curve.2$z.x),
+    z.y.pred = pred.curve.2$z.y[nearest_idx]
+  ) %>%
+  ungroup() %>%
+  filter(z.y > z.y.pred) %>%
+  nrow()
+
+n_iter <- 1000
+null_counts <- numeric(n_iter)
+
+for (i in 1:n_iter) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
+  df.shuff <- df.filt %>%
+    mutate(evol.shuff = sample(evol.bin, rep = F))
+  
+  null_counts[i] <- df.shuff %>%
+    filter(evol.shuff %in% c("salt", "phos")) %>%
+    rowwise() %>%
+    mutate(
+      nearest_idx = which.min(abs(pred.curve.2$z.x - z.x)),
+      z.y.pred = pred.curve.2$z.y[nearest_idx]
+    ) %>%
+    ungroup() %>%
+    filter(z.y > z.y.pred) %>%
+    nrow()
+}
+
+mean(null_counts>= n.75) # p = 0.005
+
 ###### P v T ######
 
 df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
                             ifelse(df.final$evol == "P", 'phos', 'other')) # for testing regressions.
 
-df.filt <- df.final # Filter out extreme outliers
+df.filt <- df.final %>% 
+  mutate(
+    z.y = P.comp,
+    z.x = T.br.0.56
+  ) # Specify the x and y variables
 
-par.res.PT <- par_frt(df.filt[df.filt$P.comp < 4, ], xvar = "T.br", yvar = "P.comp") # Get the raw Pareto Front
-par.res.PT
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # Scale for the point addition algorithm. 
 
-fit <- scam(P.comp ~ s(T.br, bs = "mpd", k = 6), data = par.res.PT) # Fit a scam to the raw Pareto front
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 
-x.vals <- seq(min(df.filt$T.br), max(df.filt$T.br), length.out = 100) # Generate an x sequence for plotting
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
 
-pred.curve.pt <- data.frame( # Get the corresponding y values
-  T.br = x.vals,
-  P.comp = predict(fit, newdata = data.frame(T.br = x.vals))
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+df.filt <- df.filt %>% 
+  filter(dist.sc < 2.4) # Error trimming
+
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # re-scale for the point addition algorithm.
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.1$z.x2[i]
+  y1 <- par.res.1$z.y2[i]
+  x2 <- par.res.1$z.x2[i + 1]
+  y2 <- par.res.1$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.1$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.2 <- bind_rows(par.res.1, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.2)), data = par.res.2) # Fit a scam to the raw Pareto front
+
+x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.1 <- data.frame( # Get the corresponding y values
+  z.x = x.vals,
+  z.y = predict(fit, newdata = data.frame(z.x = x.vals))
 )
 
-PT.scam.PF <- ggplot(df.filt, aes(x = T.br, y = P.comp, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.3 <- par_frt(df.filt2, xvar = "z.x", yvar = "z.y") # Pareto frontier on this data
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.3) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.3$z.x2[i]
+  y1 <- par.res.3$z.y2[i]
+  x2 <- par.res.3$z.x2[i + 1]
+  y2 <- par.res.3$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.3$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.4 <- bind_rows(par.res.3, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit2 <- lm(z.y ~ z.x, data = par.res.4) # Model fit
+
+pred.curve.2 <- data.frame( # predicted data frame
+  z.x = x.vals,
+  z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
+)
+
+PT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.pt, aes(x = T.br, y = P.comp), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   
-  labs(x = "Thermal breadth (°C)",    
+  labs(x = "Thermal breadth  (°C)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
        title = "I — Phosphorous ~ Temperature") +  # labels
@@ -3810,6 +5101,8 @@ PT.scam.PF <- ggplot(df.filt, aes(x = T.br, y = P.comp, color = evol.plt, shape 
                "phos" = 16)  # filled circle
   ) +
   
+  #ylim(0.04,0.21) +
+  
   theme_classic() +
   theme(
     legend.position = "none",  
@@ -3820,31 +5113,174 @@ PT.scam.PF <- ggplot(df.filt, aes(x = T.br, y = P.comp, color = evol.plt, shape 
 
 PT.scam.PF  # Display the plot
 
+n.75 <- df.filt %>% # Now calculate the number of light points above that. 
+  filter(evol.bin %in% c("phos")) %>%
+  rowwise() %>%
+  mutate(
+    nearest_idx = find_nearest_index(z.x, pred.curve.2$z.x),
+    z.y.pred = pred.curve.2$z.y[nearest_idx]
+  ) %>%
+  ungroup() %>%
+  filter(z.y > z.y.pred) %>%
+  nrow()
+
+n_iter <- 1000
+null_counts <- numeric(n_iter)
+
+for (i in 1:n_iter) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
+  df.shuff <- df.filt %>%
+    mutate(evol.shuff = sample(evol.bin, rep = F))
+  
+  null_counts[i] <- df.shuff %>%
+    filter(evol.shuff %in% c("phos")) %>%
+    rowwise() %>%
+    mutate(
+      nearest_idx = which.min(abs(pred.curve.2$z.x - z.x)),
+      z.y.pred = pred.curve.2$z.y[nearest_idx]
+    ) %>%
+    ungroup() %>%
+    filter(z.y > z.y.pred) %>%
+    nrow()
+}
+
+mean(null_counts>= n.75) # p = 0.351
+
 ###### Finally, salt v temp! ######
 
 df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
                             ifelse(df.final$evol %in% c("S", "BS"), 'salt', 'other')) # for testing regressions.
 
-df.filt <- df.final # Filter out extreme outliers
+df.filt <- df.final %>% 
+  mutate(
+    z.y = S.c.mod,
+    z.x = T.br.0.56
+  ) # Specify the x and y variables
 
-par.res.ST <- par_frt(df.filt[df.filt$S.c.mod < 7,], xvar = "T.br", yvar = "S.c.mod") # Get the raw Pareto Front
-par.res.ST
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # Scale for the point addition algorithm. 
 
-fit <- scam(S.c.mod ~ s(T.br, bs = "mpd", k = 5), data = par.res.ST) # Fit a scam to the raw Pareto front
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 
-x.vals <- seq(min(df.filt$T.br), max(df.filt$T.br), length.out = 100) # Generate an x sequence for plotting
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
 
-pred.curve.st <- data.frame( # Get the corresponding y values
-  T.br = x.vals,
-  S.c.mod = predict(fit, newdata = data.frame(T.br = x.vals))
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+df.filt <- df.filt %>% 
+  filter(dist.sc < 2.4) # Error trimming
+
+df.filt <- df.filt %>% 
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  ) # re-scale for the point addition algorithm.
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) # Recalculate after removing errors
+
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 2.1,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.1) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.1$z.x2[i]
+  y1 <- par.res.1$z.y2[i]
+  x2 <- par.res.1$z.x2[i + 1]
+  y2 <- par.res.1$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.1$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.2 <- bind_rows(par.res.1, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(par.res.2)), data = par.res.2) # Fit a scam to the raw Pareto front
+
+x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.1 <- data.frame( # Get the corresponding y values
+  z.x = x.vals,
+  z.y = predict(fit, newdata = data.frame(z.x = x.vals))
 )
 
-ST.scam.PF <- ggplot(df.filt, aes(x = T.br, y = S.c.mod, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.3 <- par_frt(df.filt2, xvar = "z.x", yvar = "z.y") # Pareto frontier on this data
+
+buff.pts <- data.frame() # This will hold our extra data to potentially add
+
+for (i in 1:(nrow(par.res.3) - 1)) { # Loop over each segment (slope)
+  x1 <- par.res.3$z.x2[i]
+  y1 <- par.res.3$z.y2[i]
+  x2 <- par.res.3$z.x2[i + 1]
+  y2 <- par.res.3$z.y2[i + 1]
+  
+  df.cand <- df.filt %>% # Check all other points
+    filter(!X %in% par.res.3$X) %>%  # Exclude existing Pareto points
+    rowwise() %>%
+    mutate(
+      dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+      in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+      in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+    ) %>%
+    filter(dist <= buffer, in_x_range, in_y_range)
+  
+  # Append
+  buff.pts <- bind_rows(buff.pts, df.cand)
+}
+
+par.res.4 <- bind_rows(par.res.3, buff.pts) %>% distinct() # Add these to my existing PF
+
+fit2 <- lm(z.y ~ z.x, data = par.res.4) # Model fit
+
+pred.curve.2 <- data.frame( # predicted data frame
+  z.x = x.vals,
+  z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
+)
+
+ST.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.st, aes(x = T.br, y = S.c.mod), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   
-  labs(x = "Thermal breadth (°C)",    
+  labs(x = "Thermal breadth  (°C)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
        title = "J — Salt ~ Temperature") +  # labels
@@ -3868,6 +5304,8 @@ ST.scam.PF <- ggplot(df.filt, aes(x = T.br, y = S.c.mod, color = evol.plt, shape
                "salt" = 16)  # filled circle
   ) +
   
+  #ylim(0.04,0.21) +
+  
   theme_classic() +
   theme(
     legend.position = "none",  
@@ -3878,28 +5316,90 @@ ST.scam.PF <- ggplot(df.filt, aes(x = T.br, y = S.c.mod, color = evol.plt, shape
 
 ST.scam.PF  # Display the plot
 
-# Let's assemble a figure for the job talk
+n.75 <- df.filt %>% # Now calculate the number of light points above that. 
+  filter(evol.bin %in% c("salt")) %>%
+  rowwise() %>%
+  mutate(
+    nearest_idx = find_nearest_index(z.x, pred.curve.2$z.x),
+    z.y.pred = pred.curve.2$z.y[nearest_idx]
+  ) %>%
+  ungroup() %>%
+  filter(z.y > z.y.pred) %>%
+  nrow()
 
-plots.toffs.PF <- list(NP.scam.PF, NS.scam.PF, NT.scam.PF)
+n_iter <- 1000
+null_counts <- numeric(n_iter)
 
-all_plots.toffs.PF <- c(plots.toffs.PF, list(legend_only.PF))
+for (i in 1:n_iter) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
+  df.shuff <- df.filt %>%
+    mutate(evol.shuff = sample(evol.bin, rep = F))
+  
+  null_counts[i] <- df.shuff %>%
+    filter(evol.shuff %in% c("salt")) %>%
+    rowwise() %>%
+    mutate(
+      nearest_idx = which.min(abs(pred.curve.2$z.x - z.x)),
+      z.y.pred = pred.curve.2$z.y[nearest_idx]
+    ) %>%
+    ungroup() %>%
+    filter(z.y > z.y.pred) %>%
+    nrow()
+}
 
-grad_x_toffs.PF <- plot_grid(plotlist = all_plots.toffs.PF,
-                           ncol = 2,
-                           align = "hv")
-
-ggsave("figures/20_fig_5a_example_toffs.jpeg", grad_x_toffs.PF, width = 10, height = 10)
+mean(null_counts>= n.75) # p = 0.067
 
 # The real figure
+
+legend_df.2 <- data.frame(
+  x = c(1, 2, 1, 2, 1, 2, 1, 2),
+  y = c(1, 1, 2, 2, 1, 1, 2, 2),
+  Group = factor(c("Ancestral", "Other", "Matching", "Matching", "Ancestral", "Other", "Matching", "Matching")),
+  Group2 = factor(c("Biotic depletion", "Biotic depletion x Salt", "Control", "Light limitation", "Nitrogen limitation", "Ancestral", "Phosphorous limitation", "Salt stress")),
+  LineType = factor(c("Pareto Front", "Pareto Front", "Pareto Front", "Pareto Front", "Pareto Front", "Pareto Front", "Pareto Front", "Pareto Front"))
+)
+
+legend_plot.2 <- ggplot(legend_df.2, aes(x = x, y = y)) +
+  geom_point(aes(shape = Group, colour = Group2), size = 3, stroke = 1.5) +
+  geom_line(aes(linetype = LineType), size = 1) +
+  
+  scale_shape_manual(name = NULL,
+                     values = c("Ancestral" = 5, 
+                                "Other" = 1, 
+                                "Matching" = 16)) +
+  
+  scale_color_manual(
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_linetype_manual(name = NULL, values = c("Pareto Front" = "solid")) +
+  
+  labs(color = "Evolutionary context") +
+  theme_void() +
+  theme(
+    legend.title = element_text(size = 12, face = "bold"),
+    legend.text = element_text(size = 12),
+    legend.key.size = unit(1.2, "lines")
+  )
+
+legend_only.2 <- get_legend(legend_plot.2)
 
 full_toffs <- plot_grid(
   LN.scam.PF, LP.scam.PF, LS.scam.PF, LT.scam.PF,
   NULL, NP.scam.PF, NS.scam.PF, NT.scam.PF,
   NULL, NULL, PS.scam.PF, PT.scam.PF,
-  legend_only.PF, NULL, NULL, ST.scam.PF,
+  legend_only.2, NULL, NULL, ST.scam.PF,
   ncol = 4,
   align = "hv",
   axis = "tblr"
 )
 
 ggsave("figures/20_fig_5_full_intergradient_toffs.jpeg", full_toffs, width = 15, height = 15)
+
+###### Done!!! ######
