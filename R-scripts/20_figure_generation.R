@@ -2576,6 +2576,9 @@ T.int.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour=source)) + # Thomas 2
 
 T.int.scam  # Display the plot
 
+min(df.filt2$z.x)
+mean(df.filt$z.x < min(df.filt2$z.x)) * 100
+
 ###### Light ######
 
 # Narwani, Lewington, and Edwards 2016
@@ -2791,6 +2794,9 @@ L.int.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour=source)) +
   ) 
 
 L.int.scam  # Display the plot
+
+min(df.filt2$z.x)
+mean(df.filt$z.x < min(df.filt2$z.x)) * 100
 
 ###### Nitrogen ######
 
@@ -3021,6 +3027,9 @@ N.int.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour=source)) +
   ) 
 
 N.int.scam  # Display the plot
+
+min(df.filt2$z.x)
+mean(df.filt$z.x < min(df.filt2$z.x)) * 100
 
 ###### Phosphorous ######
 
@@ -3254,20 +3263,24 @@ P.int.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour=source)) +
 
 P.int.scam  # Display the plot
 
+min(df.filt2$z.x)
+mean(df.filt$z.x < min(df.filt2$z.x)) * 100
+
 ###### Make the figures ######
 
 plots2 <- list(L.int.scam, N.int.scam, P.int.scam, T.int.scam)
 
 legend_sp <- data.frame(
-  x = 1:6,
-  y = 1:6,
+  x = 1:7,
+  y = 1:7,
   Dataset = factor(c(
     "Bestion et al., 2018",
     "Edwards et al., 2015",
     "Edwards et al., 2016",
     "Lewington-Pearce et al., 2019",
     "Narwani et al., 2015",
-    "Thomas et al., 2012"
+    "Thomas et al., 2012",
+    "Laurich et al., 2025"
   ))
 )
 
@@ -3279,7 +3292,8 @@ legend_sp_plot <- ggplot(legend_sp, aes(x = x, y = y, color = Dataset)) +
                "Edwards et al., 2016" = "magenta3",
                "Lewington-Pearce et al., 2019" = "deepskyblue",
                "Narwani et al., 2015" = "darkred",
-               "Thomas et al., 2012" = "gold"),
+               "Thomas et al., 2012" = "gold",
+               "Laurich et al., 2025" = "forestgreen"),
     name = "Data set"
   ) +
   theme_void() +
