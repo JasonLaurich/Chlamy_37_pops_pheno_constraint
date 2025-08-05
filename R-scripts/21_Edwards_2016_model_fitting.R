@@ -19,7 +19,7 @@ library(nls.multstart)
 
 # Load and examine data ---------------------------------------------------
 
-df <- read.csv("data-processed/27a_Edwards_2016_raw_data.csv") # Raw data file
+df.t1 <- read.csv("data-processed/27a_Edwards_2016_raw_data.csv") # Raw data file
 head(df)
 str(df)
 
