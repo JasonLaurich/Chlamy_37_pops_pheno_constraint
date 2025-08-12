@@ -22,6 +22,7 @@ library(scam)
 library(lme4)
 library(emmeans)
 library(lmerTest)
+library(pracma)
 
 par_frt <- function(df, xvar, yvar) { # Simple Pareto front function / crude convex hull algorithm (one sided)
   
@@ -1248,6 +1249,89 @@ null.counts <- replicate(1000, {
 })
 
 mean(null.counts >= obs.cnt) # p-value 0.445
+
+# Empty space testing (Adapted from Li et al., 2019)
+
+x.max <- max(df.filt$z.x) # Extract the min and max values for x and y
+x.min <- min(df.filt$z.x)
+
+y.max <- max(df.filt$z.y)
+y.min <- min(df.filt$z.y)
+
+a.trap <- trapz(pred.curve.1$z.x, pred.curve.1$z.y - y.min) # numerical approximation of area under the curve as calculated using the trapezoidal rule
+a.emp <- (x.max - x.min) * (y.max - y.min) - a.trap # Calculate the empty space above the pareto front
+
+# needs: library(scam); library(pracma); and buffer defined
+
+null_once <- function(df, buffer = buffer) {
+  shuffled.df <- df.filt %>%
+    mutate(z.x = sample(z.x, replace = FALSE),
+           z.y = sample(z.y, replace = FALSE))
+  
+  par.res.n1 <- par_frt(shuffled.df[shuffled.df$dist.sc < 2.1, ], xvar = "z.x", yvar = "z.y") #  Pareto front on shuffled data
+  
+  buff.pts <- data.frame() # This will hold our extra data to potentially add
+  
+  for (i in 1:(nrow(par.res.n1) - 1)) { # Loop over each segment (slope)
+    x1 <- par.res.n1$z.x2[i]
+    y1 <- par.res.n1$z.y2[i]
+    x2 <- par.res.n1$z.x2[i + 1]
+    y2 <- par.res.n1$z.y2[i + 1]
+    
+    df.cand <- df.filt %>% # Check all other points
+      filter(!X %in% par.res.n1$X) %>%  # Exclude existing Pareto points
+      rowwise() %>%
+      mutate(
+        dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
+        in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
+        in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
+      ) %>%
+      filter(dist <= buffer, in_x_range, in_y_range)
+    
+    # Append
+    buff.pts <- bind_rows(buff.pts, df.cand)
+  }
+  
+  par.res.n2 <- bind_rows(par.res.n1, buff.pts) %>% distinct()
+  
+  pf.xy <- tibble(
+    z.x = par.res.n2[[xcol]],
+    z.y = par.res.n2[[ycol]]
+  ) %>% drop_na()
+  
+  # If too few points to fit, return NAs
+  if (nrow(pf.xy) < 3) return(tibble(a.trap.n = NA_real_, a.emp.n = NA_real_))
+  
+  # Fit SCAM to shuffled PF
+  fit <- scam(z.y ~ s(z.x, bs = "mpd", k = nrow(pf.xy)), data = pf.xy)
+  
+  # Integration limits from the shuffled cloud
+  x.min <- min(shuffled.df$z.x); x.max <- max(shuffled.df$z.x)
+  y.min <- min(shuffled.df$z.y); y.max <- max(shuffled.df$z.y)
+  
+  x.vals <- seq(x.min, x.max, length.out = 100)
+  pred.curve.n1 <- tibble(
+    z.x = x.vals,
+    z.y = as.numeric(predict(fit, newdata = tibble(z.x = x.vals)))
+  )
+  
+  # (optional) clip prediction to the box to be safe
+  y.pred.clipped <- pmin(pmax(pred.curve.n1$z.y, y.min), y.max)
+  
+  # area under PF within the box (shift by y.min)
+  a.trap.n <- trapz(pred.curve.n1$z.x, y.pred.clipped - y.min)
+  a.emp.n  <- (x.max - x.min) * (y.max - y.min) - a.trap.n
+  
+  tibble(a.trap.n = a.trap.n, a.emp.n = a.emp.n)
+}
+
+set.seed(1)
+null_tbl <- replicate(10, {
+  tryCatch(null_once(df.filt, buffer = 0.1), error = function(e) tibble(a.trap.n = NA_real_, a.emp.n = NA_real_))
+}, simplify = FALSE) %>% bind_rows()
+
+# null_tbl now has 1000 rows with a.trap.n and a.emp.n
+
 
 ###### Light ######
 
