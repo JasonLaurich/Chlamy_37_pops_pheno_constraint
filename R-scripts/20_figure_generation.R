@@ -1280,11 +1280,36 @@ null.df <- data.frame(       # Null model results
 
 ###### Here ######
 
-for (i in 1:10){
+for (i in 1:1000){
   
   shuffled.df <- df.filt %>%
     mutate(z.x = sample(z.x, replace = FALSE),
            z.y = sample(z.y, replace = FALSE))
+  
+  shuffled.df <- shuffled.df %>% 
+    mutate(
+      z.y2 = scale(z.y)[, 1],
+      z.x2 = scale(z.x)[, 1]
+    ) # Scale for the point addition algorithm. 
+  
+  x.ref <- min(shuffled.df$z.x2, na.rm = TRUE) # Min x
+  y.ref <- min(shuffled.df$z.y2, na.rm = TRUE) # Min y
+  
+  shuffled.df <- shuffled.df %>% # Calculate Euclidean distance from min
+    mutate(
+      distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+      dist.sc = distance/mean(distance)
+    ) %>%
+    arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
+  
+  shuffled.df <- shuffled.df %>% 
+    filter(dist.sc < 2.4) # Error trimming
+  
+  shuffled.df <- shuffled.df %>% 
+    mutate(
+      z.y2 = scale(z.y)[, 1],
+      z.x2 = scale(z.x)[, 1]
+    ) # re-scale for the point addition algorithm.
   
   par.res.n1 <- par_frt(shuffled.df[shuffled.df$dist.sc < 2.1, ], xvar = "z.x", yvar = "z.y") #  Pareto front on shuffled data
   
@@ -1312,7 +1337,7 @@ for (i in 1:10){
   
   par.res.n2 <- bind_rows(par.res.n1, buff.pts) %>% distinct()
   
-  fit.n <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6, nrow(par.res.n2))), data = par.res.n2) # Fit a scam to the null Pareto front
+  fit.n <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6, nrow(par.res.n2)), outer.ok = TRUE), data = par.res.n2) # Fit a scam to the null Pareto front
   
   x.vals.n <- seq(min(shuffled.df$z.x), max(shuffled.df$z.x), length.out = 100) # Generate an x sequence for plotting
   
@@ -1320,6 +1345,18 @@ for (i in 1:10){
     z.x = x.vals.n,
     z.y = predict(fit.n, newdata = data.frame(z.x = x.vals.n))
   )
+  
+  x.max.n <- max(shuffled.df$z.x) # Extract the min and max values for x and y
+  x.min.n <- min(shuffled.df$z.x)
+  
+  y.max.n <- max(shuffled.df$z.y)
+  y.min.n <- min(shuffled.df$z.y)
+  
+  null.df <- rbind(null.df, data.frame(                                                                              # Save the data
+    a.trap.n = trapz(pred.curve.n$z.x, pred.curve.n$z.y - y.min.n),                                                 # Area under the PF within the bounds of y
+    a.emp.n = (x.max.n - x.min.n) * (y.max.n - y.min.n) - trapz(pred.curve.n$z.x, pred.curve.n$z.y - y.min.n),      # Area above the curve 
+    n.PF = nrow(par.res.n2)                                                                                         # Number of data points in the PF after buffering
+  ))
   
 }
 
