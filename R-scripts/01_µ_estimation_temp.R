@@ -1,7 +1,9 @@
 # Jason R Laurich
 # November 20, 2024
 
-# This script will estimate r one final way (which is the way we intend to calculate estimates used for the fitting of TPCs)
+# Revisited and checked September 2nd, 2025 (JRL)
+
+# This script will estimate maximum exponential growth rates (µ)
 # For all sub-40 C populations, I will fit logged linear models to our data, within a window beginning at our first time point.
 
 # As the width of that window increases, I will calculate the slope of the line, and interpret a decrease in the slope as the
@@ -12,7 +14,8 @@
 # that is not biologically meaningful. 
 # Thus, for this treatment, I will threshold data to after maximum RFU count, and fit the same exponential growth curve to it.
 
-############# Packages ########################
+
+# Packages & functions ----------------------------------------------------
 
 library(nls.multstart)
 library(tidyr)
@@ -22,7 +25,7 @@ library(dplyr)
 library(gridExtra)
 library(grid)
 
-############# Upload and examine data #######################
+# Upload and examine data -------------------------------------------------
 
 df <- read.csv("data-processed/chlamee-acute-rfu-time.csv")
 head(df) #RFU is density, days is time, temperature is temperature
@@ -32,12 +35,12 @@ df<-df[,-c(1,2,4,5,6,8,13)]
 
 df$pop.fac <- as.factor(df$population)
 df$pop.num <- as.numeric(df$pop.fac)
-df<-subset(df,df$temperature!=20)
+df<-subset(df,df$temperature!=20) # 20C only includes 'single' measurements, which we will be excluding.
 
 # df$days <- df$days + 0.001 # Can't have 0s
 df$logRFU <- log(df$RFU + 0.001)
 
-levels(df$pop.fac) # I don't recognize the cc1629 group, but we'll keep it for now
+levels(df$pop.fac) # The cc1629 group is not relevant to the rest of the experimental data we are looking at, but I will keep it for now. 
 
 df.rep <- subset(df, df$plate_type == "repeat") # We're going to work only with repeat data (this is most of the well_plates) which I'll use as replicates. 
 df.rep$well.ID<-as.factor(df.rep$well_plate)
@@ -50,9 +53,9 @@ N0.df <- df.rep %>% # We want to create an additional column that holds N0 data 
 df.rep <- df.rep %>% # Recombine this with our dataframe
   left_join(N0.df, by = "well.ID") # Viewed it, looks good.
 
-mat.rep <- split(df.rep, df.rep$pop.num)  # Each element is a data frame for one population in df.rep
+mat.rep <- split(df.rep, df.rep$pop.num)  # Each element is a data frame for one population in df.rep contained within a matrix
 
-############## Data exploration #####################
+# Data exploration --------------------------------------------------------
 
 df.it <- subset(mat.rep[[1]], temperature==10) # For one population and temperature, let's explore the model
 df.it <- droplevels(df.it)
@@ -71,7 +74,7 @@ t.0 <- t.series[1] # Get the starting point
 t.series <- t.series[-1] # Ok so this is what we will loop through! t.0 will always be the starting point, but the end point will change
 
 ln.slopes <- c() # Store the logged linear slopes for each sliding window, from an lm
-sl.direct <- c() # Store the directly calculated (rise/run)
+sl.direct <- c() # Store the directly calculated slope
 
 for (z in t.series){ # This first loop will calculate the slopes for my first explorative population.
   
@@ -123,7 +126,7 @@ ggplot(df.it.wl.th, aes(x = days, y = RFU)) + # Plot observed and fitted data
         x = "Days",
         y = "RFU")
   
-# OK this is looking great! Let's try to loop this through all of my populations now.
+# OK this is looking okay. Let's keep going
 
 # But first, for the 40 C data, we will have to use a different approach. 
 
@@ -140,7 +143,9 @@ r_ln <- lm(logRFU~days, data= df.it.wl.late)
 
 summary(r_ln)
 
-# OK now onto looping! We'll start with the non 40 C data. 
+# Looping through all populations -----------------------------------------
+
+# We'll start with the non 40 C data. 
 
 df.r.exp <- data.frame( # Initializing a dataframe to store the results for each well, pop, and temperature
   population = character(),
@@ -197,7 +202,7 @@ for (i in 1:length(mat.rep.34)){ # Looping through all of the populations
           # percent.chg <- (ln.slopes[s] - ln.slopes[s + 1]) / ln.slopes[s] This was the reason we were getting weird negative results! If there was a stochastic drop.
           percent.chg <- ln.slopes[r] / ln.slopes[r + 1] # This should (along with the next line) fix it.
           
-          if (percent.chg >= 1.05 & ln.slopes[r] > 0 & ln.slopes[r+1] > 0) { # Because now, the drop-off ignores transiently negative slopes. 
+          if (percent.chg >= 1.10 & ln.slopes[r] > 0 & ln.slopes[r+1] > 0) { # Because now, the drop-off ignores transiently negative slopes. 
             s <- r # If the condition is met, reassign s to the corresponding drop-off point!
             break  # Exit loop when condition is met
           }
@@ -280,7 +285,7 @@ for (i in 1:length(mat.rep.40)){
 }
 
 # OK I've got my summary table! Let's save it then move on to plotting this out for a few randomly selected populations.
-write.csv(df.r.exp, "data-processed/05_final_r_estimates.csv")
+write.csv(df.r.exp, "data-processed/01_µ_estimates_temp.csv")
 
 pops<-names(mat.rep)
 ran <- sample(pops, 6, replace = F) # OK, let's select 6 random populations.
@@ -450,4 +455,4 @@ plot_grid <- arrangeGrob(grobs=plot.list, ncol = 6, nrow = 6)
 
 grid.draw(plot_grid)
 
-ggsave("figures/04_final_r_estimation_fits.pdf", plot_grid, width = 30, height = 30, units = "cm")
+ggsave("figures/01_µ_estimation_fits.pdf", plot_grid, width = 30, height = 30, units = "cm")

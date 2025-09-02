@@ -3,18 +3,15 @@
 
 # We are going to generate "final" figures for the project here
 
-# Apr 25th: IDEA TO FOLLOW UP ON LATER! Instead of fitting a curve to the first pareto fronts then adding 
-# in points close to it, just add in points similar enough to those already in par.res.X
-
-# Also need to figure out a way to keep the outliers, and plot them (but exclude them from PF calculation)
-
-
 ####### Important notes.
 
 #1. need to explore varying the buffer more - is 0.3 too high? What about the point exclusion thresholds?
+      # Base this on scaled Euclidean distance? By percentage of total variation between min and max?
 #2. for the Li et al null simulations - should I add in error?
+      # Yes I should - need to extract values for my 6,000 (?) models and take the 95% HDPI intervals. 
 #3. I should be setting a max on k for the scam models I think. 6?
 #4. For Li et al randomization - null PFs inflating the number of points in PF.2? Skewing results? Work with the convex hulls directly?
+      # Yes definetly! Also the null datasets (reasonably) frequently feature too few Pareto-optimal points for scam fits. 
 
 # Load packages, specify functions  -----------------------------------------------------------
 
@@ -1258,27 +1255,26 @@ null.counts <- replicate(1000, {
 
 mean(null.counts >= obs.cnt) # p-value 0.445
 
-# Empty space testing (Adapted from Li et al., 2019)
+# Empty space testing (Adapted from Li et al., 2019), using only the convex hull PF points — there are not consistently enough points to fit scams to null data.
 
-x.max <- max(df.filt$z.x) # Extract the min and max values for x and y
-x.min <- min(df.filt$z.x)
+par.res.1 <- par.res.1 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+  arrange(z.x)
 
-y.max <- max(df.filt$z.y)
-y.min <- min(df.filt$z.y)
+x.max <- max(df.filt[df.filt$dist.sc < 2.1,]$z.x) # Extract the max values for x and y. For now threshold at the same 2.1 level?
+y.max <- max(df.filt[df.filt$dist.sc < 2.1,]$z.y)
 
-a.trap <- trapz(pred.curve.1$z.x, pred.curve.1$z.y - y.min) # numerical approximation of area under the curve as calculated using the trapezoidal rule
-a.emp <- (x.max - x.min) * (y.max - y.min) - a.trap # Calculate the empty space above the pareto front
+poly <- par.res.1[, c("z.x", "z.y")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+  add_row(z.x = x.max, z.y = y.max)
+  
+a.emp <- polyarea(poly$z.x, poly$z.y) # Calculate the area enclosed by these vertices
 
 # We are going to write this out as a for-loop and save results in a df
 
 null.df <- data.frame(       # Null model results
-  a.trap.n = numeric(),      # Area under the Pareto front curve
-  a.emp.n = numeric(),       # Area above the curve (calculate by subtracting a.trap.n from total area)
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
   n.PF = numeric(),          # Extract the number of Pareto front points
   stringsAsFactors = FALSE            
 )
-
-###### Here ######
 
 for (i in 1:1000){
   
@@ -1311,54 +1307,27 @@ for (i in 1:1000){
       z.x2 = scale(z.x)[, 1]
     ) # re-scale for the point addition algorithm.
   
-  par.res.n1 <- par_frt(shuffled.df[shuffled.df$dist.sc < 2.1, ], xvar = "z.x", yvar = "z.y") #  Pareto front on shuffled data
+  par.res.n <- par_frt(shuffled.df[shuffled.df$dist.sc < 2.1, ], xvar = "z.x", yvar = "z.y") #  Pareto front on shuffled data
   
-  buff.pts <- data.frame() # This will hold our extra data to potentially add
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x)
   
-  for (i in 1:(nrow(par.res.n1) - 1)) { # Loop over each segment (slope)
-    x1 <- par.res.n1$z.x2[i]
-    y1 <- par.res.n1$z.y2[i]
-    x2 <- par.res.n1$z.x2[i + 1]
-    y2 <- par.res.n1$z.y2[i + 1]
-    
-    df.cand <- shuffled.df %>% # Check all other points
-      filter(!X %in% par.res.n1$X) %>%  # Exclude existing Pareto points
-      rowwise() %>%
-      mutate(
-        dist = point_line_distance(z.x2, z.y2, x1, y1, x2, y2),
-        in_x_range = between(z.x2, min(x1, x2) - buffer, max(x1, x2) + buffer),
-        in_y_range = between(z.y2, min(y1, y2) - buffer, max(y1, y2) + buffer)
-      ) %>%
-      filter(dist <= buffer, in_x_range, in_y_range)
-    
-    # Append
-    buff.pts <- bind_rows(buff.pts, df.cand)
-  }
+  x.max.n <- max(shuffled.df[shuffled.df$dist.sc < 2.1,]$z.x) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df[shuffled.df$dist.sc < 2.1,]$z.y)
   
-  par.res.n2 <- bind_rows(par.res.n1, buff.pts) %>% distinct()
+  poly.n <- par.res.n[, c("z.x", "z.y")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x = x.max.n, z.y = y.max.n)
   
-  fit.n <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6, nrow(par.res.n2)), outer.ok = TRUE), data = par.res.n2) # Fit a scam to the null Pareto front
+  a.emp.n <- polyarea(poly.n$z.x, poly.n$z.y) # Calculate the area enclosed by these vertices
   
-  x.vals.n <- seq(min(shuffled.df$z.x), max(shuffled.df$z.x), length.out = 100) # Generate an x sequence for plotting
-  
-  pred.curve.n <- data.frame( # Get the corresponding y values
-    z.x = x.vals.n,
-    z.y = predict(fit.n, newdata = data.frame(z.x = x.vals.n))
-  )
-  
-  x.max.n <- max(shuffled.df$z.x) # Extract the min and max values for x and y
-  x.min.n <- min(shuffled.df$z.x)
-  
-  y.max.n <- max(shuffled.df$z.y)
-  y.min.n <- min(shuffled.df$z.y)
-  
-  null.df <- rbind(null.df, data.frame(                                                                              # Save the data
-    a.trap.n = trapz(pred.curve.n$z.x, pred.curve.n$z.y - y.min.n),                                                 # Area under the PF within the bounds of y
-    a.emp.n = (x.max.n - x.min.n) * (y.max.n - y.min.n) - trapz(pred.curve.n$z.x, pred.curve.n$z.y - y.min.n),      # Area above the curve 
-    n.PF = nrow(par.res.n2)                                                                                         # Number of data points in the PF after buffering
+  null.df <- rbind(null.df, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
   ))
   
 }
+
+mean(null.df$a.emp.n >= a.emp) # p-value 0.655?
 
 ###### Light ######
 
@@ -1585,6 +1554,80 @@ null.counts <- replicate(1000, {
 
 mean(null.counts >= obs.cnt) # p-value 0.569
 
+# Li et al 2019 empty space testing
+
+par.res.1 <- par.res.1 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+  arrange(z.x)
+
+x.max <- max(df.filt[df.filt$dist.sc < 2.1,]$z.x) # Extract the max values for x and y. For now threshold at the same 2.1 level?
+y.max <- max(df.filt[df.filt$dist.sc < 2.1,]$z.y)
+
+poly <- par.res.1[, c("z.x", "z.y")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+  add_row(z.x = x.max, z.y = y.max)
+
+a.emp <- polyarea(poly$z.x, poly$z.y) # Calculate the area enclosed by these vertices
+
+# We are going to write this out as a for-loop and save results in a df
+
+null.df <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt %>%
+    mutate(z.x = sample(z.x, replace = FALSE),
+           z.y = sample(z.y, replace = FALSE))
+  
+  shuffled.df <- shuffled.df %>% 
+    mutate(
+      z.y2 = scale(z.y)[, 1],
+      z.x2 = scale(z.x)[, 1]
+    ) # Scale for the point addition algorithm. 
+  
+  x.ref <- min(shuffled.df$z.x2, na.rm = TRUE) # Min x
+  y.ref <- min(shuffled.df$z.y2, na.rm = TRUE) # Min y
+  
+  shuffled.df <- shuffled.df %>% # Calculate Euclidean distance from min
+    mutate(
+      distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+      dist.sc = distance/mean(distance)
+    ) %>%
+    arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
+  
+  shuffled.df <- shuffled.df %>% 
+    filter(dist.sc < 2.4) # Error trimming
+  
+  shuffled.df <- shuffled.df %>% 
+    mutate(
+      z.y2 = scale(z.y)[, 1],
+      z.x2 = scale(z.x)[, 1]
+    ) # re-scale for the point addition algorithm.
+  
+  par.res.n <- par_frt(shuffled.df[shuffled.df$dist.sc < 2.1, ], xvar = "z.x", yvar = "z.y") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x)
+  
+  x.max.n <- max(shuffled.df[shuffled.df$dist.sc < 2.1,]$z.x) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df[shuffled.df$dist.sc < 2.1,]$z.y)
+  
+  poly.n <- par.res.n[, c("z.x", "z.y")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x = x.max.n, z.y = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x, poly.n$z.y) # Calculate the area enclosed by these vertices
+  
+  null.df <- rbind(null.df, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df$a.emp.n >= a.emp) # p-value 0.488
+
 ###### Nitrogen ######
 
 df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
@@ -1810,6 +1853,80 @@ null.counts <- replicate(1000, {
 
 mean(null.counts >= obs.cnt) # p-value 0.906
 
+# Li et al 2019 empty space testing
+
+par.res.1 <- par.res.1 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+  arrange(z.x)
+
+x.max <- max(df.filt[df.filt$dist.sc < 2.1,]$z.x) # Extract the max values for x and y. For now threshold at the same 2.1 level?
+y.max <- max(df.filt[df.filt$dist.sc < 2.1,]$z.y)
+
+poly <- par.res.1[, c("z.x", "z.y")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+  add_row(z.x = x.max, z.y = y.max)
+
+a.emp <- polyarea(poly$z.x, poly$z.y) # Calculate the area enclosed by these vertices
+
+# We are going to write this out as a for-loop and save results in a df
+
+null.df <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt %>%
+    mutate(z.x = sample(z.x, replace = FALSE),
+           z.y = sample(z.y, replace = FALSE))
+  
+  shuffled.df <- shuffled.df %>% 
+    mutate(
+      z.y2 = scale(z.y)[, 1],
+      z.x2 = scale(z.x)[, 1]
+    ) # Scale for the point addition algorithm. 
+  
+  x.ref <- min(shuffled.df$z.x2, na.rm = TRUE) # Min x
+  y.ref <- min(shuffled.df$z.y2, na.rm = TRUE) # Min y
+  
+  shuffled.df <- shuffled.df %>% # Calculate Euclidean distance from min
+    mutate(
+      distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+      dist.sc = distance/mean(distance)
+    ) %>%
+    arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
+  
+  shuffled.df <- shuffled.df %>% 
+    filter(dist.sc < 2.4) # Error trimming
+  
+  shuffled.df <- shuffled.df %>% 
+    mutate(
+      z.y2 = scale(z.y)[, 1],
+      z.x2 = scale(z.x)[, 1]
+    ) # re-scale for the point addition algorithm.
+  
+  par.res.n <- par_frt(shuffled.df[shuffled.df$dist.sc < 2.1, ], xvar = "z.x", yvar = "z.y") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x)
+  
+  x.max.n <- max(shuffled.df[shuffled.df$dist.sc < 2.1,]$z.x) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df[shuffled.df$dist.sc < 2.1,]$z.y)
+  
+  poly.n <- par.res.n[, c("z.x", "z.y")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x = x.max.n, z.y = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x, poly.n$z.y) # Calculate the area enclosed by these vertices
+  
+  null.df <- rbind(null.df, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df$a.emp.n >= a.emp) # p-value 0.33
+
 ###### Phosphorous ######
 
 df.final$evol.bin <- ifelse(df.final$evol == "none", 'ancestral', 
@@ -2034,6 +2151,80 @@ null.counts <- replicate(1000, {
 })
 
 mean(null.counts >= obs.cnt) # p-value 0.979
+
+# Li et al 2019 empty space testing
+
+par.res.1 <- par.res.1 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+  arrange(z.x)
+
+x.max <- max(df.filt[df.filt$dist.sc < 2.1,]$z.x) # Extract the max values for x and y. For now threshold at the same 2.1 level?
+y.max <- max(df.filt[df.filt$dist.sc < 2.1,]$z.y)
+
+poly <- par.res.1[, c("z.x", "z.y")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+  add_row(z.x = x.max, z.y = y.max)
+
+a.emp <- polyarea(poly$z.x, poly$z.y) # Calculate the area enclosed by these vertices
+
+# We are going to write this out as a for-loop and save results in a df
+
+null.df <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt %>%
+    mutate(z.x = sample(z.x, replace = FALSE),
+           z.y = sample(z.y, replace = FALSE))
+  
+  shuffled.df <- shuffled.df %>% 
+    mutate(
+      z.y2 = scale(z.y)[, 1],
+      z.x2 = scale(z.x)[, 1]
+    ) # Scale for the point addition algorithm. 
+  
+  x.ref <- min(shuffled.df$z.x2, na.rm = TRUE) # Min x
+  y.ref <- min(shuffled.df$z.y2, na.rm = TRUE) # Min y
+  
+  shuffled.df <- shuffled.df %>% # Calculate Euclidean distance from min
+    mutate(
+      distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+      dist.sc = distance/mean(distance)
+    ) %>%
+    arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
+  
+  shuffled.df <- shuffled.df %>% 
+    filter(dist.sc < 2.4) # Error trimming
+  
+  shuffled.df <- shuffled.df %>% 
+    mutate(
+      z.y2 = scale(z.y)[, 1],
+      z.x2 = scale(z.x)[, 1]
+    ) # re-scale for the point addition algorithm.
+  
+  par.res.n <- par_frt(shuffled.df[shuffled.df$dist.sc < 2.1, ], xvar = "z.x", yvar = "z.y") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x)
+  
+  x.max.n <- max(shuffled.df[shuffled.df$dist.sc < 2.1,]$z.x) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df[shuffled.df$dist.sc < 2.1,]$z.y)
+  
+  poly.n <- par.res.n[, c("z.x", "z.y")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x = x.max.n, z.y = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x, poly.n$z.y) # Calculate the area enclosed by these vertices
+  
+  null.df <- rbind(null.df, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df$a.emp.n >= a.emp) # p-value 0.015
 
 # Let's create the descriptive figure for the supplement - how I detect Pareto points
 
@@ -2367,6 +2558,80 @@ null.counts <- replicate(1000, {
 })
 
 mean(null.counts >= obs.cnt) # p-value 0.812
+
+# Li et al 2019 empty space testing
+
+par.res.1 <- par.res.1 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+  arrange(z.x)
+
+x.max <- max(df.filt[df.filt$dist.sc < 2.1,]$z.x) # Extract the max values for x and y. For now threshold at the same 2.1 level?
+y.max <- max(df.filt[df.filt$dist.sc < 2.1,]$z.y)
+
+poly <- par.res.1[, c("z.x", "z.y")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+  add_row(z.x = x.max, z.y = y.max)
+
+a.emp <- polyarea(poly$z.x, poly$z.y) # Calculate the area enclosed by these vertices
+
+# We are going to write this out as a for-loop and save results in a df
+
+null.df <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt %>%
+    mutate(z.x = sample(z.x, replace = FALSE),
+           z.y = sample(z.y, replace = FALSE))
+  
+  shuffled.df <- shuffled.df %>% 
+    mutate(
+      z.y2 = scale(z.y)[, 1],
+      z.x2 = scale(z.x)[, 1]
+    ) # Scale for the point addition algorithm. 
+  
+  x.ref <- min(shuffled.df$z.x2, na.rm = TRUE) # Min x
+  y.ref <- min(shuffled.df$z.y2, na.rm = TRUE) # Min y
+  
+  shuffled.df <- shuffled.df %>% # Calculate Euclidean distance from min
+    mutate(
+      distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+      dist.sc = distance/mean(distance)
+    ) %>%
+    arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
+  
+  shuffled.df <- shuffled.df %>% 
+    filter(dist.sc < 2.4) # Error trimming
+  
+  shuffled.df <- shuffled.df %>% 
+    mutate(
+      z.y2 = scale(z.y)[, 1],
+      z.x2 = scale(z.x)[, 1]
+    ) # re-scale for the point addition algorithm.
+  
+  par.res.n <- par_frt(shuffled.df[shuffled.df$dist.sc < 2.1, ], xvar = "z.x", yvar = "z.y") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x)
+  
+  x.max.n <- max(shuffled.df[shuffled.df$dist.sc < 2.1,]$z.x) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df[shuffled.df$dist.sc < 2.1,]$z.y)
+  
+  poly.n <- par.res.n[, c("z.x", "z.y")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x = x.max.n, z.y = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x, poly.n$z.y) # Calculate the area enclosed by these vertices
+  
+  null.df <- rbind(null.df, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df$a.emp.n >= a.emp) # p-value 0.088
 
 # Figure 1 : all plots together
 
