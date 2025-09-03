@@ -1,9 +1,11 @@
 # Jason R Laurich
 # March 5, 2025
 
+# Revisited, checked, and cleaned September 3rd, 2025 (JRL)
+
 # In this script, I will work with the Thomas 2012 Science paper (doi: DOI: 10.1126/science.122483) supplement containing specific grwoth rates for 194 algae.
 
-############# Packages ########################
+# Packages & functions ----------------------------------------------------
 
 library(tidyr)
 library(cowplot)
@@ -15,9 +17,9 @@ library(Deriv)
 library(rTPC)
 library(nls.multstart)
 
-############# Upload and organize data #######################
+# Upload & examine data ---------------------------------------------------
 
-df <- read.csv("data-processed/16b_thomas_2012_supp_raw.csv") # Summary file
+df <- read.csv("data-processed/10_Thomas_2012_raw_data.csv") # Raw data containing growth rates at different temperatures for all species
 head(df)
 str(df)
 
@@ -25,24 +27,19 @@ length(unique(df$id.number))
 
 mat <- split(df, df$id.number)  # Matrix
 
-df2 <- read.csv("data-processed/16a_thomas_2012_supp_data_summ.csv") # Summary file
+min(df[df$Growth.rate>0,]$Temperature) # Tmin => -1.8
+max(df[df$Growth.rate>0,]$Temperature) # Tmax <= 37
 
-min(df2$Optimum)
-max(df2$Optimum) # ~ Topt 1 to 39
-
-min(df[df$Growth.rate>0,]$Temperature) # Tmin <= -1.8
-max(df[df$Growth.rate>0,]$Temperature) # Tmax => 37
-
-############# Test drive #######################
+# Testing -----------------------------------------------------------------
 
 i <- sample(1:194,1) 
 
 df.i <- subset(mat[[i]])
 
-inits.lactin.thomas<- function() { # The final initial values set we landed on after experimenting. 
+inits.lactin.meta<- function() { # The final initial values set we landed on after experimenting. 
   list(
     cf.a = runif(1, 0.05, 1),  # More constrained initial values
-    cf.tmax = runif(1, 1, 40),    # Much wider to accomodate interspecific variation
+    cf.tmax = runif(1, 1, 40),    # Much wider to accommodate interspecific variation
     cf.delta_t = runif(1, 1, 10),
     cf.b = runif(1, -2.5, -1),
     cf.sigma = runif(1, 0.1, 2)
@@ -67,9 +64,9 @@ jag.data <- list(trait = trait, N.obs = N.obs, temp = temp, Temp.xs = Temp.xs, N
 
 lac_jag1 <- jags(
   data = jag.data, 
-  inits = inits.lactin.thomas, 
+  inits = inits.lactin.meta, 
   parameters.to.save = parameters.lactin2, 
-  model.file = "lactin2_thomas.txt",
+  model.file = "lactin_meta.txt",
   n.thin = nt.fit, 
   n.chains = nc.fit, 
   n.burnin = nb.fit, 
@@ -174,78 +171,6 @@ lact.jag.plot2 <- ggplot(data = df.jags.plot, aes(x = temp)) +
 
 lact.jag.plot2
 
-# Let's try the Norberg function
-
-start.vals.thom <- get_start_vals(df.i$Temperature, df.i$Growth.rate, model_name = 'thomas_2012')
-
-jag.data <- list(trait = trait, N.obs = N.obs, temp = temp, Temp.xs = Temp.xs, N.Temp.xs = N.Temp.xs)
-
-parameters.thomas <- c("a", "b", "c", "topt", "sigma", "r.pred") # repeated here
-
-inits.thom.cust<- function() { # The final initial values set we landed on after experimenting. 
-  list(
-    a = rnorm(1, mean = start.vals.thom[1], sd = 1),
-    b = rnorm(1, mean = start.vals.lac[2], sd = 1),
-    c = rnorm(1, mean = start.vals.lac[3], sd = 1),
-    topt = rnorm(1, mean = start.vals.lac[4], sd = 1),
-    sigma = runif(1, 0.1, 2)
-  )
-}
-
-thom_jag <- jags(
-  data = jag.data, 
-  inits = inits.thom.cust, 
-  parameters.to.save = parameters.thomas, 
-  model.file = "thomas_intersp.txt",
-  n.thin = nt.fit, 
-  n.chains = nc.fit, 
-  n.burnin = nb.fit, 
-  n.iter = ni.fit, 
-  DIC = TRUE, 
-  working.directory = getwd()
-)
-
-thom_jag$BUGSoutput$summary[c(1:4, 506:507),] # OK.. this looks pretty good!
-mcmcplot(thom_jag) # Ehhh... there's some spread on the variable fits....
-
-df.jags <- data.frame(thom_jag$BUGSoutput$summary)
-df.jags.plot <- df.jags[-c(1:4, 506:507),]
-df.jags.plot$temp <- seq(-5, 45, 0.1)
-
-thom.jag.plot <- ggplot(data = df.jags.plot, aes(x = temp)) +
-  geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "orchid1", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
-  geom_line(aes(y = mean), color = "sienna", size = 1) + # Add the mean prediction line
-  geom_point(data = df.i, aes(x = jitter(Temperature, 0.5), y = Growth.rate), color = "gray12", size = 2) + # Add observed data points with jitter for Temp
-  scale_x_continuous(limits = c(-5, 45)) + 
-  scale_y_continuous(limits = c(-5, 5)) + # Customize the axes and labels +
-  labs(
-    x = expression(paste("Temperature (", degree, "C)")),
-    y = "Growth rate",
-    title = "Thomas 1 / Norberg Model Fit"
-  ) +
-  theme_classic() +
-  geom_hline(yintercept = 0)
-
-thom.jag.plot # Yikes!!!!!!!!!!
-
-thom_nls <- nls_multstart(Growth.rate~thomas_2012(temp = Temperature, a, b, c, topt),
-                          data = df.i,
-                          iter = c(4,4,4,4),
-                          start_lower = start.vals.thom - 10,
-                          start_upper = start.vals.thom + 10,
-                          lower = get_lower_lims(df.i$Temperature, df.i$Growth.rate, model_name = 'thomas_2012'),
-                          upper = get_upper_lims(df.i$Temperature, df.i$Growth.rate, model_name = 'thomas_2012'),
-                          supp_errors = 'Y',
-                          convergence_count = FALSE)
-
-preds.thom <- data.frame(Temperature = seq(min(df.i$Temperature - 2), max(df.i$Temperature +2), length.out = 100))
-preds.thom <- broom::augment(thom_nls, newdata = preds.thom)
-
-thom_plot <- ggplot(preds.thom) + geom_point(aes(Temperature, Growth.rate), df.i) +
-  geom_line(aes(Temperature, .fitted), col = 'darkslateblue') + theme_classic() + ggtitle('Thomas 1')
-
-thom_plot # OK so this also looks terrible — I think we'll stick with Lactin II.
-
 # OK let's run through extracting some summary metrics for practice here. 
 
 df.jags.plot$temp[min(which(df.jags.plot$mean > 0))]                                     # Tmin
@@ -255,54 +180,10 @@ df.jags.plot$temp[max(which(df.jags.plot$mean > (max(df.jags.plot$mean) / 2)))] 
 df.jags.plot$temp[which.max(df.jags.plot$mean)]                                          # Optimal T
 max(df.jags.plot$mean)                                                                   # µmax
 
-lactin2 <- function(temp, cf.a, cf.tmax, cf.delta_t, cf.b) { 
-  exp(cf.a * temp) - exp(cf.a * cf.tmax - (cf.tmax - temp) / cf.delta_t) + cf.b
-} # Define the Lactin II function
-
-lactin2_deriv <- function(temp, cf.a, cf.b, cf.tmax, cf.delta_t) {
-  rho <- cf.a
-  T_max <- cf.tmax
-  delta_T <- cf.delta_t
-  
-  term1 <- rho * exp(rho * temp)
-  term2 <- (1 / delta_T) * exp(rho * T_max - (T_max - temp) / delta_T)
-  
-  return(term1 - term2)
-} # Derivative of the Lactin II function
-
 cf.a <- lac_jag2$BUGSoutput$summary[1,1] # Extract parameters
 cf.b <- lac_jag2$BUGSoutput$summary[2,1]
 cf.tmax <- lac_jag2$BUGSoutput$summary[5,1]
 cf.delta_t <- lac_jag2$BUGSoutput$summary[3,1]
-
-# Find the T_opt: where the derivative crosses zero
-T_opt <- uniroot(
-  function(temp) lactin2_deriv(temp, cf.a, cf.b, cf.tmax, cf.delta_t),
-  interval = c(-10, 45)
-)$root
-
-r_max <- lactin2(temp=T_opt, cf.a=cf.a, cf.b=cf.b, cf.tmax=cf.tmax, cf.delta_t=cf.delta_t)
-
-Tmin <- uniroot(lactin2, interval = c(0, T_opt), cf.a = cf.a, 
-                cf.b = cf.b, cf.tmax = cf.tmax, cf.delta_t = cf.delta_t)$root
-
-Tmax <- uniroot(lactin2, interval = c(T_opt,45), cf.a = cf.a, 
-                cf.b = cf.b, cf.tmax = cf.tmax, cf.delta_t = cf.delta_t)$root
-
-# OK we're going to modify the function to calculate T_breadth, based on a modified lactin.
-lactin2_halfmax <- function(temp, cf.a, cf.b, cf.tmax, cf.delta_t, r_half) {
-  exp(cf.a * temp) - exp(cf.a * cf.tmax - (cf.tmax - temp) / cf.delta_t) + cf.b - r_half
-}
-
-r_half <- r_max/2 # calculate half of rmax and get the roots.
-
-Tlow <- uniroot(lactin2_halfmax, interval = c(Tmin, T_opt), cf.a = cf.a, 
-                cf.b = cf.b, cf.tmax = cf.tmax, cf.delta_t = cf.delta_t, r_half = r_half)$root
-
-Thigh <- uniroot(lactin2_halfmax, interval = c(T_opt, Tmax), cf.a = cf.a, 
-                 cf.b = cf.b, cf.tmax = cf.tmax, cf.delta_t = cf.delta_t, r_half = r_half)$root
-
-# The calculus isn't working for some reason. We;ll just save the a, b, etc. values. 
 
 ############# Fit TPCs and save the summary statistics #######################
 
@@ -344,7 +225,7 @@ inits.lactin.cust<- function() { # Pulling initial values centres from the start
   )
 }
 
-for (i in 154:194){ # For each species
+for (i in 1:194){ # For each species
   
   df.i <- df %>%
     filter(id.number == i, !is.na(Growth.rate)) %>% 
@@ -419,13 +300,5 @@ for (i in 154:194){ # For each species
   }
 }
 
-write.csv(thomas.summ.df, "data-processed/17_Thomas2012_TPCs.csv") # Save Thomas 2012 summary table
-write.csv(fit.df, "data-processed/17a_Thomas2012_TPCs_fits.csv") # Save model fit summary table
-
-################### Examining the summary data ################################################
-
-thomas.summ.df <- read.csv("data-processed/17_Thomas2012_TPCs.csv") # TPC parameters
-fit.df <- read.csv("data-processed/17a_Thomas2012_TPCs_fits.csv")   # Model fit details
-
-# How do these estimates compare to those calculated and presented by Thomas et al in their supplement?
-# Let's compare Tbr to niche breadth. 
+write.csv(thomas.summ.df, "data-processed/10a_Thomas_2012_TPCs.csv") # Save Thomas 2012 summary table
+write.csv(fit.df, "data-processed/10b_Thomas_2012_TPCs_fits.csv") # Save model fit summary table
