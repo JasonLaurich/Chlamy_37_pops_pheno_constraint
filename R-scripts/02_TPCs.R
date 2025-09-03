@@ -1,7 +1,9 @@
 # Jason R Laurich
 # November 20, 2024
 
-# Here, I will upload the final estimates of r for each population and well replicate at each temperature.
+# Revisited, checked, and cleaned September 2nd, 2025 (JRL)
+
+# Here, I will upload the final estimates of µ for each population and well replicate at each temperature.
 # And use them to fit thermal performance curves (TPCs).
 # I will fit seven models in nls that reflect some of the best-performing phenomenological models, and that capture 
 # much of the variance among available models (see Kontopoulos et al 2024, Nat Comm, https://doi.org/10.1038/s41467-024-53046-2)
@@ -10,7 +12,7 @@
 # We'll calculate AICc values and plot the models, and select the best performing ones...
 # Which we will then fit using bayesian methods in R2jags.
 
-############# Packages ########################
+# Packages & functions ----------------------------------------------------
 
 library(nls.multstart)
 library(tidyr)
@@ -23,9 +25,53 @@ library(mcmcplots) # Diagnostic plots for fits
 library(gridExtra)
 library(Deriv)
 
-##################### Upload and examine data #######################
+# Lactin II
 
-df <- read.csv("data-processed/05_final_r_estimates.csv")
+lactin2 <- function(temp, cf.a, cf.tmax, cf.delta_t, cf.b) { 
+  exp(cf.a * temp) - exp(cf.a * cf.tmax - (cf.tmax - temp) / cf.delta_t) + cf.b
+} # Define the Lactin II function
+
+lactin2_deriv <- function(temp, cf.a, cf.b, cf.tmax, cf.delta_t) {
+  rho <- cf.a
+  T_max <- cf.tmax
+  delta_T <- cf.delta_t
+  
+  term1 <- rho * exp(rho * temp)
+  term2 <- (1 / delta_T) * exp(rho * T_max - (T_max - temp) / delta_T)
+  
+  return(term1 - term2)
+} # Derivative of the Lactin II function
+
+lactin2_halfmax <- function(temp, cf.a, cf.b, cf.tmax, cf.delta_t, r_half) {
+  exp(cf.a * temp) - exp(cf.a * cf.tmax - (cf.tmax - temp) / cf.delta_t) + cf.b - r_half
+} # OK we're going to modify the function to calculate T_breadth, based on a modified lactin.
+
+# Thomas I
+
+thomas1 <- function(temp, a, b, c, topt) { 
+  a * exp(b * temp) * (1 - ((temp - topt) / (c / 2))^2)
+} # Define the Thomas I function
+
+# Define the derivative of the Thomas I function
+thomas1_deriv <- function(temp, a, b, c, topt) {
+  # Compute terms
+  exp_term <- a * b * exp(b * temp)  # Derivative of the exponential part
+  quad_term <- (1 - ((temp - topt) / (c / 2))^2)  # Quadratic term
+  quad_deriv <- (-2 * (temp - topt)) / (c^2 / 4)  # Derivative of quadratic term
+  
+  # Apply product rule
+  deriv_value <- exp_term * quad_term + (a * exp(b * temp) * quad_deriv)
+  
+  return(deriv_value)
+}
+
+thomas1_halfmax <- function(temp, a, b, c, topt, r_half) {
+  a * exp(b * temp) * (1 - ((temp - topt) / (c / 2))^2) - r_half
+} # Tbr as half µmax range
+
+# Upload and examine data -------------------------------------------------
+
+df <- read.csv("data-processed/01_µ_estimates_temp.csv")
 
 head(df)
 str(df)
@@ -37,12 +83,14 @@ df$Temp <- df$temperature
 
 mat <- split(df, df$pop.num)  # Matrixify the data!
 
-############# Explore fitting TPCs - 1 population ###############################
+# Explore TPC fitting — 1 population --------------------------------------
 
 i <- sample(1:38, 1) # We'll start with one population
 
 df.i <- subset(mat[[i]])
 df.i <- droplevels(df.i) 
+
+head(df.i)
 
 model.AICc <- data.frame(
   model = character(),
@@ -439,10 +487,10 @@ deut2_nls <- nls_multstart(
 summary(deut2_nls)
 AICc(deut2_nls) # So this is giving me the same numbers as the rTPC package which is great! This means that our custom models are working equally well.
 
-write.csv(model.AICc, "data-processed/06_rTPC_modelcomparison_population2.csv") # Save model comparison data
+write.csv(model.AICc, "data-processed/02_rTPC_model_comparison_population10.csv") # Save model comparison data
 
 mod_grid<- plot_grid(plotlist = nls.plot.list, ncol = 4) # plot it!
-ggsave("figures/05_rTPC_modelcomparison_pop2.pdf", plot = mod_grid, width = 24, height = 16)
+ggsave("figures/02_rTPC_model_comparison_pop10.pdf", plot = mod_grid, width = 24, height = 16)
 
 ############### Loop through all populations, calculating AICc values ###################################
 
@@ -666,11 +714,9 @@ aicc_df <- cbind(aicc_df[, 1, drop = FALSE],
                  Mean_AICc = mean_aicc, 
                  aicc_df[, -1])
 
-write.csv(aicc_df, "data-processed/07_nls_TPC_comparison_AICcs.csv") # Save model comparison data
+write.csv(aicc_df, "data-processed/03_nls_TPC_comparison_AICcs.csv") # Save model comparison data
 
-############# Fit best models (Deutsch, Rezende, Lactin2) and extract shape parameters for all populations #####################
-
-############# Bayesian modelling #########################
+# Bayesian modelling ------------------------------------------------------
 
 # OK, the next step is to try to fit our best performing models in R2jags - Deutsch, Rezende, and Lactin2
 # This model framework (see https://github.com/JoeyBernhardt/anopheles-rate-summation/blob/master/AnalysisDemo.R)
@@ -830,7 +876,7 @@ deut_jag <- jags(
   working.directory = getwd()
 )
 
-deut_jag$BUGSoutput$summary[c(1:3, 455:457),] # Get estimates. For some reason rmax, sigma and topt are at the end!
+deut_jag$BUGSoutput$summary[c(1:3, 455:457),] # Get estimates. rmax, sigma and topt are at the end!
 mcmcplot(deut_jag) # Evaluate model performance
 deut_jag$BUGSoutput$DIC # DIC
 
@@ -854,6 +900,7 @@ deut.jag.plot <- ggplot(data = df.jags.plot, aes(x = temp)) +
   theme_classic() +
   geom_hline(yintercept = 0)
 
+deut.jag.plot
 
 # Lactin 2
 
@@ -867,13 +914,21 @@ inits.lactin2 <- function() {
   )
 }
 
-parameters.lactin2 <- c("cf.a", "cf.b", "cf.tmax", "cf.delta_t", "cf.sigma", "r.pred")
+inits.lactin <- function() { # The final initial values set we landed on after experimenting. 
+  list(
+    cf.a = runif(1, 0.05, 0.15),  # More constrained initial values
+    cf.tmax = runif(1, 37, 43),
+    cf.delta_t = runif(1, 1, 5),
+    cf.b = runif(1, -2.5, -1),
+    cf.sigma = runif(1, 0.1, 2)
+  )
+}
 
-# This first one doesn't seem to work... not sure why? Has to do with the step function in the text file?
+parameters.lactin2 <- c("cf.a", "cf.b", "cf.tmax", "cf.delta_t", "cf.sigma", "r.pred")
 
 lac_jag <- jags(
   data = jag.data, 
-  inits = inits.lactin2, 
+  inits = inits.lactin, 
   parameters.to.save = parameters.lactin2, 
   model.file = "lactin.txt",
   n.thin = nt, 
@@ -908,220 +963,7 @@ ggplot(data = preds, aes(x = Temp)) +
   ) +
   theme_classic()
 
-inits.lactin2 <- function() {
-  list(
-    cf.a = runif(1, 0.01, 0.2),  # More constrained initial values
-    cf.tmax = runif(1, 35, 45),
-    cf.delta_t = runif(1, 1, 5),
-    cf.b = runif(1, -3, 3),
-    cf.sigma = runif(1, 0.5, 2)
-  )
-}
-
-# This next model doesn't really work that well.. The different chains are not converging.
-# looks like our initial values and priors need to be tighter?
-
-
-lac2_jag <- jags(
-  data = jag.data, 
-  inits = inits.lactin2, 
-  parameters.to.save = parameters.lactin2, 
-  model.file = "lactin2.txt",
-  n.thin = nt, 
-  n.chains = nc, 
-  n.burnin = nb, 
-  n.iter = ni, 
-  DIC = TRUE, 
-  working.directory = getwd()
-)
-
-lac2_jag$BUGSoutput$summary[1:6,] # Get estimates
-mcmcplot(lac2_jag) # Evaluate model performance
-lac2_jag$BUGSoutput$DIC # DIC
-
-preds <- data.frame(
-  Temp = Temp.xs,
-  Mean = lac2_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "mean"],
-  LCL = lac2_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "2.5%"],
-  UCL = lac2_jag$BUGSoutput$summary[6:(6 + N.Temp.xs - 1), "97.5%"]
-)
-
-ggplot(data = preds, aes(x = Temp)) +
-  geom_ribbon(aes(ymin = LCL, ymax = UCL), fill = "gold", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
-  geom_line(aes(y = Mean), color = "darkorchid", size = 1) + # Add the mean prediction line
-  geom_point(data = df.i, aes(x = jitter(Temp, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for Temp
-  scale_x_continuous(limits = c(1, 45)) + 
-  scale_y_continuous(limits = c(-0.5, 5.5)) + # Customize the axes and labels +
-  labs(
-    x = expression(paste("Temperature (", degree, "C)")),
-    y = "Growth rate",
-    title = "Lactin 2 Model Fit"
-  ) +
-  theme_classic()
-
-# Examine the results:
-
-df.jags <- data.frame(lac2_jag$BUGSoutput$summary)
-df.jags.plot <- df.jags[-c(1:6),]
-df.jags.plot$temp <- seq(0, 45, 0.1)
-
-ggplot(data = df.jags.plot, aes(x = temp)) +
-  geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "gold", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
-  geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
-  geom_point(data = df.i, aes(x = jitter(Temp, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for Temp
-  scale_x_continuous(limits = c(0, 45)) + 
-  scale_y_continuous(limits = c(-2, 5.5)) + # Customize the axes and labels +
-  labs(
-    x = expression(paste("Temperature (", degree, "C)")),
-    y = "Growth rate",
-    title = "Lactin 2 Model Fit"
-  ) +
-  theme_classic() +
-  geom_hline(yintercept = 0)
-
-# OK, let's try tightening our priors and initial values...
-
-inits.lactin2.1 <- function() {
-  list(
-    cf.a = runif(1, 0.01, 0.2),  # More constrained initial values
-    cf.tmax = runif(1, 32, 38),
-    cf.delta_t = runif(1, 0.1, 5),
-    cf.b = runif(1, -1, 1),
-    cf.sigma = runif(1, 0, 2)
-  )
-}
-
-lac3_jag <- jags(
-  data = jag.data, 
-  inits = inits.lactin2.1, 
-  parameters.to.save = parameters.lactin2, 
-  model.file = "lactin2_narrow.txt",
-  n.thin = nt, 
-  n.chains = nc, 
-  n.burnin = nb, 
-  n.iter = ni, 
-  DIC = TRUE, 
-  working.directory = getwd()
-)
-
-lac3_jag$BUGSoutput$summary[1:6,] # Get estimates
-mcmcplot(lac3_jag) # Evaluate model performance
-lac3_jag$BUGSoutput$DIC # DIC
-
-# Examine the results:
-
-df.jags <- data.frame(lac3_jag$BUGSoutput$summary)
-df.jags.plot <- df.jags[-c(1:6),]
-df.jags.plot$temp <- seq(0, 45, 0.1)
-
-ggplot(data = df.jags.plot, aes(x = temp)) +
-  geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "gold", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
-  geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
-  geom_point(data = df.i, aes(x = jitter(Temp, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for Temp
-  scale_x_continuous(limits = c(0, 45)) + 
-  scale_y_continuous(limits = c(-2, 5.5)) + # Customize the axes and labels +
-  labs(
-    x = expression(paste("Temperature (", degree, "C)")),
-    y = "Growth rate",
-    title = "Lactin 2 Model Fit"
-  ) +
-  theme_classic() +
-  geom_hline(yintercept = 0)
-
-inits.lactin2.2 <- function() {
-  list(
-    cf.a = runif(1, 0.05, 0.15),  # More constrained initial values
-    cf.tmax = runif(1, 32, 38),
-    cf.delta_t = runif(1, 1, 4),
-    cf.b = runif(1, -0.5, 0.5),
-    cf.sigma = runif(1, 0.1, 2)
-  )
-}
-
-lac4_jag <- jags(
-  data = jag.data, 
-  inits = inits.lactin2.2, 
-  parameters.to.save = parameters.lactin2, 
-  model.file = "lactin2_narrower.txt",
-  n.thin = nt, 
-  n.chains = nc, 
-  n.burnin = nb, 
-  n.iter = ni, 
-  DIC = TRUE, 
-  working.directory = getwd()
-)
-
-lac4_jag$BUGSoutput$summary[1:6,] # Get estimates
-mcmcplot(lac4_jag) # Evaluate model performance
-lac4_jag$BUGSoutput$DIC # DIC
-
-df.jags <- data.frame(lac4_jag$BUGSoutput$summary)
-df.jags.plot <- df.jags[-c(1:6),]
-df.jags.plot$temp <- seq(0, 45, 0.1)
-
-ggplot(data = df.jags.plot, aes(x = temp)) +
-  geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "gold", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
-  geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
-  geom_point(data = df.i, aes(x = jitter(Temp, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for Temp
-  scale_x_continuous(limits = c(0, 45)) + 
-  scale_y_continuous(limits = c(-2, 5.5)) + # Customize the axes and labels +
-  labs(
-    x = expression(paste("Temperature (", degree, "C)")),
-    y = "Growth rate",
-    title = "Lactin 2 Model Fit, Constrained"
-  ) +
-  theme_classic() +
-  geom_hline(yintercept = 0)
-
-# Having a problem with independence, Tmax...
-
-inits.lactin2.3 <- function() {
-  list(
-    cf.a = runif(1, 0.05, 0.15),  # More constrained initial values
-    cf.tmax = runif(1, 37, 43),
-    cf.delta_t = runif(1, 1, 4),
-    cf.b = runif(1, -0.5, 0.5),
-    cf.sigma = runif(1, 0.1, 2)
-  )
-}
-
-lac5_jag <- jags(
-  data = jag.data, 
-  inits = inits.lactin2.3, 
-  parameters.to.save = parameters.lactin2, 
-  model.file = "lactin2_narrower_lrgTmax.txt",
-  n.thin = nt.2, 
-  n.chains = nc, 
-  n.burnin = nb.2, 
-  n.iter = ni.2, 
-  DIC = TRUE, 
-  working.directory = getwd()
-)
-
-lac5_jag$BUGSoutput$summary[1:6,] # Get estimates
-mcmcplot(lac5_jag) # Evaluate model performance
-lac5_jag$BUGSoutput$DIC # DIC
-
-df.jags <- data.frame(lac5_jag$BUGSoutput$summary)
-df.jags.plot <- df.jags[-c(1:6),]
-df.jags.plot$temp <- seq(0, 45, 0.1)
-
-lact.jag.plot <- ggplot(data = df.jags.plot, aes(x = temp)) +
-  geom_ribbon(aes(ymin = X2.5., ymax = X97.5.), fill = "gold", alpha = 0.5) +# Add shaded uncertainty region (LCL to UCL)
-  geom_line(aes(y = mean), color = "darkorchid", size = 1) + # Add the mean prediction line
-  geom_point(data = df.i, aes(x = jitter(Temp, 0.5), y = trait), color = "grey9", size = 2) + # Add observed data points with jitter for Temp
-  scale_x_continuous(limits = c(0, 45)) + 
-  scale_y_continuous(limits = c(-2, 5.5)) + # Customize the axes and labels +
-  labs(
-    x = expression(paste("Temperature (", degree, "C)")),
-    y = "Growth rate",
-    title = "Lactin 2 Model Fit, Constrained, Doubled"
-  ) +
-  theme_classic() +
-  geom_hline(yintercept = 0)
-
-
-# Rezende model?
+# Rezende model
 
 inits.rezende <- function() {
   list(
@@ -1225,7 +1067,7 @@ plot_grid <- grid.arrange(deut.jag.plot, lact.jag.plot, rez.jag.plot, thom.jag.p
 
 ggsave("figures/06_R2jags_modelfits_pop26.pdf", plot_grid, width = 30, height = 30, units = "cm")
 
-################## Model fitting ########################
+# Iterative model fitting -------------------------------------------------
 
 # OK we are now going to loop through all of our populations, fitting and saving R2jags objects.
 # We'll go with the Thomas and Lactin models for now.
@@ -1274,26 +1116,6 @@ fit.df <- data.frame(       # Save model fit estimates for examination
   stringsAsFactors = FALSE            
 )
 
-inits.lactin.final <- function() { # The final initial values set we landed on after experimenting. 
-  list(
-    cf.a = runif(1, 0.05, 0.15),  # More constrained initial values
-    cf.tmax = runif(1, 37, 43),
-    cf.delta_t = runif(1, 1, 5),
-    cf.b = runif(1, -2.5, -1),
-    cf.sigma = runif(1, 0.1, 2)
-  )
-}
-
-inits.thomas.final <- function() {
-  list(
-    a = runif(1, 1, 5),      # Initial guess for a
-    b = runif(1, -0.5, 0.5), # Initial guess for b
-    c = runif(1, 5, 40),     # Initial guess for thermal niche width
-    topt = runif(1, 30, 40), # Initial guess for topt
-    sigma = runif(1, 0.5, 2) # Initial guess for error
-  )
-}
-
 parameters.lactin2 <- c("cf.a", "cf.b", "cf.tmax", "cf.delta_t", "cf.sigma", "r.pred") # repeated here
 parameters.thomas <- c("a", "b", "c", "topt", "sigma", "r.pred") # repeated here
 
@@ -1313,9 +1135,9 @@ for (i in 1:length(mat)){ # for each population
   
   lac_jag <- jags(
     data = jag.data, 
-    inits = inits.lactin.final, 
+    inits = inits.lactin, 
     parameters.to.save = parameters.lactin2, 
-    model.file = "lactin2_final.txt",
+    model.file = "lactin.txt",
     n.thin = nt.fit, 
     n.chains = nc.fit, 
     n.burnin = nb.fit, 
@@ -1324,25 +1146,10 @@ for (i in 1:length(mat)){ # for each population
     working.directory = getwd()
   )
   
-  save(lac_jag, file = paste0("R2jags-objects/pop_", i, "_lactin2.RData")) # save the lactin2 model
+  save(lac_jag, file = paste0("R2jags-objects/pop_", i, "_lactin.RData")) # save the lactin2 model
   
   df.jags <- data.frame(lac_jag$BUGSoutput$summary)[-c(1:6),]   # generate the sequence of r.pred values
   df.jags$temp <- seq(0, 45, 0.05)
-  
-  lactin2 <- function(temp, cf.a, cf.tmax, cf.delta_t, cf.b) { 
-    exp(cf.a * temp) - exp(cf.a * cf.tmax - (cf.tmax - temp) / cf.delta_t) + cf.b
-  } # Define the Lactin II function
-  
-  lactin2_deriv <- function(temp, cf.a, cf.b, cf.tmax, cf.delta_t) {
-    rho <- cf.a
-    T_max <- cf.tmax
-    delta_T <- cf.delta_t
-    
-    term1 <- rho * exp(rho * temp)
-    term2 <- (1 / delta_T) * exp(rho * T_max - (T_max - temp) / delta_T)
-    
-    return(term1 - term2)
-  } # Derivative of the Lactin II function
   
   cf.a <- lac_jag$BUGSoutput$summary[1,1] # Extract parameters
   cf.b <- lac_jag$BUGSoutput$summary[2,1]
@@ -1362,11 +1169,6 @@ for (i in 1:length(mat)){ # for each population
   
   Tmax <- uniroot(lactin2, interval = c(T_opt,45), cf.a = cf.a, 
                   cf.b = cf.b, cf.tmax = cf.tmax, cf.delta_t = cf.delta_t)$root
-  
-  # OK we're going to modify the function to calculate T_breadth, based on a modified lactin.
-  lactin2_halfmax <- function(temp, cf.a, cf.b, cf.tmax, cf.delta_t, r_half) {
-    exp(cf.a * temp) - exp(cf.a * cf.tmax - (cf.tmax - temp) / cf.delta_t) + cf.b - r_half
-  }
   
   r_half <- r_max/2 # calculate half of rmax and get the roots.
   
@@ -1414,7 +1216,7 @@ for (i in 1:length(mat)){ # for each population
   }
 }
 
-for (i in 2:length(mat)){ # Thomas 1 for each population now. Starting at 2, 1 was done separately for testing.
+for (i in 1:length(mat)){ # Thomas 1 for each population now.
   
   df.i <- subset(mat[[i]])
   df.i <- droplevels(df.i)
@@ -1427,7 +1229,7 @@ for (i in 2:length(mat)){ # Thomas 1 for each population now. Starting at 2, 1 w
   
   thom_jag <- jags(
     data = jag.data, 
-    inits = inits.thomas.final, 
+    inits = inits.thomas, 
     parameters.to.save = parameters.thomas, 
     model.file = "thomas.txt",
     n.thin = nt.fit, 
@@ -1438,27 +1240,10 @@ for (i in 2:length(mat)){ # Thomas 1 for each population now. Starting at 2, 1 w
     working.directory = getwd()
   )
   
-  save(thom_jag, file = paste0("R2jags-objects/pop_", i, "_thomas1.RData")) # save the thomas1 model
+  save(thom_jag, file = paste0("R2jags-objects/pop_", i, "_thomas.RData")) # save the thomas1 model
   
   df.jags <- data.frame(thom_jag$BUGSoutput$summary)[-c(1:4, 906:907),]   # generate the sequence of r.pred values
   df.jags$temp <- seq(0, 45, 0.05)
-  
-  thomas1 <- function(temp, a, b, c, topt) { 
-    a * exp(b * temp) * (1 - ((temp - topt) / (c / 2))^2)
-  } # Define the Thomas I function
-  
-  # Define the derivative of the Thomas I function
-  thomas1_deriv <- function(temp, a, b, c, topt) {
-    # Compute terms
-    exp_term <- a * b * exp(b * temp)  # Derivative of the exponential part
-    quad_term <- (1 - ((temp - topt) / (c / 2))^2)  # Quadratic term
-    quad_deriv <- (-2 * (temp - topt)) / (c^2 / 4)  # Derivative of quadratic term
-    
-    # Apply product rule
-    deriv_value <- exp_term * quad_term + (a * exp(b * temp) * quad_deriv)
-    
-    return(deriv_value)
-  }
   
   a <- thom_jag$BUGSoutput$summary[1,1] # Extract parameters
   b <- thom_jag$BUGSoutput$summary[2,1]
@@ -1476,10 +1261,6 @@ for (i in 2:length(mat)){ # Thomas 1 for each population now. Starting at 2, 1 w
   Tmin <- uniroot(thomas1, interval = c(0, T_opt), a = a, b = b, c = c, topt = topt)$root
   
   Tmax <- uniroot(thomas1, interval = c(T_opt,45), a = a, b = b, c = c, topt = topt)$root
-  
-  thomas1_halfmax <- function(temp, a, b, c, topt, r_half) {
-    a * exp(b * temp) * (1 - ((temp - topt) / (c / 2))^2) - r_half
-  }
   
   r_half <- r_max/2 # calculate half of rmax and get the roots.
   
@@ -1543,6 +1324,169 @@ write.csv(dic.df, "data-processed/08_DIC_values_BayesTPC.csv") # Save DIC table
 write.csv(summary.df, "data-processed/09_TPC_shape_values_BayesTPC.csv") # Save summary table
 write.csv(fit.df, "data-processed/09.5_TPC_Bayes_model_fit_stats.csv") # Save model fit summary table
 
+###### If the R2jags objects were run in batches, load the models and extract the relevant stats: ######
+
+for (i in 1:38){      # Temperature R2jags (model fits)
+  load(paste0("R2jags-objects/pop_", i, "_lactin.RData"))
+  
+  df.i <- subset(mat[[i]])
+  df.i <- droplevels(df.i)
+  
+  df.jags <- data.frame(lac_jag$BUGSoutput$summary)[-c(1:6),]   # generate the sequence of r.pred values
+  df.jags$temp <- seq(0, 45, 0.05)
+  
+  cf.a <- lac_jag$BUGSoutput$summary[1,1] # Extract parameters
+  cf.b <- lac_jag$BUGSoutput$summary[2,1]
+  cf.tmax <- lac_jag$BUGSoutput$summary[5,1]
+  cf.delta_t <- lac_jag$BUGSoutput$summary[3,1]
+  
+  # Find the T_opt: where the derivative crosses zero
+  T_opt <- uniroot(
+    function(temp) lactin2_deriv(temp, cf.a, cf.b, cf.tmax, cf.delta_t),
+    interval = c(10, 45)
+  )$root
+  
+  r_max <- lactin2(temp=T_opt, cf.a=cf.a, cf.b=cf.b, cf.tmax=cf.tmax, cf.delta_t=cf.delta_t)
+  
+  Tmin <- uniroot(lactin2, interval = c(0, T_opt), cf.a = cf.a, 
+                  cf.b = cf.b, cf.tmax = cf.tmax, cf.delta_t = cf.delta_t)$root
+  
+  Tmax <- uniroot(lactin2, interval = c(T_opt,45), cf.a = cf.a, 
+                  cf.b = cf.b, cf.tmax = cf.tmax, cf.delta_t = cf.delta_t)$root
+  
+  r_half <- r_max/2 # calculate half of rmax and get the roots.
+  
+  Tlow <- uniroot(lactin2_halfmax, interval = c(Tmin, T_opt), cf.a = cf.a, 
+                  cf.b = cf.b, cf.tmax = cf.tmax, cf.delta_t = cf.delta_t, r_half = r_half)$root
+  
+  Thigh <- uniroot(lactin2_halfmax, interval = c(T_opt, Tmax), cf.a = cf.a, 
+                   cf.b = cf.b, cf.tmax = cf.tmax, cf.delta_t = cf.delta_t, r_half = r_half)$root
+  
+  summary.df <- rbind(summary.df, data.frame(                                  # Add summary data
+    Pop.fac = df.i$pop.fac[1],                                                 # Population name
+    Pop.num = df.i$pop.num[1],                                                 # Number assigned to population (not the same)
+    Model = "Lactin 2",                                                        # Model name
+    T.min = Tmin,                                                              # Minimum T (calculus)
+    T.max = Tmax,                                                              # Maximum T (calculus)
+    T.br = Thigh - Tlow,                                                       # T breadth (calculus)
+    T.opt = T_opt,                                                             # Optimal T (calculus)
+    r.max = r_max,                                                             # Maximum growth rate (calculus)
+    T.min.raw = df.jags$temp[min(which(df.jags$mean > 0))],                    # Minimum T
+    T.max.raw = df.jags$temp[max(which(df.jags$mean > 0))],                    # Maximum T
+    T.br.raw = df.jags$temp[max(which(df.jags$mean > (max(df.jags$mean) / 2)))] - 
+      df.jags$temp[min(which(df.jags$mean > (max(df.jags$mean) / 2)))],        # T breadth
+    T.opt.raw = df.jags$temp[which.max(df.jags$mean)],                         # Optimal T
+    r.max.raw = max(df.jags$mean)                                              # Maximum growth rate   
+  ))
+  
+  dic.df <- rbind(dic.df, data.frame(         # Add DIC data
+    Pop.fac = df.i$pop.fac[1],      # Population name
+    Pop.num = df.i$pop.num[1],      # Number assigned to population (not the same)
+    Model = "Lactin 2",             # Model name
+    DIC = lac_jag$BUGSoutput$DIC    # DIC
+  ))
+  
+  for (j in 1:6){
+    fit.df <- rbind(fit.df, data.frame(                         # Model performance data
+      Model = "Lactin 2",                                       # Model name
+      Pop.fac = df.i$pop.fac[1],                                # Population name
+      Pop.num = df.i$pop.num[1],                                # Number assigned to population (not the same)       
+      Parameter = rownames(lac_jag$BUGSoutput$summary)[j],      # Model parameter (e.g. cf.a, cf.tmax, etc.)
+      mean = lac_jag$BUGSoutput$summary[j,1],                   # Posterior mean
+      Rhat = lac_jag$BUGSoutput$summary[j,8],                   # Rhat values
+      n.eff = lac_jag$BUGSoutput$summary[j,9],                  # Sample size estimates (should be ~6000)
+      stringsAsFactors = FALSE            
+    ))
+  }
+}
+
+for (i in 1:38){      # Temperature R2jags (model fits)
+  load(paste0("R2jags-objects/pop_", i, "_thomas.RData"))
+  
+  df.i <- subset(mat[[i]])
+  df.i <- droplevels(df.i)
+  
+  df.jags <- data.frame(thom_jag$BUGSoutput$summary)[-c(1:4, 906:907),]   # generate the sequence of r.pred values
+  df.jags$temp <- seq(0, 45, 0.05)
+  
+  a <- thom_jag$BUGSoutput$summary[1,1] # Extract parameters
+  b <- thom_jag$BUGSoutput$summary[2,1]
+  c <- thom_jag$BUGSoutput$summary[3,1]
+  topt <- thom_jag$BUGSoutput$summary[907,1]
+  
+  # Find the T_opt: where the derivative crosses zero
+  T_opt <- uniroot(
+    function(temp) thomas1_deriv(temp, a, b, c, topt),
+    interval = c(10, 45)
+  )$root
+  
+  r_max <- thomas1(temp=T_opt, a = a, b = b, c = c, topt = topt)
+  
+  Tmin <- uniroot(thomas1, interval = c(0, T_opt), a = a, b = b, c = c, topt = topt)$root
+  
+  Tmax <- uniroot(thomas1, interval = c(T_opt,45), a = a, b = b, c = c, topt = topt)$root
+  
+  r_half <- r_max/2 # calculate half of rmax and get the roots.
+  
+  Tlow <- uniroot(thomas1_halfmax, interval = c(Tmin, T_opt), a = a, b = b, c = c, topt = topt, r_half = r_half)$root
+  
+  Thigh <- uniroot(thomas1_halfmax, interval = c(T_opt, Tmax), a = a, b = b, c = c, topt = topt, r_half = r_half)$root
+  
+  summary.df <- rbind(summary.df, data.frame(                                  # Add summary data
+    Pop.fac = df.i$pop.fac[1],                                                 # Population name
+    Pop.num = df.i$pop.num[1],                                                 # Number assigned to population (not the same)
+    Model = "Thomas 1",                                                        # Model name
+    T.min = Tmin,                                                              # Minimum T (calculus)
+    T.max = Tmax,                                                              # Maximum T (calculus)
+    T.br = Thigh - Tlow,                                                       # T breadth (calculus)
+    T.opt = T_opt,                                                             # Optimal T (calculus)
+    r.max = r_max,                                                             # Maximum growth rate (calculus)
+    T.min.raw = df.jags$temp[min(which(df.jags$mean > 0))],                    # Minimum T
+    T.max.raw = df.jags$temp[max(which(df.jags$mean > 0))],                    # Maximum T
+    T.br.raw = df.jags$temp[max(which(df.jags$mean > (max(df.jags$mean) / 2)))] - 
+      df.jags$temp[min(which(df.jags$mean > (max(df.jags$mean) / 2)))],        # T breadth
+    T.opt.raw = df.jags$temp[which.max(df.jags$mean)],                         # Optimal T
+    r.max.raw = max(df.jags$mean)                                              # Maximum growth rate   
+  ))
+  
+  dic.df <- rbind(dic.df, data.frame(         # Add DIC data
+    Pop.fac = df.i$pop.fac[1],      # Population name
+    Pop.num = df.i$pop.num[1],      # Number assigned to population (not the same)
+    Model = "Thomas 1",             # Model name
+    DIC = thom_jag$BUGSoutput$DIC   # DIC
+  ))
+  
+  thom_sum <- thom_jag$BUGSoutput$summary[c(1:4, 906:907),] # Have to create a new frame for summaries (not listed 1 to 6)
+  
+  for (j in 1:6){
+    fit.df <- rbind(fit.df, data.frame(                         # Model performance data
+      Model = "Thomas 1",                                       # Model name
+      Pop.fac = df.i$pop.fac[1],                                # Population name
+      Pop.num = df.i$pop.num[1],                                # Number assigned to population (not the same)       
+      Parameter = rownames(thom_sum)[j],                        # Model parameter (e.g. cf.a, cf.tmax, etc.)
+      mean = thom_sum[j,1],                                     # Posterior mean
+      Rhat = thom_sum[j,8],                                     # Rhat values
+      n.eff = thom_sum[j,9],                                    # Sample size estimates (should be ~6000)
+      stringsAsFactors = FALSE            
+    ))
+  }
+}
+
+mean.dics <- aggregate(DIC ~ Model, data = dic.df, mean) # Calculate mean DIC for each model
+
+mean.rows <- data.frame( # Create rows for the mean DICs with "all" for Pop.fac and Pop.num
+  Pop.fac = "Mean of all", 
+  Pop.num = "Mean of all", 
+  Model = mean.dics$Model, 
+  DIC = mean.dics$DIC
+)
+
+dic.df <- rbind(mean.rows, dic.df) # Bind to the top
+
+write.csv(dic.df, "data-processed/04_DIC_values_BayesTPC.csv") # Save DIC table
+write.csv(summary.df, "data-processed/05_TPC_shape_values_BayesTPC.csv") # Save summary table
+write.csv(fit.df, "data-processed/05.5_TPC_Bayes_model_fit_stats.csv") # Save model fit summary table
+
 # Let's plot some figures to look at these summary data
 topt_plot <- ggplot(summary.df, aes(x = Pop.fac, y = T.opt, color = Model, group = Pop.fac)) +
   geom_point(position = position_dodge(width = 0.5), size = 3) + 
@@ -1565,147 +1509,4 @@ tbr_plot <- ggplot(summary.df, aes(x = Pop.fac, y = T.br, color = Model, group =
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 sum_grid <- grid.arrange(topt_plot, tbr_plot, ncol = 1)
-ggsave("figures/07_TPC_shape_parameters_plot.pdf", plot = sum_grid, width = 24, height = 16)
-
-################### Testing zone #################################
-
-# OK, here I am testing ways to use calculus to extract T_opt, T_min etc. values. I originally had this earlier, with toy models
-# But it was giving wonky results (I think because the jag fits weren't perfect)
-# So now I am testing this out with i = 1 (the final jag model fit for pop 1).
-
-lac_jag$BUGSoutput$summary[1:6,] # Get estimates
-
-df.jags <- data.frame(lac_jag$BUGSoutput$summary)
-df.jags.plot <- df.jags[-c(1:6),]
-df.jags.plot$temp <- seq(0, 45, 0.05)
-
-# OK my original way of calculating these things:     
-df.jags.plot$temp[min(which(df.jags.plot$mean > 0))]                   # Minimum T
-df.jags.plot$temp[max(which(df.jags.plot$mean > 0))]                   # Maximum T
-df.jags.plot$temp[max(which(df.jags.plot$mean > (max(df.jags.plot$mean) / 2)))] - df.jags.plot$temp[min(which(df.jags.plot$mean > (max(df.jags.plot$mean) / 2)))]   # T breadth
-df.jags.plot$temp[which.max(df.jags.plot$mean)]                        # Optimal T
-max(df.jags.plot$mean)
-
-lactin2 <- function(temp, cf.a, cf.tmax, cf.delta_t, cf.b) { 
-  exp(cf.a * temp) - exp(cf.a * cf.tmax - (cf.tmax - temp) / cf.delta_t) + cf.b
-} # Define the Lactin II function
-
-# Derivative of the Lactin II function
-lactin2_deriv <- function(temp, cf.a, cf.b, cf.tmax, cf.delta_t) {
-  rho <- cf.a
-  T_max <- cf.tmax
-  delta_T <- cf.delta_t
-  
-  term1 <- rho * exp(rho * temp)
-  term2 <- (1 / delta_T) * exp(rho * T_max - (T_max - temp) / delta_T)
-  
-  return(term1 - term2)
-}
-
-cf.a <- lac_jag$BUGSoutput$summary[1,1] # Extract parameters
-cf.b <- lac_jag$BUGSoutput$summary[2,1]
-cf.tmax <- lac_jag$BUGSoutput$summary[5,1]
-cf.delta_t <- lac_jag$BUGSoutput$summary[3,1]
-
-# Find the T_opt: where the derivative crosses zero
-T_opt <- uniroot(
-  function(temp) lactin2_deriv(temp, cf.a, cf.b, cf.tmax, cf.delta_t),
-  interval = c(10, 45)
-)$root
-
-T_opt # looks good
-
-r_max <- lactin2(temp=T_opt, cf.a=cf.a, cf.b=cf.b, cf.tmax=cf.tmax, cf.delta_t=cf.delta_t)
-r_max # Looks good!
-
-Tmin <- uniroot(lactin2, interval = c(0, T_opt), cf.a = cf.a, 
-                cf.b = cf.b, cf.tmax = cf.tmax, cf.delta_t = cf.delta_t)$root
-Tmin # Looks good!
-
-Tmax <- uniroot(lactin2, interval = c(T_opt,45), cf.a = cf.a, 
-                cf.b = cf.b, cf.tmax = cf.tmax, cf.delta_t = cf.delta_t)$root
-Tmax # Also looks good.
-
-# OK we're going to modify the function to calculate T_breadth, based on a modified lactin.
-lactin2_halfmax <- function(temp, cf.a, cf.b, cf.tmax, cf.delta_t, r_half) {
-  exp(cf.a * temp) - exp(cf.a * cf.tmax - (cf.tmax - temp) / cf.delta_t) + cf.b - r_half
-}
-
-r_half <- r_max/2 # calculate half of rmax and get the roots.
-
-Tlow <- uniroot(lactin2_halfmax, interval = c(Tmin, T_opt), cf.a = cf.a, 
-                cf.b = cf.b, cf.tmax = cf.tmax, cf.delta_t = cf.delta_t, r_half = r_half)$root
-
-Thigh <- uniroot(lactin2_halfmax, interval = c(T_opt, Tmax), cf.a = cf.a, 
-                 cf.b = cf.b, cf.tmax = cf.tmax, cf.delta_t = cf.delta_t, r_half = r_half)$root
-
-Tbr <- Thigh - Tlow
-Tbr
-
-# Let's also do a test drive of the Thomas 1 TPCs (here pop 1)
-
-thom_jag$BUGSoutput$summary[c(1:4, 906:907),] # Get estimates
-
-df.jags <- data.frame(thom_jag$BUGSoutput$summary)
-df.jags.plot <- df.jags[-c(1:4, 906:907),]
-df.jags.plot$temp <- seq(0, 45, 0.05)
-
-# OK my original way of calculating these things:     
-df.jags.plot$temp[min(which(df.jags.plot$mean > 0))]                   # Minimum T
-df.jags.plot$temp[max(which(df.jags.plot$mean > 0))]                   # Maximum T
-df.jags.plot$temp[max(which(df.jags.plot$mean > (max(df.jags.plot$mean) / 2)))] - df.jags.plot$temp[min(which(df.jags.plot$mean > (max(df.jags.plot$mean) / 2)))]   # T breadth
-df.jags.plot$temp[which.max(df.jags.plot$mean)]                        # Optimal T
-max(df.jags.plot$mean)
-
-thomas1 <- function(temp, a, b, c, topt) { 
-  a * exp(b * temp) * (1 - ((temp - topt) / (c / 2))^2)
-} # Define the Thomas I function
-
-# Define the derivative of the Thomas I function
-thomas1_deriv <- function(temp, a, b, c, topt) {
-  # Compute terms
-  exp_term <- a * b * exp(b * temp)  # Derivative of the exponential part
-  quad_term <- (1 - ((temp - topt) / (c / 2))^2)  # Quadratic term
-  quad_deriv <- (-2 * (temp - topt)) / (c^2 / 4)  # Derivative of quadratic term
-  
-  # Apply product rule
-  deriv_value <- exp_term * quad_term + (a * exp(b * temp) * quad_deriv)
-  
-  return(deriv_value)
-}
-
-a <- thom_jag$BUGSoutput$summary[1,1] # Extract parameters
-b <- thom_jag$BUGSoutput$summary[2,1]
-c <- thom_jag$BUGSoutput$summary[3,1]
-topt <- thom_jag$BUGSoutput$summary[907,1]
-
-# Find the T_opt: where the derivative crosses zero
-T_opt <- uniroot(
-  function(temp) thomas1_deriv(temp, a, b, c, topt),
-  interval = c(10, 45)
-)$root
-
-T_opt # looks good
-
-r_max <- thomas1(temp=T_opt, a = a, b = b, c = c, topt = topt)
-r_max # Looks pretty good!
-
-Tmin <- uniroot(thomas1, interval = c(0, T_opt), a = a, b = b, c = c, topt = topt)$root
-Tmin # Looks good!
-
-Tmax <- uniroot(thomas1, interval = c(T_opt,45), a = a, b = b, c = c, topt = topt)$root
-Tmax # Also looks good.
-
-# OK we're going to modify the function to calculate T_breadth, based on a modified thomas1.
-thomas1_halfmax <- function(temp, a, b, c, topt, r_half) {
-  a * exp(b * temp) * (1 - ((temp - topt) / (c / 2))^2) - r_half
-}
-
-r_half <- r_max/2 # calculate half of rmax and get the roots.
-
-Tlow <- uniroot(thomas1_halfmax, interval = c(Tmin, T_opt), a = a, b = b, c = c, topt = topt, r_half = r_half)$root
-
-Thigh <- uniroot(thomas1_halfmax, interval = c(T_opt, Tmax), a = a, b = b, c = c, topt = topt, r_half = r_half)$root
-
-Tbr <- Thigh - Tlow
-Tbr # Looks good!
+ggsave("figures/03_TPC_shape_parameters_plot.pdf", plot = sum_grid, width = 24, height = 16)
