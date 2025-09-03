@@ -9,7 +9,7 @@
 
 # Then I'm going to fit Monod curves to those data (using R2jags) for each population to estimate R* (N*)
 
-############# Packages ########################
+# Packages & functions ----------------------------------------------------
 
 library(nls.multstart)
 library(tidyr)
@@ -21,7 +21,7 @@ library(grid)
 library(R2jags)
 library(mcmcplots)
 
-############# Upload and examine data #######################
+# Upload & examine data ---------------------------------------------------
 
 df <- read.csv("data-processed/07_nitrogen_rfus_time.csv")
 head(df) # RFU is density, days is time, nitrate_level is a factor (1 to 10). nitrate_concentration is what we want
@@ -52,7 +52,7 @@ df.exp <- df.exp %>% # Recombine this with our dataframe
 
 mat.exp <- split(df.exp, df.exp$pop.num)  # Each element is a data frame for one population in df.exp
 
-############# Loop through all populations ###################
+# Estimate µ --------------------------------------------------------------
 
 df.r.exp <- data.frame( # Initializing a dataframe to store the results for each well, pop, and nitrogen level
   population = character(),
@@ -153,7 +153,7 @@ for (i in 1:length(mat.exp)){ # Looping through all of the populations
 
 write.csv(df.r.exp, "data-processed/07a_µ_estimates_nitrogen.csv") # let's save the file.
 
-############# Exploration #######################
+# Visualization -----------------------------------------------------------
 
 pops<-names(mat.exp) # We're going to plot out the growth curves for 5 populations - all 10 nitrogen levels. 
 ran <- sample(pops, 5, replace = F) # OK, let's select 5 random populations.
@@ -259,9 +259,9 @@ plot_grid <- arrangeGrob(grobs=plot.list, ncol = 10, nrow = 5)
 
 grid.draw(plot_grid)   
 
-ggsave("figures/09_nitrogen_r_estimatation.pdf", plot_grid, width = 40, height = 25, units = "cm")
+ggsave("figures/05_µ_fits_nitrogen.pdf", plot_grid, width = 40, height = 25, units = "cm")
 
-############# Fit Monod curves to data ###################
+# Monod curves ------------------------------------------------------------
 
 df.r <- read.csv("data-processed/07a_µ_estimates_nitrogen.csv")
 
@@ -419,7 +419,7 @@ for (i in 2:length(mat)){ # for each population. Fixed an error for population 1
 
 write.csv(summary.df, "data-processed/07b_Monod_nitrogen_estimates.csv") # Save summary table
 
-################# Analytical solutions & Model fit confirmation #####################
+# Analytical solutions and fit confirmation -------------------------------
 
 # OK, so we are going to upload all of the R2jags objects, and iteratively use calculus to estimate µmax and R*
 

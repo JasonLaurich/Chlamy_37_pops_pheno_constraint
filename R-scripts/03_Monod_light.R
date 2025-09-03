@@ -11,7 +11,7 @@
 
 # Then I'm going to fit Monod curves to those data (using R2jags) for each population to estimate R* (I*)
 
-############# Packages ########################
+# Packages & functions ----------------------------------------------------
 
 library(nls.multstart)
 library(tidyr)
@@ -23,7 +23,7 @@ library(grid)
 library(R2jags)
 library(mcmcplots)
 
-############# Upload and examine data #######################
+# Upload and examine data -------------------------------------------------
 
 df <- read.csv("data-processed/06_light_rfus_time.csv")
 head(df) # RFU is density, days is time, light_level is a factor (1 to 10). Percentage is also a measurement of light I think?
@@ -58,7 +58,7 @@ df.exp <- df.exp %>% # Recombine this with our dataframe
 
 mat.exp <- split(df.exp, df.exp$pop.num)  # Each element is a data frame for one population in df.exp
 
-############# Loop through all populations ###################
+# Estimate µ --------------------------------------------------------------
 
 df.r.exp <- data.frame( # Initializing a dataframe to store the results for each well, pop, and light level
   population = character(),
@@ -157,7 +157,7 @@ for (i in 1:length(mat.exp)){ # Looping through all of the populations
 
 write.csv(df.r.exp, "data-processed/6a_µ_estimates_light.csv") # let's save the file.
 
-############# Exploration #######################
+# Visualization -----------------------------------------------------------
 
 pops<-names(mat.exp) # We're going to plot out the growth curves for 5 populations - all 10 light levels. 
 ran <- sample(pops, 5, replace = F) # OK, let's select 6 random populations.
@@ -263,7 +263,7 @@ grid.draw(plot_grid)
 
 ggsave("figures/04_µ_fits_light.pdf", plot_grid, width = 40, height = 25, units = "cm")
 
-############# Fit Monod curves to data ###################
+# Monod curves ------------------------------------------------------------
 
 df.r <- read.csv("data-processed/06a_µ_estimates_light.csv")
 
@@ -422,7 +422,7 @@ for (i in 1:length(mat)){ # for each population
 
 write.csv(summary.df, "data-processed/06b_Monod_light_estimates.csv") # Save summary table
 
-################# Analytical solutions & Model fit confirmation #####################
+# Analytical solutions and confirmation of fit ----------------------------
 
 # OK, so we are going to upload all of the R2jags objects, and iteratively use calculus to estimate µmax and R*
 

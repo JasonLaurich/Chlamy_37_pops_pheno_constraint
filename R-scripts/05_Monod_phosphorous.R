@@ -1,13 +1,15 @@
 # Jason R Laurich
 # January 16, 2025
 
+# Revisited, checked, and cleaned September 3rd, 2025 (JRL)
+
 # This script will estimate r for each phosphate concentration as for light (script 06)
 # I'm going to use a sliding-window approach to identify the exponential phase of the logged linear data, then fit an exponential growth
 # curve to un-logged data for that time period for each phosphorous level.
 
 # Then I'm going to fit Monod curves to those data (using R2jags) for each population to estimate R* (P*)
 
-############# Packages ########################
+# Packages & functions ----------------------------------------------------
 
 library(nls.multstart)
 library(tidyr)
@@ -19,9 +21,9 @@ library(grid)
 library(R2jags)
 library(mcmcplots)
 
-############# Upload and examine data #######################
+# Upload & examine data ---------------------------------------------------
 
-df <- read.csv("data-processed/12_phosphate_rstar_rfus_time.csv")
+df <- read.csv("data-processed/08_phosphorous_rfus_time.csv")
 head(df) # RFU is density, days is time, phosphate_level is a factor (1 to 10). phosphate_concentration is what we want
 str(df)
 
@@ -50,7 +52,7 @@ df.exp <- df.exp %>% # Recombine this with our dataframe
 
 mat.exp <- split(df.exp, df.exp$pop.num)  # Each element is a data frame for one population in df.exp
 
-############# Loop through all populations ###################
+# Estimate µ --------------------------------------------------------------
 
 df.r.exp <- data.frame( # Initializing a dataframe to store the results for each well, pop, and phosphorous level
   population = character(),
@@ -149,9 +151,9 @@ for (i in 1:length(mat.exp)){ # Looping through all of the populations
   
 }
 
-write.csv(df.r.exp, "data-processed/12a_phosphorous_r_estimates.csv") # let's save the file.
+write.csv(df.r.exp, "data-processed/08a_µ_estimates_phosphorous.csv") # let's save the file.
 
-############# Exploration #######################
+# Visualization -----------------------------------------------------------
 
 pops<-names(mat.exp) # We're going to plot out the growth curves for 5 populations - all 10 phosphorous levels. 
 ran <- sample(pops, 5, replace = F) # OK, let's select 5 random populations.
@@ -257,11 +259,11 @@ plot_grid <- arrangeGrob(grobs=plot.list, ncol = 10, nrow = 5)
 
 grid.draw(plot_grid)   
 
-ggsave("figures/10_phosphorous_r_estimatation.pdf", plot_grid, width = 40, height = 25, units = "cm")
+ggsave("figures/06_µ_fits_phosphorous.pdf", plot_grid, width = 40, height = 25, units = "cm")
 
-############# Fit Monod curves to data ###################
+# Monod curves ------------------------------------------------------------
 
-df.r <- read.csv("data-processed/12a_phosphorous_r_estimates.csv")
+df.r <- read.csv("data-processed/08a_µ_estimates_phosphorous.csv")
 
 head(df.r)
 str(df.r)
@@ -415,11 +417,11 @@ for (i in 2:length(mat)){ # for each population. Starting at 2 again because I m
   
 }
 
-write.csv(summary.df, "data-processed/12b_phosphorous_Monod_estimates.csv") # Save summary table
+write.csv(summary.df, "data-processed/08b_Monod_phosphorous_estimates.csv") # Save summary table
 
-################# Analytical solutions & Model fit confirmation #####################
+# Analytical solutions and fit confirmation -------------------------------
 
-# OK, so we are going to upload all of the R2jags objects, and iteravely use calculus to estimate rmax and R*
+# OK, so we are going to upload all of the R2jags objects, and iteratively use calculus to estimate µmax and R*
 
 i<-1 # for now, starting with one population.
 # for (i in 1:37){
@@ -489,5 +491,5 @@ for (i in 1:37){
   
 }
 
-write.csv(fit.df, "data-processed/12c_phosphorous_monod_model_fit_stats.csv") # Save model fit summary table
+write.csv(fit.df, "data-processed/08c_Monod_phosphorous_fits.csv") # Save model fit summary table
 # These look pretty good! A few models where n.eff is a touch low (2 estimates < 2,000, 10 < 3,000)
