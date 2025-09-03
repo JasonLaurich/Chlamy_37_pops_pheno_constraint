@@ -27,7 +27,7 @@ library(grid)
 
 # Upload and examine data -------------------------------------------------
 
-df <- read.csv("data-processed/chlamee-acute-rfu-time.csv")
+df <- read.csv("data-processed/00_temp_rfus_time.csv")
 head(df) #RFU is density, days is time, temperature is temperature
 str(df)
 
