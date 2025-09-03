@@ -2723,7 +2723,7 @@ df.lewington.l <- read.csv("data-processed/19h_Lewington2019_Light_Monods.csv")
 df.lewington.l <- df.lewington.l %>% 
   mutate(source = 'Lewington2019') 
 
-df.narwani <- read.csv("data-processed/20_Narwani2015_summmary.csv")
+df.narwani <- read.csv("data-processed/20_Narwani2015_summmary.csv") # Already includes the relevant statistics (no raw data) so I did not re-estimate anything. 
 
 df.narwani <- df.narwani %>% 
   mutate(source = 'Narwani2015') 
