@@ -2750,6 +2750,8 @@ df.edwards.2016.l <- df.edwards.2016.l %>%
 
 # We have thomas, bestion, lewington and edwards 2016
 
+######## WHEN RERUNNING THIS!!! RE-ESTIMATE EVERYTHING'S TBR AT 0.1!!!!! ############################
+
 df.int <- rbind(df.thomas, df.bestion.t, df.lewington.t, df.edwards.2016.t)
 
 df.filt <- df.int %>%
