@@ -1,14 +1,16 @@
 # Jason R Laurich
 # January 16, 2025
 
-# This script will estimate r for each salt concentration as for light (script 06)
+# Revisited, checked, and cleaned September 3rd, 2025 (JRL)
+
+# This script will estimate µ for each salt concentration as for light (script 03)
 # I'm going to use a sliding-window approach to identify the exponential phase of the logged linear data, then fit an exponential growth
 # curve to un-logged data for that time period for each phosphorous level.
 
 # Then I'm going to calculate salt tolerance
-# This will be done using the method from Bernhardt et al 2020 (PNAS) — fitting a simplified logistic function and estimating c
+# This will be done using the method from Bernhardt et al 2020 (PNAS) — fitting a simplified reversed logistic growth function and estimating c
 
-############# Packages ########################
+# Packages & functions ----------------------------------------------------
 
 library(nls.multstart)
 library(tidyr)
@@ -20,9 +22,9 @@ library(grid)
 library(R2jags)
 library(mcmcplots)
 
-############# Upload and examine data #######################
+# Upload & examine data ---------------------------------------------------
 
-df <- read.csv("data-processed/13_chlamee_salt_rfus_time.csv")
+df <- read.csv("data-processed/09_salt_rfus_time.csv")
 head(df) # RFU is density, time is time, treatment is the salt level s0 to S9.
 str(df)
 
@@ -50,7 +52,7 @@ df.exp <- df.exp %>% # Recombine this with our dataframe
 
 mat.exp <- split(df.exp, df.exp$pop.num)  # Each element is a data frame for one population in df.exp
 
-############# Loop through all populations ###################
+# Estimate µ --------------------------------------------------------------
 
 df.r.exp <- data.frame( # Initializing a dataframe to store the results for each well, pop, and salt level
   population = character(),
@@ -149,9 +151,9 @@ for (i in 1:length(mat.exp)){ # Looping through all of the populations
   
 }
 
-write.csv(df.r.exp, "data-processed/13a_salt_r_estimates.csv") # let's save the file.
+write.csv(df.r.exp, "data-processed/09a_µ_estimates_salt.csv") # let's save the file.
 
-############# Exploration #######################
+# Visualization -----------------------------------------------------------
 
 pops<-names(mat.exp) # We're going to plot out the growth curves for 5 populations - all 10 salt levels. 
 ran <- sample(pops, 5, replace = F) # OK, let's select 5 random populations.
@@ -257,11 +259,11 @@ plot_grid <- arrangeGrob(grobs=plot.list, ncol = 10, nrow = 5)
 
 grid.draw(plot_grid)   
 
-ggsave("figures/11_salt_r_estimatation.pdf", plot_grid, width = 40, height = 25, units = "cm")
+ggsave("figures/07_µ_fits_salt.pdf", plot_grid, width = 40, height = 25, units = "cm")
 
-############# Fit Salt tolerance logistic curves to data ###################
+# Salt tolerance curves ---------------------------------------------------
 
-df.r <- read.csv("data-processed/13a_salt_r_estimates.csv")
+df.r <- read.csv("data-processed/09a_µ_estimates_salt.csv")
 
 head(df.r)
 str(df.r)
@@ -413,11 +415,11 @@ for (i in 1:length(mat)){ # for each population.
   
 }
 
-write.csv(summary.df, "data-processed/13b_salt_tolerance_estimates.csv") # Save summary table
+write.csv(summary.df, "data-processed/09b_salt_tolerance_estimates.csv") # Save summary table
 
-################# Analytical solutions & Model fit confirmation #####################
+# Analytical solutions & fit confirmation ---------------------------------
 
-# OK, so we are going to upload all of the R2jags objects, and iteravely use calculus to estimate rmax and R*
+# OK, so we are going to upload all of the R2jags objects, and iteratively use calculus to estimate µmax and R*
 
 i<-1 # for now, starting with one population.
 # for (i in 1:37){
@@ -503,7 +505,5 @@ for (i in 1:37){
   
 }
 
-write.csv(fit.df, "data-processed/13c_salt_tolerance_model_fit_stats.csv") # Save model fit summary table
-# These are substantially worse at the moment (2 estimates < 1,000, 5 < 2,000, 10 < 3,000)
-# Keep in mind these are being presently fit to salt LVLs, not concentrations. I need to match levels to concentrations
-# after looking through Joey's repo and finding this mapping data. Should be better then.
+write.csv(fit.df, "data-processed/09c_salt_tolerance_fits.csv") # Save model fit summary table
+# These are substantially worse at the moment (2 estimates < 1,000, 5 < 2,000, 10 < 3,000) but workable. 
