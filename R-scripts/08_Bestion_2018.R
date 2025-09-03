@@ -1,10 +1,12 @@
 # Jason R Laurich
 # April 3, 2025
 
+# Revisited, checked, and cleaned September 3rd, 2025 (JRL)
+
 # Going to work with the Bestion et al 2018 (https://onlinelibrary.wiley.com/doi/10.1111/ele.12932) data to fit
 # Monod curves for phosphorous and TPCs
 
-############# Packages ########################
+# Packages & functions ----------------------------------------------------
 
 library(tidyr)
 library(cowplot)
@@ -16,9 +18,9 @@ library(Deriv)
 library(rTPC)
 library(nls.multstart)
 
-############# Upload and organize data #######################
+# Upload & examine data ---------------------------------------------------
 
-df <- read.csv("data-processed/18_bestion_2018_growth_data.csv") # Summary file
+df <- read.csv("data-processed/11_Bestion_2018_raw_data.csv") # Raw growth data
 head(df)
 str(df)
 
@@ -31,7 +33,7 @@ df$Sp.fac <- as.factor(df$SpeciesName)
 
 # 1. Full phosphorous, variation in temperature. Actually let's go with P30 as well, so we can include Chlamydomonas
 
-# 2. 20 C (consistent with Joey's estimation of P limitation), variation in P
+# 2. 20 C (consistent with our estimation of P limitation), variation in P
 
 df.t <- df[df$Phosphate_c == 50,]
 df.t.p30 <- df[df$Phosphate_c == 30,]
@@ -42,7 +44,7 @@ df.t.p30 <-droplevels(df.t.p30)
 df.t20 <- df[df$Temperature_c == 20,]
 df.t20 <- droplevels(df.t20)
 
-########### Let's run the TPCs for now #########################################
+# TPC fitting -------------------------------------------------------------
 
 bestion.summ.df <- data.frame(   # We'll create a dataframe to store the data as we fit models.
   Sp.id = numeric(),        # Species ID
@@ -74,7 +76,7 @@ nc.fit <- 3         # number of chains, total of 3,000 estimates for each model.
 
 parameters.lactin2 <- c("cf.a", "cf.b", "cf.tmax", "cf.delta_t", "cf.sigma", "r.pred") # repeated here
 
-inits.lactin.cust<- function() { # Pulling initial values centres from the start_vals function in rTPC
+inits.lactin.meta<- function() { # Pulling initial values centres from the start_vals function in rTPC
   list(
     cf.a = rnorm(1, mean = start.vals.lac[1], sd = 0.05),
     cf.tmax = rnorm(1, mean = start.vals.lac[3], sd = 1),
@@ -117,9 +119,9 @@ for (i in unique(df.t.p30$Sp.fac)){ # Most species don't have a rich enough data
   
   lac_jag <- jags(
     data = jag.data, 
-    inits = inits.lactin.cust, 
+    inits = inits.lactin.meta, 
     parameters.to.save = parameters.lactin2, 
-    model.file = "lactin2_thomas.txt",
+    model.file = "lactin_meta.txt",
     n.thin = nt.fit, 
     n.chains = nc.fit, 
     n.burnin = nb.fit, 
@@ -156,10 +158,10 @@ for (i in unique(df.t.p30$Sp.fac)){ # Most species don't have a rich enough data
   }
 }
 
-write.csv(bestion.summ.df, "data-processed/18a_Bestion2018_TPCs.csv") # Save Bestion 2018 TPC summary table
-write.csv(fit.df, "data-processed/18b_Bestion2018_TPCs_fits.csv") # Save model fit summary table
+write.csv(bestion.summ.df, "data-processed/11a_Bestion_2018_TPCs.csv") # Save Bestion 2018 TPC summary table
+write.csv(fit.df, "data-processed/11b_Bestion_2018_TPCs_fits.csv") # Save model fit summary table
 
-#################### Run the Monod curves for P ##############################
+# Monod curves (P) --------------------------------------------------------
 
 inits.monod <- function() { # Set the initial values for our Monod curve
   list(
@@ -253,5 +255,5 @@ for (i in unique(df.t20$Sp.fac)){ # For each species
     }
 }
 
-write.csv(bestion.summ.P.df, "data-processed/18c_Bestion2018_P_Monods.csv") # Save Bestion 2018 TPC summary table
-write.csv(fit.P.df, "data-processed/18d_Bestion2018_P_Monods_fits.csv") # Save model fit summary table
+write.csv(bestion.summ.P.df, "data-processed/11c_Bestion_2018_Monod_phosphorous.csv") # Save Bestion 2018 TPC summary table
+write.csv(fit.P.df, "data-processed/11d_Bestion_2018_Monod_phosphorous_fits.csv") # Save model fit summary table

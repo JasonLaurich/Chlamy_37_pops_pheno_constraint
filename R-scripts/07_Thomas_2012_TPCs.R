@@ -185,7 +185,7 @@ cf.b <- lac_jag2$BUGSoutput$summary[2,1]
 cf.tmax <- lac_jag2$BUGSoutput$summary[5,1]
 cf.delta_t <- lac_jag2$BUGSoutput$summary[3,1]
 
-############# Fit TPCs and save the summary statistics #######################
+# TPC fitting -------------------------------------------------------------
 
 thomas.summ.df <- data.frame(   # We'll create a dataframe to store the data as we fit models.
   Pop.id = numeric(),       # Population id
