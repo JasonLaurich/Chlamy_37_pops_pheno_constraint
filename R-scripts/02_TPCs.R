@@ -1485,7 +1485,7 @@ dic.df <- rbind(mean.rows, dic.df) # Bind to the top
 
 write.csv(dic.df, "data-processed/04_DIC_values_BayesTPC.csv") # Save DIC table
 write.csv(summary.df, "data-processed/05_TPC_shape_values_BayesTPC.csv") # Save summary table
-write.csv(fit.df, "data-processed/05.5_TPC_Bayes_model_fit_stats.csv") # Save model fit summary table
+write.csv(fit.df, "data-processed/05a_TPC_Bayes_model_fit_stats.csv") # Save model fit summary table
 
 # Let's plot some figures to look at these summary data
 topt_plot <- ggplot(summary.df, aes(x = Pop.fac, y = T.opt, color = Model, group = Pop.fac)) +

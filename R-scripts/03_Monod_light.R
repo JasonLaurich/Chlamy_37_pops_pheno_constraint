@@ -1,7 +1,9 @@
 # Jason R Laurich
 # January 7, 2025
 
-# This script will estimate r for each light condition in the same way that I estimated it for the TPC analysis (04_final_r_estimation)
+# Revisited, checked, and cleaned September 3rd, 2025 (JRL)
+
+# This script will estimate µ for each light condition in the same way that I estimated it for the TPC analysis (01_µ_estimation_temp)
 # I'm going to use a sliding-window approach to identify the exponential phase of the logged linear data, then fit an exponential growth
 # curve to un-logged data for that time period for each light level.
 
@@ -23,11 +25,13 @@ library(mcmcplots)
 
 ############# Upload and examine data #######################
 
-df <- read.csv("data-processed/10_light_rstar_rfus_time.csv")
+df <- read.csv("data-processed/06_light_rfus_time.csv")
 head(df) # RFU is density, days is time, light_level is a factor (1 to 10). Percentage is also a measurement of light I think?
 str(df)
 
 df<-df[,-c(1,2,4,5,8,10,12,13,15,16,17)]
+
+head(df)
 
 df$pop.fac <- as.factor(df$population)
 df$pop.num <- as.numeric(df$pop.fac)
@@ -39,7 +43,7 @@ df$well_plate <- as.factor(df$well_plate)
 # df$days <- df$days + 0.001 # Can't have 0s
 df$logRFU <- log(df$RFU + 0.001)
 
-levels(df$pop.fac) # I don't recognize the COMBO group, I'm guessing this is a control?
+levels(df$pop.fac) # The COMBO group is a control, not relevant to this experiment. 
 
 df.exp <- subset(df, df$pop.fac != "COMBO") 
 df.exp$well.ID<-as.factor(df.exp$well_plate)
@@ -151,7 +155,7 @@ for (i in 1:length(mat.exp)){ # Looping through all of the populations
   
 }
 
-write.csv(df.r.exp, "data-processed/10a_light_r_estimates.csv") # let's save the file.
+write.csv(df.r.exp, "data-processed/6a_µ_estimates_light.csv") # let's save the file.
 
 ############# Exploration #######################
 
@@ -257,11 +261,11 @@ plot_grid <- arrangeGrob(grobs=plot.list, ncol = 10, nrow = 5)
 
 grid.draw(plot_grid)   
 
-ggsave("figures/08_light_r_estimatation.pdf", plot_grid, width = 40, height = 25, units = "cm")
+ggsave("figures/04_µ_fits_light.pdf", plot_grid, width = 40, height = 25, units = "cm")
 
 ############# Fit Monod curves to data ###################
 
-df.r <- read.csv("data-processed/10a_light_r_estimates.csv")
+df.r <- read.csv("data-processed/06a_µ_estimates_light.csv")
 
 head(df.r)
 str(df.r)
@@ -416,11 +420,11 @@ for (i in 1:length(mat)){ # for each population
   
 }
 
-write.csv(summary.df, "data-processed/10b_light_Monod_estimates.csv") # Save summary table
+write.csv(summary.df, "data-processed/06b_Monod_light_estimates.csv") # Save summary table
 
 ################# Analytical solutions & Model fit confirmation #####################
 
-# OK, so we are going to upload all of the R2jags objects, and iteravely use calculus to estimate rmax and R*
+# OK, so we are going to upload all of the R2jags objects, and iteratively use calculus to estimate rmax and R*
 
 i<-1 # for now, starting with one population.
 # for (i in 1:37){
@@ -490,5 +494,5 @@ fit.df <- data.frame(       # Save model fit estimates for examination
    
  }
 
-write.csv(fit.df, "data-processed/010c_light_monod_model_fit_stats.csv") # Save model fit summary table
+write.csv(fit.df, "data-processed/06c_Monod_light_fits.csv") # Save model fit summary table
 # These look pretty good! A few models where n.eff is a touch low (2 estimates < 2,000, 17 < 3,000)
