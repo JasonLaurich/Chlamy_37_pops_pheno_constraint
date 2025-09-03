@@ -2731,7 +2731,7 @@ df.narwani <- df.narwani %>%
 #df.kontopoulos <- read.csv("data-processed/21a_Kontopoulos2020_TPCs.csv") These numbers are really low, we'll avoid them for now.
 #head(df.kontopoulos) # temperature, low r.maxes
 
-df.edwards.2015 <- read.csv("data-processed/26a_Edwards_2015_growth_data.csv")
+df.edwards.2015 <- read.csv("data-processed/26a_Edwards_2015_growth_data.csv") # Summary data, no need to refit anything. 
 
 df.edwards.2015 <- df.edwards.2015 %>% 
   mutate(source = 'Edwards2015') 

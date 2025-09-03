@@ -2,8 +2,9 @@
 
 # June 9, 2025
 
-# Going to upload data from the Edwards et al 2016 Limnol Oceanogr paper and run light Monods and TPCs on the raw data.
+# Revisited, checked, and cleaned September 3rd, 2025 (JRL)
 
+# Going to upload data from the Edwards et al 2016 Limnol Oceanogr paper and run light Monods and TPCs on the raw data.
 
 # Load packages -----------------------------------------------------------
 
@@ -19,44 +20,14 @@ library(nls.multstart)
 
 # Load and examine data ---------------------------------------------------
 
-df.t1 <- read.csv("data-processed/27a_Edwards_2016_raw_data.csv") # Raw data file
+df <- read.csv("data-processed/15_Edwards_2016_raw_data.csv") # Raw data file
 head(df)
 str(df)
 
 df$Sp.fac <- as.factor(df$species)
 
-df.summ1 <- read.csv("data-processed/27b_Edwards2016_TPCs.csv") # for going back and trouble shooting the sp.id problem
-df.fit1 <- read.csv("data-processed/27c_Edwards2016_TPCs_fits.csv")
-
-df.summ2 <- read.csv("data-processed/27d_Edwards2016_light.csv")
-df.fit2 <- read.csv("data-processed/27e_Edwards2016_light_fits.csv")
-
-# Basically the Edwards data has some species that show up in multiple references, so we need to create a unique sp.idx ref# combo
-
-df <- df %>%
+df <- df %>% # The Edwards data has some species that show up in multiple references, so we need to create a unique sp.idx ref# combo
   mutate(unique.id = paste(species, reference, sep = "_")) # So that each entry is treated seperately!
-
-df.redo <- df %>%
-  group_by(species) %>%
-  filter(n_distinct(reference) > 1) %>%
-  ungroup() # Get the subset of entries I need to rerun!
-
-df.summ1 <- df.summ1 %>%
-  filter(!Sp.id %in% df.redo$species) #Remove them from the summary dataframes!
-
-df.fit1 <- df.fit1 %>%
-  filter(!Sp.id %in% df.redo$species)
-
-df.summ2 <- df.summ2 %>%
-  filter(!Sp.id %in% df.redo$species)
-
-df.fit2 <- df.fit2 %>%
-  filter(!Sp.id %in% df.redo$species)
-
-df.summ1 <- df.summ1 %>% select(-X)
-df.fit1 <- df.fit1 %>% select(-X)
-df.summ2 <- df.summ2 %>% select(-X)
-df.fit2 <- df.fit2 %>% select(-X)
 
 # Lactin II TPCs ----------------------------------------------------------
 
@@ -88,7 +59,7 @@ nc.fit <- 3         # number of chains, total of 3,000 estimates for each model.
 
 parameters.lactin2 <- c("cf.a", "cf.b", "cf.tmax", "cf.delta_t", "cf.sigma", "r.pred") # repeated here
 
-inits.lactin.cust<- function() { # Pulling initial values centres from the start_vals function in rTPC
+inits.lactin.meta<- function() { # Pulling initial values centres from the start_vals function in rTPC
   list(
     cf.a = rnorm(1, mean = start.vals.lac[1], sd = 0.05),
     cf.tmax = rnorm(1, mean = start.vals.lac[3], sd = 1),
@@ -98,10 +69,9 @@ inits.lactin.cust<- function() { # Pulling initial values centres from the start
   )
 }
 
-# for (i in unique(df$Sp.fac)){ # For each species
-for (i in unique(df.redo$unique.id)[3:length(unique(df$unique.id))]){ # For each unique sp. x ref combo!
+for (i in unique(df$unique.id)){ # For each unique sp. x ref combo!
   
-  df.i <- df.redo %>%
+  df.i <- df %>%
     filter(unique.id == i, !is.na(growth.rate)) %>%
     filter(irradiance == max(irradiance, na.rm = TRUE)) %>%
     arrange(temperature)
@@ -134,9 +104,9 @@ for (i in unique(df.redo$unique.id)[3:length(unique(df$unique.id))]){ # For each
   
   lac_jag <- jags(
     data = jag.data, 
-    inits = inits.lactin.cust, 
+    inits = inits.lactin.meta, 
     parameters.to.save = parameters.lactin2, 
-    model.file = "lactin2_thomas.txt",
+    model.file = "lactin_meta.txt",
     n.thin = nt.fit, 
     n.chains = nc.fit, 
     n.burnin = nb.fit, 
@@ -150,8 +120,7 @@ for (i in unique(df.redo$unique.id)[3:length(unique(df$unique.id))]){ # For each
   df.jags <- data.frame(lac_jag$BUGSoutput$summary)[-c(1:6),]   # generate the sequence of r.pred values
   df.jags$temp <- seq(min(df.i$temperature) - 5, max(df.i$temperature) + 5, 0.1)
   
-  #edwards2016.summ.df <- rbind(edwards2016.summ.df, data.frame(                       # Add summary data
-  df.summ1 <- rbind(df.summ1, data.frame(                                              # Add summary data
+  edwards2016.summ.df <- rbind(edwards2016.summ.df, data.frame(                        # Add summary data
     Sp.id = i,                                                                         # Species name 
     DIC = lac_jag$BUGSoutput$DIC,                                                      # DIC
     T.min.raw = df.jags$temp[min(which(df.jags$mean > 0))],                            # Minimum T
@@ -163,8 +132,7 @@ for (i in unique(df.redo$unique.id)[3:length(unique(df$unique.id))]){ # For each
   ))
   
   for (j in 1:6){
-    # fit.df <- rbind(fit.df, data.frame(                       # Model performance data
-    df.fit1 <- rbind(df.fit1, data.frame(                       # Model performance data
+      fit.df <- rbind(fit.df, data.frame(                       # Model performance data
       Sp.id = i,                                                # Species id   
       Parameter = rownames(lac_jag$BUGSoutput$summary)[j],      # Model parameter (e.g. cf.a, cf.tmax, etc.)
       mean = lac_jag$BUGSoutput$summary[j,1],                   # Posterior mean
@@ -175,19 +143,8 @@ for (i in unique(df.redo$unique.id)[3:length(unique(df$unique.id))]){ # For each
   }
 }
 
-edwards2016.summ.df %>% 
-  filter(rowSums(is.na(.)) > 0) %>% 
-  print()
-
-# These 4 populations didn't work, because their light values are not consistent.
-# Go back and finish them manually? Maybe later
-
-#write.csv(edwards2016.summ.df, "data-processed/27b_Edwards2016_TPCs.csv") # let's save the file.
-#write.csv(fit.df, "data-processed/27c_Edwards2016_TPCs_fits.csv") # let's save the file.
-
-write.csv(df.summ1, "data-processed/27b_Edwards2016_TPCs.csv") # overwrite the file.
-write.csv(df.fit1, "data-processed/27c_Edwards2016_TPCs_fits.csv") # overwrite the file.
-
+write.csv(edwards2016.summ.df, "data-processed/15a_Edwards_2016_TPCs.csv") # let's save the file.
+write.csv(fit.df, "data-processed/15b_Edwards_2016_TPCs_fits.csv") # let's save the file.
 
 # Light Monod curves ------------------------------------------------------
 
@@ -220,10 +177,9 @@ fit.df <- data.frame(       # Save model fit estimates for examination
   stringsAsFactors = FALSE            
 )
 
-#for (i in unique(df$Sp.fac)){ # For each species
-for (i in unique(df.redo$unique.id)[1:length(unique(df$unique.id))]){ # For each unique sp. x ref combo!
+for (i in unique(df$unique.id)){ # For each unique ID
   
-  df.i <- df.redo %>%
+  df.i <- df %>%
     filter(unique.id == i, !is.na(growth.rate)) %>%
     filter(temperature == temperature[which.min(abs(temperature - 20))]) %>%
     arrange(irradiance)
@@ -258,21 +214,19 @@ for (i in unique(df.redo$unique.id)[1:length(unique(df$unique.id))]){ # For each
   df.jags <- data.frame(monod_jag$BUGSoutput$summary)[-c(1:3, (max(df.i$irradiance) - S.pred[1])/0.5 + 25 + 4),]   # generate the sequence of r.pred values
   df.jags$light <- seq(S.pred[1], max(df.i$irradiance) + 25, 0.5)
   
-  #edwards2016.summ.l.df <- rbind(edwards2016.summ.l.df, data.frame(                             # Add summary data
-  df.summ2 <- rbind(df.summ2, data.frame(                             # Add summary data
+  edwards2016.summ.l.df <- rbind(edwards2016.summ.l.df, data.frame(                             # Add summary data
     Sp.id = i,                                                                                  # Species name 
     DIC = monod_jag$BUGSoutput$DIC,                                                             # DIC
     K.s = monod_jag$BUGSoutput$summary[1,1],                                                    # Half-saturation constant
     r.max = monod_jag$BUGSoutput$summary[3,1],                                                  # Maximum population growth rate
-    R.jag = df.jags$light[which(df.jags$mean > 0.1)[1]],                                       # Minimum resource requirement for positive growth (from jags model)
-    R.mth = 0.1*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.1)   # Minimum resource requirement for positive growth (from math)
+    R.jag = df.jags$light[which(df.jags$mean > 0.1)[1]],                                        # Minimum resource requirement for positive growth (from jags model)
+    R.mth = 0.1*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.1)     # Minimum resource requirement for positive growth (from math)
   ))
   
   light_sum <- monod_jag$BUGSoutput$summary[c(1:3, (max(df.i$irradiance) - S.pred[1])/0.5 + 25 + 4),] # Have to create a new frame for summaries (not listed 1 to 6)
   
   for (j in 1:4){
-    #fit.df <- rbind(fit.df, data.frame(         # Model performance data
-    df.fit2 <- rbind(df.fit2, data.frame(        # Model performance data
+      fit.df <- rbind(fit.df, data.frame(        # Model performance data
       Sp.id = i,                                 # Species       
       Parameter = rownames(light_sum)[j],        # Model parameter (e.g. K_s, r_max, etc.)
       mean = light_sum[j,1],                     # Posterior mean
@@ -283,8 +237,5 @@ for (i in unique(df.redo$unique.id)[1:length(unique(df$unique.id))]){ # For each
   }
 }
 
-write.csv(edwards2016.summ.l.df, "data-processed/27d_Edwards2016_light.csv") # let's save the file.
-write.csv(fit.df, "data-processed/27e_Edwards2016_light_fits.csv") # let's save the file.
-
-write.csv(df.summ2, "data-processed/27d_Edwards2016_light.csv") # overwrite the file.
-write.csv(df.fit2, "data-processed/27e_Edwards2016_light_fits.csv") # overwrite the file.
+write.csv(edwards2016.summ.l.df, "data-processed/15c_Edwards_2016_Monod_light.csv") # save the metrics
+write.csv(fit.df, "data-processed/15d_Edwards_2016_Monod_light_fits.csv") # save the fit data

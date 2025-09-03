@@ -215,7 +215,7 @@ nc.fit <- 3         # number of chains, total of 3,000 estimates for each model.
 
 parameters.lactin2 <- c("cf.a", "cf.b", "cf.tmax", "cf.delta_t", "cf.sigma", "r.pred") # repeated here
 
-inits.lactin.cust<- function() { # Pulling initial values centres from the start_vals function in rTPC
+inits.lactin.meta<- function() { # Pulling initial values centres from the start_vals function in rTPC
   list(
     cf.a = rnorm(1, mean = start.vals.lac[1], sd = 0.05),
     cf.tmax = rnorm(1, mean = start.vals.lac[3], sd = 1),
@@ -261,9 +261,9 @@ for (i in 1:194){ # For each species
   
   lac_jag <- jags(
     data = jag.data, 
-    inits = inits.lactin.cust, 
+    inits = inits.lactin.meta, 
     parameters.to.save = parameters.lactin2, 
-    model.file = "lactin2_thomas.txt",
+    model.file = "lactin_meta.txt",
     n.thin = nt.fit, 
     n.chains = nc.fit, 
     n.burnin = nb.fit, 
