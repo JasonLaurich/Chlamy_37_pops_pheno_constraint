@@ -1,9 +1,10 @@
 # Jason R Laurich
 # April 12, 2025
 
+# Revisited, checked, and cleaned September 3rd, 2025 (JRL)
+
 # Going to work with the Lewington-Pearce et al 2019 (https://nsojournals.onlinelibrary.wiley.com/doi/full/10.1111/oik.06060) data to fit
 # Monod curves for nitrogen and light and TPCs
-
 
 # Load packages -----------------------------------------------------------
 
@@ -19,7 +20,7 @@ library(nls.multstart)
 
 # Load and examine the data -----------------------------------------------
 
-df <- read.csv("data-processed/19_Lewington-Pearce2019_raw_data.csv") # Raw data file
+df <- read.csv("data-processed/12_Lewington-Pearce_2019_raw_data.csv") # Raw data file
 head(df)
 str(df)
 
@@ -28,6 +29,8 @@ df$Sp.fac <- as.factor(df$genus_species)
 df$id <- paste0(df$block, ".", df$replicate)  # A unique identifier for each replicate.
 
 df$log.fluorescence <- log(df$fluorescence + 0.001)
+
+head(df)
 
 # What concentration of nitrogen should we be fitting TPCs at? Let's look at RFUs at D5
 
@@ -154,11 +157,11 @@ for (i in unique(df.t$Sp.fac)){ # for every species
 
 }
 
-write.csv(df.r.exp, "data-processed/19a_L-P_Temp_r_estimates.csv") # let's save the file.
+write.csv(df.r.exp, "data-processed/12a_Lewington-Pearce_2019_µ_estimates_temp.csv") # let's save the file.
 
 #### TPCS ####
 
-# df.r.exp <- read.csv("data-processed/19a_L-P_Temp_r_estimates.csv") # if needed
+# df.r.exp <- read.csv("data-processed/12a_Lewington-Pearce_2019_µ_estimates_temp.csv") # if needed
 
 lewington.summ.df <- data.frame(   # We'll create a dataframe to store the data as we fit models.
   Sp.id = numeric(),               # Species ID
@@ -273,8 +276,8 @@ for (i in unique(df.r.exp$Sp.id)){ # For each species
 
 # It does actually seem like there is only data for C. reinhardtii at 20 C! 
 
-write.csv(lewington.summ.df, "data-processed/19b_Lewington2019_TPCs.csv") # Save Lewington-Pearce 2019 TPC summary table
-write.csv(fit.df, "data-processed/19c_Lewington2019_TPCs_fits.csv") # Save model fit summary table
+write.csv(lewington.summ.df, "data-processed/12b_Lewington-Pearce_2019_TPCs.csv") # Save Lewington-Pearce 2019 TPC summary table
+write.csv(fit.df, "data-processed/12c_Lewington-Pearce_2019_TPCs_fits.csv") # Save model fit summary table
 
 # Calculate µ across Nitrogen and fit Monod curves -------------------------------
 
@@ -381,11 +384,11 @@ for (i in unique(df.n$Sp.fac)){ # for every species
   
 }
 
-write.csv(df.r.exp.n, "data-processed/19d_Lewington2019_Nit_r_estimates.csv") # let's save the file.
+write.csv(df.r.exp.n, "data-processed/12d_Lewington-Pearce_2019_µ_estimates_nitrogen.csv") # let's save the file.
 
 #### Monod Curves ####
 
-# df.r.exp.n <- read.csv("data-processed/19d_Lewington2019_Nit_r_estimates.csv") # if needed
+# df.r.exp.n <- read.csv("data-processed/12d_Lewington-Pearce_2019_µ_estimates_nitrogen.csv") # if needed
 
 lewington.summ.df.n <- data.frame(   # We'll create a dataframe to store the data as we fit models.
   Sp.id = numeric(),                 # Species ID
@@ -474,8 +477,8 @@ for (i in unique(df.r.exp.n$Sp.id)){ # For each species
   }
 }
 
-write.csv(lewington.summ.df.n, "data-processed/19e_Lewington2019_Nit_Monods.csv") # Save Lewington-Pearce 2019 N Monod summary table
-write.csv(fit.df, "data-processed/19f_Lewington2019_Nit_Monod_fits.csv") # Save model fit summary table
+write.csv(lewington.summ.df.n, "data-processed/12e_Lewington-Pearce_2019_Monod_nitrogen.csv") # Save Lewington-Pearce 2019 N Monod summary table
+write.csv(fit.df, "data-processed/12f_Lewington-Pearce_2019_Monod_nitrogen_fits.csv") # Save model fit summary table
 
 # Calculate µ across Light and fit Monod Curves ---------------------------
 
@@ -582,11 +585,11 @@ for (i in unique(df.l$Sp.fac)){ # for every species
   
 }
 
-write.csv(df.r.exp.l, "data-processed/19g_Lewington2019_Light_r_estimates.csv") # let's save the file.
+write.csv(df.r.exp.l, "data-processed/12g_Lewington-Pearce_2019_µ_estimates_light.csv") # let's save the file.
 
 #### Monod Curves ####
 
-# df.r.exp.l <- read.csv("data-processed/19g_Lewington2019_Light_r_estimates.csv") # if needed
+# df.r.exp.l <- read.csv("data-processed/12g_Lewington-Pearce_2019_µ_estimates_light.csv") # if needed
 
 lewington.summ.df.l <- data.frame(   # We'll create a dataframe to store the data as we fit models.
   Sp.id = numeric(),                 # Species ID
@@ -665,6 +668,5 @@ for (i in unique(df.r.exp.l$Sp.id)){ # For each species
   }
 }
 
-write.csv(lewington.summ.df.l, "data-processed/19h_Lewington2019_Light_Monods.csv") # Save Lewington-Pearce 2019 Light Monod summary table
-write.csv(fit.df, "data-processed/19i_Lewington2019_Light_Monod_fits.csv") # Save model fit summary table
-
+write.csv(lewington.summ.df.l, "data-processed/12h_Lewington-Pearce_2019_Monod_light.csv") # Save Lewington-Pearce 2019 Light Monod summary table
+write.csv(fit.df, "data-processed/12i_Lewington2019_Monod_light_fits.csv") # Save model fit summary table
