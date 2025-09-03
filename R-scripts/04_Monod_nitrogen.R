@@ -1,7 +1,9 @@
 # Jason R Laurich
 # January 15, 2025
 
-# This script will estimate r for each nitrate concentration as for light (script 06)
+# Revisited, checked, and cleaned September 3rd, 2025 (JRL)
+
+# This script will estimate r for each nitrate concentration as for light (script 03)
 # I'm going to use a sliding-window approach to identify the exponential phase of the logged linear data, then fit an exponential growth
 # curve to un-logged data for that time period for each nitrogen level.
 
@@ -21,7 +23,7 @@ library(mcmcplots)
 
 ############# Upload and examine data #######################
 
-df <- read.csv("data-processed/11_nitrate_abundances_processed.csv")
+df <- read.csv("data-processed/07_nitrogen_rfus_time.csv")
 head(df) # RFU is density, days is time, nitrate_level is a factor (1 to 10). nitrate_concentration is what we want
 str(df)
 
@@ -35,7 +37,7 @@ df$well_plate <- as.factor(df$well_plate)
 
 df$logRFU <- log(df$RFU + 0.001)
 
-levels(df$pop.fac) # I don't recognize the COMBO group, I'm guessing this is a control?
+levels(df$pop.fac) # Removing the COMBO treatment, which is simply a control. 
 
 df.exp <- subset(df, df$pop.fac != "COMBO")
 df.exp$well.ID<-as.factor(df.exp$well_plate)
@@ -149,7 +151,7 @@ for (i in 1:length(mat.exp)){ # Looping through all of the populations
   
 }
 
-write.csv(df.r.exp, "data-processed/11a_nitrogen_r_estimates.csv") # let's save the file.
+write.csv(df.r.exp, "data-processed/07a_µ_estimates_nitrogen.csv") # let's save the file.
 
 ############# Exploration #######################
 
@@ -261,7 +263,7 @@ ggsave("figures/09_nitrogen_r_estimatation.pdf", plot_grid, width = 40, height =
 
 ############# Fit Monod curves to data ###################
 
-df.r <- read.csv("data-processed/11a_nitrogen_r_estimates.csv")
+df.r <- read.csv("data-processed/07a_µ_estimates_nitrogen.csv")
 
 head(df.r)
 str(df.r)
@@ -415,11 +417,11 @@ for (i in 2:length(mat)){ # for each population. Fixed an error for population 1
   
 }
 
-write.csv(summary.df, "data-processed/11b_nitrogen_Monod_estimates.csv") # Save summary table
+write.csv(summary.df, "data-processed/07b_Monod_nitrogen_estimates.csv") # Save summary table
 
 ################# Analytical solutions & Model fit confirmation #####################
 
-# OK, so we are going to upload all of the R2jags objects, and iteravely use calculus to estimate rmax and R*
+# OK, so we are going to upload all of the R2jags objects, and iteratively use calculus to estimate µmax and R*
 
 i<-1 # for now, starting with one population.
 # for (i in 1:37){
@@ -489,5 +491,5 @@ for (i in 1:37){
   
 }
 
-write.csv(fit.df, "data-processed/011c_nitrogen_monod_model_fit_stats.csv") # Save model fit summary table
+write.csv(fit.df, "data-processed/07c_Monod_nitrogen_fits.csv") # Save model fit summary table
 # These look pretty good! A few models where n.eff is a touch low (4 estimates < 2,000, 10 < 3,000)

@@ -424,7 +424,7 @@ write.csv(summary.df, "data-processed/06b_Monod_light_estimates.csv") # Save sum
 
 ################# Analytical solutions & Model fit confirmation #####################
 
-# OK, so we are going to upload all of the R2jags objects, and iteratively use calculus to estimate rmax and R*
+# OK, so we are going to upload all of the R2jags objects, and iteratively use calculus to estimate µmax and R*
 
 i<-1 # for now, starting with one population.
 # for (i in 1:37){
