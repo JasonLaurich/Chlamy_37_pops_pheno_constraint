@@ -184,20 +184,17 @@ df.tpc.roots <- df.tpc.fits %>%
 
 head(df.tpc.roots)
 
+###### Temperature HDPIs ######
 # OK now we need to load all of the TPC objects and calculate the 95% HPD around my variables of interest (T.br_0.56, µ_max, T.br_0)
 
 hpd.temp.df <- data.frame(             # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
   Pop.fac = character(),               # Population
-  Tmin.l.hpdi = numeric(),             # Tmin, lower 95% HDPI 
-  Tmin.u.hpdi = numeric(),             # Tmin, upper 95% HDPI 
-  Tmax.l.hpdi = numeric(),             # Tmax, lower 95% HDPI 
-  Tmax.u.hpdi = numeric(),             # Tmax, upper 95% HDPI
+  Tbr.l.hpdi = numeric(),              # Tbr, lower 95% HDPI 
+  Tbr.u.hpdi = numeric(),              # Tbr, upper 95% HDPI              
   µmax.l.hpdi = numeric(),             # µmax, lower 95% HDPI
   µmax.u.hpdi = numeric(),             # µmax, upper 95% HDPI 
-  Tmin.0.56.l.hpdi = numeric(),        # Tmin at 0.56, lower 95% HDPI 
-  Tmin.0.56.u.hpdi = numeric(),        # Tmin at 0.56, upper 95% HDPI 
-  Tmax.0.56.l.hpdi = numeric(),        # Tmax at 0.56, lower 95% HDPI 
-  Tmax.0.56.u.hpdi = numeric()         # Tmax at 0.56, upper 95% HDPI
+  Tbr.0.56.l.hpdi = numeric(),         # Tbr at 0.56, lower 95% HDPI 
+  Tbr.0.56.u.hpdi = numeric()          # Tbr at 0.56, upper 95% HDPI
 )
 
 for (i in c(1:36, 38)){                                                    # Temperature R2jags (model fits), excluding 37 which is population cc1629
@@ -207,11 +204,9 @@ for (i in c(1:36, 38)){                                                    # Tem
   )
   
   hpd.df <- data.frame(        # A dataframe to store the 6000 estimates for each parameter in! Reset for each population
-    Tmin = numeric(),          # Tmin
-    Tmax = numeric(),          # Tmax
+    Tbr = numeric(),           # Tbr
     µmax = numeric(),          # µmax
-    Tmin.0.56 = numeric(),     # Tmin at 0.56
-    Tmax.0.56 = numeric()      # Tmax at 0.56
+    Tbr.0.56 = numeric()       # Tbr at 0.56
   )
   
   for (p in 1:6000){                                                     # For each posterior estimate
@@ -224,58 +219,145 @@ for (i in c(1:36, 38)){                                                    # Tem
       interval = c(10, 45)
     )$root                              
     
-    Tmin <- uniroot(lactin2, interval = c(0, T_opt),                      # Find Tmin
+    Tmin <- uniroot(lactin2, interval = c(-200, Topt),                      # Find Tmin
                     cf.a = posts$cf.a[p], cf.b = posts$cf.b[p], 
                     cf.tmax = posts$cf.tmax[p], 
                     cf.delta_t = posts$cf.delta_t[p])$root
     
-    Tmax <- uniroot(lactin2, interval = c(T_opt,45),                      # Find Tmax
+    Tmax <- uniroot(lactin2, interval = c(Topt,65),                      # Find Tmax
                     cf.a = posts$cf.a[p], cf.b = posts$cf.b[p], 
                     cf.tmax = posts$cf.tmax[p], 
                     cf.delta_t = posts$cf.delta_t[p])$root
+    
+    Tbr <- Tmax - Tmin                                                    # Calculate Tbr
     
     µmax <- lactin2(temp=Topt, cf.a = posts$cf.a[p],                      # Find µmax
                     cf.b = posts$cf.b[p], cf.tmax = posts$cf.tmax[p], 
                     cf.delta_t = posts$cf.delta_t[p])
     
-    Tmin.0.56 <- uniroot(lactin2_0.56, interval = c(Tmin, Topt),          # Find Tmin at 0.56
+    Tmin.0.56 <- uniroot(lactin2_0.56, interval = c(-50, Topt),          # Find Tmin at 0.56
                          cf.a = posts$cf.a[p], cf.b = posts$cf.b[p], 
                          cf.tmax = posts$cf.tmax[p], 
                          cf.delta_t = posts$cf.delta_t[p])$root
     
-    Tmax.0.56 <- uniroot(lactin2_0.56, interval = c(Topt, Tmax),          # Find Tmax at 0.56
+    Tmax.0.56 <- uniroot(lactin2_0.56, interval = c(Topt, 65),          # Find Tmax at 0.56
                          cf.a = posts$cf.a[p], cf.b = posts$cf.b[p], 
                          cf.tmax = posts$cf.tmax[p], 
                          cf.delta_t = posts$cf.delta_t[p])$root
+    
+    Tbr.0.56 <- Tmax.0.56 - Tmin.0.56                                     # Calculate Tbr at 0.56
     
     hpd.df <- rbind(hpd.df, data.frame(        # A dataframe to store the 6000 estimates for each parameter in! Reset for each population
-      Tmin = Tmin,                             # Tmin
-      Tmax = Tmax,                             # Tmax
+      Tbr = Tbr,                               # Tbr
       µmax = µmax,                             # µmax
-      Tmin.0.56 = Tmin.0.56,                   # Tmin at 0.56
-      Tmax.0.56 = Tmax.0.56                    # Tmax at 0.56
+      Tbr.0.56 = Tbr.0.56                      # Tbr at 0.56
     ))
+    
+    print(p)
     
   }
   
-  hpd.temp.df <- rbind(hpd.temp.df, data.frame(                    # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
-    Pop.fac = df.tpc$Pop.fac (which matches i in the Pop.num column),               # Population
-    Tmin.l.hpdi = the 2.5% lower quantile from hpd.df$Tmin,             # Tmin, lower 95% HDPI 
-    Tmin.u.hpdi = numeric(),             # Tmin, upper 95% HDPI 
-    Tmax.l.hpdi = numeric(),             # Tmax, lower 95% HDPI 
-    Tmax.u.hpdi = numeric(),             # Tmax, upper 95% HDPI
-    µmax.l.hpdi = numeric(),             # µmax, lower 95% HDPI
-    µmax.u.hpdi = numeric(),             # µmax, upper 95% HDPI 
-    Tmin.0.56.l.hpdi = numeric(),        # Tmin at 0.56, lower 95% HDPI 
-    Tmin.0.56.u.hpdi = numeric(),        # Tmin at 0.56, upper 95% HDPI 
-    Tmax.0.56.l.hpdi = numeric(),        # Tmax at 0.56, lower 95% HDPI 
-    Tmax.0.56.u.hpdi = numeric()         # Tmax at 0.56, upper 95% HDPI
-  )
+  hpd.temp.df <- rbind(hpd.temp.df, data.frame(                          # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
+    Pop.fac = df.tpc %>% filter(Pop.num == i) %>% 
+      pull(Pop.fac) %>% dplyr::first(),                                  # Population as a factor, pulled from the df.tpc summary table
+    Tbr.l.hpdi = quantile(hpd.df$Tbr, probs = 0.025),                    # Tbr, lower 95% HDPI 
+    Tbr.u.hpdi = quantile(hpd.df$Tbr, probs = 0.975),                    # Tbr, upper 95% HDPI 
+    µmax.l.hpdi = quantile(hpd.df$µmax, probs = 0.025),                  # µmax, lower 95% HDPI
+    µmax.u.hpdi = quantile(hpd.df$µmax, probs = 0.975),                  # µmax, upper 95% HDPI 
+    Tbr.0.56.l.hpdi = quantile(hpd.df$Tbr.0.56, probs = 0.025),          # Tbr at 0.56, lower 95% HDPI 
+    Tbr.0.56.u.hpdi = quantile(hpd.df$Tbr.0.56, probs = 0.975)           # Tbr at 0.56, upper 95% HDPI 
+  ))
+  
+  print(i)
   
 }
+
+hpd.temp.df
+
+###### Light Monod HDPIs ######
+# Load the light Monods and estimate 95% HPDIs for I.ks, I.comp and µmax
+# The Monods are easier because they directly estimate the relevant statistics. No need to pass through all of the posteriors. 
+
+hpd.light.df <- data.frame(              # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
+  Pop.fac = character(),                 # Population
+  I_Ks.l.hpdi = numeric(),               # IKs, lower 95% HDPI 
+  I_Ks.u.hpdi = numeric(),               # IKs, upper 95% HDPI
+  Icomp.l.hpdi = numeric(),              # Icomp, lower 95% HDPI 
+  Icomp.u.hpdi = numeric(),              # Icomp, upper 95% HDPI              
+  I_µmax.l.hpdi = numeric(),             # µmax, lower 95% HDPI
+  I_µmax.u.hpdi = numeric()              # µmax, upper 95% HDPI 
+)
+
+for (i in c(1:37)){                                                    # Light R2jags (model fits)
+  load(paste0("R2jags-objects/pop_", i, "_light_monod.RData"))         # load the models
+  
+  I_Ks.l.hpdi <- monod_jag$BUGSoutput$summary[1,3] 
+  I_Ks.u.hpdi <- monod_jag$BUGSoutput$summary[1,7]
+  Icomp.l.hpdi <- 1/(0.56*monod_jag$BUGSoutput$summary[1,7]/(monod_jag$BUGSoutput$summary[3,7] - 0.56)) 
+  Icomp.u.hpdi <- 1/(0.56*monod_jag$BUGSoutput$summary[1,3]/(monod_jag$BUGSoutput$summary[3,3] - 0.56))
+  I_µmax.l.hpdi <- monod_jag$BUGSoutput$summary[3,3]
+  I_µmax.u.hpdi <- monod_jag$BUGSoutput$summary[3,7]
+
+  hpd.light.df <- rbind(hpd.light.df, data.frame(     # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
+    Pop.fac = df.tpc %>% filter(Pop.num == i) %>% 
+      pull(Pop.fac) %>% dplyr::first(),               # Population as a factor, pulled from the df.tpc summary table
+    I_Ks.l.hpdi = I_Ks.l.hpdi,                        # IKs, lower 95% HDPI 
+    I_Ks.u.hpdi = I_Ks.u.hpdi,                        # IKs, upper 95% HDPI
+    Icomp.l.hpdi = Icomp.l.hpdi,                      # Icomp, lower 95% HDPI 
+    Icomp.u.hpdi = Icomp.u.hpdi,                      # Icomp, upper 95% HDPI
+    I_µmax.l.hpdi = I_µmax.l.hpdi,                    # µmax, lower 95% HDPI
+    I_µmax.u.hpdi = I_µmax.u.hpdi                     # µmax, upper 95% HDPI 
+  ))
+  
+  print(i)
+  
+}
+
+hpd.light.df
+
+###### Nitrogen Monod HDPIs ######
+# Load the nitrogen Monods and extract 95% HPDIs for N.Ks, N.comp and µmax
+
+hpd.nit.df <- data.frame(                # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
+  Pop.fac = character(),                 # Population
+  N_Ks.l.hpdi = numeric(),               # NKs, lower 95% HDPI 
+  N_Ks.u.hpdi = numeric(),               # NKs, upper 95% HDPI
+  Ncomp.l.hpdi = numeric(),              # Ncomp, lower 95% HDPI 
+  Ncomp.u.hpdi = numeric(),              # Ncomp, upper 95% HDPI              
+  N_µmax.l.hpdi = numeric(),             # µmax, lower 95% HDPI
+  N_µmax.u.hpdi = numeric()              # µmax, upper 95% HDPI 
+)
+
+for (i in c(1:37)){                                                    # Nitrogen R2jags (model fits)
+  load(paste0("R2jags-objects/pop_", i, "_nitrogen_monod.RData"))      # load the models
+  
+  N_Ks.l.hpdi <- monod_jag$BUGSoutput$summary[1,3] 
+  N_Ks.u.hpdi <- monod_jag$BUGSoutput$summary[1,7]
+  Ncomp.l.hpdi <- 1/(0.56*monod_jag$BUGSoutput$summary[1,7]/(monod_jag$BUGSoutput$summary[3,7] - 0.56)) 
+  Ncomp.u.hpdi <- 1/(0.56*monod_jag$BUGSoutput$summary[1,3]/(monod_jag$BUGSoutput$summary[3,3] - 0.56))
+  N_µmax.l.hpdi <- monod_jag$BUGSoutput$summary[3,3]
+  N_µmax.u.hpdi <- monod_jag$BUGSoutput$summary[3,7]
+  
+  hpd.nit.df <- rbind(hpd.nit.df, data.frame(         # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
+    Pop.fac = df.tpc %>% filter(Pop.num == i) %>% 
+      pull(Pop.fac) %>% dplyr::first(),               # Population as a factor, pulled from the df.tpc summary table
+    N_Ks.l.hpdi = N_Ks.l.hpdi,                        # NKs, lower 95% HDPI 
+    N_Ks.u.hpdi = N_Ks.u.hpdi,                        # NKs, upper 95% HDPI
+    Ncomp.l.hpdi = Ncomp.l.hpdi,                      # Ncomp, lower 95% HDPI 
+    Ncomp.u.hpdi = Ncomp.u.hpdi,                      # Ncomp, upper 95% HDPI
+    N_µmax.l.hpdi = N_µmax.l.hpdi,                    # µmax, lower 95% HDPI
+    N_µmax.u.hpdi = N_µmax.u.hpdi                     # µmax, upper 95% HDPI 
+  ))
+  
+  print(i)
+  
+}
+
+hpd.nit.df
 
 # Organize & compile into single file -------------------------------------
 
 
 write.csv(df, "data-processed/14_summary_metric_table.csv") # Save summary table
+
 
