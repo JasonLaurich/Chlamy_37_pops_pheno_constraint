@@ -355,6 +355,81 @@ for (i in c(1:37)){                                                    # Nitroge
 
 hpd.nit.df
 
+###### Phosphorous Monod HDPIs ######
+# Load the phosphorous Monods and extract 95% HPDIs for P.Ks, P.comp and µmax
+
+hpd.phos.df <- data.frame(               # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
+  Pop.fac = character(),                 # Population
+  P_Ks.l.hpdi = numeric(),               # PKs, lower 95% HDPI 
+  P_Ks.u.hpdi = numeric(),               # PKs, upper 95% HDPI
+  Pcomp.l.hpdi = numeric(),              # Pcomp, lower 95% HDPI 
+  Pcomp.u.hpdi = numeric(),              # Pcomp, upper 95% HDPI              
+  P_µmax.l.hpdi = numeric(),             # µmax, lower 95% HDPI
+  P_µmax.u.hpdi = numeric()              # µmax, upper 95% HDPI 
+)
+
+for (i in c(1:37)){                                                    # Phosphorous R2jags (model fits)
+  load(paste0("R2jags-objects/pop_", i, "_phosphorous_monod.RData"))   # load the models
+  
+  P_Ks.l.hpdi <- monod_jag$BUGSoutput$summary[1,3] 
+  P_Ks.u.hpdi <- monod_jag$BUGSoutput$summary[1,7]
+  Pcomp.l.hpdi <- 1/(0.56*monod_jag$BUGSoutput$summary[1,7]/(monod_jag$BUGSoutput$summary[3,7] - 0.56)) 
+  Pcomp.u.hpdi <- 1/(0.56*monod_jag$BUGSoutput$summary[1,3]/(monod_jag$BUGSoutput$summary[3,3] - 0.56))
+  P_µmax.l.hpdi <- monod_jag$BUGSoutput$summary[3,3]
+  P_µmax.u.hpdi <- monod_jag$BUGSoutput$summary[3,7]
+  
+  hpd.phos.df <- rbind(hpd.phos.df, data.frame(       # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
+    Pop.fac = df.tpc %>% filter(Pop.num == i) %>% 
+      pull(Pop.fac) %>% dplyr::first(),               # Population as a factor, pulled from the df.tpc summary table
+    P_Ks.l.hpdi = P_Ks.l.hpdi,                        # PKs, lower 95% HDPI 
+    P_Ks.u.hpdi = P_Ks.u.hpdi,                        # PKs, upper 95% HDPI
+    Pcomp.l.hpdi = Pcomp.l.hpdi,                      # Pcomp, lower 95% HDPI 
+    Pcomp.u.hpdi = Pcomp.u.hpdi,                      # Pcomp, upper 95% HDPI
+    P_µmax.l.hpdi = P_µmax.l.hpdi,                    # µmax, lower 95% HDPI
+    P_µmax.u.hpdi = P_µmax.u.hpdi                     # µmax, upper 95% HDPI 
+  ))
+  
+  print(i)
+  
+}
+
+hpd.phos.df
+
+###### Salt tolerance HDPIs ######
+# Load the salt tolerance curves and extract 95% HPDIs for c and µmax.
+# Again, these are terms directly estimated by the models, so I can just extract and tabulate them.
+
+hpd.salt.df <- data.frame(                # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
+  Pop.fac = character(),                  # Population
+  S.c.l.hpdi = numeric(),                 # c, lower 95% HDPI 
+  S.c.u.hpdi = numeric(),                 # c, upper 95% HDPI
+  S_µmax.l.hpdi = numeric(),              # µmax, lower 95% HDPI
+  S_µmax.u.hpdi = numeric()               # µmax, upper 95% HDPI 
+)
+
+for (i in c(1:37)){                                                    # Salt R2jags (model fits)
+  load(paste0("R2jags-objects/pop_", i, "_salt_tolerance.RData"))      # load the models
+  
+  S.c.l.hpdi <- monod_jag$BUGSoutput$summary[3,3] 
+  S.c.u.hpdi <- monod_jag$BUGSoutput$summary[3,7]
+  S_µmax.l.hpdi <- monod_jag$BUGSoutput$summary[1,3]
+  S_µmax.u.hpdi <- monod_jag$BUGSoutput$summary[1,7]
+  
+  hpd.salt.df <- rbind(hpd.salt.df, data.frame(         # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
+    Pop.fac = df.tpc %>% filter(Pop.num == i) %>% 
+      pull(Pop.fac) %>% dplyr::first(),               # Population as a factor, pulled from the df.tpc summary table
+    S.c.l.hpdi = S.c.l.hpdi,                          # c, lower 95% HDPI 
+    S.c.u.hpdi = S.c.u.hpdi,                          # c, upper 95% HDPI
+    S_µmax.l.hpdi = S_µmax.l.hpdi,                    # µmax, lower 95% HDPI
+    S_µmax.u.hpdi = S_µmax.u.hpdi                     # µmax, upper 95% HDPI 
+  ))
+  
+  print(i)
+  
+}
+
+hpd.salt.df
+
 # Organize & compile into single file -------------------------------------
 
 
