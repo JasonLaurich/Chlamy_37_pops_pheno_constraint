@@ -8,7 +8,21 @@
 
 # Packages & Functions ----------------------------------------------------
 
-library(dplyr)
+library(tidyverse)
+library(Deriv)
+
+lactin2 <- function(temp, cf.a, cf.b, cf.delta_t, cf.tmax) {
+  exp(cf.a * temp) - exp(cf.a * cf.tmax - ((cf.tmax - temp) / cf.delta_t)) + cf.b
+}
+
+find_roots <- function(cf.a, cf.b, cf.delta_t, cf.tmax) {
+  fn <- function(temp) lactin2(temp, cf.a, cf.b, cf.delta_t, cf.tmax) - target
+  
+  root1 <- tryCatch(uniroot(fn, lower = 5, upper = cf.tmax - 10)$root, error = function(e) NA)
+  root2 <- tryCatch(uniroot(fn, lower = cf.tmax - 10, upper = 45)$root, error = function(e) NA)
+  
+  c(root1, root2)
+}
 
 # Load & examine data -----------------------------------------------------
 
@@ -89,9 +103,74 @@ names(df.S.par) <- c("Pop.fac", "r.max_S", "S.c.mod", "S.c.pred") # rename
 
 df <- merge(df, df.S.par, by = "Pop.fac", all.x = TRUE)
 
+# Bring in stoichiometry data
+
+df.stoich <- read.csv("data-processed/17_stoich_data.csv") # Stoichiometry data for N and P
+head(df.stoich)
+str(df.stoich)
+
+levels(as.factor(df.stoich$Name)) # OK these are not the same numbers as are present in our other datasets
+length(unique(df.stoich$Name)) # But the total number is the same
+
+df.stoich %>% # Let's look at the mean values here (there are 2 data points for each population)
+  group_by(Name) %>% 
+  summarize(mean.N.µg.l = mean(N.µg.l), mean.P.µg.l = mean(P.µg.l)) %>% 
+  print(n=37)
+
+df.stoich.sum <- df.stoich %>%    # Let's just save the means
+  group_by(Name) %>% 
+  summarize(mean.N.µg.l = mean(N.µg.l), mean.P.µg.l = mean(P.µg.l)) %>% 
+  print(n=37)
+
+# Let's bring in an identity mapping file. 
+
+df.id <- read.csv("data-processed/18_id_mapping.csv") # File containing the identity assignment
+
+df.id
+
+df.stoich.sum <- df.stoich.sum %>% # Join this with the df.id matching schema
+  left_join(df.id, by = c("Name" = "sample"))
+
+head(df.stoich.sum) # Correct population assignment in the population column
+
+# Finally the pigment data
+
+df.pig <- read.csv("data-processed/19_pigment_data.csv") # Pigment data
+
+head(df.pig)
+str(df.pig)
+
+levels(as.factor(df.pig$HPLC.Nummer)) # These are already numbered 1-37, ie. the missing populations do not feature here. 
+
 # Calculate & store new metrics ---------------------------------------------------
 
+# Recalculate Tbr at 0.56
 
+df.tpc <- read.csv('data-processed/05a_TPC_fits.csv') # Load the data with the TPC shape parameters
+head(df.tpc)
+
+df.tpc <- df.tpc %>% # Pivot to wide format and remove the extra population
+  filter(Model == 'Lactin 2', Pop.fac != 'cc1629') %>% 
+  select(Pop.fac, Parameter, mean) %>%
+  pivot_wider(names_from = Parameter, values_from = mean)
+
+head(df.tpc)
+
+target <- 0.56
+
+df.tpc.roots <- df.tpc %>%
+  mutate(roots = pmap(list(cf.a, cf.b, cf.delta_t, cf.tmax), find_roots)) %>%
+  transmute(
+    Pop.fac,
+    T.min.0.56 = map_dbl(roots, 1),
+    T.max.0.56 = map_dbl(roots, 2)
+  )
+
+head(df.tpc.roots)
+
+# OK now we need to load all of the TPC objects and calculate the 95% HPD around my variables of interest (T.br_0.56, µ_max, T.br_0)
+
+# Organize & compile into single file -------------------------------------
 
 
 write.csv(df, "data-processed/14_summary_metric_table.csv") # Save summary table
