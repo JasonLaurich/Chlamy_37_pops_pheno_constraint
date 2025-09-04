@@ -70,54 +70,23 @@ str(df)
 df$Pop.fac <- as.factor(df$Pop.fac) # Looks great! Now we layer in other summary metrics.
 names(df) <- c("Pop.fac", "anc", "evol", "T.min", "T.max", "T.br", "Topt", "r.max_T") # rename a few variables. 
 
-# Bring in light data
-
-df.I <- read.csv("data-processed/06b_Monod_light_estimates.csv") # I* data 
+df.I <- read.csv("data-processed/06b_Monod_light_estimates.csv") # Light data 
 head(df.I)
 str(df.I)
 
-df.I.par <- df.I[, c("Pop.fac", "K.s", "r.max", "R.jag", "R.mth")] # need these
-names(df.I.par) <- c("Pop.fac", "K.s_I", "r.max_I", "I.jag", "I.mth") # rename
-df.I.par$I.comp <- 1/df.I.par$I.mth
-
-df <- merge(df, df.I.par, by = "Pop.fac", all.x = TRUE)
-
-# Bring in nitrogen data
-
-df.N <- read.csv("data-processed/07b_Monod_nitrogen_estimates.csv") # N* data 
+df.N <- read.csv("data-processed/07b_Monod_nitrogen_estimates.csv") # Nitrogen data 
 head(df.N)
 str(df.N)
 
-df.N.par <- df.N[, c("Pop.fac", "K.s", "r.max", "R.jag", "R.mth")] # need these
-names(df.N.par) <- c("Pop.fac", "K.s_N", "r.max_N", "N.jag", "N.mth") # rename
-df.N.par$N.comp <- 1/df.N.par$N.mth
-
 df <- merge(df, df.N.par, by = "Pop.fac", all.x = TRUE)
 
-# Bring in phosphorous data
-
-df.P <- read.csv("data-processed/08b_Monod_phosphorous_estimates.csv") # P* data 
+df.P <- read.csv("data-processed/08b_Monod_phosphorous_estimates.csv") # Phosphorous data 
 head(df.P)
 str(df.P)
 
-df.P.par <- df.P[, c("Pop.fac", "K.s", "r.max", "R.jag", "R.mth")] # need these
-names(df.P.par) <- c("Pop.fac", "K.s_P", "r.max_P", "P.jag", "P.mth") # rename
-df.P.par$P.comp <- 1/df.P.par$P.mth
-
-df <- merge(df, df.P.par, by = "Pop.fac", all.x = TRUE)
-
-# Bring in salt data
-
-df.S <- read.csv("data-Processed/09b_salt_tolerance_estimates.csv") # S* data 
+df.S <- read.csv("data-Processed/09b_salt_tolerance_estimates.csv") # Salt data 
 head(df.S)
 str(df.S)
-
-df.S$Pop.fac <- gsub("Anc ", "anc", df.S$Pop.fac) # ancestors are written differently here
-
-df.S.par <- df.S[, c("Pop.fac", "r.max", "c.mod", "c.pred")] # need these
-names(df.S.par) <- c("Pop.fac", "r.max_S", "S.c.mod", "S.c.pred") # rename
-
-df <- merge(df, df.S.par, by = "Pop.fac", all.x = TRUE)
 
 # Bring in stoichiometry data
 
@@ -133,10 +102,10 @@ df.stoich %>% # Let's look at the mean values here (there are 2 data points for 
   summarize(mean.N.µg.l = mean(N.µg.l), mean.P.µg.l = mean(P.µg.l)) %>% 
   print(n=37)
 
-df.stoich.sum <- df.stoich %>%    # Let's just save the means
+df.stoich.sum <- as.data.frame(df.stoich %>%    # Let's just save the means
   group_by(Name) %>% 
   summarize(mean.N.µg.l = mean(N.µg.l), mean.P.µg.l = mean(P.µg.l)) %>% 
-  print(n=37)
+  print(n=37))
 
 # Let's bring in an identity mapping file. 
 
@@ -157,6 +126,9 @@ head(df.pig)
 str(df.pig)
 
 levels(as.factor(df.pig$HPLC.Nummer)) # These are already numbered 1-37, ie. the missing populations do not feature here. 
+
+df.pig<- df.pig %>%
+  mutate(population = df.id$population)
 
 # Calculate & store new metrics ---------------------------------------------------
 
@@ -276,14 +248,16 @@ hpd.temp.df
 
 ###### Light Monod HDPIs ######
 # Load the light Monods and estimate 95% HPDIs for I.ks, I.comp and µmax
-# The Monods are easier because they directly estimate the relevant statistics. No need to pass through all of the posteriors. 
+# I want to calculate I.comp at each posterior after adjusting for conversion to photons
 
 hpd.light.df <- data.frame(              # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
   Pop.fac = character(),                 # Population
   I_Ks.l.hpdi = numeric(),               # IKs, lower 95% HDPI 
   I_Ks.u.hpdi = numeric(),               # IKs, upper 95% HDPI
-  Icomp.l.hpdi = numeric(),              # Icomp, lower 95% HDPI 
-  Icomp.u.hpdi = numeric(),              # Icomp, upper 95% HDPI              
+  Icomp.0.1.l.hpdi = numeric(),          # Icomp.0.1, lower 95% HDPI 
+  Icomp.0.1.u.hpdi = numeric(),          # Icomp.0.1, upper 95% HDPI  
+  Icomp.0.56.l.hpdi = numeric(),         # Icomp.0.56, lower 95% HDPI 
+  Icomp.0.56.u.hpdi = numeric(),         # Icomp.0.56, upper 95% HDPI              
   I_µmax.l.hpdi = numeric(),             # µmax, lower 95% HDPI
   I_µmax.u.hpdi = numeric()              # µmax, upper 95% HDPI 
 )
@@ -291,22 +265,46 @@ hpd.light.df <- data.frame(              # A dataframe to store the summary data
 for (i in c(1:37)){                                                    # Light R2jags (model fits)
   load(paste0("R2jags-objects/pop_", i, "_light_monod.RData"))         # load the models
   
-  I_Ks.l.hpdi <- monod_jag$BUGSoutput$summary[1,3] 
-  I_Ks.u.hpdi <- monod_jag$BUGSoutput$summary[1,7]
-  Icomp.l.hpdi <- 1/(0.56*monod_jag$BUGSoutput$summary[1,7]/(monod_jag$BUGSoutput$summary[3,7] - 0.56)) 
-  Icomp.u.hpdi <- 1/(0.56*monod_jag$BUGSoutput$summary[1,3]/(monod_jag$BUGSoutput$summary[3,3] - 0.56))
+  I_Ks.l.hpdi <- monod_jag$BUGSoutput$summary[1,3]*2.5                 # Convert %s to photons
+  I_Ks.u.hpdi <- monod_jag$BUGSoutput$summary[1,7]*2.5
   I_µmax.l.hpdi <- monod_jag$BUGSoutput$summary[3,3]
   I_µmax.u.hpdi <- monod_jag$BUGSoutput$summary[3,7]
+  
+  posts <- as.data.frame(
+    monod_jag$BUGSoutput$sims.list[c("K_s","r_max")]  # Extract the posterior estimates for variables of interest (6000 total)
+  )
+  
+  hpd.df <- data.frame(        # A dataframe to store the 6000 estimates for each parameter in! Reset for each population
+    I.comp.0.1 = numeric(),    # I.comp at 0.1
+    I.comp.0.56 = numeric()    # I.comp at 0.56
+  )
+  
+  for (p in 1:6000){                                                           # For each posterior estimate
+  
+    I.comp.0.1 <- 1 / (0.1 * posts$K_s[p] * 2.5 / (posts$r_max[p] - 0.1))      # Converting Ks to photons from % (for consistency with other studies)
+    
+    I.comp.0.56 <- 1 / (0.56 * posts$K_s[p] * 2.5 / (posts$r_max[p] - 0.56))   # Converting Ks to photons from % (for consistency with other studies)
+    
+    hpd.df <- rbind(hpd.df, data.frame(        # A dataframe to store the 6000 estimates for each parameter in! Reset for each population
+      I.comp.0.1 = I.comp.0.1,                 # I.comp at 0.1             
+      I.comp.0.56 = I.comp.0.56                # I.comp at 0.56
+    ))
+    
+    print(p)
+    
+  }
 
-  hpd.light.df <- rbind(hpd.light.df, data.frame(     # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
+  hpd.light.df <- rbind(hpd.light.df, data.frame(                           # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
     Pop.fac = df.tpc %>% filter(Pop.num == i) %>% 
-      pull(Pop.fac) %>% dplyr::first(),               # Population as a factor, pulled from the df.tpc summary table
-    I_Ks.l.hpdi = I_Ks.l.hpdi,                        # IKs, lower 95% HDPI 
-    I_Ks.u.hpdi = I_Ks.u.hpdi,                        # IKs, upper 95% HDPI
-    Icomp.l.hpdi = Icomp.l.hpdi,                      # Icomp, lower 95% HDPI 
-    Icomp.u.hpdi = Icomp.u.hpdi,                      # Icomp, upper 95% HDPI
-    I_µmax.l.hpdi = I_µmax.l.hpdi,                    # µmax, lower 95% HDPI
-    I_µmax.u.hpdi = I_µmax.u.hpdi                     # µmax, upper 95% HDPI 
+      pull(Pop.fac) %>% dplyr::first(),                                     # Population as a factor, pulled from the df.tpc summary table
+    I_Ks.l.hpdi = I_Ks.l.hpdi,                                              # IKs, lower 95% HDPI 
+    I_Ks.u.hpdi = I_Ks.u.hpdi,                                              # IKs, upper 95% HDPI
+    Icomp.0.1.l.hpdi = quantile(hpd.df$I.comp.0.1, probs = 0.025),          # Icomp.0.1, lower 95% HDPI 
+    Icomp.0.1.u.hpdi = quantile(hpd.df$I.comp.0.1, probs = 0.975),          # Icomp.0.1, upper 95% HDPI  
+    Icomp.0.56.l.hpdi = quantile(hpd.df$I.comp.0.56, probs = 0.025),        # Icomp.0.56, lower 95% HDPI 
+    Icomp.0.56.u.hpdi = quantile(hpd.df$I.comp.0.56, probs = 0.975),        # Icomp.0.56, upper 95% HDPI 
+    I_µmax.l.hpdi = I_µmax.l.hpdi,                                          # µmax, lower 95% HDPI
+    I_µmax.u.hpdi = I_µmax.u.hpdi                                           # µmax, upper 95% HDPI 
   ))
   
   print(i)
@@ -315,15 +313,20 @@ for (i in c(1:37)){                                                    # Light R
 
 hpd.light.df
 
+hpd.light.df$Pop.fac[37] <- "cc1690"  # Fix the name of the last entry (the raw data for light, nitrogen, phosphorous, and salt did not include cc1629)
+
 ###### Nitrogen Monod HDPIs ######
 # Load the nitrogen Monods and extract 95% HPDIs for N.Ks, N.comp and µmax
+# Calculate N.comp at 0.1 and 0.56
 
 hpd.nit.df <- data.frame(                # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
   Pop.fac = character(),                 # Population
   N_Ks.l.hpdi = numeric(),               # NKs, lower 95% HDPI 
   N_Ks.u.hpdi = numeric(),               # NKs, upper 95% HDPI
-  Ncomp.l.hpdi = numeric(),              # Ncomp, lower 95% HDPI 
-  Ncomp.u.hpdi = numeric(),              # Ncomp, upper 95% HDPI              
+  Ncomp.0.1.l.hpdi = numeric(),          # Ncomp.0.1, lower 95% HDPI 
+  Ncomp.0.1.u.hpdi = numeric(),          # Ncomp.0.1, upper 95% HDPI  
+  Ncomp.0.56.l.hpdi = numeric(),         # Ncomp.0.56, lower 95% HDPI 
+  Ncomp.0.56.u.hpdi = numeric(),         # Ncomp.0.56, upper 95% HDPI               
   N_µmax.l.hpdi = numeric(),             # µmax, lower 95% HDPI
   N_µmax.u.hpdi = numeric()              # µmax, upper 95% HDPI 
 )
@@ -331,22 +334,46 @@ hpd.nit.df <- data.frame(                # A dataframe to store the summary data
 for (i in c(1:37)){                                                    # Nitrogen R2jags (model fits)
   load(paste0("R2jags-objects/pop_", i, "_nitrogen_monod.RData"))      # load the models
   
-  N_Ks.l.hpdi <- monod_jag$BUGSoutput$summary[1,3] 
+  N_Ks.l.hpdi <- monod_jag$BUGSoutput$summary[1,3]
   N_Ks.u.hpdi <- monod_jag$BUGSoutput$summary[1,7]
-  Ncomp.l.hpdi <- 1/(0.56*monod_jag$BUGSoutput$summary[1,7]/(monod_jag$BUGSoutput$summary[3,7] - 0.56)) 
-  Ncomp.u.hpdi <- 1/(0.56*monod_jag$BUGSoutput$summary[1,3]/(monod_jag$BUGSoutput$summary[3,3] - 0.56))
   N_µmax.l.hpdi <- monod_jag$BUGSoutput$summary[3,3]
   N_µmax.u.hpdi <- monod_jag$BUGSoutput$summary[3,7]
   
-  hpd.nit.df <- rbind(hpd.nit.df, data.frame(         # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
+  posts <- as.data.frame(
+    monod_jag$BUGSoutput$sims.list[c("K_s","r_max")]  # Extract the posterior estimates for variables of interest (6000 total)
+  )
+  
+  hpd.df <- data.frame(        # A dataframe to store the 6000 estimates for each parameter in! Reset for each population
+    N.comp.0.1 = numeric(),    # N.comp at 0.1
+    N.comp.0.56 = numeric()    # N.comp at 0.56
+  )
+  
+  for (p in 1:6000){                                                           # For each posterior estimate
+    
+    N.comp.0.1 <- 1 / (0.1 * posts$K_s[p] / (posts$r_max[p] - 0.1))      
+    
+    N.comp.0.56 <- 1 / (0.56 * posts$K_s[p] / (posts$r_max[p] - 0.56))   
+    
+    hpd.df <- rbind(hpd.df, data.frame(        # A dataframe to store the 6000 estimates for each parameter in! Reset for each population
+      N.comp.0.1 = N.comp.0.1,                 # N.comp at 0.1             
+      N.comp.0.56 = N.comp.0.56                # N.comp at 0.56
+    ))
+    
+    print(p)
+    
+  }
+  
+  hpd.nit.df <- rbind(hpd.nit.df, data.frame(                               # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
     Pop.fac = df.tpc %>% filter(Pop.num == i) %>% 
-      pull(Pop.fac) %>% dplyr::first(),               # Population as a factor, pulled from the df.tpc summary table
-    N_Ks.l.hpdi = N_Ks.l.hpdi,                        # NKs, lower 95% HDPI 
-    N_Ks.u.hpdi = N_Ks.u.hpdi,                        # NKs, upper 95% HDPI
-    Ncomp.l.hpdi = Ncomp.l.hpdi,                      # Ncomp, lower 95% HDPI 
-    Ncomp.u.hpdi = Ncomp.u.hpdi,                      # Ncomp, upper 95% HDPI
-    N_µmax.l.hpdi = N_µmax.l.hpdi,                    # µmax, lower 95% HDPI
-    N_µmax.u.hpdi = N_µmax.u.hpdi                     # µmax, upper 95% HDPI 
+      pull(Pop.fac) %>% dplyr::first(),                                     # Population as a factor, pulled from the df.tpc summary table
+    N_Ks.l.hpdi = N_Ks.l.hpdi,                                              # NKs, lower 95% HDPI 
+    N_Ks.u.hpdi = N_Ks.u.hpdi,                                              # NKs, upper 95% HDPI
+    Ncomp.0.1.l.hpdi = quantile(hpd.df$N.comp.0.1, probs = 0.025),          # Ncomp.0.1, lower 95% HDPI 
+    Ncomp.0.1.u.hpdi = quantile(hpd.df$N.comp.0.1, probs = 0.975),          # Ncomp.0.1, upper 95% HDPI  
+    Ncomp.0.56.l.hpdi = quantile(hpd.df$N.comp.0.56, probs = 0.025),        # Ncomp.0.56, lower 95% HDPI 
+    Ncomp.0.56.u.hpdi = quantile(hpd.df$N.comp.0.56, probs = 0.975),        # Ncomp.0.56, upper 95% HDPI 
+    N_µmax.l.hpdi = N_µmax.l.hpdi,                                          # µmax, lower 95% HDPI
+    N_µmax.u.hpdi = N_µmax.u.hpdi                                           # µmax, upper 95% HDPI 
   ))
   
   print(i)
@@ -355,15 +382,20 @@ for (i in c(1:37)){                                                    # Nitroge
 
 hpd.nit.df
 
+hpd.nit.df$Pop.fac[37] <- "cc1690"
+
 ###### Phosphorous Monod HDPIs ######
 # Load the phosphorous Monods and extract 95% HPDIs for P.Ks, P.comp and µmax
+# Calculate P.comp at 0.1 and 0.56
 
 hpd.phos.df <- data.frame(               # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
   Pop.fac = character(),                 # Population
   P_Ks.l.hpdi = numeric(),               # PKs, lower 95% HDPI 
   P_Ks.u.hpdi = numeric(),               # PKs, upper 95% HDPI
-  Pcomp.l.hpdi = numeric(),              # Pcomp, lower 95% HDPI 
-  Pcomp.u.hpdi = numeric(),              # Pcomp, upper 95% HDPI              
+  Pcomp.0.1.l.hpdi = numeric(),          # Pcomp.0.1, lower 95% HDPI 
+  Pcomp.0.1.u.hpdi = numeric(),          # Pcomp.0.1, upper 95% HDPI  
+  Pcomp.0.56.l.hpdi = numeric(),         # Pcomp.0.56, lower 95% HDPI 
+  Pcomp.0.56.u.hpdi = numeric(),         # Pcomp.0.56, upper 95% HDPI               
   P_µmax.l.hpdi = numeric(),             # µmax, lower 95% HDPI
   P_µmax.u.hpdi = numeric()              # µmax, upper 95% HDPI 
 )
@@ -371,22 +403,46 @@ hpd.phos.df <- data.frame(               # A dataframe to store the summary data
 for (i in c(1:37)){                                                    # Phosphorous R2jags (model fits)
   load(paste0("R2jags-objects/pop_", i, "_phosphorous_monod.RData"))   # load the models
   
-  P_Ks.l.hpdi <- monod_jag$BUGSoutput$summary[1,3] 
+  P_Ks.l.hpdi <- monod_jag$BUGSoutput$summary[1,3]
   P_Ks.u.hpdi <- monod_jag$BUGSoutput$summary[1,7]
-  Pcomp.l.hpdi <- 1/(0.56*monod_jag$BUGSoutput$summary[1,7]/(monod_jag$BUGSoutput$summary[3,7] - 0.56)) 
-  Pcomp.u.hpdi <- 1/(0.56*monod_jag$BUGSoutput$summary[1,3]/(monod_jag$BUGSoutput$summary[3,3] - 0.56))
   P_µmax.l.hpdi <- monod_jag$BUGSoutput$summary[3,3]
   P_µmax.u.hpdi <- monod_jag$BUGSoutput$summary[3,7]
   
-  hpd.phos.df <- rbind(hpd.phos.df, data.frame(       # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
+  posts <- as.data.frame(
+    monod_jag$BUGSoutput$sims.list[c("K_s","r_max")]  # Extract the posterior estimates for variables of interest (6000 total)
+  )
+  
+  hpd.df <- data.frame(        # A dataframe to store the 6000 estimates for each parameter in! Reset for each population
+    P.comp.0.1 = numeric(),    # P.comp at 0.1
+    P.comp.0.56 = numeric()    # P.comp at 0.56
+  )
+  
+  for (p in 1:6000){                                                           # For each posterior estimate
+    
+    P.comp.0.1 <- 1 / (0.1 * posts$K_s[p] / (posts$r_max[p] - 0.1))      
+    
+    P.comp.0.56 <- 1 / (0.56 * posts$K_s[p] / (posts$r_max[p] - 0.56))   
+    
+    hpd.df <- rbind(hpd.df, data.frame(        # A dataframe to store the 6000 estimates for each parameter in! Reset for each population
+      P.comp.0.1 = P.comp.0.1,                 # P.comp at 0.1             
+      P.comp.0.56 = P.comp.0.56                # P.comp at 0.56
+    ))
+    
+    print(p)
+    
+  }
+  
+  hpd.phos.df <- rbind(hpd.phos.df, data.frame(                             # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
     Pop.fac = df.tpc %>% filter(Pop.num == i) %>% 
-      pull(Pop.fac) %>% dplyr::first(),               # Population as a factor, pulled from the df.tpc summary table
-    P_Ks.l.hpdi = P_Ks.l.hpdi,                        # PKs, lower 95% HDPI 
-    P_Ks.u.hpdi = P_Ks.u.hpdi,                        # PKs, upper 95% HDPI
-    Pcomp.l.hpdi = Pcomp.l.hpdi,                      # Pcomp, lower 95% HDPI 
-    Pcomp.u.hpdi = Pcomp.u.hpdi,                      # Pcomp, upper 95% HDPI
-    P_µmax.l.hpdi = P_µmax.l.hpdi,                    # µmax, lower 95% HDPI
-    P_µmax.u.hpdi = P_µmax.u.hpdi                     # µmax, upper 95% HDPI 
+      pull(Pop.fac) %>% dplyr::first(),                                     # Population as a factor, pulled from the df.tpc summary table
+    P_Ks.l.hpdi = P_Ks.l.hpdi,                                              # NKs, lower 95% HDPI 
+    P_Ks.u.hpdi = P_Ks.u.hpdi,                                              # NKs, upper 95% HDPI
+    Pcomp.0.1.l.hpdi = quantile(hpd.df$P.comp.0.1, probs = 0.025),          # Pcomp.0.1, lower 95% HDPI 
+    Pcomp.0.1.u.hpdi = quantile(hpd.df$P.comp.0.1, probs = 0.975),          # Pcomp.0.1, upper 95% HDPI  
+    Pcomp.0.56.l.hpdi = quantile(hpd.df$P.comp.0.56, probs = 0.025),        # Pcomp.0.56, lower 95% HDPI 
+    Pcomp.0.56.u.hpdi = quantile(hpd.df$P.comp.0.56, probs = 0.975),        # Pcomp.0.56, upper 95% HDPI 
+    P_µmax.l.hpdi = P_µmax.l.hpdi,                                          # µmax, lower 95% HDPI
+    P_µmax.u.hpdi = P_µmax.u.hpdi                                           # µmax, upper 95% HDPI 
   ))
   
   print(i)
@@ -394,6 +450,8 @@ for (i in c(1:37)){                                                    # Phospho
 }
 
 hpd.phos.df
+
+hpd.phos.df$Pop.fac[37] <- "cc1690"
 
 ###### Salt tolerance HDPIs ######
 # Load the salt tolerance curves and extract 95% HPDIs for c and µmax.
@@ -430,9 +488,126 @@ for (i in c(1:37)){                                                    # Salt R2
 
 hpd.salt.df
 
+hpd.salt.df$Pop.fac[37] <- "cc1690"
+
 # Organize & compile into single file -------------------------------------
 
+df.summ <- df.hist.agg %>%                                                      # Make a beautiful, comprehensive final data frame
+  filter(Pop.fac != 'cc1629') %>% 
+  transmute(Pop.fac = Pop.fac,
+            Anc = anc,
+            Evol = evol) %>% 
+  
+  left_join(                                                               
+    df.tpc %>%                                                                  # Add in µmax and thermal breadth at 0
+      filter(Model == 'Lactin 2', Pop.fac != 'cc1629') %>%
+      mutate(T.br.0 = T.max - T.min) %>% 
+      transmute(T.µ.max = r.max,
+                T.br.0 = T.br.0,
+                Pop.fac = Pop.fac), by = c("Pop.fac" = "Pop.fac")) %>% 
+  
+  left_join(                                  
+    df.tpc.roots %>%                                                            # Add in thermal breadth at 0.56
+      mutate(T.br.0.56 = T.max.0.56 - T.min.0.56) %>% 
+      select(T.br.0.56, Pop.fac), by = c("Pop.fac" = "Pop.fac")) %>% 
+  
+  left_join(
+    hpd.temp.df %>%                                                             # Add in 95% HDPIs for thermal traits
+      transmute(Pop.fac = Pop.fac,
+                T.µ.max.L = µmax.l.hpdi,
+                T.µ.max.U = µmax.u.hpdi,
+                T.br.0.L = Tbr.l.hpdi,
+                T.br.0.U = Tbr.u.hpdi,
+                T.br.0.56.L = Tbr.0.56.l.hpdi,
+                T.br.0.56.U = Tbr.0.56.u.hpdi), by = c("Pop.fac" = "Pop.fac")) %>% 
+  
+  
+    left_join(
+      df.I %>%                                                                  # Add in light competition traits
+        mutate(I.star.0.56 = R.mth*2.5,                                         # Need to convert light %s to µmol photons (consistent with other interspecific datasets)
+               I.comp.0.56 = 1/I.star.0.56,
+               I.Ks = K.s*2.5,
+               I.comp.0.1 = 1/(0.1*I.Ks/(r.max - 0.1))) %>%                     # Calculate I.comp at 0.10
+        transmute(Pop.fac = Pop.fac,
+                  I.µ.max = r.max,
+                  I.comp.0.1 = I.comp.0.1,
+                  I.comp.0.56 = I.comp.0.56), by = c("Pop.fac" = "Pop.fac")) %>% 
+  
+  left_join(
+    hpd.light.df %>%                                                            # Add in 95% HDPIs for light traits
+      transmute(Pop.fac = Pop.fac,
+                I.µ.max.L = I_µmax.l.hpdi,
+                I.µ.max.U = I_µmax.u.hpdi,
+                I.comp.0.1.L = Icomp.0.1.l.hpdi,
+                I.comp.0.1.U = Icomp.0.1.u.hpdi,
+                I.comp.0.56.L = Icomp.0.56.l.hpdi,
+                I.comp.0.56.U = Icomp.0.56.u.hpdi), by = c("Pop.fac" = "Pop.fac")) %>% 
+  
+  left_join(
+    df.N %>%                                                                    # Add in nitrogen competition traits
+              mutate(N.comp.0.56 = 1/R.mth,
+                     N.comp.0.1 = 1/(0.1*K.s/(r.max - 0.1))) %>%               
+              transmute(Pop.fac = Pop.fac,
+                        N.µ.max = r.max,
+                        N.comp.0.1 = N.comp.0.1,
+                        N.comp.0.56 = N.comp.0.56), by = c("Pop.fac" = "Pop.fac")) %>% 
+  
+  left_join(
+    hpd.nit.df %>%                                                              # Add in 95% HDPIs for nitrogen traits
+      transmute(Pop.fac = Pop.fac,
+                N.µ.max.L = N_µmax.l.hpdi,
+                N.µ.max.U = N_µmax.u.hpdi,
+                N.comp.0.1.L = Ncomp.0.1.l.hpdi,
+                N.comp.0.1.U = Ncomp.0.1.u.hpdi,
+                N.comp.0.56.L = Ncomp.0.56.l.hpdi,
+                N.comp.0.56.U = Ncomp.0.56.u.hpdi), by = c("Pop.fac" = "Pop.fac")) %>% 
+  
+  left_join(
+    df.P %>%                                                                    # Add in phosphorous competition traits
+      mutate(P.comp.0.56 = 1/R.mth,
+             P.comp.0.1 = 1/(0.1*K.s/(r.max - 0.1))) %>%               
+      transmute(Pop.fac = Pop.fac,
+                P.µ.max = r.max,
+                P.comp.0.1 = P.comp.0.1,
+                P.comp.0.56 = P.comp.0.56), by = c("Pop.fac" = "Pop.fac")) %>%
+    
+  left_join(
+    hpd.phos.df %>%                                                             # Add in 95% HDPIs for phosphorous traits
+      transmute(Pop.fac = Pop.fac,
+                P.µ.max.L = P_µmax.l.hpdi,
+                P.µ.max.U = P_µmax.u.hpdi,
+                P.comp.0.1.L = Pcomp.0.1.l.hpdi,
+                P.comp.0.1.U = Pcomp.0.1.u.hpdi,
+                P.comp.0.56.L = Pcomp.0.56.l.hpdi,
+                P.comp.0.56.U = Pcomp.0.56.u.hpdi), by = c("Pop.fac" = "Pop.fac")) %>% 
+  
+  left_join(
+    df.S %>%                                                                    # Add in salt competition traits
+      transmute(Pop.fac = Pop.fac,
+                S.µ.max = r.max,
+                S.c = c.mod), by = c("Pop.fac" = "Pop.fac")) %>%  
+  
+  left_join(
+    hpd.salt.df %>%                                                             # Add in 95% HDPIs for salt traits
+      transmute(Pop.fac = Pop.fac,
+                S.µ.max.L = S_µmax.l.hpdi,
+                S.µ.max.U = S_µmax.u.hpdi,
+                S.c.L = S.c.l.hpdi,
+                S.c.U = S.c.u.hpdi), by = c("Pop.fac" = "Pop.fac")) %>% 
+  
+  left_join(
+    df.stoich.sum %>%                                                           # Add in stoichiometry data
+      transmute(Pop.fac = population,
+                mean.N.µg.l = mean.N.µg.l,
+                mean.P.µg.l = mean.P.µg.l), by = c("Pop.fac" = "Pop.fac")) %>% 
+  
+  left_join(
+    df.pig %>%                                                           # Finally, add in pigment data!
+      transmute(Pop.fac = population,
+                chl.a = chl.a,
+                chl.b = chl.b,
+                luthein = luthein), by = c("Pop.fac" = "Pop.fac")) 
+        
+View(df.summ)
 
-write.csv(df, "data-processed/14_summary_metric_table.csv") # Save summary table
-
-
+write.csv(df, "data-processed/20_summary_table.csv") # Save summary table!
