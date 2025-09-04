@@ -610,4 +610,4 @@ df.summ <- df.hist.agg %>%                                                      
         
 View(df.summ)
 
-write.csv(df, "data-processed/20_summary_table.csv") # Save summary table!
+write.csv(df.summ, "data-processed/20_summary_table.csv") # Save summary table!
