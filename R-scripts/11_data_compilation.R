@@ -24,6 +24,22 @@ find_roots <- function(cf.a, cf.b, cf.delta_t, cf.tmax) {
   c(root1, root2)
 }
 
+lactin2_deriv <- function(temp, cf.a, cf.b, cf.tmax, cf.delta_t) {
+  rho <- cf.a
+  T_max <- cf.tmax
+  delta_T <- cf.delta_t
+  
+  term1 <- rho * exp(rho * temp)
+  term2 <- (1 / delta_T) * exp(rho * T_max - (T_max - temp) / delta_T)
+  
+  return(term1 - term2)
+} # Derivative of the Lactin II function
+
+lactin2_0.56 <- function(temp, cf.a, cf.b, cf.tmax, cf.delta_t) {
+  exp(cf.a * temp) - exp(cf.a * cf.tmax - (cf.tmax - temp) / cf.delta_t) + cf.b - 0.56
+} # OK we're going to modify the function to calculate T_breadth, based on a modified lactin.
+
+
 # Load & examine data -----------------------------------------------------
 
 df.hist <- read.csv("data-processed/16_rfus_time_summary.csv") # This file has the history (ancestry, evolutionary treatment) for each well ID.
@@ -146,19 +162,19 @@ levels(as.factor(df.pig$HPLC.Nummer)) # These are already numbered 1-37, ie. the
 
 # Recalculate Tbr at 0.56
 
-df.tpc <- read.csv('data-processed/05a_TPC_fits.csv') # Load the data with the TPC shape parameters
-head(df.tpc)
+df.tpc.fits <- read.csv('data-processed/05a_TPC_fits.csv') # Load the data with the TPC shape parameters
+head(df.tpc.fits)
 
-df.tpc <- df.tpc %>% # Pivot to wide format and remove the extra population
+df.tpc.fits <- df.tpc.fits %>% # Pivot to wide format and remove the extra population
   filter(Model == 'Lactin 2', Pop.fac != 'cc1629') %>% 
   select(Pop.fac, Parameter, mean) %>%
   pivot_wider(names_from = Parameter, values_from = mean)
 
-head(df.tpc)
+head(df.tpc.fits)
 
 target <- 0.56
 
-df.tpc.roots <- df.tpc %>%
+df.tpc.roots <- df.tpc.fits %>%
   mutate(roots = pmap(list(cf.a, cf.b, cf.delta_t, cf.tmax), find_roots)) %>%
   transmute(
     Pop.fac,
@@ -169,6 +185,94 @@ df.tpc.roots <- df.tpc %>%
 head(df.tpc.roots)
 
 # OK now we need to load all of the TPC objects and calculate the 95% HPD around my variables of interest (T.br_0.56, µ_max, T.br_0)
+
+hpd.temp.df <- data.frame(             # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
+  Pop.fac = character(),               # Population
+  Tmin.l.hpdi = numeric(),             # Tmin, lower 95% HDPI 
+  Tmin.u.hpdi = numeric(),             # Tmin, upper 95% HDPI 
+  Tmax.l.hpdi = numeric(),             # Tmax, lower 95% HDPI 
+  Tmax.u.hpdi = numeric(),             # Tmax, upper 95% HDPI
+  µmax.l.hpdi = numeric(),             # µmax, lower 95% HDPI
+  µmax.u.hpdi = numeric(),             # µmax, upper 95% HDPI 
+  Tmin.0.56.l.hpdi = numeric(),        # Tmin at 0.56, lower 95% HDPI 
+  Tmin.0.56.u.hpdi = numeric(),        # Tmin at 0.56, upper 95% HDPI 
+  Tmax.0.56.l.hpdi = numeric(),        # Tmax at 0.56, lower 95% HDPI 
+  Tmax.0.56.u.hpdi = numeric()         # Tmax at 0.56, upper 95% HDPI
+)
+
+for (i in c(1:36, 38)){                                                    # Temperature R2jags (model fits), excluding 37 which is population cc1629
+  load(paste0("R2jags-objects/pop_", i, "_lactin.RData"))                  # load the models
+  posts <- as.data.frame(
+    lac_jag$BUGSoutput$sims.list[c("cf.a","cf.b","cf.delta_t","cf.tmax")]  # Extract the posterior estimates for variables of interest (6000 total)
+  )
+  
+  hpd.df <- data.frame(        # A dataframe to store the 6000 estimates for each parameter in! Reset for each population
+    Tmin = numeric(),          # Tmin
+    Tmax = numeric(),          # Tmax
+    µmax = numeric(),          # µmax
+    Tmin.0.56 = numeric(),     # Tmin at 0.56
+    Tmax.0.56 = numeric()      # Tmax at 0.56
+  )
+  
+  for (p in 1:6000){                                                     # For each posterior estimate
+    
+    Topt <- uniroot(                                                     # Find Topt
+      function(temp) lactin2_deriv(temp, cf.a = posts$cf.a[p],
+                                   cf.b = posts$cf.b[p], 
+                                   cf.tmax = posts$cf.tmax[p], 
+                                   cf.delta_t = posts$cf.delta_t[p]),
+      interval = c(10, 45)
+    )$root                              
+    
+    Tmin <- uniroot(lactin2, interval = c(0, T_opt),                      # Find Tmin
+                    cf.a = posts$cf.a[p], cf.b = posts$cf.b[p], 
+                    cf.tmax = posts$cf.tmax[p], 
+                    cf.delta_t = posts$cf.delta_t[p])$root
+    
+    Tmax <- uniroot(lactin2, interval = c(T_opt,45),                      # Find Tmax
+                    cf.a = posts$cf.a[p], cf.b = posts$cf.b[p], 
+                    cf.tmax = posts$cf.tmax[p], 
+                    cf.delta_t = posts$cf.delta_t[p])$root
+    
+    µmax <- lactin2(temp=Topt, cf.a = posts$cf.a[p],                      # Find µmax
+                    cf.b = posts$cf.b[p], cf.tmax = posts$cf.tmax[p], 
+                    cf.delta_t = posts$cf.delta_t[p])
+    
+    Tmin.0.56 <- uniroot(lactin2_0.56, interval = c(Tmin, Topt),          # Find Tmin at 0.56
+                         cf.a = posts$cf.a[p], cf.b = posts$cf.b[p], 
+                         cf.tmax = posts$cf.tmax[p], 
+                         cf.delta_t = posts$cf.delta_t[p])$root
+    
+    Tmax.0.56 <- uniroot(lactin2_0.56, interval = c(Topt, Tmax),          # Find Tmax at 0.56
+                         cf.a = posts$cf.a[p], cf.b = posts$cf.b[p], 
+                         cf.tmax = posts$cf.tmax[p], 
+                         cf.delta_t = posts$cf.delta_t[p])$root
+    
+    hpd.df <- rbind(hpd.df, data.frame(        # A dataframe to store the 6000 estimates for each parameter in! Reset for each population
+      Tmin = Tmin,                             # Tmin
+      Tmax = Tmax,                             # Tmax
+      µmax = µmax,                             # µmax
+      Tmin.0.56 = Tmin.0.56,                   # Tmin at 0.56
+      Tmax.0.56 = Tmax.0.56                    # Tmax at 0.56
+    ))
+    
+  }
+  
+  hpd.temp.df <- rbind(hpd.temp.df, data.frame(                    # A dataframe to store the summary data (highest posterior density intervals, HDPIs) for each population
+    Pop.fac = df.tpc$Pop.fac (which matches i in the Pop.num column),               # Population
+    Tmin.l.hpdi = the 2.5% lower quantile from hpd.df$Tmin,             # Tmin, lower 95% HDPI 
+    Tmin.u.hpdi = numeric(),             # Tmin, upper 95% HDPI 
+    Tmax.l.hpdi = numeric(),             # Tmax, lower 95% HDPI 
+    Tmax.u.hpdi = numeric(),             # Tmax, upper 95% HDPI
+    µmax.l.hpdi = numeric(),             # µmax, lower 95% HDPI
+    µmax.u.hpdi = numeric(),             # µmax, upper 95% HDPI 
+    Tmin.0.56.l.hpdi = numeric(),        # Tmin at 0.56, lower 95% HDPI 
+    Tmin.0.56.u.hpdi = numeric(),        # Tmin at 0.56, upper 95% HDPI 
+    Tmax.0.56.l.hpdi = numeric(),        # Tmax at 0.56, lower 95% HDPI 
+    Tmax.0.56.u.hpdi = numeric()         # Tmax at 0.56, upper 95% HDPI
+  )
+  
+}
 
 # Organize & compile into single file -------------------------------------
 
