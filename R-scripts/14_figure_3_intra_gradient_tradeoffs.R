@@ -31,7 +31,6 @@ find_nearest_index <- function(x, ref_vec) { # Function to find the closest poin
   which.min(abs(ref_vec - x))
 } # For significance testing based on location of points relative to a curve
 
-
 # Load & examine the data -------------------------------------------------
 
 df <- read.csv("data-processed/20_summary_table.csv") # Summary file
