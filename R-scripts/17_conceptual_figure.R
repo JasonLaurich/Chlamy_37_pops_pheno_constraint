@@ -15,6 +15,12 @@
 # Also more variation in resource acquisition (e.g. 1/R*s) leads to weaker/ positive correlations? Could test this with my data
 # Both across the whole dataset and among Pareto-optimal points?
 
+# Question - what is the formal definition of Pareto fronts in biology? Would they apply at the level of individuals, or just within sp. and across them?
+
+# Garland et al 2022: (1) allocation constraints, (2) functional conflicts, (3) shared biochemical pathways, (4) antagonistic pleiotropy,
+# (5) ecological circumstances/ selection regime, (6) sexual selection. 
+# 1-3 all for sure involved in our study. 
+
 # Packages & Functions ----------------------------------------------------
 
 library(dplyr)
