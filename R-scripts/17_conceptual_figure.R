@@ -30,6 +30,18 @@
 library(tidyverse)
 library(cowplot)
 
+# Create panel A — variation across individuals/ genotypes ----------------
+
+df.A <- data.frame(
+  x = c(3, 7),
+  y = c(23, 27)
+)
+
+poly.band <- data.frame(
+  x = c(2, 10, 4, 0),
+  y = c(0, 4, 10, 2)
+)
+
 # Create panel A (inset) — variation w/in individuals  --------------------
 
 df.A2 <- data.frame(
