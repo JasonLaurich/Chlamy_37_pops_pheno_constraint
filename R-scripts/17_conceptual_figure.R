@@ -21,6 +21,10 @@
 # (5) ecological circumstances/ selection regime, (6) sexual selection. 
 # 1-3 all for sure involved in our study. 
 
+# Idea - do I go back and fit models to each replicate within each population? Would allow me to assess variation in resource acquisition within experimental
+# populations and its effects on weaker negative correlations? OR positive? (e.g. Mark Johnston's question). Also the Haave-Audet meta-analysis'.... point 
+# about looking at trade-offs within individuals (here really within genetically similar populations) and among them. 
+
 # Packages & Functions ----------------------------------------------------
 
 library(dplyr)
