@@ -33,20 +33,20 @@ library(cowplot)
 # Create panel A — variation across individuals/ genotypes ----------------
 
 df.A <- data.frame(
-  x = c(0.7, 1.2, 2.3, 2.4, 3.5, 2.8, 3.8, 4.1, 2.9, 4.5, 5.8, 5.1, 6.2, 6.2, 6.4, 6.3, 7.0, 8.9, 8.55, 8.1, 5.7, 9.55, 4.1, 7.5, 6.9, 9.45, 8.0),
-  y = c(0.8, 3.1, 1.5, 4.3, 1.3, 3.0, 7.0, 2.5, 5.6, 4.4, 8.2, 5.1, 3.5, 6.7, 2.4, 4.7, 8.6, 5.1, 7.3, 8.8, 9.55, 6.1, 9.1, 5.55, 9.45, 6.9, 3.7)
+  x = c(5.7, 6.2, 7.3, 7.4, 8.5, 7.8, 8.8, 9.1, 7.9, 9.5, 10.8, 10.1, 10.2, 11.2, 11.4, 11.3, 12.0, 13.9, 13.55, 13.1, 10.7, 14.55, 9.1, 12.5, 11.9, 14.45, 13.0),
+  y = c(5.8, 8.1, 6.5, 9.3, 6.3, 8.0, 12.0, 7.5, 10.6, 9.4, 8.2, 10.1, 12.9, 11.7, 7.4, 9.7, 13.6, 10.1, 12.3, 13.8, 14.55, 11.1, 14.1, 10.55, 14.45, 11.9, 8.7)
 )
 
 poly.band <- data.frame(
-  x = c(0, 2, 10, 4, 0),
-  y = c(0, 0, 4, 10, 2)
+  x = c(5, 7, 15, 9, 5),
+  y = c(5, 5, 9, 15, 7)
 )
 
 # Create a quadratic Bezier function to capture the curved pareto frontier
 
-M  <- c(8.5, 8.5)          # point the curve should pass through
-P0 <- c(10, 4)             # right endpoint
-P2 <- c(4, 10)             # top endpoint
+M  <- c(13.5, 13.5)          # point the curve should pass through
+P0 <- c(15, 9)               # right endpoint
+P2 <- c(9, 15)               # top endpoint
 
 t0 <- 0.5
 P1 <- (M - (1 - t0)^2 * P0 - t0^2 * P2) / (2 * (1 - t0) * t0)  # (10,10)
@@ -66,20 +66,20 @@ poly.crv <- rbind(
 p.A <- ggplot(df.A, aes(x = x, y = y)) +
   geom_point(size= 3) +
   
-  scale_y_continuous(limits = c(0, 10), breaks = c(0, 5, 10)) +
-  scale_x_continuous(limits = c(0, 10), breaks = c(0, 5, 10)) +
+  scale_y_continuous(limits = c(5, 15), breaks = c(5, 10, 15)) +
+  scale_x_continuous(limits = c(5, 15), breaks = c(5, 10, 15)) +
   
   theme_classic() +
   
   geom_segment(
-    aes(x = 0.1, y = 0.1, xend = 8.4, yend = 8.4),
+    aes(x = 5.1, y = 5.1, xend = 13.4, yend = 13.4),
     inherit.aes = FALSE,
     colour = "red3", linewidth = 1.5) +
   
   annotate(
     "rect",
-    xmin = 7, xmax = 9,
-    ymin = 2.7, ymax = 4.7,
+    xmin = 12, xmax = 14,
+    ymin = 7.7, ymax = 9.7,
     fill = NA, colour = "black", linewidth = 1.5
   ) +
   
@@ -98,7 +98,7 @@ p.A <- ggplot(df.A, aes(x = x, y = y)) +
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) +
   
-  coord_cartesian(xlim = c(0,10), ylim = c(0,10), expand = FALSE)
+  coord_cartesian(xlim = c(5,15), ylim = c(5,15), expand = FALSE)
 
 p.A
 
@@ -106,8 +106,8 @@ p.A
 # Create panel A (inset) — variation w/in individuals  --------------------
 
 df.A2 <- data.frame(
-  y = c(3.7, 4.2),
-  x = c(8, 8.5)
+  y = c(8.7, 9.2),
+  x = c(13, 13.5)
 )
 
 p.A2 <- ggplot(df.A2, aes(x = x, y = y)) +
@@ -117,8 +117,8 @@ p.A2 <- ggplot(df.A2, aes(x = x, y = y)) +
                fill = "grey60", alpha = 0.3, colour = NA,
                inherit.aes = FALSE) +
   
-  geom_segment(aes(x = 7.3, xend = 9, y = 2.7, yend = 3.7), colour = "black", size = 1.1) +
-  geom_segment(aes(x = 7, xend = 8, y = 3.0, yend = 4.7), colour = "black", size = 1.1) +
+  geom_segment(aes(x = 12.3, xend = 14, y = 7.7, yend = 8.7), colour = "black", size = 1.1) +
+  geom_segment(aes(x = 12, xend = 13, y = 8.0, yend = 9.7), colour = "black", size = 1.1) +
   
   theme_classic() +
 
@@ -135,45 +135,45 @@ p.A2 <- ggplot(df.A2, aes(x = x, y = y)) +
   ) +
   
   geom_segment(
-    aes(x = 8.05, y = 3.75, xend = 8.45, yend = 4.15),
+    aes(x = 13.05, y = 8.75, xend = 13.45, yend = 9.15),
     inherit.aes = FALSE,
     colour = "red3", linewidth = 1.5,
     arrow = arrow(length = unit(3, "mm"), type = "closed")
   ) +
   
   annotate("curve",
-           x = 8.05,  y = 3.65,
-           xend = 8.20,   yend = 3.3,
+           x = 13.05,  y = 8.65,
+           xend = 13.20,   yend = 8.3,
            curvature = -0.15, ncp = 50,
            colour = "blue3", linewidth = 1.5,
            arrow = arrow(length = unit(3, "mm"), type = "closed")
   ) +
   
   annotate("curve",
-           x = 7.95,  y = 3.75,
-           xend = 7.6,   yend = 3.90,
+           x = 12.95,  y = 8.75,
+           xend = 12.6,   yend = 8.90,
            curvature = 0.15, ncp = 50,
            colour = "blue3", linewidth = 1.5,
            arrow = arrow(length = unit(3, "mm"), type = "closed")
   ) +
   
   annotate("curve",
-           x = 8.55,  y = 4.15,
-           xend = 8.80,   yend = 3.67,
+           x = 13.55,  y = 9.15,
+           xend = 13.80,   yend = 8.67,
            curvature = -0.15, ncp = 50,
            colour = "blue3", linewidth = 1.5,
            arrow = arrow(length = unit(3, "mm"), type = "closed")
   ) +
   
   annotate("curve",
-           x = 8.45,  y = 4.25,
-           xend = 7.97,   yend = 4.50,
+           x = 13.45,  y = 9.25,
+           xend = 12.97,   yend = 9.50,
            curvature = 0.15, ncp = 50,
            colour = "blue3", linewidth = 1.5,
            arrow = arrow(length = unit(3, "mm"), type = "closed")
   ) +
   
-  coord_cartesian(xlim = c(7,9), ylim = c(2.7,4.7), expand = FALSE)
+  coord_cartesian(xlim = c(12,14), ylim = c(7.7,9.7), expand = FALSE)
 
 p.A2
 
@@ -187,10 +187,8 @@ p.top <- plot_grid(
 
 p.top
 
-p.A2.fixed <- p.A2 + coord_fixed(1)  # or coord_fixed(1)
-
 p.A2.zoom <- p.A2 +
-  coord_equal(xlim = c(7, 9), ylim = c(2.7, 4.7), expand = FALSE) +
+  coord_equal(xlim = c(12, 14), ylim = c(7.7, 9.7), expand = FALSE) +
   theme(text = element_text(size = 9),
         axis.title = element_text(size = 10),
         plot.margin = margin(4, 4, 4, 4))
@@ -223,4 +221,4 @@ df.B <- data.frame(
 )
 
 df.B <- df.B %>% 
-  mutate(x.ci = runif(n(),0.1,2), y.ci = runif(n(),0.1,2)) # Randomly assign spread values representing variation in ellipse shape and orientation.
+  mutate(x.ci = runif(n(),0.1,2), y.ci = runif(n(),0.1,2)) # Randomly assign spread values representing variation in ellipse shape and orientation
