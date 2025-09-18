@@ -38,7 +38,7 @@ df.A <- data.frame(
 )
 
 poly.band <- data.frame(
-  x = c(0,2, 10, 4, 0),
+  x = c(0, 2, 10, 4, 0),
   y = c(0, 0, 4, 10, 2)
 )
 
@@ -177,3 +177,50 @@ p.A2 <- ggplot(df.A2, aes(x = x, y = y)) +
 
 p.A2
 
+p.top <- plot_grid(
+  p.A, p.A2,
+  ncol = 2,
+  rel_widths = c(1, 0.4),   # tweak this ratio to taste
+  rel_heights = c(1, 0.4),
+  align = ""              # align panels nicely
+)
+
+p.top
+
+p.A2.fixed <- p.A2 + coord_fixed(1)  # or coord_fixed(1)
+
+p.A2.zoom <- p.A2 +
+  coord_equal(xlim = c(7, 9), ylim = c(2.7, 4.7), expand = FALSE) +
+  theme(text = element_text(size = 9),
+        axis.title = element_text(size = 10),
+        plot.margin = margin(4, 4, 4, 4))
+
+
+right_col <- plot_grid(
+  NULL,
+  p.A2.zoom,
+  NULL,
+  ncol = 1,
+  rel_heights = c(0.3, 1, 0.3)   # <- controls inset height in the column
+)
+
+right_col
+
+p.top <- plot_grid(
+  p.A, right_col,
+  ncol = 2,
+  rel_widths = c(1, 1),            # <- inset column ~40% of the width; tweak
+  align = "h"
+)
+
+p.top
+
+# Create panel B - interspecific variation ---------------------------------------
+
+df.B <- data.frame(
+  x = c(1.0, 1.0, 2.0, 3.0, 3.0, 4.0, 5.0, 5.0, 6.0, 7.0, 7.0, 8.0, 9.0, 9.0, 10.0, 11.0, 11.0, 12.0, 13.0, 13.0, 14.0, 15.0, 15.0, 16.0, 17.0, 17.0, 18.0, 19.0, 19.0),
+  y = c(1.0, 1.0, 2.0, 3.0, 3.0, 4.0, 5.0, 5.0, 6.0, 7.0, 7.0, 8.0, 9.0, 9.0, 10.0, 11.0, 11.0, 12.0, 13.0, 13.0, 14.0, 15.0, 15.0, 16.0, 17.0, 17.0, 18.0, 19.0, 19.0)
+)
+
+df.B <- df.B %>% 
+  mutate(x.ci = runif(n(),0.1,2), y.ci = runif(n(),0.1,2)) # Randomly assign spread values representing variation in ellipse shape and orientation.
