@@ -13,6 +13,8 @@
 #4. For Li et al randomization - null PFs inflating the number of points in PF.2? Skewing results? Work with the convex hulls directly?
       # Yes definetly! Also the null datasets (reasonably) frequently feature too few Pareto-optimal points for scam fits. 
 
+#5. Add quantile regression to my analysis?
+
 # Load packages, specify functions  -----------------------------------------------------------
 
 library(cowplot)
