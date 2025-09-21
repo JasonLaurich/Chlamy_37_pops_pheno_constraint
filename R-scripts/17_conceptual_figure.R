@@ -290,50 +290,21 @@ p.C2
 
 # Create panel D - interspecific variation (broad, positive)---------------------------------------
 
+poly.band.D <- data.frame(
+  x = c(2, 20, 9.5),
+  y = c(2, 9.5, 20)
+)
+
 df.D <- data.frame(
-  x = c(1.9, 1.3, 2.8, 4.2, 2.2, 3.1, 7.5, 5.0, 6.0, 7.0, 7.0, 8.0, 9.0, 9.0, 10.0, 11.0, 11.0, 12.0, 13.0, 13.0, 14.0, 15.0, 15.0, 16.0, 17.0, 17.0, 18.0, 19.0, 19.0),
-  y = c(1.2, 2.1, 2.1, 1.3, 3.8, 8.1, 4.2, 5.0, 6.0, 7.0, 7.0, 8.0, 9.0, 9.0, 10.0, 11.0, 11.0, 12.0, 13.0, 13.0, 14.0, 15.0, 15.0, 16.0, 17.0, 17.0, 18.0, 19.0, 19.0)
+  x = c(3.30, 4.7, 7.5, 4.8, 12.2, 11.2, 6.6, 7.3, 10.2, 13.1, 15.1, 16.7, 7.7, 12.8, 10.3, 9.7, 14.2, 19.5, 10.1),
+  y = c(2.75, 8.1, 4.9, 5.1, 12.4, 6.5, 12.0, 9.5, 8.80, 6.70, 11.9, 9.3, 14.3, 9.70, 12.8, 16.6, 14.6, 9.6, 19.3)
 )
 
-df.B <- df.B %>% 
-  mutate(x.ci = runif(n(),0.2,2), y.ci = runif(n(),0.2,2)) # Randomly assign spread values representing variation in ellipse shape and orientation
-
-poly.band.B <- data.frame(
-  x = c(0, 5, 20, 8, 0),
-  y = c(0, 0, 8, 20, 5)
-)
-
-# Create a quadratic Bezier function to capture the curved pareto frontier
-
-M.B  <- c(17, 17)          # point the curve should pass through
-P0.B <- c(20, 8)              # right endpoint
-P2.B <- c(8, 20)              # top endpoint
-
-t0 <- 0.5
-P1.B <- (M.B - (1 - t0)^2 * P0.B - t0^2 * P2.B) / (2 * (1 - t0) * t0)  # (10,10)
-
-t <- seq(0, 1, length.out = 80)          # curve from P0 -> P2 (right -> top)
-curve_pts.B <- data.frame(
-  x = (1 - t)^2 * P0.B[1] + 2 * (1 - t) * t * P1.B[1] + t^2 * P2.B[1],
-  y = (1 - t)^2 * P0.B[2] + 2 * (1 - t) * t * P1.B[2] + t^2 * P2.B[2]
-)
-
-poly.crv.B <- rbind(
-  poly.band.B[1:3,],                         # (0,0)->(2,0)->(10,4)
-  curve_pts.B[-c(1, length(t)), ],         # curved edge (avoid duplicated ends)
-  poly.band.B[4:5,]                          # (4,10)->(0,2)
-)
-
-df.B <- data.frame(
-  x = c(1.9, 1.3, 3.3, 4.2, 2.1, 3.1, 7.5, 4.8, 5.7, 8.2, 11.2, 5.6, 8.1, 9.2, 13.1, 15.1, 16.7, 7.7, 12.1, 10.3, 9.7, 18.8, 14.5, 19.5, 11.1, 14.1, 17.6, 16.9, 8.3, 17.5),
-  y = c(1.2, 2.1, 2.6, 1.3, 4.3, 8.1, 4.2, 5.1, 9.1, 7.1, 5.5, 12.0, 10.3, 8.8, 6.7, 11.9, 9.3, 14.3, 10.7, 12.8, 16.6, 12.3, 14.9, 9.3, 19.3, 17.6, 15.4, 16.8, 19.7, 13.4)
-)
-
-df.B <- df.B %>% 
-  mutate(x.ci = runif(n(),0.2,2), y.ci = runif(n(),0.2,2)) # Randomly assign spread values representing variation in ellipse shape and orientation
+df.D <- df.D %>% 
+  mutate(x.ci = runif(n(),0.2,2.5), y.ci = runif(n(),0.2,2)) # Randomly assign spread values representing variation in ellipse shape and orientation
 
 
-p.B <- ggplot(df.B, aes(x = x, y = y)) +
+p.D <- ggplot(df.D, aes(x = x, y = y)) +
   geom_point(size= 3) +
   
   scale_y_continuous(limits = c(0, 21), breaks = c(0, 5, 10, 15, 20)) +
@@ -345,13 +316,13 @@ p.B <- ggplot(df.B, aes(x = x, y = y)) +
   geom_spoke(aes(angle = -pi/4,       radius = x.ci), linewidth = 0.6) +
   geom_spoke(aes(angle = -pi/4 + pi,  radius = x.ci), linewidth = 0.6) +
   
-  geom_polygon(data = poly.crv.B, aes(x, y),
+  geom_polygon(data = poly.band.D, aes(x, y),
                fill = "grey60", alpha = 0.3, colour = NA,
                inherit.aes = FALSE) +
   
   labs(x = "Trait 1 (e.g. maximum growth rate)",    
        y = "Trait 2 (e.g. salt tolerance)", 
-       title = "B — variation among species") +  # labels
+       title = "D — variation among species") +  # labels
   
   theme(
     legend.position = "none",  
@@ -364,21 +335,10 @@ p.B <- ggplot(df.B, aes(x = x, y = y)) +
   
   coord_cartesian(xlim = c(0,21), ylim = c(0,21), expand = FALSE)
 
-p.B
+p.D
 
-p.B.null <- plot_grid(
-  p.B, NULL,
-  ncol = 2,
-  rel_heights = c(1,1)   # <- controls inset height in the column
-)
+# Create panel E - interspecific variation (negative) ---------------------
 
-p.final <- plot_grid(
-  p.top, p.B.null,
-  nrow = 2,
-  rel_widths = c(1, 1),            # <- inset column ~40% of the width; tweak
-  align = "h"
-)
 
-p.final
 
 ggsave("figures/15_fig_conceptual.jpeg", p.final, width = 15, height = 15)
