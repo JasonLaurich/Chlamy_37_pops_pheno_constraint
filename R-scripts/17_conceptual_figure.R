@@ -29,6 +29,7 @@
 
 library(tidyverse)
 library(cowplot)
+library(patchwork)
 
 # Create panel A — variation w/in individuals  --------------------
 
@@ -165,8 +166,8 @@ p.B <- ggplot(df.B, aes(x = x, y = y)) +
   
   geom_point(size= 3) +
   
-  labs(x = "Trait 1 (e.g. maximum growth rate)",    
-       y = "Trait 2 (e.g. salt tolerance)", 
+  labs(x = "Trait 1 (e.g. nutrient acquisition)",    
+       y = "Trait 2 (e.g. stress tolerance)", 
        title = "B — genotypic variation") +  # labels
   
   theme(
@@ -210,8 +211,8 @@ p.C <- ggplot(df.C, aes(x = x, y = y)) +
   
   geom_point(size= 3) +
   
-  labs(x = "Trait 1 (e.g. maximum growth rate)",    
-       y = "Trait 2 (e.g. salt tolerance)", 
+  labs(x = "Trait 1 (e.g. nutrient acquisition)",    
+       y = "Trait 2 (e.g. stress tolerance)", 
        title = "C — genotypic variation") +  # labels
   
   theme(
@@ -271,8 +272,8 @@ p.C2 <- ggplot(df.C2, aes(x = x, y = y)) +
   
   geom_point(size= 3) +
   
-  labs(x = "Trait 1 (e.g. maximum growth rate)",    
-       y = "Trait 2 (e.g. salt tolerance)", 
+  labs(x = "Trait 1 (e.g. nutrient acquisition)",    
+       y = "Trait 2 (e.g. stress tolerance)", 
        title = "C — genotypic variation") +  # labels
   
   theme(
@@ -320,9 +321,11 @@ p.D <- ggplot(df.D, aes(x = x, y = y)) +
                fill = "grey60", alpha = 0.3, colour = NA,
                inherit.aes = FALSE) +
   
-  labs(x = "Trait 1 (e.g. maximum growth rate)",    
-       y = "Trait 2 (e.g. salt tolerance)", 
+  labs(x = "Trait 1 (e.g. nutrient acquisition)",    
+       y = "Trait 2 (e.g. stress tolerance)", 
        title = "D — variation among species") +  # labels
+  
+  theme_classic() +
   
   theme(
     legend.position = "none",  
@@ -331,14 +334,66 @@ p.D <- ggplot(df.D, aes(x = x, y = y)) +
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) +
   
-  theme_classic() +
-  
   coord_cartesian(xlim = c(0,21), ylim = c(0,21), expand = FALSE)
 
 p.D
 
-# Create panel E - interspecific variation (negative) ---------------------
+# Create panel E - interspecific variation (negative, narrower) ---------------------
 
+poly.band.E <- data.frame(             # Create a polygon! We'll set the lower limits at y and x 7.5. Slope is 7.5/18.
+  x = c(17, 20, 9.5, 7.833333),        # solve for x = 16? ▲y = 4*(7.5/18) = 1.666667. y = 7.833333. Reverse for top left
+  y = c(7.833333, 9.5, 20, 17)
+)
 
+df.E <- df.D %>% 
+  filter(x >= 14.5 | y >= 14.5)
 
-ggsave("figures/15_fig_conceptual.jpeg", p.final, width = 15, height = 15)
+df.E2 <- data.frame(
+  x = c(10.5, 12.5, 17.1, 12.5, 15.9, 13.6),
+  y = c(15.1, 16.3, 10.6, 14.9, 13.1, 12.4)
+)
+
+df.E2 <- df.E2 %>% 
+  mutate(x.ci = runif(n(),0.2,2.5), y.ci = runif(n(),0.2,2)) # Randomly assign spread values representing variation in ellipse shape and orientation
+
+df.E <- rbind(df.E, df.E2)
+  
+p.E <- ggplot(df.E, aes(x = x, y = y)) +
+  geom_point(size= 3) +
+  
+  scale_y_continuous(limits = c(0, 21), breaks = c(0, 5, 10, 15, 20)) +
+  scale_x_continuous(limits = c(0, 21), breaks = c(0, 5, 10, 15, 20)) +
+  
+  geom_spoke(aes(angle = pi/4,        radius = y.ci), linewidth = 0.6) +
+  geom_spoke(aes(angle = pi/4 + pi,   radius = y.ci), linewidth = 0.6) +
+  
+  geom_spoke(aes(angle = -pi/4,       radius = x.ci), linewidth = 0.6) +
+  geom_spoke(aes(angle = -pi/4 + pi,  radius = x.ci), linewidth = 0.6) +
+  
+  geom_polygon(data = poly.band.E, aes(x, y),
+               fill = "grey60", alpha = 0.3, colour = NA,
+               inherit.aes = FALSE) +
+  
+  labs(x = "Trait 1 (e.g. nutrient acquisition)",    
+       y = "Trait 2 (e.g. stress tolerance)", 
+       title = "E — variation among species") +  # labels
+  
+  theme_classic() +
+  
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  ) +
+  
+  coord_cartesian(xlim = c(0,21), ylim = c(0,21), expand = FALSE)
+
+p.E
+
+top   <- plot_spacer() + p.A + plot_spacer() + plot_layout(widths = c(0.25, 0.5, 0.25))
+p.final <- top / (p.B | p.C2) / (p.D | p.E)
+p.final
+
+ggsave("figures/15_fig_conceptual.jpeg", p.final, width = 15, height = 21)
+ggsave("figures/15_fig_conceptual.pdf", p.final, width = 15, height = 21)
