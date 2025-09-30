@@ -106,7 +106,7 @@ y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 df.filt <- df.filt %>% # Calculate Euclidean distance from min
   mutate(
     distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
-    dist.sc = distance/mean(distance)
+    dist.sc = scale(distance)
   ) %>%
   arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
 
@@ -121,12 +121,9 @@ df.filt%>%
   } %>%
   print() # Display the outliers
 
-par.res.1 <- par_frt(df.filt, xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 3,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
 
 fit <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.1))), data = par.res.1) # Fit a scam to the PF
-
-res.1 <- fit_pareto_poly(par.res.1, xvar = z.x, yvar = z.y) # Evaluate polynomial models
-res.1$summary          
 
 x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
 
@@ -148,9 +145,6 @@ pred.curve.2 <- data.frame( # predicted data frame
   z.x = x.vals,
   z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
 )
-
-res.2 <- fit_pareto_poly(par.res.2, xvar = z.x, yvar = z.y) # Evaluate polynomial models
-res.2$summary      
 
 T.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
@@ -192,47 +186,6 @@ T.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   )
 
 T.scam  # Display the plot
-
-T.poly <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
-  
-  geom_line(data = res.1$curve, aes(x, y), color = "black", size = 1.1, inherit.aes = FALSE) +
-  geom_line(data = res.2$curve, aes(x, y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
-  
-  labs(x = "Maximum exponential growth rate (µ max)",    
-       y = "Thermal breadth (°C)", 
-       color = "Evolutionary History",
-       title = "E — Temperature") +  # labels
-  
-  scale_color_manual(
-    name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
-               "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5)  # diamond
-  ) +
-  
-  ylim(24.5,29.5) +
-  
-  theme_classic() +
-  theme(
-    legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
-    axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
-  )
-
-T.poly  # Display the plot
 
 ###### 75th quantile PF testing ######
 
@@ -289,7 +242,7 @@ for (i in 1:1000){
   
 }
 
-mean(null.df$a.emp.n >= a.emp) # p-value 0.540
+mean(null.df$a.emp.n >= a.emp) # p-value 0.554
 
 # Randomize across optimal and near-optimal points
 
@@ -339,7 +292,7 @@ df.filt3 <- df.filt %>%
   select(-distance)      
 
 q.r.90 <- lm(z.y ~ z.x, data = df.filt3)
-summary(q.r.90) #, Slope = -0.9450, p = 0.0831
+summary(q.r.90) #, Slope = -0.9514, p = 0.02459
 
 q.r.all <- lm(z.y ~ z.x, data = df.filt)
 summary(q.r.all) #, Slope = 0.01959, p = 0.946
@@ -347,7 +300,7 @@ summary(q.r.all) #, Slope = 0.01959, p = 0.946
 b_10  <- coef(q.r.90) 
 b_all <- coef(q.r.all)
 
-I.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+T.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = b_all[1], slope = b_all[2], colour = "black", linewidth = 1.1) +
@@ -414,7 +367,7 @@ y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 df.filt <- df.filt %>% # Calculate Euclidean distance from min
   mutate(
     distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
-    dist.sc = distance/mean(distance)
+    dist.sc = scale(distance)
   ) %>%
   arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
 
@@ -429,12 +382,9 @@ df.filt%>%
   } %>%
   print() # Display the outliers
 
-par.res.1 <- par_frt(df.filt, xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 3,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
 
 fit <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.1))), data = par.res.1) # Fit a scam to the PF
-
-res.1 <- fit_pareto_poly(par.res.1, xvar = z.x, yvar = z.y) # Evaluate polynomial models
-res.1$summary          
 
 x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
 
@@ -456,9 +406,6 @@ pred.curve.2 <- data.frame( # predicted data frame
   z.x = x.vals,
   z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
 )
-
-res.2 <- fit_pareto_poly(par.res.2, xvar = z.x, yvar = z.y) # Evaluate polynomial models
-res.2$summary      
 
 I.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
@@ -502,48 +449,6 @@ I.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
 
 I.scam  # Display the plot
 
-I.poly <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
-  
-  geom_line(data = res.1$curve, aes(x, y), color = "black", size = 1.1, inherit.aes = FALSE) +
-  geom_line(data = res.2$curve, aes(x, y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
-  
-  labs(x = "Maximum exponential growth rate (µ max)",    
-       y = "Competitive ability (1/I*)", 
-       color = "Evolutionary History",
-       title = "A — Light") +  # labels
-  
-  scale_color_manual(
-    name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
-               "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
-  ) +
-  
-  ylim(0.025, 0.225) +
-  
-  theme_classic() +
-  theme(
-    legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
-    axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
-  )
-
-I.poly  # Display the plot
-
 ###### 75th quantile PF testing ######
 
 n.75 <- df.filt %>% # Now calculate the number of light points above the 75th % quantile Pareto front. 
@@ -580,7 +485,7 @@ for (i in 1:1000) { # Now we'll randomize and see how many light points should f
     nrow()
 }
 
-mean(null_counts>= n.75) # p = 0.909
+mean(null_counts>= n.75) # p = 0.384
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
@@ -633,7 +538,7 @@ for (i in 1:1000){
   
 }
 
-mean(null.df$a.emp.n >= a.emp) # p-value 0.444
+mean(null.df$a.emp.n >= a.emp) # p-value 0.458
 
 # Randomize across optimal and near-optimal points
 
@@ -756,7 +661,7 @@ y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 df.filt <- df.filt %>% # Calculate Euclidean distance from min
   mutate(
     distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
-    dist.sc = distance/mean(distance)
+    dist.sc = scale(distance)
   ) %>%
   arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
 
@@ -771,12 +676,9 @@ df.filt%>%
   } %>%
   print() # Display the outliers
 
-par.res.1 <- par_frt(df.filt, xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 3,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
 
 fit <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.1))), data = par.res.1) # Fit a scam to the PF
-
-res.1 <- fit_pareto_poly(par.res.1, xvar = z.x, yvar = z.y) # Evaluate polynomial models
-res.1$summary          
 
 x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
 
@@ -798,9 +700,6 @@ pred.curve.2 <- data.frame( # predicted data frame
   z.x = x.vals,
   z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
 )
-
-res.2 <- fit_pareto_poly(par.res.2, xvar = z.x, yvar = z.y) # Evaluate polynomial models
-res.2$summary      
 
 N.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
@@ -844,48 +743,6 @@ N.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
 
 N.scam  # Display the plot
 
-N.poly <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
-  
-  geom_line(data = res.1$curve, aes(x, y), color = "black", size = 1.1, inherit.aes = FALSE) +
-  geom_line(data = res.2$curve, aes(x, y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
-  
-  labs(x = "Maximum exponential growth rate (µ max)",    
-       y = "Competitive ability (1/N*)", 
-       color = "Evolutionary History",
-       title = "B — Nitrogen") +  # labels
-  
-  scale_color_manual(
-    name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
-               "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nitrogen" = 16)  # filled circle
-  ) +
-  
-  ylim(0,1.25) +
-  
-  theme_classic() +
-  theme(
-    legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
-    axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
-  )
-
-N.poly  # Display the plot
-
 ###### 75th quantile PF testing ######
 
 n.75 <- df.filt %>% # Now calculate the number of nitrogen points above the 75th % quantile Pareto front. 
@@ -922,7 +779,7 @@ for (i in 1:1000) { # Now we'll randomize and see how many nitrogen points shoul
     nrow()
 }
 
-mean(null_counts>= n.75) # p = 0.604
+mean(null_counts>= n.75) # p = 0.631
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
@@ -975,7 +832,7 @@ for (i in 1:1000){
   
 }
 
-mean(null.df$a.emp.n >= a.emp) # p-value 0.794
+mean(null.df$a.emp.n >= a.emp) # p-value 0.468
 
 # Randomize across optimal and near-optimal points
 
@@ -1025,10 +882,10 @@ df.filt3 <- df.filt %>%
   select(-distance)      
 
 q.r.90 <- lm(z.y ~ z.x, data = df.filt3)
-summary(q.r.90) #, Slope = -0.28361, p = 0.0831
+summary(q.r.90) #, Slope = -15.411, p = 0.00910
 
 q.r.all <- lm(z.y ~ z.x, data = df.filt)
-summary(q.r.all) #, Slope = 0.02083, p = 0.533
+summary(q.r.all) #, Slope = 0.08412, p = 0.786
 
 b_10  <- coef(q.r.90) 
 b_all <- coef(q.r.all)
@@ -1098,7 +955,7 @@ y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 df.filt <- df.filt %>% # Calculate Euclidean distance from min
   mutate(
     distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
-    dist.sc = distance/mean(distance)
+    dist.sc = scale(distance)
   ) %>%
   arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
 
@@ -1113,12 +970,9 @@ df.filt%>%
   } %>%
   print() # Display the outliers
 
-par.res.1 <- par_frt(df.filt, xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 3,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
 
 fit <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.1))), data = par.res.1) # Fit a scam to the PF
-
-res.1 <- fit_pareto_poly(par.res.1, xvar = z.x, yvar = z.y) # Evaluate polynomial models
-res.1$summary          
 
 x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
 
@@ -1140,9 +994,6 @@ pred.curve.2 <- data.frame( # predicted data frame
   z.x = x.vals,
   z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
 )
-
-res.2 <- fit_pareto_poly(par.res.2, xvar = z.x, yvar = z.y) # Evaluate polynomial models
-res.2$summary      
 
 P.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
@@ -1186,48 +1037,6 @@ P.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
 
 P.scam  # Display the plot
 
-P.poly <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
-  
-  geom_line(data = res.1$curve, aes(x, y), color = "black", size = 1.1, inherit.aes = FALSE) +
-  geom_line(data = res.2$curve, aes(x, y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
-  
-  labs(x = "Maximum exponential growth rate (µ max)",    
-       y = "Competitive ability (1/P*)", 
-       color = "Evolutionary History",
-       title = "C — Phosphorous") +  # labels
-  
-  scale_color_manual(
-    name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
-               "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phosphorous" = 16)  # filled circle
-  ) +
-  
-  ylim(0, 5.5) +
-  
-  theme_classic() +
-  theme(
-    legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
-    axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
-  )
-
-P.poly  # Display the plot
-
 ###### 75th quantile PF testing ######
 
 n.75 <- df.filt %>% # Now calculate the number of phosphorous points above the 75th % quantile Pareto front. 
@@ -1264,7 +1073,7 @@ for (i in 1:1000) { # Now we'll randomize and see how many phosphorous points sh
     nrow()
 }
 
-mean(null_counts>= n.75) # p = 0.909
+mean(null_counts>= n.75) # p = 0.41
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
@@ -1317,7 +1126,7 @@ for (i in 1:1000){
   
 }
 
-mean(null.df$a.emp.n >= a.emp) # p-value 0.444
+mean(null.df$a.emp.n >= a.emp) # p-value 0.446
 
 # Randomize across optimal and near-optimal points
 
@@ -1440,7 +1249,7 @@ y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
 df.filt <- df.filt %>% # Calculate Euclidean distance from min
   mutate(
     distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
-    dist.sc = distance/mean(distance)
+    dist.sc = scale(distance)
   ) %>%
   arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
 
@@ -1455,12 +1264,9 @@ df.filt%>%
   } %>%
   print() # Display the outliers
 
-par.res.1 <- par_frt(df.filt, xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
+par.res.1 <- par_frt(df.filt[df.filt$dist.sc < 3,], xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
 
 fit <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.1))), data = par.res.1) # Fit a scam to the PF
-
-res.1 <- fit_pareto_poly(par.res.1, xvar = z.x, yvar = z.y) # Evaluate polynomial models
-res.1$summary          
 
 x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
 
@@ -1482,9 +1288,6 @@ pred.curve.2 <- data.frame( # predicted data frame
   z.x = x.vals,
   z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
 )
-
-res.2 <- fit_pareto_poly(par.res.2, xvar = z.x, yvar = z.y) # Evaluate polynomial models
-res.2$summary      
 
 S.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
@@ -1526,46 +1329,6 @@ S.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
 
 S.scam  # Display the plot
 
-S.poly <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
-  
-  geom_line(data = res.1$curve, aes(x, y), color = "black", size = 1.1, inherit.aes = FALSE) +
-  geom_line(data = res.2$curve, aes(x, y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
-  
-  labs(x = "Maximum exponential growth rate (µ max)",    
-       y = "Salt tolerance (c)", 
-       color = "Evolutionary History",
-       title = "D — Salt") +  # labels
-  
-  scale_color_manual(
-    name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
-               "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
-  ) +
-  
-  theme_classic() +
-  theme(
-    legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
-    axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
-  )
-
-S.poly  # Display the plot
-
 ###### 75th quantile PF testing ######
 
 n.75 <- df.filt %>% # Now calculate the number of salt points above the 75th % quantile Pareto front. 
@@ -1602,7 +1365,7 @@ for (i in 1:1000) { # Now we'll randomize and see how many salt points should fa
     nrow()
 }
 
-mean(null_counts>= n.75) # p = 0.909
+mean(null_counts>= n.75) # p = 0
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
@@ -1655,7 +1418,7 @@ for (i in 1:1000){
   
 }
 
-mean(null.df$a.emp.n >= a.emp) # p-value 0.073
+mean(null.df$a.emp.n >= a.emp) # p-value 0.084
 
 # Randomize across optimal and near-optimal points
 
@@ -1806,19 +1569,11 @@ grad_toffs <- plot_grid(plotlist = all_plots,
 
 ggsave("figures/32_fig_3_intra-gradient_tradeoffs.jpeg", grad_toffs, width = 8, height = 12)
 
-all_plots_poly <- list(I.poly, N.poly, P.poly, S.poly, T.poly, list(legend_only))
-
-poly_toffs <- plot_grid(plotlist = all_plots_poly,
-                        ncol = 2,
-                        align = "hv")
-
-ggsave("figures/33_fig_3_intra-gradient_tradeoffs_poly.jpeg", poly_toffs, width = 8, height = 12)
-
 all_plots_qr <- list(I.qr, N.qr, P.qr, S.qr, T.qr, list(legend_only))
 
 qr_toffs <- plot_grid(plotlist = all_plots_qr,
                         ncol = 2,
                         align = "hv")
 
-ggsave("figures/34_fig_3_intra-gradient_tradeoffs_qr.jpeg", qr_toffs, width = 8, height = 12)
+ggsave("figures/33_fig_3_intra-gradient_tradeoffs_qr.jpeg", qr_toffs, width = 8, height = 12)
 
