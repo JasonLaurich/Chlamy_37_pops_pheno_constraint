@@ -156,3 +156,34 @@ lac_jag.3 <- jags(
 )
 
 save(lac_jag.3, file = "R2jags-objects/test_pop_33_lactin_huge.RData") # save the lactin2 model
+
+# 4 : using the larger settings, and using nls.mulstart to get my initial values.
+
+lac_jag.4 <- jags(
+  data = jag.data, 
+  inits = inits.lactin.meta, 
+  parameters.to.save = parameters.lactin2, 
+  model.file = "lactin_meta.txt",
+  n.thin = nt.2, 
+  n.chains = nc.2, 
+  n.burnin = nb.2, 
+  n.iter = ni.2, 
+  DIC = TRUE, 
+  working.directory = getwd()
+)
+
+save(lac_jag.4, file = "R2jags-objects/test_pop_33_lactin_huge.nlsmult.RData") # save the lactin2 model
+
+###### Load the objects and assign them unique names ######
+
+load("R2jags-objects/test_pop_33_lactin_normal.RData")
+df.lac.1 <- data.frame(lac_jag.1$BUGSoutput$summary)
+
+for (i in c(27, 33, 36)){      # Temperature R2jags (model fits)
+  load(paste0("R2jags-objects/pop_", i, "_lactin.RData"))
+  df.jags <- data.frame(lac_jag$BUGSoutput$summary)
+  df.jags.plot <- df.jags[-c(1:6),]
+  df.jags.plot$temp <- seq(0, 45, 0.05)
+  assign(paste0("df.T.jags", i), df.jags.plot)
+}
+
