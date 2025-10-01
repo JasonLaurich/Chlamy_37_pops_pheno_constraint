@@ -16,6 +16,7 @@ library(R2jags) # Fits Bayesian models
 library(mcmcplots) # Diagnostic plots for fits
 library(gridExtra)
 library(Deriv)
+library(investr)
 
 lactin2 <- function(temp, cf.a, cf.tmax, cf.delta_t, cf.b) { 
   exp(cf.a * temp) - exp(cf.a * cf.tmax - (cf.tmax - temp) / cf.delta_t) + cf.b
@@ -174,16 +175,202 @@ lac_jag.4 <- jags(
 
 save(lac_jag.4, file = "R2jags-objects/test_pop_33_lactin_huge.nlsmult.RData") # save the lactin2 model
 
+# 5 : rTPC model as a comparison
+
+lac_nls.5 <- nls_multstart(r.exp ~ lactin2_1995(temp = Temp, a, b, tmax, delta_t),
+                         data = df.med,
+                         iter = c(4, 4, 4, 4), 
+                         start_lower = start.vals.lac - 10,
+                         start_upper = start.vals.lac + 10,
+                         lower = get_lower_lims(df.med$Temp, df.med$r.exp, model_name = 'lactin2_1995'),
+                         upper = get_upper_lims(df.med$Temp, df.med$r.exp, model_name = 'lactin2_1995'),
+                         supp_errors = 'Y',
+                         convergence_count = FALSE
+)
+
+summary(lac_nls.5)
+
+nd <- data.frame(Temp = seq(0, 45, length.out = 901))  # Bootstrapping variation
+pf <- predFit(lac_nls.5, newdata = nd,
+              interval = "confidence", level = 0.95)
+
+df.p.5 <- cbind(nd, as.data.frame(pf))   # columns: fit, lwr, upr
+
 ###### Load the objects and assign them unique names ######
 
 load("R2jags-objects/test_pop_33_lactin_normal.RData")
 df.lac.1 <- data.frame(lac_jag.1$BUGSoutput$summary)
+df.p.1 <- df.lac.1[-c(1:6),]
+df.p.1$temp <- seq(0, 45, 0.05)
 
-for (i in c(27, 33, 36)){      # Temperature R2jags (model fits)
-  load(paste0("R2jags-objects/pop_", i, "_lactin.RData"))
-  df.jags <- data.frame(lac_jag$BUGSoutput$summary)
-  df.jags.plot <- df.jags[-c(1:6),]
-  df.jags.plot$temp <- seq(0, 45, 0.05)
-  assign(paste0("df.T.jags", i), df.jags.plot)
-}
+load("R2jags-objects/test_pop_33_lactin_small.nlsmult.RData")
+df.lac.2 <- data.frame(lac_jag.2$BUGSoutput$summary)
+df.p.2 <- df.lac.2[-c(1:6),]
+df.p.2$temp <- seq(0, 45, 0.05)
 
+load("R2jags-objects/test_pop_33_lactin_huge.RData")
+df.lac.3 <- data.frame(lac_jag.3$BUGSoutput$summary)
+df.p.3 <- df.lac.3[-c(1:6),]
+df.p.3$temp <- seq(0, 45, 0.05)
+
+load("R2jags-objects/test_pop_33_lactin_huge.nlsmult.RData")
+df.lac.4 <- data.frame(lac_jag.4$BUGSoutput$summary)
+df.p.4 <- df.lac.4[-c(1:6),]
+df.p.4$temp <- seq(0, 45, 0.05)
+
+# Let's start by looking at plots without error bars — just the models and raw data
+
+p.mod <- ggplot(df.med, aes(x = temperature, y = r.exp)) +
+  geom_jitter(size = 2.5,width = 0.5, height = 0) +
+  
+  geom_line(data = df.p.1, aes(x = temp, y= mean), colour = "red3", linewidth = 1.5) +
+  geom_line(data = df.p.2, aes(x = temp, y= mean), colour = "goldenrod2", linewidth = 1.5) +
+  geom_line(data = df.p.3, aes(x = temp, y= mean), colour = "forestgreen", linewidth = 1.5) +
+  geom_line(data = df.p.4, aes(x = temp, y= mean), colour = "dodgerblue3", linewidth = 1.5) +
+  geom_line(data = df.p.5, aes(x = Temp, y= .fitted), colour = "mediumorchid", linewidth = 1.5) +
+  
+  ylim(-1,4) +
+  
+  labs(x = "Temperature (°C)", 
+       y = "Exponential growth rate (µ)",
+       title = "All models together, no error") +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  # delete legend
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+  )
+
+p.mod # OK so it looks like the 3 models using the nls.multstart inits cluster together, and my inits are separate (but similar - those are the red and green ones)
+
+# OK now let's look at plots with error bars
+
+p.1 <- ggplot(df.med, aes(x = temperature, y = r.exp)) +
+  geom_jitter(size = 2.5,width = 0.5, height = 0) +
+  
+  geom_line(data = df.p.1, aes(x = temp, y= mean), colour = "red3", linewidth = 1.5) +
+  
+  geom_ribbon(data = df.p.1,
+              aes(x = temp, ymin = X2.5., ymax = X97.5.),
+              inherit.aes = FALSE, fill = "red3", alpha = 0.20) +
+  
+  ylim(-1,4) +
+  
+  labs(x = "Temperature (°C)", 
+       y = "Exponential growth rate (µ)",
+       title = "A - smaller model, fixed initial values") +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  # delete legend
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+  )
+
+p.1
+
+p.2 <- ggplot(df.med, aes(x = temperature, y = r.exp)) +
+  geom_jitter(size = 2.5,width = 0.5, height = 0) +
+  
+  geom_line(data = df.p.2, aes(x = temp, y= mean), colour = "goldenrod2", linewidth = 1.5) +
+  
+  geom_ribbon(data = df.p.2,
+              aes(x = temp, ymin = X2.5., ymax = X97.5.),
+              inherit.aes = FALSE, fill = "goldenrod2", alpha = 0.20) +
+  
+  ylim(-1,4) +
+  
+  labs(x = "Temperature (°C)", 
+       y = "Exponential growth rate (µ)",
+       title = "B - smaller model, flexible inits") +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  # delete legend
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+  )
+
+p.2
+
+p.3 <- ggplot(df.med, aes(x = temperature, y = r.exp)) +
+  geom_jitter(size = 2.5,width = 0.5, height = 0) +
+  
+  geom_line(data = df.p.3, aes(x = temp, y= mean), colour = "forestgreen", linewidth = 1.5) +
+  
+  geom_ribbon(data = df.p.3,
+              aes(x = temp, ymin = X2.5., ymax = X97.5.),
+              inherit.aes = FALSE, fill = "forestgreen", alpha = 0.20) +
+  
+  ylim(-1,4) +
+  
+  labs(x = "Temperature (°C)", 
+       y = "Exponential growth rate (µ)",
+       title = "C - huge model, fixed initial values") +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  # delete legend
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+  )
+
+p.3
+
+p.4 <- ggplot(df.med, aes(x = temperature, y = r.exp)) +
+  geom_jitter(size = 2.5,width = 0.5, height = 0) +
+  
+  geom_line(data = df.p.4, aes(x = temp, y= mean), colour = "dodgerblue3", linewidth = 1.5) +
+  
+  geom_ribbon(data = df.p.4,
+              aes(x = temp, ymin = X2.5., ymax = X97.5.),
+              inherit.aes = FALSE, fill = "dodgerblue3", alpha = 0.20) +
+  
+  ylim(-1,4) +
+  
+  labs(x = "Temperature (°C)", 
+       y = "Exponential growth rate (µ)",
+       title = "D - huge model, flexible inits") +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  # delete legend
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+  )
+
+p.4
+
+p.5 <- ggplot(df.med, aes(x = temperature, y = r.exp)) +
+  geom_jitter(size = 2.5,width = 0.5, height = 0) +
+  
+  geom_line(data = df.p.5, aes(x = Temp, y= fit), colour = "mediumorchid", linewidth = 1.5) +
+  
+  geom_ribbon(data = df.p.5,
+              aes(x = Temp, ymin = lwr, ymax = upr),
+              inherit.aes = FALSE, fill = "mediumorchid", alpha = 0.20) +
+  
+  ylim(-1,4) +
+  
+  labs(x = "Temperature (°C)", 
+       y = "Exponential growth rate (µ)",
+       title = "E - nls_mulstart model fit") +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  # delete legend
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+  )
+
+p.5
+
+p.mod.error <- plot_grid(p.mod, p.1, p.2, p.3, p.4, p.5, align = 'hv', nrow = 2)
+p.mod.error
