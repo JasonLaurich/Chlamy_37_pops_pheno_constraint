@@ -7,9 +7,8 @@
 # Load packages & specify functions -----------------------------------------------------------
 
 library(nls.multstart)
-library(tidyr)
+library(tidyverse)
 library(cowplot)
-library(ggplot2)
 library(rTPC)
 library(MuMIn)
 library(R2jags) # Fits Bayesian models
