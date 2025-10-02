@@ -519,4 +519,119 @@ p.auto.nit.3
 
 # Salt --------------------------------------------------------------------
 
+load("R2jags-objects/pop_33_salt_tolerance.RData") # The median population for thermal breadth
 
+df.s <- data.frame(monod_jag$BUGSoutput$summary)
+
+head(df.s)
+
+df.s.0 <- df.s[1:3,]
+
+df.s.0.pred <- seq(0, 10, length.out = 2001) %>%
+  tibble(salt = .) %>%
+  mutate(rate = pred_salt(
+    salt,
+    a = df.s.0$mean[1],
+    b = df.s.0$mean[2],
+    c = df.s.0$mean[3]
+  ))
+
+df.s.1 <- df.s.0%>% 
+  mutate(mean = replace(mean, 1L, mean[1] * 1.5))
+
+df.s.1.pred <- seq(0, 10, length.out = 2001) %>%
+  tibble(salt = .) %>%
+  mutate(rate = pred_salt(
+    salt,
+    a = df.s.1$mean[1],
+    b = df.s.1$mean[2],
+    c = df.s.1$mean[3]
+  ))
+
+df.s.2 <- df.s.0%>% 
+  mutate(mean = replace(mean, 1L, mean[1] * 2))
+
+df.s.2.pred <- seq(0, 10, length.out = 2001) %>%
+  tibble(salt = .) %>%
+  mutate(rate = pred_salt(
+    salt,
+    a = df.s.2$mean[1],
+    b = df.s.2$mean[2],
+    c = df.s.2$mean[3]
+  ))
+
+
+df.s.3 <- df.s.0%>% 
+  mutate(mean = replace(mean, 1L, mean[1] * 0.5))
+
+df.s.3.pred <- seq(0, 10, length.out = 2001) %>%
+  tibble(salt = .) %>%
+  mutate(rate = pred_salt(
+    salt,
+    a = df.s.3$mean[1],
+    b = df.s.3$mean[2],
+    c = df.s.3$mean[3]
+  ))
+
+p.mod.s <- ggplot(df.med.s, aes(x = salt.lvl, y = r.exp)) +
+  geom_jitter(size = 2.5,width = 0.5, height = 0) +
+  
+  geom_line(data = df.s.0.pred, aes(x = salt, y= rate), colour = "black", linewidth = 1.5) +
+  geom_line(data = df.s.1.pred, aes(x = salt, y= rate), colour = "goldenrod2", linewidth = 1.5) +
+  geom_line(data = df.s.2.pred, aes(x = salt, y= rate), colour = "red3", linewidth = 1.5) +
+  geom_line(data = df.s.3.pred, aes(x = salt, y= rate), colour = "blue3", linewidth = 1.5) +
+  
+  labs(x = "Salt concentration", 
+       y = "Exponential growth rate (µ)",
+       title = "Comparison of models with varying µmax") +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  # delete legend
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+  )
+
+p.mod.s
+
+dfs.s <- list(df.s.0.pred, df.s.1.pred, df.s.2.pred, df.s.3.pred)
+
+summ.df.s <- data.frame(  # We'll create a dataframe to store the data as we fit models.
+  r.max.raw = numeric(),      # Maximum growth rate (Jags raw)
+  c = numeric(),              # c
+  stringsAsFactors = FALSE    # Avoid factor conversion
+)
+
+for (i in 1:4){
+  
+  df.i <- dfs.s[[i]]
+  
+  summ.df.s <- rbind(summ.df.s, data.frame(                          
+    r.max.raw = max(df.i$rate),                                    # Maximum growth rate
+    c = df.i$salt[max(which(df.i$rate > max(df.i$rate)/2))]        # c
+  ))
+  
+} 
+
+lm.auto.salt <- lm(c ~ r.max.raw, data = summ.df.s)
+summary(lm.auto.salt) # adj. R^2 0.3689, p 0.2389
+
+p.auto.salt <- ggplot(summ.df.s, aes(x = r.max.raw, y = c)) +
+  geom_point(size= 3) +
+  geom_smooth(method = 'lm') +
+  
+  theme_classic() +
+  
+  labs(x = "Maximum growth rate (µ)", 
+       y = "c (salt tolerance)",
+       title = "C - effects of growth modification on salt tolerance") +
+  
+  theme(
+    legend.position = "none",  # delete legend
+    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+  )
+
+p.auto.salt
