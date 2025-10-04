@@ -36,6 +36,9 @@ df$Anc.plt <- factor(df$Anc,
                                 "Population 5", 
                                 "Mixed population"))
 
+df.p <- read.csv("data-processed/48b_Monod_phosphorous_estimates.csv") # Models fit to replicates, not populations
+head(df.p)
+
 # Temperature -------------------------------------------------------------
 
 df$evol.bin <- ifelse(df$Evol == "none", "ancestral", "evolved") # For binning into evolutionary treatments for plotting purposes.
@@ -287,6 +290,44 @@ P.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
   )
 
 P.qr # Display the plot
+
+### Let's run the data fit to replicates
+
+df.p <- df.p %>% 
+  filter(1/R.mth <= 10)
+
+q50.ind  <- rq(1/R.mth ~ r.max, tau = 0.50, data = df.p)
+q75.ind  <- rq(1/R.mth ~ r.max, tau = 0.75, data = df.p)
+q90.ind  <- rq(1/R.mth ~ r.max, tau = 0.90, data = df.p)
+
+
+summary(q50.ind, se = "boot", R = 1000)
+summary(q75.ind, se = "boot", R = 1000)
+summary(q90.ind, se = "boot", R = 1000)
+
+P.qr.ind <- ggplot(df.p, aes(x = r.max, y = 1/R.mth)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 1.5, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q90.ind)[1], slope = coef(q90.ind)[2], lwd = 1.1) +
+  geom_abline(intercept = coef(q75.ind)[1], slope = coef(q75.ind)[2], lwd = 1.1, linetype = "dashed") +
+  geom_abline(intercept = coef(q50.ind)[1], slope = coef(q50.ind)[2], lwd = 1.1, linetype = "dotted") +
+  
+  ylim(0,4.5) +
+  
+  labs(x = "Maximum exponential growth rate (µ max)",    
+       y = "Competitive ability (1/P*)", 
+       color = "Evolutionary History",
+       title = "C — Phosphorous") +  # labels
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+P.qr.ind # Display the plot
 
 # Salt --------------------------------------------------------------------
 
