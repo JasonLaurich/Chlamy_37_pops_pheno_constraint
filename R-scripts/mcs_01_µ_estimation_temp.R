@@ -41,6 +41,7 @@ df<-subset(df,df$temperature!=20) # 20C only includes 'single' measurements, whi
 df$logRFU <- log(df$RFU + 0.001)
 
 levels(df$pop.fac) # The cc1629 group is not relevant to the rest of the experimental data we are looking at, but I will keep it for now. 
+# FIXME maybe clarify why you are keeping ^?
 
 df.rep <- subset(df, df$plate_type == "repeat") # We're going to work only with repeat data (this is most of the well_plates) which I'll use as replicates. 
 df.rep$well.ID<-as.factor(df.rep$well_plate)
@@ -65,6 +66,7 @@ df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == 4)
 head(df.it.wl)
 
 if (df.it.wl$RFU[2] <  df.it.wl$RFU[1]){ # Get rid of 1st data points where there is a drop off after the first observation
+  # FIXME would this be due to initial densities being above carrying capacity? or random pop dynamics before experiment starts?
   df.it.wl <- df.it.wl[-1,]
   df.it.wl$N0 <- df.it.wl$RFU[1]
 }
@@ -78,8 +80,8 @@ sl.direct <- c() # Store the directly calculated slope
 
 for (z in t.series){ # This first loop will calculate the slopes for my first explorative population.
   
-  df.it.wl.sl <- df.it.wl[df.it.wl$days <= z, ] # Subset the data to exclude time points above our window
-  
+  df.it.wl.sl <- df.it.wl[df.it.wl$days <= z, ] # Subset the data to exclude time points above our window 
+
   ln_slope <- lm(logRFU~days, data = df.it.wl.sl)
   
   ln.slopes <- c(ln.slopes, summary(ln_slope)$coefficients[2,1])
@@ -127,6 +129,7 @@ ggplot(df.it.wl.th, aes(x = days, y = RFU)) + # Plot observed and fitted data
        y = "RFU")
 
 # OK this is looking okay. Let's keep going
+# FIXME I personally like the play by play but you might want it to be more formal? Flagging in case that's more your intension.
 
 # But first, for the 40 C data, we will have to use a different approach. 
 
@@ -247,6 +250,22 @@ for (i in 1:length(mat.rep.34)){ # Looping through all of the populations
   
 }
 
+#-----------------
+# FIXME WHen running the above loop I got this error:
+# Error in `nls_multstart()`:
+#   ✖ There must be as many parameter starting bounds as there are parameters.
+# 
+# • Parameters to estimate: "N0" and "r"
+# • Parameters supplied as input data: "days"
+# • Number of parameters in start_lower: 1
+# • Number of parameters in start_upper: 1
+# 
+# ! If there are parameters listed as input data which should be estimated,
+# this can be caused by variables in the environment/data with the same name as model parameters.
+
+# and the summary table output 'df.r.exp' is empty. Not sure why or if this happens on your end.
+#-------------------
+
 # Now we are going to work with the 40C data
 
 df.rep.40 <- subset(df.rep, df.rep$temperature==40)
@@ -283,6 +302,9 @@ for (i in 1:length(mat.rep.40)){
   }
   
 }
+
+# FIXME noting that by contrast, this above loop ran perfectly for me.
+# FIXME though it did take a minute, so I might suggest adding a 'percent ran' line or something like that, just to ease my anxiety about if it will be 5 minutes or 5 hours lol.
 
 # OK I've got my summary table! Let's save it then move on to plotting this out for a few randomly selected populations.
 write.csv(df.r.exp, "data-processed/01_µ_estimates_temp.csv")
@@ -450,6 +472,27 @@ for (i in ran){ # random populations
     }
   }
 }
+
+#-------------------
+# FIXME the above loop gave me the same error as before:
+# Error in `nls_multstart()`:
+#   ✖ There must be as many parameter starting bounds as there are parameters.
+# 
+# • Parameters to estimate: "N0" and "r"
+# • Parameters supplied as input data: "days"
+# • Number of parameters in start_lower: 1
+# • Number of parameters in start_upper: 1
+# 
+# ! If there are parameters listed as input data which should be estimated,
+# this can be caused by variables in the environment/data with the same name as model parameters.
+# 
+# ---
+#   Backtrace:
+#   ▆
+# 1. └─nls.multstart::nls_multstart(...)
+
+# Resulting in an empty plot.list object
+#-----------------------
 
 plot_grid <- arrangeGrob(grobs=plot.list, ncol = 6, nrow = 6)
 
