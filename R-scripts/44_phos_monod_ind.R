@@ -73,7 +73,6 @@ fit.df <- data.frame(       # Save model fit estimates for examination
   stringsAsFactors = FALSE            
 )
 
-
 inits.monod.final <- function() { # In case I want to play with these in the future
   list(
     r_max = runif(1, 0.1, 5), # Initial guess for r_max
