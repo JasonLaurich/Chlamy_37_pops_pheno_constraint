@@ -150,6 +150,7 @@ for (i in 1:length(mat.exp)){ # Looping through all of the populations
   }
   
 }
+# FIXME suggest adding percent done line. Got 19 warnings: "In summary.lm(ln_slope) : essentially perfect fit: summary may be unreliable", I suggest making a note in the script if these are ok.
 
 write.csv(df.r.exp, "data-processed/09a_µ_estimates_salt.csv") # let's save the file.
 
@@ -252,7 +253,7 @@ for (i in ran){ # Looping through all of the populations
       plot.list[[paste0("Pop", df.it.wl.th$pop.fac[1], " Salt ", t)]] <- p
       
     }
-  }
+  } # FIXME I set i to "9" and t to 1 for testing, and from the above loop got the warning "Warning message:In N0 * exp(r * time) : longer object length is not a multiple of shorter object length", which I want to make sure is not an issue. Otherwise it generate the plot just fine.
 }
 
 plot_grid <- arrangeGrob(grobs=plot.list, ncol = 10, nrow = 5)
@@ -319,6 +320,7 @@ monod_jag <- jags( # Run the salt logistic growth curve function.
   DIC = TRUE,
   working.directory = getwd()
 )
+# FIXME initialization worked, can't test below due to mcmcplot deprication.
 
 mcmcplot(monod_jag) # Evaluate model performance
 monod_jag$BUGSoutput$summary[c(1:4,2006),] # Get estimates
