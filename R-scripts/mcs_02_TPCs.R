@@ -22,6 +22,7 @@ library(rTPC)
 library(MuMIn)
 library(R2jags) # Fits Bayesian models
 library(mcmcplots) # Diagnostic plots for fits
+# FIXME mcmcplots is not available for my version of R (4.5.1). You might need to you renv if you are using an older version so that other people can still use this package. Or there might be a soln here I don't know about. This is what AI told me (grain of salt): "The mcmcplots package, while previously available, has been archived from CRAN as of July 10, 2025, due to uncorrected issues. Therefore, it is not recommended for use with recent versions of R. For plotting and visualizing MCMC output in recent R versions, several alternative packages offer robust and actively maintained functionalities:  MCMCvis: This package provides functions like MCMCplot for caterpillar plots, MCMCtrace for trace and density plots, and MCMCsummary for summarizing MCMC output. It supports various MCMC object types, including Stanfit, CmdStanMCMC, Stanreg, brmsfit, and mcmc.list objects."
 library(gridExtra)
 library(Deriv)
 
@@ -319,6 +320,7 @@ mitch_plot <- ggplot(preds.mitch) + geom_point(aes(Temp, r.exp), df.i) +
 nls.plot.list[['Mitchell-Angilletta']] <- mitch_plot # store the plot
 
 # I don't love how these are working. Let's try a few more
+# FIXME ^ maybe alter your annotation here to make it clear, I think they all have looked super good execpt this last one haha.
 
 # Analytis-Kontomodimas
 
@@ -751,6 +753,7 @@ temp <- df.i$Temp
 jag.data <- list(trait = trait, N.obs = N.obs, temp = temp, Temp.xs = Temp.xs, N.Temp.xs = N.Temp.xs)
 
 # Now we know the Briere function should work, because it's included as a txt file in the tutorial
+# FIXME I missed what the Briere function was, as I thought that you were going about with  Deutsch, Rezende, and Lactin2?
 
 # inits function
 inits.bri<-function(){list(
@@ -765,7 +768,10 @@ parameters.bri <- c("cf.q", "cf.T0", "cf.Tm","cf.sigma", "r.pred") # estimate th
 
 # jags MCMC, Briere function
 bri_jag <- jags(data=jag.data, inits=inits.bri, parameters.to.save=parameters.bri, model.file="briere.txt",
-                n.thin=nt, n.chains=nc, n.burnin=nb, n.iter=ni, DIC=T, working.directory=getwd())
+                n.thin=nt, n.chains=nc, n.burnin=nb, n.iter=ni, DIC=T)
+
+# FIXME to get the jags() function to run, I had to load in library(jagUI) which is not in your libraries above, and I had to rm the argument 'working.directory=getwd()'. Maybe a version issue? Probably related to not having access to mcmcplot :/
+# FIXME the below 4 lines must use mcmcplot, as the summary commands are returning NULL for me as well. I stopped here in this script as from a skim these functions are used throughout, and the issue for me is pervasive.
 
 bri_jag$BUGSoutput$summary[1:5,] # Get estimates
 bri_jag$BUGSoutput$summary[c(1:5, 110:120),]
