@@ -27,6 +27,7 @@ library(mcmcplots)
 
 df <- read.csv("data-processed/06_light_rfus_time.csv")
 head(df) # RFU is density, days is time, light_level is a factor (1 to 10). Percentage is also a measurement of light I think?
+# FIXME maybe alter annotation ^
 str(df)
 
 df<-df[,-c(1,2,4,5,8,10,12,13,15,16,17)]
@@ -36,6 +37,7 @@ head(df)
 df$pop.fac <- as.factor(df$population)
 df$pop.num <- as.numeric(df$pop.fac)
 df$percentage <- as.numeric(df$percentage) # From an examination of the csv, the light level 2 corresponds to "0.5-0.7"
+# FIXME 'NA's introduced by coercion' flagging that why NA's are set to 0.6 needs to be explained here :)
 df$percentage[is.na(df$percentage)] <- 0.6 # For now, let's set this to 0.6, but I need to talk with Joey about this. 
 df$light_level <- factor(df$light_level, levels = sort(unique(df$light_level)), ordered = TRUE) # Keep the numerical sorting.
 df$well_plate <- as.factor(df$well_plate)
@@ -154,6 +156,8 @@ for (i in 1:length(mat.exp)){ # Looping through all of the populations
   }
   
 }
+# FIXME same idea as in other script, maybe add 'percentage ran' line so I know if it should take a minute or an hour
+# FIXME i got many warnings 'In summary.lm(ln_slope) : essentially perfect fit: summary may be unreliable'. If this is ok, maybe make a note that these warnings are fine 
 
 write.csv(df.r.exp, "data-processed/6a_µ_estimates_light.csv") # let's save the file.
 
@@ -257,6 +261,8 @@ for (i in ran){ # Looping through all of the populations
   }
 }
 
+# FIXME same note regarding warmings here
+
 plot_grid <- arrangeGrob(grobs=plot.list, ncol = 10, nrow = 5)
 
 grid.draw(plot_grid)   
@@ -320,7 +326,9 @@ monod_jag <- jags( # Run the light Monod function.
   DIC = TRUE,
   working.directory = getwd()
 )
+# FIXME Note the model initialized for me but I bailed out of running the whole thing. Just to say no problem here. 
 
+# FIXME there will still be the same issues I was getting in script 2 regarding the deprication of mcmcplots for these lines:
 mcmcplot(monod_jag) # Evaluate model performance
 monod_jag$BUGSoutput$summary[c(1:3,2005),] # Get estimates
 
@@ -418,7 +426,7 @@ for (i in 1:length(mat)){ # for each population
     R.mth = 0.56*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.56)   # Minimum resource requirement for positive growth (math)                                                          
   ))
   
-}
+} # FIXME worked but didn't let it run :)
 
 write.csv(summary.df, "data-processed/06b_Monod_light_estimates.csv") # Save summary table
 
@@ -430,6 +438,7 @@ i<-1 # for now, starting with one population.
 # for (i in 1:37){
 load(paste0("R2jags-objects/pop_", i, "_light_monod.RData"))
 #}
+# FIXME reminder to include a zipped version of these objects when you publish your data.
 
 monod_jag$BUGSoutput$summary[c(1:3,2005),] # Get estimates# Look at the summary data
 
