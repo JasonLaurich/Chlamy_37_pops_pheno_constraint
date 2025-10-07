@@ -44,7 +44,7 @@ df.r.33 <- df.r[df.r$population.number == 33,] # Unique entries at P 20 only.
 df.r <- df.r %>%
   filter(!(population.number %in% c(13, 33) & phos.lvl == 20.0))
 
-  length(unique(df.r$unique.id)) # 148, should be 1480/10 = 148! Fixed for now. 
+length(unique(df.r$unique.id)) # 148, should be 1480/10 = 148! Fixed for now. 
 
 mat <- split(df.r, df.r$unique.id)  # Matrixify the data!
 
