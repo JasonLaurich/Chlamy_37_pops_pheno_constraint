@@ -35,6 +35,7 @@ df$nitrate.conc <- as.numeric(df$nitrate_concentration)
 df$nitrate_level <- factor(df$nitrate_level, levels = sort(unique(df$nitrate_level)), ordered = TRUE) # Keep the numerical sorting.
 df$well_plate <- as.factor(df$well_plate)
 
+# FIXME probably good to add reason (can't be zero) in this script too
 df$logRFU <- log(df$RFU + 0.001)
 
 levels(df$pop.fac) # Removing the COMBO treatment, which is simply a control. 
@@ -65,6 +66,7 @@ df.r.exp <- data.frame( # Initializing a dataframe to store the results for each
 nitrate <- as.vector(as.numeric(as.character(unique(df.exp$nitrate.conc)))) # for looping through nitrate levels
 ord.nit<- sort(nitrate)
 
+# FIXME I suggest adding the reason for the loop here (fitting exponential) but to keep it short could refer to script where you did this with salt or temperature.
 for (i in 1:length(mat.exp)){ # Looping through all of the populations
   
   for (t in ord.nit){ # and all of the nitrate levels
@@ -149,7 +151,7 @@ for (i in 1:length(mat.exp)){ # Looping through all of the populations
     
   }
   
-}
+} # FIXME suggest adding percent done, also recieved the warning messages '1: In summary.lm(ln_slope) :essentially perfect fit: summary may be unreliable', would be good to flag if these are benign
 
 write.csv(df.r.exp, "data-processed/07a_µ_estimates_nitrogen.csv") # let's save the file.
 
@@ -253,7 +255,7 @@ for (i in ran){ # Looping through all of the populations
       
     }
   }
-}
+} # FIXME warnings on this loop: " In N0 * exp(r * days) :longer object length is not a multiple of shorter object length"
 
 plot_grid <- arrangeGrob(grobs=plot.list, ncol = 10, nrow = 5)
 
@@ -317,7 +319,7 @@ monod_jag <- jags( # Run the nitrogen Monod function.
   DIC = TRUE,
   working.directory = getwd()
 )
-
+# FIXME model started for me. Won't be able to run below due to mcmcplot:
 mcmcplot(monod_jag) # Evaluate model performance
 monod_jag$BUGSoutput$summary[c(1:3,2005),] # Get estimates
 
@@ -415,7 +417,7 @@ for (i in 2:length(mat)){ # for each population. Fixed an error for population 1
     R.mth = 0.56*monod_jag$BUGSoutput$summary[1,1]/(monod_jag$BUGSoutput$summary[3,1] - 0.56)   # Minimum resource requirement for positive growth (from math)                                                   
   ))
   
-}
+} # FIXME same issue with package above
 
 write.csv(summary.df, "data-processed/07b_Monod_nitrogen_estimates.csv") # Save summary table
 
