@@ -149,7 +149,7 @@ for (i in 1:length(mat.exp)){ # Looping through all of the populations
     
   }
   
-}
+} # FIXME add percent done? And only two warnings of this message: 'In summary.lm(ln_slope) :essentially perfect fit: summary may be unreliable'
 
 write.csv(df.r.exp, "data-processed/08a_µ_estimates_phosphorous.csv") # let's save the file.
 
@@ -253,7 +253,7 @@ for (i in ran){ # Looping through all of the populations
       
     }
   }
-}
+} # FIXME maybe make note if these warnings are an issue or not: 'In N0 * exp(r * days) :longer object length is not a multiple of shorter object length'
 
 plot_grid <- arrangeGrob(grobs=plot.list, ncol = 10, nrow = 5)
 
@@ -317,7 +317,7 @@ monod_jag <- jags( # Run the phosphorous Monod function.
   DIC = TRUE,
   working.directory = getwd()
 )
-
+# FIXME model working, flagging that I can't test below:
 mcmcplot(monod_jag) # Evaluate model performance
 monod_jag$BUGSoutput$summary[c(1:3,2005),] # Get estimates
 
