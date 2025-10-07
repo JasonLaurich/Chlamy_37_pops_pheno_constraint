@@ -180,6 +180,9 @@ for (i in 1:length(mat)){ # for each replicated sample, can adjust if code crash
   
   load(paste0("R2jags-objects/rep_", i, "_phosphorous_monod.RData"))
   
+  df.i <- subset(mat[[i]])
+  df.i <- droplevels(df.i)
+  
   df.jags <- data.frame(monod_jag$BUGSoutput$summary)[-c(1:3,2005),]   # generate the sequence of r.pred values
   df.jags$phos <- seq(0, 50, 0.025)
   
