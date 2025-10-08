@@ -104,6 +104,9 @@ df.filt%>%
   } %>%
   print() # Display the outliers
 
+df.filt <- df.filt %>% # Trim dramatic outliers as errors
+  filter(dist.sc < 3) 
+
 par.res.1 <- par_frt(df.filt, xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
 
 fit <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.1))), data = par.res.1) # Fit a scam to the PF
@@ -158,7 +161,7 @@ T.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "ancestral" = 5)  # diamond
   ) +
   
-  #ylim(24.5,29.5) +
+  ylim(14,23) +
   
   theme_classic() +
   theme(
@@ -270,9 +273,9 @@ q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt)
 q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt) 
 q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt)  
 
-summary(q50, se = "boot", R = 1000) # -0.38886, p 0.00005
-summary(q75, se = "boot", R = 1000) # -0.49592, p 0
-summary(q90, se = "boot", R = 1000) # -0.64116, p 0.00006
+summary(q50, se = "boot", R = 1000) # -0.45793, p 0.00002
+summary(q75, se = "boot", R = 1000) # -0.51188, p 0.00001
+summary(q90, se = "boot", R = 1000) # -0.62737, p 0.00002
 
 T.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
@@ -303,6 +306,8 @@ T.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     values = c("evolved" = 1,  # open circle
                "ancestral" = 5)  # diamond
   ) +
+  
+  ylim(14,23) +
   
   theme_classic() +
   theme(
@@ -355,6 +360,9 @@ df.filt%>%
     )
   } %>%
   print() # Display the outliers
+
+df.filt <- df.filt %>% # Trim dramatic outliers as errors
+  filter(dist.sc < 3) 
 
 par.res.1 <- par_frt(df.filt, xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
 
@@ -411,7 +419,7 @@ I.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "light" = 16)  # filled circle
   ) +
   
-  ylim(0.025, 0.6) +
+  ylim(0.025, 0.4) +
   
   theme_classic() +
   theme(
@@ -474,7 +482,7 @@ for (i in 1:1000){
   
 }
 
-mean(null.df$a.emp.n >= a.emp) # p-value 0.727
+mean(null.df$a.emp.n >= a.emp) # p-value 0.740
 
 # Randomize across optimal and near-optimal points
 
@@ -515,7 +523,7 @@ for (i in 1:1000){
   
 }
 
-mean(null.df2$a.emp.n >= a.emp) # p-value 0.288
+mean(null.df2$a.emp.n >= a.emp) # p-value 0.003
 
 ###### Quantile regression ######
 
@@ -524,8 +532,8 @@ q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt)
 q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt)  
 
 summary(q50, se = "boot", R = 1000) # 0.08277, p 0
-summary(q75, se = "boot", R = 1000) # 0.10484, p 0
-summary(q90, se = "boot", R = 1000) # 0.16664, p 0
+summary(q75, se = "boot", R = 1000) # 0.09881, p 0
+summary(q90, se = "boot", R = 1000) # 0.15598, p 0
 
 I.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
@@ -558,7 +566,7 @@ I.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
                "light" = 16)  # filled circle
   ) +
   
-  ylim(0.025, 0.6) +
+  ylim(0.025, 0.4) +
   
   theme_classic() +
   theme(
@@ -606,7 +614,7 @@ for (i in 1:1000) { # Now we'll randomize and see how many light points should f
     nrow()
 }
 
-mean(null_counts>= n.75) # p = 0.787
+mean(null_counts>= n.75) # p = 0.739
 
 # Nitrogen ----------------------------------------------------------------
 
@@ -701,7 +709,7 @@ N.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "nitrogen" = 16)  # filled circle
   ) +
   
-  ylim(0,1.25) +
+  ylim(0, 1.1) +
   
   theme_classic() +
   theme(
@@ -848,7 +856,7 @@ N.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
                "nitrogen" = 16)  # filled circle
   ) +
   
-  ylim(0,1.25) +
+  ylim(0, 1.1) +
   
   theme_classic() +
   theme(
@@ -936,6 +944,9 @@ df.filt%>%
   } %>%
   print() # Display the outliers
 
+df.filt <- df.filt %>% 
+  filter(dist.sc < 3)
+
 par.res.1 <- par_frt(df.filt, xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
 
 fit <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.1))), data = par.res.1) # Fit a scam to the PF
@@ -991,7 +1002,7 @@ P.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "phosphorous" = 16)  # filled circle
   ) +
   
-  ylim(0, 11) +
+  ylim(0, 4.5) +
   
   theme_classic() +
   theme(
@@ -1054,7 +1065,7 @@ for (i in 1:1000){
   
 }
 
-mean(null.df$a.emp.n >= a.emp) # p-value 0.001
+mean(null.df$a.emp.n >= a.emp) # p-value 0.002
 
 # Randomize across optimal and near-optimal points
 
@@ -1103,9 +1114,9 @@ q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt)
 q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt) 
 q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt)  
 
-summary(q50, se = "boot", R = 1000) # -0.66345, p 0.03740
-summary(q75, se = "boot", R = 1000) # -1.51105, p 0.00153
-summary(q90, se = "boot", R = 1000) # -1.84480, p 0.12155
+summary(q50, se = "boot", R = 1000) # -0.66344, p 0.03017
+summary(q75, se = "boot", R = 1000) # -1.53861, p 0.00009
+summary(q90, se = "boot", R = 1000) # -2.26968, p 0.01299
 
 P.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
@@ -1138,7 +1149,7 @@ P.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
                "phosphorous" = 16)  # filled circle
   ) +
   
-  ylim(0, 11) +
+  ylim(0, 4.5) +
   
   theme_classic() +
   theme(
@@ -1226,6 +1237,9 @@ df.filt%>%
   } %>%
   print() # Display the outliers
 
+df.filt <- df.filt %>% 
+  filter(dist.sc <3)
+
 par.res.1 <- par_frt(df.filt, xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
 
 fit <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.1))), data = par.res.1) # Fit a scam to the PF
@@ -1280,6 +1294,8 @@ S.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "ancestral" = 5, # diamond
                "salt" = 16)  # filled circle
   ) +
+  
+  ylim(1.5,7.5) +
   
   theme_classic() +
   theme(
@@ -1425,6 +1441,8 @@ S.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
                "ancestral" = 5, # diamond
                "salt" = 16)  # filled circle
   ) +
+  
+  ylim(1.5,7.5) +
   
   theme_classic() +
   theme(
