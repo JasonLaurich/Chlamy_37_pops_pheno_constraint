@@ -30,7 +30,7 @@ par_frt <- function(df, xvar, yvar) { # Simple Pareto front function / convex hu
   pareto_points <- df[1, ]  # Start with the first point
   
   for (i in 2:nrow(df)) {
-    if (df[i, yvar] > tail(pareto_points[[yvar]], 1)) {  # Ensure increasing y values
+    if (df[i, yvar] >= tail(pareto_points[[yvar]], 1)) {  # Ensure increasing y values
       pareto_points <- rbind(pareto_points, df[i,])
     }
   }
