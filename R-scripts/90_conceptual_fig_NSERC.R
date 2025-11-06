@@ -900,12 +900,7 @@ p.B <- ggplot(df.B, aes(x = x, y = y)) +
        y = "Trait 2 (e.g. salt tolerance)", 
        title = "D") +  # labels
   
-  theme(
-    legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
-    axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
-  ) +
+  theme(legend.position = "none") +
   
   annotate("text", x = 12.5, y = 12.5, label = "Pareto front", size = 5.1, fontface = "bold", colour = "goldenrod2", angle = -45) +
   
@@ -913,6 +908,7 @@ p.B <- ggplot(df.B, aes(x = x, y = y)) +
 
 p.B
 
+ggsave("figures/67_PF.pdf", p.B, width = 6.5, height = 6.5)
 
 
 
