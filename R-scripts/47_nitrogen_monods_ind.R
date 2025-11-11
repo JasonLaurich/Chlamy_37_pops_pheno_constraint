@@ -15,7 +15,7 @@ library(mcmcplots)
 
 # Load the data -----------------------------------------------------------
 
-df.r <- read.csv("data-processed/07a_µ_estimates_nitrogen.csv")
+df.r <- read.csv("data-processed/201_µ_estimates_nitrogen_new.csv")
 
 head(df.r)
 str(df.r)
@@ -98,7 +98,7 @@ nb.fit <- 30000    # burn in periods for each chain
 nt.fit <- 300      # thinning interval : (330,000 - 30,000) / 300 = 1000 posterior estimates / chain
 nc.fit <- 6        # number of chains, total of 6,000 estimates for each model.
 
-for (i in 108:length(mat)){ # for each replicated sample, can adjust if code crashes
+for (i in 1:length(mat)){ # for each replicated sample, can adjust if code crashes
   
   df.i <- subset(mat[[i]])
   df.i <- droplevels(df.i)
@@ -122,7 +122,7 @@ for (i in 108:length(mat)){ # for each replicated sample, can adjust if code cra
     working.directory = getwd()
   )
   
-  save(monod_jag, file = paste0("R2jags-objects/rep_", i, "_nit_monod.RData")) # save the nitrogen limitation monod function
+  save(monod_jag, file = paste0("R2jags-objects/rep_", i, "_nit_monod_new.RData")) # save the nitrogen limitation monod function
   
   df.jags <- data.frame(monod_jag$BUGSoutput$summary)[-c(1:3,2005),]   # generate the sequence of r.pred values
   df.jags$nit <- seq(0, 1000, 0.5)
@@ -157,5 +157,5 @@ for (i in 108:length(mat)){ # for each replicated sample, can adjust if code cra
   
 }
 
-write.csv(summary.df, "data-processed/51b_Monod_nit_estimates.csv") # Save summary table
-write.csv(fit.df, "data-processed/51c_Monod_nit_fits.csv") # Save model fit summary table
+write.csv(summary.df, "data-processed/301a_Monod_nit_estimates.csv") # Save summary table
+write.csv(fit.df, "data-processed/301b_Monod_nit_fits.csv") # Save model fit summary table

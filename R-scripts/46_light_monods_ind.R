@@ -15,7 +15,7 @@ library(mcmcplots)
 
 # Load the data -----------------------------------------------------------
 
-df.r <- read.csv("data-processed/06a_µ_estimates_light.csv")
+df.r <- read.csv("data-processed/202_µ_estimates_light_new.csv")
 
 head(df.r)
 str(df.r)
@@ -100,7 +100,7 @@ for (i in 1:length(mat)){ # for each replicated sample, can adjust if code crash
   
   trait <- df.i$r.exp     # format the data for jags
   N.obs <- length(trait)
-  light <- df.i$light.numeric
+  light <- df.i$percentage
   
   jag.data <- list(trait = trait, N.obs = N.obs, S = light, S.pred = S.pred, N.S.pred = N.S.pred)
   
@@ -117,7 +117,7 @@ for (i in 1:length(mat)){ # for each replicated sample, can adjust if code crash
     working.directory = getwd()
   )
   
-  save(monod_jag, file = paste0("R2jags-objects/rep_", i, "_light_monod.RData")) # save the light limitation monod function
+  save(monod_jag, file = paste0("R2jags-objects/rep_", i, "_light_monod_new.RData")) # save the light limitation monod function
   
   df.jags <- data.frame(monod_jag$BUGSoutput$summary)[-c(1:3,2005),]   # generate the sequence of r.pred values
   df.jags$light <- seq(0, 100, 0.05)
@@ -152,5 +152,5 @@ for (i in 1:length(mat)){ # for each replicated sample, can adjust if code crash
   
 }
 
-write.csv(summary.df, "data-processed/50b_Monod_light_estimates.csv") # Save summary table
-write.csv(fit.df, "data-processed/50c_Monod_light_fits.csv") # Save model fit summary table
+write.csv(summary.df, "data-processed/300a_Monod_light_estimates_new.csv") # Save summary table
+write.csv(fit.df, "data-processed/300b_Monod_light_fits_new.csv") # Save model fit summary table

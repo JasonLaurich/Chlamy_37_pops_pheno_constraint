@@ -784,6 +784,137 @@ reg.l27
 l27 <- lm(estimate ~ r.exp, data = df.growth.l27)
 summary(l27)
 
+# Now let's finish with salt -------------------------------------------
+
+df <- read.csv("data-processed/09_salt_rfus_time.csv")
+head(df) # RFU is density, time is time, treatment is the salt level s0 to S9.
+str(df)
+
+df<-df[,-c(2:4,8:9)]
+
+df$pop.fac <- as.factor(df$population)
+df$pop.num <- as.numeric(df$pop.fac)
+df$salt_level <- factor(df$treatment, levels = sort(unique(df$treatment)), ordered = TRUE) # Keep the numerical sorting.
+df$salt <- as.numeric(df$salt_level) # These are just numbers for now reflecting the ordered factor.
+df$salt <- df$salt - 1 # Convert this to proper levels (0-9)
+df$days <- df$time
+
+df$logRFU <- log(df$RFU + 0.001)
+
+levels(df$pop.fac)
+
+df.exp <- df
+df.exp$well.ID<-as.factor(df.exp$unique_id)
+
+N0.df <- df.exp %>% # We want to create an additional column that holds N0 data - we will pull this from the RFU column for the first time point for each well.ID
+  group_by(well.ID) %>%
+  summarize(N0 = RFU[which.min(time)]) %>%
+  ungroup()
+
+df.exp <- df.exp %>% # Recombine this with our dataframe
+  left_join(N0.df, by = "well.ID") # Viewed it, looks good.
+
+mat.exp <- split(df.exp, df.exp$pop.num)  # Each element is a data frame for one population in df.exp
+
+# OK let's fit µ ----------------------------------------------------------
+
+df.r.exp <- data.frame( # Initializing a dataframe to store the results for each well, pop, and nitrogen level
+  population = character(),
+  population.number = numeric(),
+  nitrate.lvl = numeric(),
+  well.ID = character(),
+  r.exp = numeric()
+)
+
+salt <- as.vector(as.numeric(as.character(unique(df.exp$salt)))) # for looping through nitrate levels
+ord.salt<- sort(salt)
+
+for (i in 1:length(mat.exp)){ # Looping through all of the populations
+  
+  for (t in ord.salt){ # and all of the salt levels
+    
+    df.it <- subset(mat.exp[[i]], salt==t)
+    df.it <- droplevels(df.it) # Drop unused levels to isolate well replicate IDs at given t
+    
+    for (w in 1:length(levels(df.it$well.ID))){
+      
+      df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == w)
+      
+      df.it.wl <- df.it.wl[order(df.it.wl$days), ] # For whatever reason, the nitrogen data is not ordered properly by date in some cases.
+      
+      t.series <- unique(df.it.wl$days) # Re-initialize this internally - we will only save summary data for each unique pop x N x well combo
+      t.series <- t.series[-1] # Trim off the first entry to make tracking easier.
+      
+      ln.slopes <- c() # Re-initialize this too!
+      
+      for (z in t.series){
+        
+        df.it.wl.sl <- df.it.wl[df.it.wl$days <= z, ] # Subset the data to exclude time points above our window
+        
+        ln_slope <- lm(logRFU~days, data = df.it.wl.sl)
+        
+        ln.slopes <- c(ln.slopes, summary(ln_slope)$coefficients[2,1])
+        
+      } # So now we have our slopes for each well.ID x Pop x P level
+      
+      s <- which.max(ln.slopes[2:length(ln.slopes)])  # We need at least 3 data points
+      
+      df.it.wl.th <- df.it.wl[df.it.wl$days <= t.series[s + 1], ] # Get the thresholded data according to our sliding window approach
+      # The + 1 here just corrects for the labelling mismatch (e.g. in the above line, s will return 1 when the 2nd slope is the highest)
+      
+      r_exp <- nls_multstart(RFU ~ N0 * exp(r*days),  # Exponential growth model (N0 is in our dataframe)
+                             data = df.it.wl.th,
+                             start_lower = c(r = -4.5), 
+                             start_upper = c(r = 4.5),   
+                             iter = 500,
+                             supp_errors = 'Y',
+                             control = nls.control(maxiter = 200))
+      
+      if (is.null(r_exp)){
+        
+        df.r.exp <- rbind(df.r.exp, data.frame(
+          population = df.it.wl.th$pop.fac[1],          
+          population.number = df.it.wl$pop.num[1],      
+          salt = df.it.wl$salt[1],        
+          well.ID = df.it.wl$well.ID[1],                
+          r.exp = NA        
+        ))
+        
+      }else{
+        # Add data to our summary table
+        df.r.exp <- rbind(df.r.exp, data.frame(
+          population = df.it.wl$pop.fac[1],          # Population as factor
+          population.number = df.it.wl$pop.num[1],   # Numeric population number
+          salt = df.it.wl$salt[1],                   # Salt level
+          well.ID = df.it.wl$well.ID[1],             # Well ID (assuming one well ID per subset)
+          r.exp = summary(r_exp)$parameters[1,1]     # The calculated r.exp value
+        ))
+        
+      }
+      
+    }
+    
+  }
+  
+}
+
+write.csv(df.r.exp, "data-processed/203_µ_estimates_salt_new.csv") # let's save the file.
+# write.csv(df.r.exp, "data-processed/201_µ_estimates_light_new_3-7.csv") # let's save the file.
+
+df.growth.s27 <- df.r.exp %>% 
+  left_join(df.joey.s %>% 
+              select(population, well.ID, percentage, estimate),
+            by = c("population", "well.ID", "percentage"))
+
+reg.l27 <- ggplot(df.growth.l27, aes(x= r.exp, y =estimate, colour = percentage)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1)
+
+reg.l27
+
+l27 <- lm(estimate ~ r.exp, data = df.growth.l27)
+summary(l27)
+
 # OK let's recreate Fig 2 with the new Monod data -------------------------
 
 df.p <- read.csv("data-processed/210_Monod_phosphorous_pops_estimates.csv") # Summary file, with the confidence intervals
@@ -896,6 +1027,65 @@ p.N.new <- ggplot(df.n, aes(x = Evol, y = d.N.star, colour = Evol)) +
 
 p.N.new
 
+# Now, light
+
+df.l <- read.csv("data-processed/214_Monod_light_pops_estimates.csv") # Summary file
+str(df.l)
+head(df.l)
+
+df.l <- df.l %>% 
+  left_join(df.hpd %>% 
+              select(Anc, Evol, Pop.fac), by = "Pop.fac")
+
+df.l <- df.l %>%
+  mutate(Evol = if_else(Evol == "none", "A", Evol)) %>% 
+  mutate(Evol = factor(Evol, levels = c("A","C","L","N","P","B","S","BS")))
+
+df.l <- df.l %>%
+  mutate(
+    L.star = R.mth,                                      # L* for each population
+    L.anc = L.star[ match(Anc, Pop.fac) ],               # Extract L* of the ancestor
+    d.L.star = L.star - L.anc                            # Calculate difference for the mean.
+  ) %>%
+  select(Pop.fac, Anc, Evol, L.star, d.L.star, r.max)
+
+# Panel C - change in I* ~ evol condition. 
+
+p.L.new <- ggplot(df.l, aes(x = Evol, y = d.L.star, colour = Evol)) +
+  
+  geom_hline(yintercept = 0, linetype = "solid", colour = "grey30") +
+  
+  geom_point(position = position_jitter(width = 0.15, height = 0),
+             size = 2.5) +
+  
+  scale_colour_manual(values = c(
+    A  = "black",
+    C  = "forestgreen",
+    L  = "gold",
+    N  = "magenta3",
+    P  = "firebrick",
+    B  = "darkorange",
+    S  = "deepskyblue1",
+    BS = "blue"
+  ), guide = "none") +   # drop colour legend if you don’t want it
+  
+  labs(
+    x = NULL,
+    y = expression("change in " * P^"*" ~ "(µM P)")  # or I^"*", N^"*", etc.
+  ) +
+  
+  theme_classic() +
+  theme(
+    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.text.x  = element_text(size = 10),
+    axis.text.y  = element_text(size = 10)
+  )
+
+p.L.new
+
+fig.new <- plot_grid(p.P.new, p.N.new, p.I.new, nrow = 2, align='hv', rel_widths = c(1,1))
+fig.new
+
 # OK let's try figure 4 again ---------------------------------------------
 
 p.P2.new <- ggplot(df.sum, aes(x = P.star, y = P.µ.max)) +
@@ -930,3 +1120,118 @@ p.I2
 
 fig2 <- plot_grid(p.P2, p.N2, p.I2, nrow = 1, align='hv', rel_widths = c(1,1))
 fig2
+
+# Second last: temperature -------------------------------------------
+
+df <- read.csv("data-processed/00_temp_rfus_time.csv")
+head(df) #RFU is density, days is time, temperature is temperature
+str(df)
+
+df<-df[,-c(1,2,4,5,6,8,13)]
+
+df$pop.fac <- as.factor(df$population)
+df$pop.num <- as.numeric(df$pop.fac)
+df<-subset(df,df$temperature!=20) # 20C only includes 'single' measurements, which we will be excluding.
+
+# df$days <- df$days + 0.001 # Can't have 0s
+df$logRFU <- log(df$RFU + 0.001)
+
+levels(df$pop.fac) # The cc1629 group is not relevant to the rest of the experimental data we are looking at, but I will keep it for now. 
+
+df.rep <- subset(df, df$plate_type == "repeat") # We're going to work only with repeat data (this is most of the well_plates) which I'll use as replicates. 
+df.rep$well.ID<-as.factor(df.rep$well_plate)
+
+N0.df <- df.rep %>% # We want to create an additional column that holds N0 data - we will pull this from the RFU column for the first time point for each well.ID
+  group_by(well.ID) %>%
+  summarize(N0 = RFU[which.min(days)]) %>%
+  ungroup()
+
+df.rep <- df.rep %>% # Recombine this with our dataframe
+  left_join(N0.df, by = "well.ID") # Viewed it, looks good.
+
+mat.rep <- split(df.rep, df.rep$pop.num)  # Each element is a data frame for one population in df.rep contained within a matrix
+
+# OK let's fit µ ----------------------------------------------------------
+
+df.r.exp <- data.frame( # Initializing a dataframe to store the results for each well, pop, and temp level
+  population = character(),
+  population.number = numeric(),
+  nitrate.lvl = numeric(),
+  well.ID = character(),
+  r.exp = numeric()
+)
+
+tmp <- as.vector(as.numeric(as.character(unique(df.rep$temperature)))) # for looping through temperatures
+ord.tmp<- sort(tmp)
+
+for (i in 1:length(mat.rep)){ # Looping through all of the populations
+  
+  for (t in ord.tmp){ # and all of the temp levels
+    
+    df.it <- subset(mat.rep[[i]], temperature==t)
+    df.it <- droplevels(df.it) # Drop unused levels to isolate well replicate IDs at given t
+    
+    for (w in 1:length(levels(df.it$well.ID))){
+      
+      df.it.wl <- subset(df.it, as.numeric(df.it$well.ID) == w)
+      
+      df.it.wl <- df.it.wl[order(df.it.wl$days), ] # For whatever reason, the nitrogen data is not ordered properly by date in some cases.
+      
+      t.series <- unique(df.it.wl$days) # Re-initialize this internally - we will only save summary data for each unique pop x N x well combo
+      t.series <- t.series[-1] # Trim off the first entry to make tracking easier.
+      
+      ln.slopes <- c() # Re-initialize this too!
+      
+      for (z in t.series){
+        
+        df.it.wl.sl <- df.it.wl[df.it.wl$days <= z, ] # Subset the data to exclude time points above our window
+        
+        ln_slope <- lm(logRFU~days, data = df.it.wl.sl)
+        
+        ln.slopes <- c(ln.slopes, summary(ln_slope)$coefficients[2,1])
+        
+      } # So now we have our slopes for each well.ID x Pop x P level
+      
+      s <- which.max(ln.slopes[2:length(ln.slopes)])  # We need at least 3 data points
+      
+      df.it.wl.th <- df.it.wl[df.it.wl$days <= t.series[s + 1], ] # Get the thresholded data according to our sliding window approach
+      # The + 1 here just corrects for the labelling mismatch (e.g. in the above line, s will return 1 when the 2nd slope is the highest)
+      
+      r_exp <- nls_multstart(RFU ~ N0 * exp(r*days),  # Exponential growth model (N0 is in our dataframe)
+                             data = df.it.wl.th,
+                             start_lower = c(r = -4.5), 
+                             start_upper = c(r = 4.5),   
+                             iter = 500,
+                             supp_errors = 'Y',
+                             control = nls.control(maxiter = 200))
+      
+      if (is.null(r_exp)){
+        
+        df.r.exp <- rbind(df.r.exp, data.frame(
+          population = df.it.wl.th$pop.fac[1],          
+          population.number = df.it.wl$pop.num[1],      
+          temperature = df.it.wl$temperature[1],        
+          well.ID = df.it.wl$well.ID[1],                
+          r.exp = NA        
+        ))
+        
+      }else{
+        # Add data to our summary table
+        df.r.exp <- rbind(df.r.exp, data.frame(
+          population = df.it.wl$pop.fac[1],          # Population as factor
+          population.number = df.it.wl$pop.num[1],   # Numeric population number
+          temperature = df.it.wl$temperature[1],     # Temp level
+          well.ID = df.it.wl$well.ID[1],             # Well ID (assuming one well ID per subset)
+          r.exp = summary(r_exp)$parameters[1,1]     # The calculated r.exp value
+        ))
+        
+      }
+      
+    }
+    
+  }
+  
+}
+
+write.csv(df.r.exp, "data-processed/204_µ_estimates_temp_new.csv") # let's save the file.
+# write.csv(df.r.exp, "data-processed/201_µ_estimates_light_new_3-7.csv") # let's save the file.

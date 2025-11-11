@@ -1,7 +1,7 @@
 # Jason R Laurich
 # November 5th, 2025
 
-# Rerunning populations TPCs with the new growth data
+# Rerunning populations Monods (phosphorous) with the new growth data
 
 # Will then compare my results to Joey's 2020 paper. 
 
