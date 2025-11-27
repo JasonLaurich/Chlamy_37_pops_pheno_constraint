@@ -14,7 +14,7 @@ library(vegan)  # For PCA
 
 # Temperature
 
-df.t <- read.csv("data-processed/49b_TPC_estimates.csv") # This file has the TPC data for each replicate.
+df.t <- read.csv("data-processed/303a_TPC_estimates_final.csv") # This file has the TPC data for each replicate.
 head(df.t)
 
 df.t <- df.t[,c(2:4,8,10)] # We'll work with the analytically determined parameters (Deriv package)
@@ -32,7 +32,7 @@ df.t <-df.t %>% # Need to convert 38 to 37 (from the inclusion of cc1629 in this
 
 # Light
 
-df.l <- read.csv("data-processed/50b_Monod_light_estimates.csv") # This file has the light Monod curve data for each replicate.
+df.l <- read.csv("data-processed/300a_Monod_light_estimates_new.csv") # This file has the light Monod curve data for each replicate.
 head(df.l)
 
 df.l <- df.l %>% 
@@ -44,7 +44,7 @@ head(df.l)
 
 # Nitrogen
 
-df.n <- read.csv("data-processed/51b_Monod_nit_estimates.csv") # This file has the TPC data for each replicate.
+df.n <- read.csv("data-processed/301a_Monod_nit_estimates_new.csv") # This file has the TPC data for each replicate.
 head(df.n)
 
 df.n <- df.n %>% 
@@ -55,7 +55,7 @@ head(df.n)
 
 # Phosphorous
 
-df.p <- read.csv("data-processed/48b_Monod_phosphorous_estimates.csv") # This file has the TPC data for each replicate.
+df.p <- read.csv("data-processed/302a_Monod_phosphorous_estimates_new.csv") # This file has the TPC data for each replicate.
 head(df.p)
 
 df.p <- df.p %>% 
@@ -98,7 +98,7 @@ head(df.summ)
 
 # Salt
 
-df.s <- read.csv("data-processed/09b_salt_tolerance_estimates.csv") # This file has the TPC data for each replicate.
+df.s <- read.csv("data-processed/216_salt_pops_estimates_final.csv") # This file has the TPC data for each replicate.
 head(df.s)
 
 # Stoichiometry data
@@ -222,4 +222,4 @@ df.summ <- df.summ %>%
                         Anc = anc,
                         Evol = evol), by = c("Pop.fac" = "Pop.fac"))
 
-write.csv(df.summ, "data-processed/53_summary_table.csv") # Save summary table!
+write.csv(df.summ, "data-processed/304_summary_table_final.csv") # Save summary table!

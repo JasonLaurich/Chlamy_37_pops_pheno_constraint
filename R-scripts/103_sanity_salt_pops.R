@@ -31,9 +31,9 @@ mat <- split(df.r, df.r$pop.num)  # Matrixify the data!
 
 # Fit tolerance curves ----------------------------------------------------
 
-inits.salt <- function() { # In case I want to tweak these
+inits.salt <- function() { # Smaller a (prior 0.5-> 2)
   list(
-    a = runif(1, 0.1, 5),  # Initial guess for a
+    a = runif(1, 0.7, 1.8),  # Smaller window for a
     b = runif(1, 0.1, 5),  # Initial guess for b
     c = runif(1, 0.1, max(df.i$salt)),  # Initial guess for c
     sigma = runif(1, 0.1, 2)  # Initial guess for error
@@ -73,7 +73,7 @@ fit.df <- data.frame(       # Save model fit estimates for examination
   stringsAsFactors = FALSE            
 )
 
-for (i in 17:length(mat)){ # for each population.
+for (i in 1:length(mat)){ # for each population.
   
   df.i <- subset(mat[[i]])
   df.i <- droplevels(df.i)
@@ -88,7 +88,7 @@ for (i in 17:length(mat)){ # for each population.
     data = jag.data,
     inits = inits.salt,
     parameters.to.save = parameters.salt,
-    model.file = "salt.tol.txt",
+    model.file = "salt.tol.smalla.smallc.txt",
     n.thin = nt.fit,
     n.chains = nc.fit,
     n.burnin = nb.fit,
@@ -97,7 +97,7 @@ for (i in 17:length(mat)){ # for each population.
     working.directory = getwd()
   )
   
-  save(monod_jag, file = paste0("R2jags-objects/pop_", i, "_salt_new.RData")) # save the S tolerance function
+  save(monod_jag, file = paste0("R2jags-objects/pop_", i, "_salt_final.RData")) # save the S tolerance function
   
   df.jags <- data.frame(monod_jag$BUGSoutput$summary)[-c(1:4,2006),]   # generate the sequence of r.pred values
   df.jags$salt <- seq(0, 10, 0.005)
@@ -129,5 +129,5 @@ for (i in 17:length(mat)){ # for each population.
   
 }
 
-write.csv(summary.df, "data-processed/216_salt_pops_estimates_new.csv") # Save summary table
-write.csv(fit.df, "data-processed/217_salt_pops_fits_new.csv") # Save model fit summary table
+write.csv(summary.df, "data-processed/216_salt_pops_estimates_final.csv") # Save summary table
+write.csv(fit.df, "data-processed/217_salt_pops_fits_final.csv") # Save model fit summary table

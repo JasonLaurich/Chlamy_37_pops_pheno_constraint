@@ -1,6 +1,6 @@
 model {
   # Priors
-  a ~ dunif(0, 4)        # Upper asymptote (max growth rate) Formerly 0,10
+  a ~ dunif(0.5, 2.5)        # Upper asymptote (max growth rate) Formerly 0,10
   b ~ dunif(0, 10)       # Decline rate
   c ~ dunif(0, 20)       # Half-max salt concentration Formerly 0,10
   sigma ~ dunif(0, 5)    # Standard deviation
