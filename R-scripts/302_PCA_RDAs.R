@@ -108,8 +108,8 @@ loadings$metric <- factor(loadings$variable,
                                      "P~content",
                                      "Biovolume"))
 
-adjust.x <- c(0.6, 0.35, 0.15, 0.75, 0.15, 0.9, 0.33, 0.35, 0.5, 1.1, 1.10, 1.10, 0.35, 0.8, 0.8, 0.37) # adjustments for each label
-adjust.y <- c(-0.1, 0.3, 0.32, 0.15, 0.32, 0.1, 0.26, 0.00, 0.0, 0.05, 0.00, 0.15, 0.25, 0.10, 0.10, -0.1)
+adjust.x <- c(0.6, 0.35, 0.15, 0.80, 0.15, 0.9, 0.35, 0.35, 0.5, 1.2, 1.15, 1.15, 0.50, 0.85, 0.85, 0.40) # adjustments for each label
+adjust.y <- c(-0.1, 0.3, 0.32, 0.15, 0.32, 0.1, 0.28, 0.00, 0.0, 0.1, 0.00, 0.15, 0.25, 0.10, 0.10, -0.1)
 
 loadings$var.x <- loadings$PC1 + adjust.x # Need to manually space out labels here. 
 loadings$var.y <- loadings$PC2 + adjust.y
@@ -157,7 +157,7 @@ explanatory_vars <- model.matrix(~ evol.pca)[, -1]  # Remove intercept
 
 rda_result_evol <- rda(response_vars ~ ., data = as.data.frame(explanatory_vars)) # run the RDA
 summary(rda_result_evol)
-sum(summary(rda_result_evol)$cont$importance[2, 1:rda_result_evol$CCA$rank]) # with biovolume, P and N, evolutionary environment explains 27.65% of the variation
+sum(summary(rda_result_evol)$cont$importance[2, 1:rda_result_evol$CCA$rank]) # with biovolume, P and N, evolutionary environment explains 23.17% of the variation
 
 rda_var_explained <- summary(rda_result_evol)$cont$importance["Proportion Explained", 1:2] * 100
 
@@ -328,7 +328,7 @@ explanatory_vars <- model.matrix(~ anc.pca)[, -1]  # Remove intercept
 
 rda_result_anc <- rda(response_vars ~ ., data = as.data.frame(explanatory_vars)) # run the RDA
 summary(rda_result_anc)
-sum(summary(rda_result_anc)$cont$importance[2, 1:rda_result_anc$CCA$rank]) # with biovolume, P and N, ancestry explains 10.91208% of the variation
+sum(summary(rda_result_anc)$cont$importance[2, 1:rda_result_anc$CCA$rank]) # with biovolume, P and N, ancestry explains 12.53283% of the variation
 
 rda_sites_anc <- as.data.frame(scores(rda_result_anc, display = "sites")) # Extract RDA site scores (sample coordinates)
 
@@ -359,10 +359,10 @@ rda_species_anc$metric <- factor(rownames(rda_species_anc),
                                             " ", 
                                             "N~content",
                                             "P~content",
-                                            " "))
+                                            "Biovolume"))
 
-adjust.x.rda2 <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -0.5, 0) # adjustments for each label
-adjust.y.rda2 <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0.3, 0)
+adjust.x.rda2 <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -0.5, 8.5) # adjustments for each label
+adjust.y.rda2 <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0.3, 2)
 
 rda_species_anc$var.x <- rda_species_anc$RDA1 + adjust.x.rda2 # Need to manually space out labels here. 
 rda_species_anc$var.y <- rda_species_anc$RDA2 + adjust.y.rda2
@@ -400,7 +400,7 @@ rda_anc_plot_arrows <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color = Anc
 rda_anc_plot_arrows # Again, N and P are skewing everything
 
 df.pca3 <- df.pca2 %>% 
-  select(-mean.N.µg.l, -mean.P.µg.l)
+  select(-mean.N.µg.l, -mean.P.µg.l, -bio.vol)
 
 df.pca3
 
@@ -410,7 +410,7 @@ explanatory_vars <- model.matrix(~ anc.pca)[, -1]  # Remove intercept
 
 rda_result_anc <- rda(response_vars ~ ., data = as.data.frame(explanatory_vars)) # run the RDA
 summary(rda_result_anc)
-sum(summary(rda_result_anc)$cont$importance[2, 1:rda_result_anc$CCA$rank]) # without P and N, ancestry explains 0.1768262% of the variation
+sum(summary(rda_result_anc)$cont$importance[2, 1:rda_result_anc$CCA$rank]) # without biovolume, P and N, ancestry explains 2.24% of the variation
 
 rda_sites_anc <- as.data.frame(scores(rda_result_anc, display = "sites")) # Extract RDA site scores (sample coordinates)
 
@@ -424,8 +424,8 @@ rda_constraints_anc$label <- rownames(rda_constraints_anc) # Assign readable lab
 
 rda_species_anc$metric <- factor(rownames(rda_species_anc), 
                                  levels = c("T.br", "T.µ.max","I.comp", "I.µ.max", "N.comp", "N.µ.max",
-                                            "P.comp", "P.µ.max", "S.µ.max", "S.c", "chl.a", "chl.b", "luthein", "bio.vol"),
-                                 labels = c(" ", 
+                                            "P.comp", "P.µ.max", "S.µ.max", "S.c", "chl.a", "chl.b", "luthein"),
+                                 labels = c("Thermal~breadth", 
                                             " ", 
                                             " ", 
                                             " ", 
@@ -437,11 +437,10 @@ rda_species_anc$metric <- factor(rownames(rda_species_anc),
                                             "Salt~tolerance",
                                             "Chlorophyll~italic(a)",
                                             "Chlorophyll~italic(b)",
-                                            " ",
-                                            "Biovolume"))
+                                            " "))
 
-adjust.x.rda2 <- c(0, 0, 0, 0, 0, 0, 16, 0, 0, 5, 56, 58, 0, -29) # adjustments for each label
-adjust.y.rda2 <- c(0, 0, 0, 0, 0, 0, 14, 0, 0, -7, -23, -12, 0, 5)
+adjust.x.rda2 <- c(8.5, 0, 0, 0, 0, 0, 0, 0, 0, -0.5, 15, 15, 0) # adjustments for each label
+adjust.y.rda2 <- c(-1.5, 0, 0, 0, 0, 0, 9, 0, 0, -0.5, 2.5, 0, 0)
 
 rda_species_anc$var.x <- rda_species_anc$RDA1 + adjust.x.rda2 # Need to manually space out labels here. 
 rda_species_anc$var.y <- rda_species_anc$RDA2 + adjust.y.rda2
@@ -462,7 +461,7 @@ rda_anc_plot_arrows_no_NP <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color
                "Mixed ancestry" = "magenta3")
   ) +  # Use custom colors
   # Add arrows for variable contributions
-  geom_segment(data = rda_species_anc, aes(x = 0, y = 0, xend = RDA1*80, yend = RDA2*80),
+  geom_segment(data = rda_species_anc, aes(x = 0, y = 0, xend = RDA1*10, yend = RDA2*10),
                arrow = arrow(length = unit(0.2, "cm")), color = "black", size= 1.1) +
   scale_x_continuous(breaks = seq(-60, 100, by = 10)) +
   scale_y_continuous(breaks = seq(-100, 60, by = 10)) +

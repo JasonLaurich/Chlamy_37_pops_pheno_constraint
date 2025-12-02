@@ -215,7 +215,7 @@ df.summ <- df.summ %>%
   
   left_join(df.size %>%                                                               # Add in size
               transmute(Pop.fac = population,
-                        bio.vol = mean_biovolume_n), by = c("Pop.fac" = "Pop.fac")) %>% 
+                        bio.vol = bio.vol.mean), by = c("Pop.fac" = "Pop.fac")) %>% 
   
   left_join(df.hist.agg %>%                                                               # Add in history data
               transmute(Pop.fac = Pop.fac,

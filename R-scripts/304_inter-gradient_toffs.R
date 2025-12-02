@@ -8772,7 +8772,2117 @@ PcT.qr2 # Display the plot
 
 # Pigmentation comparisons ------------------------------------------------
 
+# Pigmentation v light ----------------------------------------------------
 
+df$evol.bin <- ifelse(df$Evol == "none", 'ancestral', 
+                      ifelse(df$Evol == "L", 'light', 'other')) # For binning into evolutionary treatments for plotting purposes.
+
+df.filt <- df %>% 
+  mutate(
+    z.y = I.comp,
+    z.x = pig.PC
+  ) # Specify the x and y variables and their 95% CIs
+
+plot(z.y~z.x, data=df.filt)
+
+df.filt <- df.filt %>% # Scale for euclidean distance calculation and point exclusion determination
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  )  
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
+
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+par.res.1 <- par_frt(df.filt, xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
+
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.1))), data = par.res.1) # Fit a scam to the adjusted PF
+
+x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.1 <- data.frame( # Get the corresponding y values
+  z.x = x.vals,
+  z.y = predict(fit, newdata = data.frame(z.x = x.vals))
+)
+
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.2 <- par_frt(df.filt2, xvar = "z.x", yvar = "z.y") # Pareto frontier on this data                 
+
+fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.2))), data = par.res.2) # Model fit
+
+pred.curve.2 <- data.frame( # predicted data frame
+  z.x = x.vals,
+  z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
+)
+
+PigL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Competitive ability (1/I*)", 
+       color = "Evolutionary History",
+       title = "C — Light ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "light" = 16)  # filled circle
+  ) +
+  
+  ylim(0,0.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigL.scam  # Display the plot
+
+###### Polygonal empty space analysis (Li et al 2019) ######
+
+x.max <- max(df.filt$z.x) # Extract the max values for x and y.
+y.max <- max(df.filt$z.y)
+
+par.res.1 <- par.res.1 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+  arrange(z.x)
+
+poly <- par.res.1[, c("z.x", "z.y")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+  add_row(z.x = x.max, z.y = y.max)
+
+a.emp <- polyarea(poly$z.x, poly$z.y) # Calculate the area enclosed by these vertices
+
+# Randomize across the whole dataset
+
+null.df <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt$z.y, replace = FALSE),     # Separately reassign y
+    )
+  
+  par.res.n <- par_frt(shuffled.df, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n <- max(shuffled.df$z.x.sim) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df$z.y.sim)
+  
+  poly.n <- par.res.n[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n, z.y.sim = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x.sim, poly.n$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df <- rbind(null.df, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df$a.emp.n >= a.emp) # p-value 0.048
+
+# Randomize across optimal and near-optimal points
+
+null.df2 <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df2 <- par.res.1 %>%
+    
+    mutate(
+      z.x.sim = sample(par.res.1$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(par.res.1$z.y, replace = FALSE)      # Separately reassign y
+      
+    )
+  
+  par.res.n2 <- par_frt(shuffled.df2, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n2 <- par.res.n2 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n2 <- max(shuffled.df2$z.x.sim) # Extract the max values for x and y
+  y.max.n2 <- max(shuffled.df2$z.y.sim)
+  
+  poly.n2 <- par.res.n2[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n2, z.y.sim = y.max.n2)
+  
+  a.emp.n2 <- polyarea(poly.n2$z.x.sim, poly.n2$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df2 <- rbind(null.df2, data.frame(  # Save the data
+    a.emp.n = a.emp.n2,                    # Area above the curve 
+    n.PF = nrow(par.res.n2)                # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df2$a.emp.n >= a.emp) # p-value 0.007
+
+###### Quantile regression ######
+
+q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt) 
+q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt) 
+q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt)  
+
+summary(q50, se = "boot", R = 1000) # 0.00033, p 0.82770
+summary(q75, se = "boot", R = 1000) # -0.00145, p 0.54524
+summary(q90, se = "boot", R = 1000) # -0.01357, p 0.03795
+
+PigL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Competitive ability (1/I*)", 
+       color = "Evolutionary History",
+       title = "C — Light ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "light" = 16)  # filled circle
+  ) +
+  
+  ylim(0,0.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigL.qr # Display the plot
+
+###### 75th quantile PF testing ######
+
+n.75 <- df.filt %>% # Now calculate the number of light points above the 75th % quantile Pareto front. 
+  filter(evol.bin == "light") %>%
+  rowwise() %>%
+  mutate(
+    nearest_idx = find_nearest_index(z.x, pred.curve.2$z.x),
+    z.y.pred = pred.curve.2$z.y[nearest_idx]
+  ) %>%
+  ungroup() %>%
+  filter(z.y > z.y.pred) %>%
+  nrow()
+
+null_counts <- numeric(1000)
+
+for (i in 1:1000) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
+  shuffled.df <- df.filt %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt$z.y, replace = FALSE)     # Seperately reassign y
+    )
+  
+  null_counts[i] <- shuffled.df %>%
+    filter(evol.bin == "light") %>%
+    rowwise() %>%
+    mutate(
+      nearest_idx = which.min(abs(pred.curve.2$z.x - z.x.sim)),
+      z.y.pred = pred.curve.2$z.y[nearest_idx]
+    ) %>%
+    ungroup() %>%
+    filter(z.y.sim > z.y.pred) %>%
+    nrow()
+}
+
+mean(null_counts>= n.75) # p = 00
+
+###### top 33% of data ######
+
+df.filt3 <- df.filt %>%
+  arrange(distance) %>%                           # smallest → largest
+  slice((floor(0.6667 * n()) + 1):n()) %>%          # keep *second* half
+  select(-distance)
+
+PigL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Competitive ability (1/I*)", 
+       color = "Evolutionary History",
+       title = "C — Light ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "light" = 16)  # filled circle
+  ) +
+  
+  ylim(0,0.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigL.scam2  # Display the plot
+
+null.df3 <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt3 %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt3$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt3$z.y, replace = FALSE),     # Separately reassign y
+    )
+  
+  par.res.n <- par_frt(shuffled.df, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n <- max(shuffled.df$z.x.sim) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df$z.y.sim)
+  
+  poly.n <- par.res.n[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n, z.y.sim = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x.sim, poly.n$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df3 <- rbind(null.df3, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df3$a.emp.n >= a.emp) # p-value 0.003
+
+q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt3) 
+q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt3) 
+q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt3)  
+
+summary(q50, se = "boot", R = 1000) # -0.02962, p 0.00012
+summary(q75, se = "boot", R = 1000) # -0.03148, p 0.00009
+summary(q90, se = "boot", R = 1000) # -0.03596, p 0.00621
+
+PigL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Competitive ability (1/I*)", 
+       color = "Evolutionary History",
+       title = "C — Light ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "light" = 16)  # filled circle
+  ) +
+  
+  ylim(0,0.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigL.qr2 # Display the plot
+
+# Pigmentation v nitrogen ----------------------------------------------------
+
+df$evol.bin <- ifelse(df$Evol == "none", 'ancestral', 
+                      ifelse(df$Evol == "N", 'nit', 'other')) # For binning into evolutionary treatments for plotting purposes.
+
+df.filt <- df %>% 
+  mutate(
+    z.y = N.comp,
+    z.x = pig.PC
+  ) # Specify the x and y variables and their 95% CIs
+
+plot(z.y~z.x, data=df.filt)
+
+df.filt <- df.filt %>% # Scale for euclidean distance calculation and point exclusion determination
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  )  
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
+
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+par.res.1 <- par_frt(df.filt, xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
+
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.1))), data = par.res.1) # Fit a scam to the adjusted PF
+
+x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.1 <- data.frame( # Get the corresponding y values
+  z.x = x.vals,
+  z.y = predict(fit, newdata = data.frame(z.x = x.vals))
+)
+
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.2 <- par_frt(df.filt2, xvar = "z.x", yvar = "z.y") # Pareto frontier on this data                 
+
+fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.2))), data = par.res.2) # Model fit
+
+pred.curve.2 <- data.frame( # predicted data frame
+  z.x = x.vals,
+  z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
+)
+
+PigN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Competitive ability (1/N*)", 
+       color = "Evolutionary History",
+       title = "G — Nitrogen ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "nit" = 16)  # filled circle
+  ) +
+  
+  ylim(0,1.25) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigN.scam  # Display the plot
+
+###### Polygonal empty space analysis (Li et al 2019) ######
+
+x.max <- max(df.filt$z.x) # Extract the max values for x and y.
+y.max <- max(df.filt$z.y)
+
+par.res.1 <- par.res.1 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+  arrange(z.x)
+
+poly <- par.res.1[, c("z.x", "z.y")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+  add_row(z.x = x.max, z.y = y.max)
+
+a.emp <- polyarea(poly$z.x, poly$z.y) # Calculate the area enclosed by these vertices
+
+# Randomize across the whole dataset
+
+null.df <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt$z.y, replace = FALSE),     # Separately reassign y
+    )
+  
+  par.res.n <- par_frt(shuffled.df, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n <- max(shuffled.df$z.x.sim) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df$z.y.sim)
+  
+  poly.n <- par.res.n[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n, z.y.sim = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x.sim, poly.n$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df <- rbind(null.df, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df$a.emp.n >= a.emp) # p-value 0.519
+
+# Randomize across optimal and near-optimal points
+
+null.df2 <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df2 <- par.res.1 %>%
+    
+    mutate(
+      z.x.sim = sample(par.res.1$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(par.res.1$z.y, replace = FALSE)      # Separately reassign y
+      
+    )
+  
+  par.res.n2 <- par_frt(shuffled.df2, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n2 <- par.res.n2 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n2 <- max(shuffled.df2$z.x.sim) # Extract the max values for x and y
+  y.max.n2 <- max(shuffled.df2$z.y.sim)
+  
+  poly.n2 <- par.res.n2[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n2, z.y.sim = y.max.n2)
+  
+  a.emp.n2 <- polyarea(poly.n2$z.x.sim, poly.n2$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df2 <- rbind(null.df2, data.frame(  # Save the data
+    a.emp.n = a.emp.n2,                    # Area above the curve 
+    n.PF = nrow(par.res.n2)                # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df2$a.emp.n >= a.emp) # p-value 0.267
+
+###### Quantile regression ######
+
+q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt) 
+q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt) 
+q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt)  
+
+summary(q50, se = "boot", R = 1000) # -0.00140, p 0.81895
+summary(q75, se = "boot", R = 1000) # -0.00809, p 0.46017
+summary(q90, se = "boot", R = 1000) # -0.01662, p 0.55219
+
+PigN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Competitive ability (1/N*)", 
+       color = "Evolutionary History",
+       title = "G — Nitrogen ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "nit" = 16)  # filled circle
+  ) +
+  
+  ylim(0,1.25) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigN.qr # Display the plot
+
+###### 75th quantile PF testing ######
+
+n.75 <- df.filt %>% # Now calculate the number of nit points above the 75th % quantile Pareto front. 
+  filter(evol.bin == "nit") %>%
+  rowwise() %>%
+  mutate(
+    nearest_idx = find_nearest_index(z.x, pred.curve.2$z.x),
+    z.y.pred = pred.curve.2$z.y[nearest_idx]
+  ) %>%
+  ungroup() %>%
+  filter(z.y > z.y.pred) %>%
+  nrow()
+
+null_counts <- numeric(1000)
+
+for (i in 1:1000) { # Now we'll randomize and see how many nit points should fall above the 75th qr by chance alone
+  shuffled.df <- df.filt %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt$z.y, replace = FALSE)     # Seperately reassign y
+    )
+  
+  null_counts[i] <- shuffled.df %>%
+    filter(evol.bin == "nit") %>%
+    rowwise() %>%
+    mutate(
+      nearest_idx = which.min(abs(pred.curve.2$z.x - z.x.sim)),
+      z.y.pred = pred.curve.2$z.y[nearest_idx]
+    ) %>%
+    ungroup() %>%
+    filter(z.y.sim > z.y.pred) %>%
+    nrow()
+}
+
+mean(null_counts>= n.75) # p = 0.744
+
+###### top 33% of data ######
+
+df.filt3 <- df.filt %>%
+  arrange(distance) %>%                           # smallest → largest
+  slice((floor(0.6667 * n()) + 1):n()) %>%          # keep *second* half
+  select(-distance)
+
+PigN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Competitive ability (1/N*)", 
+       color = "Evolutionary History",
+       title = "G — Nitrogen ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "nit" = 16)  # filled circle
+  ) +
+  
+  ylim(0,1.25) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigN.scam2  # Display the plot
+
+null.df3 <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt3 %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt3$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt3$z.y, replace = FALSE),     # Separately reassign y
+    )
+  
+  par.res.n <- par_frt(shuffled.df, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n <- max(shuffled.df$z.x.sim) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df$z.y.sim)
+  
+  poly.n <- par.res.n[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n, z.y.sim = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x.sim, poly.n$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df3 <- rbind(null.df3, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df3$a.emp.n >= a.emp) # p-value 0.078
+
+q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt3) 
+q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt3) 
+q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt3)  
+
+summary(q50, se = "boot", R = 1000) # -0.10026, p 0.00621
+summary(q75, se = "boot", R = 1000) # -0.10161, p 0.00422
+summary(q90, se = "boot", R = 1000) # -0.10937, p 0.03935
+
+PigN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Competitive ability (1/N*)", 
+       color = "Evolutionary History",
+       title = "G — Nitrogen ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "nit" = 16)  # filled circle
+  ) +
+  
+  ylim(0,1.25) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigN.qr2 # Display the plot
+
+# Pigmentation v phosphorous ----------------------------------------------------
+
+df$evol.bin <- ifelse(df$Evol == "none", 'ancestral', 
+                      ifelse(df$Evol == "P", 'phos', 'other')) # For binning into evolutionary treatments for plotting purposes.
+
+df.filt <- df %>% 
+  mutate(
+    z.y = P.comp,
+    z.x = pig.PC
+  ) # Specify the x and y variables and their 95% CIs
+
+plot(z.y~z.x, data=df.filt)
+df.filt <- df.filt[df.filt$z.y < 20,]
+
+df.filt <- df.filt %>% # Scale for euclidean distance calculation and point exclusion determination
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  )  
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
+
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+par.res.1 <- par_frt(df.filt, xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
+
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.1))), data = par.res.1) # Fit a scam to the adjusted PF
+
+x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.1 <- data.frame( # Get the corresponding y values
+  z.x = x.vals,
+  z.y = predict(fit, newdata = data.frame(z.x = x.vals))
+)
+
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.2 <- par_frt(df.filt2, xvar = "z.x", yvar = "z.y") # Pareto frontier on this data                 
+
+fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.2))), data = par.res.2) # Model fit
+
+pred.curve.2 <- data.frame( # predicted data frame
+  z.x = x.vals,
+  z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
+)
+
+PigP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Competitive ability (1/P*)", 
+       color = "Evolutionary History",
+       title = "K — Phosphorous ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "phos" = 16)  # filled circle
+  ) +
+  
+  ylim(0,5.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigP.scam  # Display the plot
+
+###### Polygonal empty space analysis (Li et al 2019) ######
+
+x.max <- max(df.filt$z.x) # Extract the max values for x and y.
+y.max <- max(df.filt$z.y)
+
+par.res.1 <- par.res.1 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+  arrange(z.x)
+
+poly <- par.res.1[, c("z.x", "z.y")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+  add_row(z.x = x.max, z.y = y.max)
+
+a.emp <- polyarea(poly$z.x, poly$z.y) # Calculate the area enclosed by these vertices
+
+# Randomize across the whole dataset
+
+null.df <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt$z.y, replace = FALSE),     # Separately reassign y
+    )
+  
+  par.res.n <- par_frt(shuffled.df, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n <- max(shuffled.df$z.x.sim) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df$z.y.sim)
+  
+  poly.n <- par.res.n[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n, z.y.sim = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x.sim, poly.n$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df <- rbind(null.df, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df$a.emp.n >= a.emp) # p-value 0.926
+
+# Randomize across optimal and near-optimal points
+
+null.df2 <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df2 <- par.res.1 %>%
+    
+    mutate(
+      z.x.sim = sample(par.res.1$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(par.res.1$z.y, replace = FALSE)      # Separately reassign y
+      
+    )
+  
+  par.res.n2 <- par_frt(shuffled.df2, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n2 <- par.res.n2 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n2 <- max(shuffled.df2$z.x.sim) # Extract the max values for x and y
+  y.max.n2 <- max(shuffled.df2$z.y.sim)
+  
+  poly.n2 <- par.res.n2[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n2, z.y.sim = y.max.n2)
+  
+  a.emp.n2 <- polyarea(poly.n2$z.x.sim, poly.n2$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df2 <- rbind(null.df2, data.frame(  # Save the data
+    a.emp.n = a.emp.n2,                    # Area above the curve 
+    n.PF = nrow(par.res.n2)                # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df2$a.emp.n >= a.emp) # p-value 0.447
+
+###### Quantile regression ######
+
+q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt) 
+q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt) 
+q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt)  
+
+summary(q50, se = "boot", R = 1000) # -0.09807, p 0.00000
+summary(q75, se = "boot", R = 1000) # -0.06254, p 0.19259
+summary(q90, se = "boot", R = 1000) # 0.15957, p 0.41568
+
+PigP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Competitive ability (1/P*)", 
+       color = "Evolutionary History",
+       title = "K — Phosphorous ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "phos" = 16)  # filled circle
+  ) +
+  
+  ylim(0,5.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigP.qr # Display the plot
+
+###### 75th quantile PF testing ######
+
+n.75 <- df.filt %>% # Now calculate the number of phos points above the 75th % quantile Pareto front. 
+  filter(evol.bin == "phos") %>%
+  rowwise() %>%
+  mutate(
+    nearest_idx = find_nearest_index(z.x, pred.curve.2$z.x),
+    z.y.pred = pred.curve.2$z.y[nearest_idx]
+  ) %>%
+  ungroup() %>%
+  filter(z.y > z.y.pred) %>%
+  nrow()
+
+null_counts <- numeric(1000)
+
+for (i in 1:1000) { # Now we'll randomize and see how many phos points should fall above the 75th qr by chance alone
+  shuffled.df <- df.filt %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt$z.y, replace = FALSE)     # Seperately reassign y
+    )
+  
+  null_counts[i] <- shuffled.df %>%
+    filter(evol.bin == "phos") %>%
+    rowwise() %>%
+    mutate(
+      nearest_idx = which.min(abs(pred.curve.2$z.x - z.x.sim)),
+      z.y.pred = pred.curve.2$z.y[nearest_idx]
+    ) %>%
+    ungroup() %>%
+    filter(z.y.sim > z.y.pred) %>%
+    nrow()
+}
+
+mean(null_counts>= n.75) # p = 0.744
+
+###### top 33% of data ######
+
+df.filt3 <- df.filt %>%
+  arrange(distance) %>%                           # smallest → largest
+  slice((floor(0.6667 * n()) + 1):n()) %>%          # keep *second* half
+  select(-distance)
+
+PigP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Competitive ability (1/P*)", 
+       color = "Evolutionary History",
+       title = "K — Phosphorous ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "phos" = 16)  # filled circle
+  ) +
+  
+  ylim(0,5.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigP.scam2  # Display the plot
+
+null.df3 <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt3 %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt3$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt3$z.y, replace = FALSE),     # Separately reassign y
+    )
+  
+  par.res.n <- par_frt(shuffled.df, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n <- max(shuffled.df$z.x.sim) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df$z.y.sim)
+  
+  poly.n <- par.res.n[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n, z.y.sim = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x.sim, poly.n$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df3 <- rbind(null.df3, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df3$a.emp.n >= a.emp) # p-value 0.742
+
+q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt3) 
+q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt3) 
+q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt3)  
+
+summary(q50, se = "boot", R = 1000) # -0.48402, p 0.00071
+summary(q75, se = "boot", R = 1000) # -0.50566, p 0.00012
+summary(q90, se = "boot", R = 1000) # -0.49050, p 0.12495
+
+PigP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Competitive ability (1/P*)", 
+       color = "Evolutionary History",
+       title = "K — Phosphorous ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "phos" = 16)  # filled circle
+  ) +
+  
+  ylim(0,5.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigP.qr2 # Display the plot
+
+# Pigmentation v salt ----------------------------------------------------
+
+df$evol.bin <- ifelse(df$Evol == "none", 'ancestral', 
+                      ifelse(df$Evol %in% c("S", "BS"), 'salt', 'other')) # Ss and BSs are treated as equivalent
+
+df.filt <- df %>% 
+  mutate(
+    z.y = S.c,
+    z.x = pig.PC
+  ) # Specify the x and y variables and their 95% CIs
+
+plot(z.y~z.x, data=df.filt)
+
+df.filt <- df.filt %>% # Scale for euclidean distance calculation and point exclusion determination
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  )  
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
+
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+par.res.1 <- par_frt(df.filt, xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
+
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.1))), data = par.res.1) # Fit a scam to the adjusted PF
+
+x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.1 <- data.frame( # Get the corresponding y values
+  z.x = x.vals,
+  z.y = predict(fit, newdata = data.frame(z.x = x.vals))
+)
+
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.2 <- par_frt(df.filt2, xvar = "z.x", yvar = "z.y") # Pareto frontier on this data                 
+
+fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.2))), data = par.res.2) # Model fit
+
+pred.curve.2 <- data.frame( # predicted data frame
+  z.x = x.vals,
+  z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
+)
+
+PigS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Salt tolerance (c)", 
+       color = "Evolutionary History",
+       title = "O — Salt ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "salt" = 16)  # filled circle
+  ) +
+  
+  ylim(1,9.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigS.scam  # Display the plot
+
+###### Polygonal empty space analysis (Li et al 2019) ######
+
+x.max <- max(df.filt$z.x) # Extract the max values for x and y.
+y.max <- max(df.filt$z.y)
+
+par.res.1 <- par.res.1 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+  arrange(z.x)
+
+poly <- par.res.1[, c("z.x", "z.y")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+  add_row(z.x = x.max, z.y = y.max)
+
+a.emp <- polyarea(poly$z.x, poly$z.y) # Calculate the area enclosed by these vertices
+
+# Randomize across the whole dataset
+
+null.df <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt$z.y, replace = FALSE),     # Separately reassign y
+    )
+  
+  par.res.n <- par_frt(shuffled.df, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n <- max(shuffled.df$z.x.sim) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df$z.y.sim)
+  
+  poly.n <- par.res.n[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n, z.y.sim = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x.sim, poly.n$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df <- rbind(null.df, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df$a.emp.n >= a.emp) # p-value 0.115
+
+# Randomize across optimal and near-optimal points
+
+null.df2 <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df2 <- par.res.1 %>%
+    
+    mutate(
+      z.x.sim = sample(par.res.1$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(par.res.1$z.y, replace = FALSE)      # Separately reassign y
+      
+    )
+  
+  par.res.n2 <- par_frt(shuffled.df2, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n2 <- par.res.n2 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n2 <- max(shuffled.df2$z.x.sim) # Extract the max values for x and y
+  y.max.n2 <- max(shuffled.df2$z.y.sim)
+  
+  poly.n2 <- par.res.n2[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n2, z.y.sim = y.max.n2)
+  
+  a.emp.n2 <- polyarea(poly.n2$z.x.sim, poly.n2$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df2 <- rbind(null.df2, data.frame(  # Save the data
+    a.emp.n = a.emp.n2,                    # Area above the curve 
+    n.PF = nrow(par.res.n2)                # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df2$a.emp.n >= a.emp) # p-value 0.009
+
+###### Quantile regression ######
+
+q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt) 
+q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt) 
+q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt)  
+
+summary(q50, se = "boot", R = 1000) # 0.04638, p 0.36512
+summary(q75, se = "boot", R = 1000) # -0.04228, p 0.89727
+summary(q90, se = "boot", R = 1000) # 0.18792, p 0.71796
+
+PigS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Salt tolerance (c)", 
+       color = "Evolutionary History",
+       title = "O — Salt ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "salt" = 16)  # filled circle
+  ) +
+  
+  ylim(1,9.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigS.qr # Display the plot
+
+###### 75th quantile PF testing ######
+
+n.75 <- df.filt %>% # Now calculate the number of salt points above the 75th % quantile Pareto front. 
+  filter(evol.bin == "salt") %>%
+  rowwise() %>%
+  mutate(
+    nearest_idx = find_nearest_index(z.x, pred.curve.2$z.x),
+    z.y.pred = pred.curve.2$z.y[nearest_idx]
+  ) %>%
+  ungroup() %>%
+  filter(z.y > z.y.pred) %>%
+  nrow()
+
+null_counts <- numeric(1000)
+
+for (i in 1:1000) { # Now we'll randomize and see how many salt points should fall above the 75th qr by chance alone
+  shuffled.df <- df.filt %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt$z.y, replace = FALSE)     # Seperately reassign y
+    )
+  
+  null_counts[i] <- shuffled.df %>%
+    filter(evol.bin == "salt") %>%
+    rowwise() %>%
+    mutate(
+      nearest_idx = which.min(abs(pred.curve.2$z.x - z.x.sim)),
+      z.y.pred = pred.curve.2$z.y[nearest_idx]
+    ) %>%
+    ungroup() %>%
+    filter(z.y.sim > z.y.pred) %>%
+    nrow()
+}
+
+mean(null_counts>= n.75) # p = 0
+
+###### top 33% of data ######
+
+df.filt3 <- df.filt %>%
+  arrange(distance) %>%                           # smallest → largest
+  slice((floor(0.6667 * n()) + 1):n()) %>%          # keep *second* half
+  select(-distance)
+
+PigS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Salt tolerance (c)", 
+       color = "Evolutionary History",
+       title = "O — Salt ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "salt" = 16)  # filled circle
+  ) +
+  
+  ylim(1,9.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigS.scam2  # Display the plot
+
+null.df3 <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt3 %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt3$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt3$z.y, replace = FALSE),     # Separately reassign y
+    )
+  
+  par.res.n <- par_frt(shuffled.df, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n <- max(shuffled.df$z.x.sim) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df$z.y.sim)
+  
+  poly.n <- par.res.n[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n, z.y.sim = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x.sim, poly.n$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df3 <- rbind(null.df3, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df3$a.emp.n >= a.emp) # p-value 0.012
+
+q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt3) 
+q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt3) 
+q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt3)  
+
+summary(q50, se = "boot", R = 1000) # -1.02702, p 0.00000
+summary(q75, se = "boot", R = 1000) # -1.00315, p 0.00005
+summary(q90, se = "boot", R = 1000) # -0.45866, p 0.51590
+
+PigS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Salt tolerance (c)", 
+       color = "Evolutionary History",
+       title = "O — Salt ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "salt" = 16)  # filled circle
+  ) +
+  
+  ylim(1,9.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigS.qr2 # Display the plot
+
+# Pigmentation v temperature ----------------------------------------------------
+
+df$evol.bin <- ifelse(df$Evol == "none", "ancestral", "evolved") # For binning into evolutionary treatments for plotting purposes.
+
+df.filt <- df %>% 
+  mutate(
+    z.y = T.br,
+    z.x = pig.PC
+  ) # Specify the x and y variables and their 95% CIs
+
+plot(z.y~z.x, data=df.filt)
+
+df.filt <- df.filt %>% # Scale for euclidean distance calculation and point exclusion determination
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  )  
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
+
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+par.res.1 <- par_frt(df.filt, xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
+
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.1))), data = par.res.1) # Fit a scam to the adjusted PF
+
+x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.1 <- data.frame( # Get the corresponding y values
+  z.x = x.vals,
+  z.y = predict(fit, newdata = data.frame(z.x = x.vals))
+)
+
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.2 <- par_frt(df.filt2, xvar = "z.x", yvar = "z.y") # Pareto frontier on this data                 
+
+fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.2))), data = par.res.2) # Model fit
+
+pred.curve.2 <- data.frame( # predicted data frame
+  z.x = x.vals,
+  z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
+)
+
+PigT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Thermal breadth (°C)", 
+       color = "Evolutionary History",
+       title = "S — Temperature ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("evolved" = 1,  # open circle
+               "ancestral" = 5)  # diamond
+  ) +
+  
+  ylim(14,22) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigT.scam  # Display the plot
+
+###### Polygonal empty space analysis (Li et al 2019) ######
+
+x.max <- max(df.filt$z.x) # Extract the max values for x and y.
+y.max <- max(df.filt$z.y)
+
+par.res.1 <- par.res.1 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+  arrange(z.x)
+
+poly <- par.res.1[, c("z.x", "z.y")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+  add_row(z.x = x.max, z.y = y.max)
+
+a.emp <- polyarea(poly$z.x, poly$z.y) # Calculate the area enclosed by these vertices
+
+# Randomize across the whole dataset
+
+null.df <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt$z.y, replace = FALSE),     # Separately reassign y
+    )
+  
+  par.res.n <- par_frt(shuffled.df, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n <- max(shuffled.df$z.x.sim) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df$z.y.sim)
+  
+  poly.n <- par.res.n[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n, z.y.sim = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x.sim, poly.n$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df <- rbind(null.df, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df$a.emp.n >= a.emp) # p-value 0.674
+
+# Randomize across optimal and near-optimal points
+
+null.df2 <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df2 <- par.res.1 %>%
+    
+    mutate(
+      z.x.sim = sample(par.res.1$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(par.res.1$z.y, replace = FALSE)      # Separately reassign y
+      
+    )
+  
+  par.res.n2 <- par_frt(shuffled.df2, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n2 <- par.res.n2 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n2 <- max(shuffled.df2$z.x.sim) # Extract the max values for x and y
+  y.max.n2 <- max(shuffled.df2$z.y.sim)
+  
+  poly.n2 <- par.res.n2[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n2, z.y.sim = y.max.n2)
+  
+  a.emp.n2 <- polyarea(poly.n2$z.x.sim, poly.n2$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df2 <- rbind(null.df2, data.frame(  # Save the data
+    a.emp.n = a.emp.n2,                    # Area above the curve 
+    n.PF = nrow(par.res.n2)                # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df2$a.emp.n >= a.emp) # p-value 0.271
+
+###### Quantile regression ######
+
+q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt) 
+q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt) 
+q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt)  
+
+summary(q50, se = "boot", R = 1000) # 0.17282, p 0.00139
+summary(q75, se = "boot", R = 1000) # 0.17257, p 0.02942
+summary(q90, se = "boot", R = 1000) # 0.15215, p 0.30250
+
+PigT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Thermal breadth (°C)", 
+       color = "Evolutionary History",
+       title = "S — Temperature ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("evolved" = 1,  # open circle
+               "ancestral" = 5)  # diamond
+  ) +
+  
+  ylim(14,22) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigT.qr # Display the plot
+
+###### 75th quantile PF testing ######
+
+# No temperature evolution treatment
+
+###### top 33% of data ######
+
+df.filt3 <- df.filt %>%
+  arrange(distance) %>%                           # smallest → largest
+  slice((floor(0.6667 * n()) + 1):n()) %>%          # keep *second* half
+  select(-distance)
+
+PigT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Thermal breadth (°C)", 
+       color = "Evolutionary History",
+       title = "S — Temperature ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("evolved" = 1,  # open circle
+               "ancestral" = 5) # diamond
+  ) +
+  
+  ylim(14,22) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigT.scam2  # Display the plot
+
+null.df3 <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt3 %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt3$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt3$z.y, replace = FALSE),     # Separately reassign y
+    )
+  
+  par.res.n <- par_frt(shuffled.df, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n <- max(shuffled.df$z.x.sim) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df$z.y.sim)
+  
+  poly.n <- par.res.n[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n, z.y.sim = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x.sim, poly.n$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df3 <- rbind(null.df3, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df3$a.emp.n >= a.emp) # p-value 0.309
+
+q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt3) 
+q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt3) 
+q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt3)  
+
+summary(q50, se = "boot", R = 1000) # -0.29647, p 0.00024
+summary(q75, se = "boot", R = 1000) # -0.20193, p 0.04939
+summary(q90, se = "boot", R = 1000) # -0.10280, p 0.72183
+
+PigT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Thermal breadth (°C)", 
+       color = "Evolutionary History",
+       title = "S — Temperature ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("evolved" = 1,  # open circle
+               "ancestral" = 5) # diamond
+  ) +
+  
+  ylim(14,22) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigT.qr2 # Display the plot
 
 # Biovolume comparisons ---------------------------------------------------
 
@@ -9205,3 +11315,1685 @@ BvL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   )
 
 BvL.qr2 # Display the plot
+
+# Biovolume v nitrogen ----------------------------------------------------
+
+df$evol.bin <- ifelse(df$Evol == "none", 'ancestral', 
+                      ifelse(df$Evol == "N", 'nit', 'other')) # For binning into evolutionary treatments for plotting purposes.
+
+df.filt <- df %>% 
+  mutate(
+    z.y = N.comp,
+    z.x = bio.vol
+  ) # Specify the x and y variables and their 95% CIs
+
+plot(z.y~z.x, data=df.filt)
+
+df.filt <- df.filt %>% # Scale for euclidean distance calculation and point exclusion determination
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  )  
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
+
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+par.res.1 <- par_frt(df.filt, xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
+
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.1))), data = par.res.1) # Fit a scam to the adjusted PF
+
+x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.1 <- data.frame( # Get the corresponding y values
+  z.x = x.vals,
+  z.y = predict(fit, newdata = data.frame(z.x = x.vals))
+)
+
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.2 <- par_frt(df.filt2, xvar = "z.x", yvar = "z.y") # Pareto frontier on this data                 
+
+fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.2))), data = par.res.2) # Model fit
+
+pred.curve.2 <- data.frame( # predicted data frame
+  z.x = x.vals,
+  z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
+)
+
+BvN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Biovolume",    
+       y = "Competitive ability (1/N*)", 
+       color = "Evolutionary History",
+       title = "H — Nitrogen ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "nit" = 16)  # filled circle
+  ) +
+  
+  ylim(0,1.25) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+BvN.scam  # Display the plot
+
+###### Polygonal empty space analysis (Li et al 2019) ######
+
+x.max <- max(df.filt$z.x) # Extract the max values for x and y.
+y.max <- max(df.filt$z.y)
+
+par.res.1 <- par.res.1 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+  arrange(z.x)
+
+poly <- par.res.1[, c("z.x", "z.y")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+  add_row(z.x = x.max, z.y = y.max)
+
+a.emp <- polyarea(poly$z.x, poly$z.y) # Calculate the area enclosed by these vertices
+
+# Randomize across the whole dataset
+
+null.df <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt$z.y, replace = FALSE),     # Separately reassign y
+    )
+  
+  par.res.n <- par_frt(shuffled.df, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n <- max(shuffled.df$z.x.sim) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df$z.y.sim)
+  
+  poly.n <- par.res.n[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n, z.y.sim = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x.sim, poly.n$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df <- rbind(null.df, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df$a.emp.n >= a.emp) # p-value 0.519
+
+# Randomize across optimal and near-optimal points
+
+null.df2 <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df2 <- par.res.1 %>%
+    
+    mutate(
+      z.x.sim = sample(par.res.1$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(par.res.1$z.y, replace = FALSE)      # Separately reassign y
+      
+    )
+  
+  par.res.n2 <- par_frt(shuffled.df2, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n2 <- par.res.n2 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n2 <- max(shuffled.df2$z.x.sim) # Extract the max values for x and y
+  y.max.n2 <- max(shuffled.df2$z.y.sim)
+  
+  poly.n2 <- par.res.n2[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n2, z.y.sim = y.max.n2)
+  
+  a.emp.n2 <- polyarea(poly.n2$z.x.sim, poly.n2$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df2 <- rbind(null.df2, data.frame(  # Save the data
+    a.emp.n = a.emp.n2,                    # Area above the curve 
+    n.PF = nrow(par.res.n2)                # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df2$a.emp.n >= a.emp) # p-value 0.267
+
+###### Quantile regression ######
+
+q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt) 
+q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt) 
+q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt)  
+
+summary(q50, se = "boot", R = 1000) # -0.00140, p 0.81895
+summary(q75, se = "boot", R = 1000) # -0.00809, p 0.46017
+summary(q90, se = "boot", R = 1000) # -0.01662, p 0.55219
+
+PigN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Competitive ability (1/N*)", 
+       color = "Evolutionary History",
+       title = "G — Nitrogen ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "nit" = 16)  # filled circle
+  ) +
+  
+  ylim(0,1.25) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigN.qr # Display the plot
+
+###### 75th quantile PF testing ######
+
+n.75 <- df.filt %>% # Now calculate the number of nit points above the 75th % quantile Pareto front. 
+  filter(evol.bin == "nit") %>%
+  rowwise() %>%
+  mutate(
+    nearest_idx = find_nearest_index(z.x, pred.curve.2$z.x),
+    z.y.pred = pred.curve.2$z.y[nearest_idx]
+  ) %>%
+  ungroup() %>%
+  filter(z.y > z.y.pred) %>%
+  nrow()
+
+null_counts <- numeric(1000)
+
+for (i in 1:1000) { # Now we'll randomize and see how many nit points should fall above the 75th qr by chance alone
+  shuffled.df <- df.filt %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt$z.y, replace = FALSE)     # Seperately reassign y
+    )
+  
+  null_counts[i] <- shuffled.df %>%
+    filter(evol.bin == "nit") %>%
+    rowwise() %>%
+    mutate(
+      nearest_idx = which.min(abs(pred.curve.2$z.x - z.x.sim)),
+      z.y.pred = pred.curve.2$z.y[nearest_idx]
+    ) %>%
+    ungroup() %>%
+    filter(z.y.sim > z.y.pred) %>%
+    nrow()
+}
+
+mean(null_counts>= n.75) # p = 0.744
+
+###### top 33% of data ######
+
+df.filt3 <- df.filt %>%
+  arrange(distance) %>%                           # smallest → largest
+  slice((floor(0.6667 * n()) + 1):n()) %>%          # keep *second* half
+  select(-distance)
+
+PigN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Competitive ability (1/N*)", 
+       color = "Evolutionary History",
+       title = "G — Nitrogen ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "nit" = 16)  # filled circle
+  ) +
+  
+  ylim(0,1.25) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigN.scam2  # Display the plot
+
+null.df3 <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt3 %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt3$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt3$z.y, replace = FALSE),     # Separately reassign y
+    )
+  
+  par.res.n <- par_frt(shuffled.df, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n <- max(shuffled.df$z.x.sim) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df$z.y.sim)
+  
+  poly.n <- par.res.n[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n, z.y.sim = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x.sim, poly.n$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df3 <- rbind(null.df3, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df3$a.emp.n >= a.emp) # p-value 0.078
+
+q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt3) 
+q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt3) 
+q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt3)  
+
+summary(q50, se = "boot", R = 1000) # -0.10026, p 0.00621
+summary(q75, se = "boot", R = 1000) # -0.10161, p 0.00422
+summary(q90, se = "boot", R = 1000) # -0.10937, p 0.03935
+
+PigN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Competitive ability (1/N*)", 
+       color = "Evolutionary History",
+       title = "G — Nitrogen ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "nit" = 16)  # filled circle
+  ) +
+  
+  ylim(0,1.25) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigN.qr2 # Display the plot
+
+# Pigmentation v phosphorous ----------------------------------------------------
+
+df$evol.bin <- ifelse(df$Evol == "none", 'ancestral', 
+                      ifelse(df$Evol == "P", 'phos', 'other')) # For binning into evolutionary treatments for plotting purposes.
+
+df.filt <- df %>% 
+  mutate(
+    z.y = P.comp,
+    z.x = pig.PC
+  ) # Specify the x and y variables and their 95% CIs
+
+plot(z.y~z.x, data=df.filt)
+df.filt <- df.filt[df.filt$z.y < 20,]
+
+df.filt <- df.filt %>% # Scale for euclidean distance calculation and point exclusion determination
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  )  
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
+
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+par.res.1 <- par_frt(df.filt, xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
+
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.1))), data = par.res.1) # Fit a scam to the adjusted PF
+
+x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.1 <- data.frame( # Get the corresponding y values
+  z.x = x.vals,
+  z.y = predict(fit, newdata = data.frame(z.x = x.vals))
+)
+
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.2 <- par_frt(df.filt2, xvar = "z.x", yvar = "z.y") # Pareto frontier on this data                 
+
+fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.2))), data = par.res.2) # Model fit
+
+pred.curve.2 <- data.frame( # predicted data frame
+  z.x = x.vals,
+  z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
+)
+
+PigP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Competitive ability (1/P*)", 
+       color = "Evolutionary History",
+       title = "K — Phosphorous ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "phos" = 16)  # filled circle
+  ) +
+  
+  ylim(0,5.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigP.scam  # Display the plot
+
+###### Polygonal empty space analysis (Li et al 2019) ######
+
+x.max <- max(df.filt$z.x) # Extract the max values for x and y.
+y.max <- max(df.filt$z.y)
+
+par.res.1 <- par.res.1 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+  arrange(z.x)
+
+poly <- par.res.1[, c("z.x", "z.y")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+  add_row(z.x = x.max, z.y = y.max)
+
+a.emp <- polyarea(poly$z.x, poly$z.y) # Calculate the area enclosed by these vertices
+
+# Randomize across the whole dataset
+
+null.df <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt$z.y, replace = FALSE),     # Separately reassign y
+    )
+  
+  par.res.n <- par_frt(shuffled.df, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n <- max(shuffled.df$z.x.sim) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df$z.y.sim)
+  
+  poly.n <- par.res.n[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n, z.y.sim = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x.sim, poly.n$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df <- rbind(null.df, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df$a.emp.n >= a.emp) # p-value 0.926
+
+# Randomize across optimal and near-optimal points
+
+null.df2 <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df2 <- par.res.1 %>%
+    
+    mutate(
+      z.x.sim = sample(par.res.1$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(par.res.1$z.y, replace = FALSE)      # Separately reassign y
+      
+    )
+  
+  par.res.n2 <- par_frt(shuffled.df2, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n2 <- par.res.n2 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n2 <- max(shuffled.df2$z.x.sim) # Extract the max values for x and y
+  y.max.n2 <- max(shuffled.df2$z.y.sim)
+  
+  poly.n2 <- par.res.n2[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n2, z.y.sim = y.max.n2)
+  
+  a.emp.n2 <- polyarea(poly.n2$z.x.sim, poly.n2$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df2 <- rbind(null.df2, data.frame(  # Save the data
+    a.emp.n = a.emp.n2,                    # Area above the curve 
+    n.PF = nrow(par.res.n2)                # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df2$a.emp.n >= a.emp) # p-value 0.447
+
+###### Quantile regression ######
+
+q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt) 
+q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt) 
+q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt)  
+
+summary(q50, se = "boot", R = 1000) # -0.09807, p 0.00000
+summary(q75, se = "boot", R = 1000) # -0.06254, p 0.19259
+summary(q90, se = "boot", R = 1000) # 0.15957, p 0.41568
+
+PigP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Competitive ability (1/P*)", 
+       color = "Evolutionary History",
+       title = "K — Phosphorous ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "phos" = 16)  # filled circle
+  ) +
+  
+  ylim(0,5.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigP.qr # Display the plot
+
+###### 75th quantile PF testing ######
+
+n.75 <- df.filt %>% # Now calculate the number of phos points above the 75th % quantile Pareto front. 
+  filter(evol.bin == "phos") %>%
+  rowwise() %>%
+  mutate(
+    nearest_idx = find_nearest_index(z.x, pred.curve.2$z.x),
+    z.y.pred = pred.curve.2$z.y[nearest_idx]
+  ) %>%
+  ungroup() %>%
+  filter(z.y > z.y.pred) %>%
+  nrow()
+
+null_counts <- numeric(1000)
+
+for (i in 1:1000) { # Now we'll randomize and see how many phos points should fall above the 75th qr by chance alone
+  shuffled.df <- df.filt %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt$z.y, replace = FALSE)     # Seperately reassign y
+    )
+  
+  null_counts[i] <- shuffled.df %>%
+    filter(evol.bin == "phos") %>%
+    rowwise() %>%
+    mutate(
+      nearest_idx = which.min(abs(pred.curve.2$z.x - z.x.sim)),
+      z.y.pred = pred.curve.2$z.y[nearest_idx]
+    ) %>%
+    ungroup() %>%
+    filter(z.y.sim > z.y.pred) %>%
+    nrow()
+}
+
+mean(null_counts>= n.75) # p = 0.744
+
+###### top 33% of data ######
+
+df.filt3 <- df.filt %>%
+  arrange(distance) %>%                           # smallest → largest
+  slice((floor(0.6667 * n()) + 1):n()) %>%          # keep *second* half
+  select(-distance)
+
+PigP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Competitive ability (1/P*)", 
+       color = "Evolutionary History",
+       title = "K — Phosphorous ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "phos" = 16)  # filled circle
+  ) +
+  
+  ylim(0,5.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigP.scam2  # Display the plot
+
+null.df3 <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt3 %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt3$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt3$z.y, replace = FALSE),     # Separately reassign y
+    )
+  
+  par.res.n <- par_frt(shuffled.df, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n <- max(shuffled.df$z.x.sim) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df$z.y.sim)
+  
+  poly.n <- par.res.n[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n, z.y.sim = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x.sim, poly.n$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df3 <- rbind(null.df3, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df3$a.emp.n >= a.emp) # p-value 0.742
+
+q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt3) 
+q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt3) 
+q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt3)  
+
+summary(q50, se = "boot", R = 1000) # -0.48402, p 0.00071
+summary(q75, se = "boot", R = 1000) # -0.50566, p 0.00012
+summary(q90, se = "boot", R = 1000) # -0.49050, p 0.12495
+
+PigP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Competitive ability (1/P*)", 
+       color = "Evolutionary History",
+       title = "K — Phosphorous ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "phos" = 16)  # filled circle
+  ) +
+  
+  ylim(0,5.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigP.qr2 # Display the plot
+
+# Pigmentation v salt ----------------------------------------------------
+
+df$evol.bin <- ifelse(df$Evol == "none", 'ancestral', 
+                      ifelse(df$Evol %in% c("S", "BS"), 'salt', 'other')) # Ss and BSs are treated as equivalent
+
+df.filt <- df %>% 
+  mutate(
+    z.y = S.c,
+    z.x = pig.PC
+  ) # Specify the x and y variables and their 95% CIs
+
+plot(z.y~z.x, data=df.filt)
+
+df.filt <- df.filt %>% # Scale for euclidean distance calculation and point exclusion determination
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  )  
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
+
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+par.res.1 <- par_frt(df.filt, xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
+
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.1))), data = par.res.1) # Fit a scam to the adjusted PF
+
+x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.1 <- data.frame( # Get the corresponding y values
+  z.x = x.vals,
+  z.y = predict(fit, newdata = data.frame(z.x = x.vals))
+)
+
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.2 <- par_frt(df.filt2, xvar = "z.x", yvar = "z.y") # Pareto frontier on this data                 
+
+fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.2))), data = par.res.2) # Model fit
+
+pred.curve.2 <- data.frame( # predicted data frame
+  z.x = x.vals,
+  z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
+)
+
+PigS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Salt tolerance (c)", 
+       color = "Evolutionary History",
+       title = "O — Salt ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "salt" = 16)  # filled circle
+  ) +
+  
+  ylim(1,9.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigS.scam  # Display the plot
+
+###### Polygonal empty space analysis (Li et al 2019) ######
+
+x.max <- max(df.filt$z.x) # Extract the max values for x and y.
+y.max <- max(df.filt$z.y)
+
+par.res.1 <- par.res.1 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+  arrange(z.x)
+
+poly <- par.res.1[, c("z.x", "z.y")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+  add_row(z.x = x.max, z.y = y.max)
+
+a.emp <- polyarea(poly$z.x, poly$z.y) # Calculate the area enclosed by these vertices
+
+# Randomize across the whole dataset
+
+null.df <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt$z.y, replace = FALSE),     # Separately reassign y
+    )
+  
+  par.res.n <- par_frt(shuffled.df, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n <- max(shuffled.df$z.x.sim) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df$z.y.sim)
+  
+  poly.n <- par.res.n[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n, z.y.sim = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x.sim, poly.n$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df <- rbind(null.df, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df$a.emp.n >= a.emp) # p-value 0.115
+
+# Randomize across optimal and near-optimal points
+
+null.df2 <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df2 <- par.res.1 %>%
+    
+    mutate(
+      z.x.sim = sample(par.res.1$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(par.res.1$z.y, replace = FALSE)      # Separately reassign y
+      
+    )
+  
+  par.res.n2 <- par_frt(shuffled.df2, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n2 <- par.res.n2 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n2 <- max(shuffled.df2$z.x.sim) # Extract the max values for x and y
+  y.max.n2 <- max(shuffled.df2$z.y.sim)
+  
+  poly.n2 <- par.res.n2[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n2, z.y.sim = y.max.n2)
+  
+  a.emp.n2 <- polyarea(poly.n2$z.x.sim, poly.n2$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df2 <- rbind(null.df2, data.frame(  # Save the data
+    a.emp.n = a.emp.n2,                    # Area above the curve 
+    n.PF = nrow(par.res.n2)                # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df2$a.emp.n >= a.emp) # p-value 0.009
+
+###### Quantile regression ######
+
+q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt) 
+q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt) 
+q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt)  
+
+summary(q50, se = "boot", R = 1000) # 0.04638, p 0.36512
+summary(q75, se = "boot", R = 1000) # -0.04228, p 0.89727
+summary(q90, se = "boot", R = 1000) # 0.18792, p 0.71796
+
+PigS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Salt tolerance (c)", 
+       color = "Evolutionary History",
+       title = "O — Salt ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "salt" = 16)  # filled circle
+  ) +
+  
+  ylim(1,9.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigS.qr # Display the plot
+
+###### 75th quantile PF testing ######
+
+n.75 <- df.filt %>% # Now calculate the number of salt points above the 75th % quantile Pareto front. 
+  filter(evol.bin == "salt") %>%
+  rowwise() %>%
+  mutate(
+    nearest_idx = find_nearest_index(z.x, pred.curve.2$z.x),
+    z.y.pred = pred.curve.2$z.y[nearest_idx]
+  ) %>%
+  ungroup() %>%
+  filter(z.y > z.y.pred) %>%
+  nrow()
+
+null_counts <- numeric(1000)
+
+for (i in 1:1000) { # Now we'll randomize and see how many salt points should fall above the 75th qr by chance alone
+  shuffled.df <- df.filt %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt$z.y, replace = FALSE)     # Seperately reassign y
+    )
+  
+  null_counts[i] <- shuffled.df %>%
+    filter(evol.bin == "salt") %>%
+    rowwise() %>%
+    mutate(
+      nearest_idx = which.min(abs(pred.curve.2$z.x - z.x.sim)),
+      z.y.pred = pred.curve.2$z.y[nearest_idx]
+    ) %>%
+    ungroup() %>%
+    filter(z.y.sim > z.y.pred) %>%
+    nrow()
+}
+
+mean(null_counts>= n.75) # p = 0
+
+###### top 33% of data ######
+
+df.filt3 <- df.filt %>%
+  arrange(distance) %>%                           # smallest → largest
+  slice((floor(0.6667 * n()) + 1):n()) %>%          # keep *second* half
+  select(-distance)
+
+PigS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Salt tolerance (c)", 
+       color = "Evolutionary History",
+       title = "O — Salt ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "salt" = 16)  # filled circle
+  ) +
+  
+  ylim(1,9.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigS.scam2  # Display the plot
+
+null.df3 <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt3 %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt3$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt3$z.y, replace = FALSE),     # Separately reassign y
+    )
+  
+  par.res.n <- par_frt(shuffled.df, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n <- max(shuffled.df$z.x.sim) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df$z.y.sim)
+  
+  poly.n <- par.res.n[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n, z.y.sim = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x.sim, poly.n$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df3 <- rbind(null.df3, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df3$a.emp.n >= a.emp) # p-value 0.012
+
+q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt3) 
+q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt3) 
+q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt3)  
+
+summary(q50, se = "boot", R = 1000) # -1.02702, p 0.00000
+summary(q75, se = "boot", R = 1000) # -1.00315, p 0.00005
+summary(q90, se = "boot", R = 1000) # -0.45866, p 0.51590
+
+PigS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Salt tolerance (c)", 
+       color = "Evolutionary History",
+       title = "O — Salt ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "salt" = 16)  # filled circle
+  ) +
+  
+  ylim(1,9.5) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigS.qr2 # Display the plot
+
+# Pigmentation v temperature ----------------------------------------------------
+
+df$evol.bin <- ifelse(df$Evol == "none", "ancestral", "evolved") # For binning into evolutionary treatments for plotting purposes.
+
+df.filt <- df %>% 
+  mutate(
+    z.y = T.br,
+    z.x = pig.PC
+  ) # Specify the x and y variables and their 95% CIs
+
+plot(z.y~z.x, data=df.filt)
+
+df.filt <- df.filt %>% # Scale for euclidean distance calculation and point exclusion determination
+  mutate(
+    z.y2 = scale(z.y)[, 1],
+    z.x2 = scale(z.x)[, 1]
+  )  
+
+x.ref <- min(df.filt$z.x2, na.rm = TRUE) # Min x
+y.ref <- min(df.filt$z.y2, na.rm = TRUE) # Min y
+
+df.filt <- df.filt %>% # Calculate Euclidean distance from min
+  mutate(
+    distance = sqrt((z.x2 - x.ref)^2 + (z.y2 - y.ref)^2),
+    dist.sc = distance/mean(distance)
+  ) %>%
+  arrange(distance) #  Distance for point exclusion and 75th quantile calculation. 
+
+df.filt%>%
+  { 
+    bind_rows(
+      arrange(., desc(z.y)) %>% slice_head(n = 3),
+      arrange(., z.y) %>% slice_head(n = 3),
+      arrange(., desc(z.x)) %>% slice_head(n = 3),
+      arrange(., z.x) %>% slice_head(n = 3)
+    )
+  } %>%
+  print() # Display the outliers
+
+par.res.1 <- par_frt(df.filt, xvar = "z.x", yvar = "z.y") # Get the raw Pareto Front. Considering remaining extreme points as possible escapees
+
+fit <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.1))), data = par.res.1) # Fit a scam to the adjusted PF
+
+x.vals <- seq(min(df.filt$z.x), max(df.filt$z.x), length.out = 100) # Generate an x sequence for plotting
+
+pred.curve.1 <- data.frame( # Get the corresponding y values
+  z.x = x.vals,
+  z.y = predict(fit, newdata = data.frame(z.x = x.vals))
+)
+
+df.filt2 <- df.filt %>% # Filter out based on Euclidean distance from min
+  arrange(distance) %>%
+  slice(1:floor(0.75 * n())) %>%  # keep the closest 75%
+  select(-distance)
+
+par.res.2 <- par_frt(df.filt2, xvar = "z.x", yvar = "z.y") # Pareto frontier on this data                 
+
+fit2 <- scam(z.y ~ s(z.x, bs = "mpd", k = min(6,nrow(par.res.2))), data = par.res.2) # Model fit
+
+pred.curve.2 <- data.frame( # predicted data frame
+  z.x = x.vals,
+  z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
+)
+
+PigT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Thermal breadth (°C)", 
+       color = "Evolutionary History",
+       title = "S — Temperature ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("evolved" = 1,  # open circle
+               "ancestral" = 5)  # diamond
+  ) +
+  
+  ylim(14,22) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigT.scam  # Display the plot
+
+###### Polygonal empty space analysis (Li et al 2019) ######
+
+x.max <- max(df.filt$z.x) # Extract the max values for x and y.
+y.max <- max(df.filt$z.y)
+
+par.res.1 <- par.res.1 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+  arrange(z.x)
+
+poly <- par.res.1[, c("z.x", "z.y")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+  add_row(z.x = x.max, z.y = y.max)
+
+a.emp <- polyarea(poly$z.x, poly$z.y) # Calculate the area enclosed by these vertices
+
+# Randomize across the whole dataset
+
+null.df <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt$z.y, replace = FALSE),     # Separately reassign y
+    )
+  
+  par.res.n <- par_frt(shuffled.df, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n <- max(shuffled.df$z.x.sim) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df$z.y.sim)
+  
+  poly.n <- par.res.n[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n, z.y.sim = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x.sim, poly.n$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df <- rbind(null.df, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df$a.emp.n >= a.emp) # p-value 0.674
+
+# Randomize across optimal and near-optimal points
+
+null.df2 <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df2 <- par.res.1 %>%
+    
+    mutate(
+      z.x.sim = sample(par.res.1$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(par.res.1$z.y, replace = FALSE)      # Separately reassign y
+      
+    )
+  
+  par.res.n2 <- par_frt(shuffled.df2, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n2 <- par.res.n2 %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n2 <- max(shuffled.df2$z.x.sim) # Extract the max values for x and y
+  y.max.n2 <- max(shuffled.df2$z.y.sim)
+  
+  poly.n2 <- par.res.n2[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n2, z.y.sim = y.max.n2)
+  
+  a.emp.n2 <- polyarea(poly.n2$z.x.sim, poly.n2$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df2 <- rbind(null.df2, data.frame(  # Save the data
+    a.emp.n = a.emp.n2,                    # Area above the curve 
+    n.PF = nrow(par.res.n2)                # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df2$a.emp.n >= a.emp) # p-value 0.271
+
+###### Quantile regression ######
+
+q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt) 
+q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt) 
+q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt)  
+
+summary(q50, se = "boot", R = 1000) # 0.17282, p 0.00139
+summary(q75, se = "boot", R = 1000) # 0.17257, p 0.02942
+summary(q90, se = "boot", R = 1000) # 0.15215, p 0.30250
+
+PigT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Thermal breadth (°C)", 
+       color = "Evolutionary History",
+       title = "S — Temperature ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("evolved" = 1,  # open circle
+               "ancestral" = 5)  # diamond
+  ) +
+  
+  ylim(14,22) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigT.qr # Display the plot
+
+###### 75th quantile PF testing ######
+
+# No temperature evolution treatment
+
+###### top 33% of data ######
+
+df.filt3 <- df.filt %>%
+  arrange(distance) %>%                           # smallest → largest
+  slice((floor(0.6667 * n()) + 1):n()) %>%          # keep *second* half
+  select(-distance)
+
+PigT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Thermal breadth (°C)", 
+       color = "Evolutionary History",
+       title = "S — Temperature ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("evolved" = 1,  # open circle
+               "ancestral" = 5) # diamond
+  ) +
+  
+  ylim(14,22) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigT.scam2  # Display the plot
+
+null.df3 <- data.frame(       # Null model results
+  a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
+  n.PF = numeric(),          # Extract the number of Pareto front points
+  stringsAsFactors = FALSE            
+)
+
+for (i in 1:1000){
+  
+  shuffled.df <- df.filt3 %>%
+    
+    mutate(
+      z.x.sim = sample(df.filt3$z.x, replace = FALSE),     # Randomly assign x
+      
+      z.y.sim = sample(df.filt3$z.y, replace = FALSE),     # Separately reassign y
+    )
+  
+  par.res.n <- par_frt(shuffled.df, xvar = "z.x.sim", yvar = "z.y.sim") #  Pareto front on shuffled data
+  
+  par.res.n <- par.res.n %>% # Arrange the set of Pareto-optimal points by increasing values of z.x
+    arrange(z.x.sim)
+  
+  x.max.n <- max(shuffled.df$z.x.sim) # Extract the max values for x and y
+  y.max.n <- max(shuffled.df$z.y.sim)
+  
+  poly.n <- par.res.n[, c("z.x.sim", "z.y.sim")] %>% # Create a dataframe with the pareto-optimal points and the maximum value 
+    add_row(z.x.sim = x.max.n, z.y.sim = y.max.n)
+  
+  a.emp.n <- polyarea(poly.n$z.x.sim, poly.n$z.y.sim) # Calculate the area enclosed by these vertices
+  
+  null.df3 <- rbind(null.df3, data.frame(  # Save the data
+    a.emp.n = a.emp.n,                   # Area above the curve 
+    n.PF = nrow(par.res.n)              # Number of data points in the PF
+  ))
+  
+}
+
+mean(null.df3$a.emp.n >= a.emp) # p-value 0.309
+
+q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt3) 
+q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt3) 
+q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt3)  
+
+summary(q50, se = "boot", R = 1000) # -0.29647, p 0.00024
+summary(q75, se = "boot", R = 1000) # -0.20193, p 0.04939
+summary(q90, se = "boot", R = 1000) # -0.10280, p 0.72183
+
+PigT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  
+  labs(x = "Pigmentation (PC1)",    
+       y = "Thermal breadth (°C)", 
+       color = "Evolutionary History",
+       title = "S — Temperature ~ Pigmentation") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("evolved" = 1,  # open circle
+               "ancestral" = 5) # diamond
+  ) +
+  
+  ylim(14,22) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PigT.qr2 # Display the plot
