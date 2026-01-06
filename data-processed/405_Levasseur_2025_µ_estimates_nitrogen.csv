@@ -1,0 +1,641 @@
+"","Sp.id","nit","id","r.exp"
+"1","Asterionella formosa",0.5,1,0.0561929304764598
+"2","Asterionella formosa",0.5,1,-0.0256631877943116
+"3","Asterionella formosa",0.5,1,0.0242027532760461
+"4","Asterionella formosa",0.5,1,0.566529827548142
+"5","Asterionella formosa",1,1,-0.163387563645596
+"6","Asterionella formosa",1,1,-0.0109610135192495
+"7","Asterionella formosa",1,1,-0.126293661354829
+"8","Asterionella formosa",1,1,0.0293670863151682
+"9","Asterionella formosa",2,1,0.063627753158432
+"10","Asterionella formosa",2,1,0.0114569462144417
+"11","Asterionella formosa",2,1,0.127752897118132
+"12","Asterionella formosa",2,1,0.514924828221643
+"13","Asterionella formosa",5,1,0.734272024369123
+"14","Asterionella formosa",5,1,-0.111015768693088
+"15","Asterionella formosa",5,1,0.571494854196698
+"16","Asterionella formosa",5,1,-0.207611450833393
+"17","Asterionella formosa",20,1,0.494377953965955
+"18","Asterionella formosa",20,1,0.627796549095958
+"19","Asterionella formosa",20,1,0.792904124173586
+"20","Asterionella formosa",20,1,0.11184249296305
+"21","Asterionella formosa",80,1,0.581156752695449
+"22","Asterionella formosa",80,1,0.645661506697401
+"23","Asterionella formosa",80,1,0.66085114669181
+"24","Asterionella formosa",80,1,0.560158133589892
+"25","Asterionella formosa",400,1,0.846827843347837
+"26","Asterionella formosa",400,1,0.911516060224774
+"27","Asterionella formosa",400,1,0.796416535100259
+"28","Asterionella formosa",400,1,0.861820309437545
+"29","Asterionella formosa",800,1,0.995984472588398
+"30","Asterionella formosa",800,1,0.923681971491706
+"31","Asterionella formosa",800,1,0.91041709032128
+"32","Asterionella formosa",800,1,0.741742268813002
+"33","Chlorella sp.",0.5,2,-0.236780115691607
+"34","Chlorella sp.",0.5,2,0.0317730731883019
+"35","Chlorella sp.",0.5,2,-0.0597718986584127
+"36","Chlorella sp.",0.5,2,-0.0984326895919407
+"37","Chlorella sp.",1,2,-0.105526694767187
+"38","Chlorella sp.",1,2,-0.14356078020005
+"39","Chlorella sp.",1,2,-0.449306419472484
+"40","Chlorella sp.",1,2,-0.312760775855017
+"41","Chlorella sp.",2,2,-0.100059511914984
+"42","Chlorella sp.",2,2,-0.229951216778496
+"43","Chlorella sp.",2,2,0.481917266076829
+"44","Chlorella sp.",2,2,-0.158597823478102
+"45","Chlorella sp.",5,2,1.21661079857552
+"46","Chlorella sp.",5,2,0.440486878576161
+"47","Chlorella sp.",5,2,0.024670485531264
+"48","Chlorella sp.",5,2,-0.141840481460071
+"49","Chlorella sp.",20,2,0.471143824182102
+"50","Chlorella sp.",20,2,0.650757926336128
+"51","Chlorella sp.",20,2,0.649729253283259
+"52","Chlorella sp.",20,2,0.432002600367642
+"53","Chlorella sp.",80,2,1.34128799714438
+"54","Chlorella sp.",80,2,0.924438314258373
+"55","Chlorella sp.",80,2,0.932110410947826
+"56","Chlorella sp.",80,2,0.765351961247807
+"57","Chlorella sp.",400,2,1.03614820057688
+"58","Chlorella sp.",400,2,1.0229731369357
+"59","Chlorella sp.",400,2,1.0361670931384
+"60","Chlorella sp.",400,2,1.08281287954526
+"61","Chlorella sp.",800,2,1.17196360533572
+"62","Chlorella sp.",800,2,1.1981111208313
+"63","Chlorella sp.",800,2,0.897875497370094
+"64","Chlorella sp.",800,2,1.15613065964401
+"65","Coelastrum sp.",0.5,3,0.251324718140547
+"66","Coelastrum sp.",0.5,3,0.380849561397516
+"67","Coelastrum sp.",0.5,3,0.376254151174675
+"68","Coelastrum sp.",0.5,3,0.177501668170764
+"69","Coelastrum sp.",1,3,0.560507586923705
+"70","Coelastrum sp.",1,3,0.543490849527716
+"71","Coelastrum sp.",1,3,0.25927956142545
+"72","Coelastrum sp.",1,3,0.410169015637139
+"73","Coelastrum sp.",2,3,0.283793028656321
+"74","Coelastrum sp.",2,3,0.314122183032947
+"75","Coelastrum sp.",2,3,0.225805808393342
+"76","Coelastrum sp.",2,3,0.344447387897371
+"77","Coelastrum sp.",5,3,0.484739644407927
+"78","Coelastrum sp.",5,3,0.511323365652721
+"79","Coelastrum sp.",5,3,0.334838314028655
+"80","Coelastrum sp.",5,3,0.340867029202327
+"81","Coelastrum sp.",20,3,0.684327376807764
+"82","Coelastrum sp.",20,3,0.648864700677272
+"83","Coelastrum sp.",20,3,0.741047216433337
+"84","Coelastrum sp.",20,3,0.675177482807571
+"85","Coelastrum sp.",80,3,0.837375241492643
+"86","Coelastrum sp.",80,3,0.731487244881683
+"87","Coelastrum sp.",80,3,0.778980865661342
+"88","Coelastrum sp.",80,3,0.821055688729223
+"89","Coelastrum sp.",400,3,0.952619338780554
+"90","Coelastrum sp.",400,3,0.90608120768628
+"91","Coelastrum sp.",400,3,0.914481297821359
+"92","Coelastrum sp.",400,3,0.880488885426424
+"93","Coelastrum sp.",800,3,0.930691591934385
+"94","Coelastrum sp.",800,3,0.959343721447271
+"95","Coelastrum sp.",800,3,0.901257548435591
+"96","Coelastrum sp.",800,3,0.888479837327368
+"97","Cyclotella pseudostelligera",0.5,4,0.121851437643581
+"98","Cyclotella pseudostelligera",0.5,4,-0.0152589265594726
+"99","Cyclotella pseudostelligera",0.5,4,-0.134735372393259
+"100","Cyclotella pseudostelligera",0.5,4,0.0777660465717415
+"101","Cyclotella pseudostelligera",1,4,0.167592169432788
+"102","Cyclotella pseudostelligera",1,4,-0.235370523079091
+"103","Cyclotella pseudostelligera",1,4,0.65732937490948
+"104","Cyclotella pseudostelligera",1,4,-0.203797098848029
+"105","Cyclotella pseudostelligera",2,4,0.0152447756995566
+"106","Cyclotella pseudostelligera",2,4,1.15305235031595
+"107","Cyclotella pseudostelligera",2,4,1.5757560485898
+"108","Cyclotella pseudostelligera",2,4,0.812659358606065
+"109","Cyclotella pseudostelligera",5,4,0.795878040940333
+"110","Cyclotella pseudostelligera",5,4,0.438363983926355
+"111","Cyclotella pseudostelligera",5,4,-0.245471671942342
+"112","Cyclotella pseudostelligera",5,4,1.03145616008236
+"113","Cyclotella pseudostelligera",20,4,0.235165834663948
+"114","Cyclotella pseudostelligera",20,4,1.51829455281277
+"115","Cyclotella pseudostelligera",20,4,0.434245291454632
+"116","Cyclotella pseudostelligera",20,4,0.176238924993261
+"117","Cyclotella pseudostelligera",80,4,0.609436213124854
+"118","Cyclotella pseudostelligera",80,4,0.581030260545433
+"119","Cyclotella pseudostelligera",80,4,0.559646422994284
+"120","Cyclotella pseudostelligera",80,4,0.761188909066561
+"121","Cyclotella pseudostelligera",400,4,0.767208505084805
+"122","Cyclotella pseudostelligera",400,4,0.780334667534395
+"123","Cyclotella pseudostelligera",400,4,0.746616489288943
+"124","Cyclotella pseudostelligera",400,4,0.917386060472023
+"125","Cyclotella pseudostelligera",800,4,0.497809794410127
+"126","Cyclotella pseudostelligera",800,4,1.00379507599797
+"127","Cyclotella pseudostelligera",800,4,0.344719674235432
+"128","Cyclotella pseudostelligera",800,4,1.02692291496955
+"129","Eudorina elegans",0.5,5,0.0544109005007423
+"130","Eudorina elegans",0.5,5,-0.145213263049094
+"131","Eudorina elegans",0.5,5,-0.108921618628704
+"132","Eudorina elegans",0.5,5,0.168920197422937
+"133","Eudorina elegans",1,5,0.683479713023297
+"134","Eudorina elegans",1,5,0.587804187608343
+"135","Eudorina elegans",1,5,0.114808604983362
+"136","Eudorina elegans",1,5,0.109341021429464
+"137","Eudorina elegans",2,5,1.08913069173813
+"138","Eudorina elegans",2,5,0.102846171375238
+"139","Eudorina elegans",2,5,0.134367938297067
+"140","Eudorina elegans",2,5,0.0906529513617361
+"141","Eudorina elegans",5,5,0.70354738068962
+"142","Eudorina elegans",5,5,0.527305647086076
+"143","Eudorina elegans",5,5,0.150577932566049
+"144","Eudorina elegans",5,5,0.314831085568245
+"145","Eudorina elegans",20,5,0.300510984203065
+"146","Eudorina elegans",20,5,0.0299333246221314
+"147","Eudorina elegans",20,5,0.23233504816719
+"148","Eudorina elegans",20,5,0.340724360945066
+"149","Eudorina elegans",80,5,0.945817721465357
+"150","Eudorina elegans",80,5,0.393882762319477
+"151","Eudorina elegans",80,5,0.484280111123521
+"152","Eudorina elegans",80,5,0.400237091370876
+"153","Eudorina elegans",400,5,0.71275417714232
+"154","Eudorina elegans",400,5,0.651757933128923
+"155","Eudorina elegans",400,5,0.76000474225136
+"156","Eudorina elegans",400,5,0.657238081658277
+"157","Eudorina elegans",800,5,0.789030646192233
+"158","Eudorina elegans",800,5,0.837685534015617
+"159","Eudorina elegans",800,5,0.818300365194399
+"160","Eudorina elegans",800,5,1.0681182085128
+"161","Fistulifera saprophila",0.5,6,0.712356768450972
+"162","Fistulifera saprophila",0.5,6,-1.7184259094016
+"163","Fistulifera saprophila",0.5,6,0.899759366429639
+"164","Fistulifera saprophila",0.5,6,0.169417878289398
+"165","Fistulifera saprophila",1,6,0.43807031788754
+"166","Fistulifera saprophila",1,6,0.445232088038233
+"167","Fistulifera saprophila",1,6,0.861662197863923
+"168","Fistulifera saprophila",1,6,0.388013395706936
+"169","Fistulifera saprophila",2,6,0.254001379495437
+"170","Fistulifera saprophila",2,6,0.565473696583273
+"171","Fistulifera saprophila",2,6,-0.168308199050031
+"172","Fistulifera saprophila",2,6,0.140866560650808
+"173","Fistulifera saprophila",5,6,0.984337588842154
+"174","Fistulifera saprophila",5,6,1.22352700663386
+"175","Fistulifera saprophila",5,6,-4.50951751509312
+"176","Fistulifera saprophila",5,6,-0.00805503060224235
+"177","Fistulifera saprophila",20,6,1.31890845437439
+"178","Fistulifera saprophila",20,6,0.240659114573033
+"179","Fistulifera saprophila",20,6,1.06376201476957
+"180","Fistulifera saprophila",20,6,0.246176126433718
+"181","Fistulifera saprophila",80,6,1.21275755450349
+"182","Fistulifera saprophila",80,6,0.623053007068901
+"183","Fistulifera saprophila",80,6,0.665882140730706
+"184","Fistulifera saprophila",80,6,0.681198483330969
+"185","Fistulifera saprophila",400,6,0.864210255772365
+"186","Fistulifera saprophila",400,6,1.12740954607698
+"187","Fistulifera saprophila",400,6,0.916908996946978
+"188","Fistulifera saprophila",400,6,1.04846082042345
+"189","Fistulifera saprophila",800,6,1.30233096419089
+"190","Fistulifera saprophila",800,6,1.21760076938643
+"191","Fistulifera saprophila",800,6,1.07541292257593
+"192","Fistulifera saprophila",800,6,1.08181821343736
+"193","Fragilaria crotonensis",0.5,7,0.0805897155988581
+"194","Fragilaria crotonensis",0.5,7,0.663825226797259
+"195","Fragilaria crotonensis",0.5,7,0.464648175029216
+"196","Fragilaria crotonensis",0.5,7,-0.0441757501270249
+"197","Fragilaria crotonensis",1,7,0.0976802729417682
+"198","Fragilaria crotonensis",1,7,0.0588199934757792
+"199","Fragilaria crotonensis",1,7,0.476240442192735
+"200","Fragilaria crotonensis",1,7,0.189382131086325
+"201","Fragilaria crotonensis",2,7,0.0642023885528431
+"202","Fragilaria crotonensis",2,7,-0.0149940086331819
+"203","Fragilaria crotonensis",2,7,0.056995364084713
+"204","Fragilaria crotonensis",2,7,0.716195718417102
+"205","Fragilaria crotonensis",5,7,0.481262431589154
+"206","Fragilaria crotonensis",5,7,0.133330579475431
+"207","Fragilaria crotonensis",5,7,0.0597867085192169
+"208","Fragilaria crotonensis",5,7,0.182668592926017
+"209","Fragilaria crotonensis",20,7,0.373044337958862
+"210","Fragilaria crotonensis",20,7,0.288367872458613
+"211","Fragilaria crotonensis",20,7,0.5047315754332
+"212","Fragilaria crotonensis",20,7,0.408665412134442
+"213","Fragilaria crotonensis",80,7,0.684684745810554
+"214","Fragilaria crotonensis",80,7,0.593424602224972
+"215","Fragilaria crotonensis",80,7,0.39372754278256
+"216","Fragilaria crotonensis",80,7,0.177480094654269
+"217","Fragilaria crotonensis",400,7,0.878884901875816
+"218","Fragilaria crotonensis",400,7,0.854479529298659
+"219","Fragilaria crotonensis",400,7,0.924436481851074
+"220","Fragilaria crotonensis",400,7,0.807529578272435
+"221","Fragilaria crotonensis",800,7,0.901244003040041
+"222","Fragilaria crotonensis",800,7,0.81012680796033
+"223","Fragilaria crotonensis",800,7,0.9035245951378
+"224","Fragilaria crotonensis",800,7,0.77812946224921
+"225","Lagerheimia subsalsa",0.5,8,0.759256928987454
+"226","Lagerheimia subsalsa",0.5,8,0.648285637817836
+"227","Lagerheimia subsalsa",0.5,8,0.261095392479099
+"228","Lagerheimia subsalsa",0.5,8,0.433029618794738
+"229","Lagerheimia subsalsa",1,8,0.621448106403574
+"230","Lagerheimia subsalsa",1,8,0.527744867638192
+"231","Lagerheimia subsalsa",1,8,0.689876768475939
+"232","Lagerheimia subsalsa",1,8,0.666850709969445
+"233","Lagerheimia subsalsa",2,8,0.485662798553681
+"234","Lagerheimia subsalsa",2,8,0.592614981633283
+"235","Lagerheimia subsalsa",2,8,0.529094271090756
+"236","Lagerheimia subsalsa",2,8,0.699166964201521
+"237","Lagerheimia subsalsa",5,8,1.07581501778826
+"238","Lagerheimia subsalsa",5,8,0.7718333877146
+"239","Lagerheimia subsalsa",5,8,0.593448575849555
+"240","Lagerheimia subsalsa",5,8,0.793728531855981
+"241","Lagerheimia subsalsa",20,8,0.805700487094852
+"242","Lagerheimia subsalsa",20,8,0.860149524761119
+"243","Lagerheimia subsalsa",20,8,0.4910762059215
+"244","Lagerheimia subsalsa",20,8,0.529221662383315
+"245","Lagerheimia subsalsa",80,8,0.847078458995925
+"246","Lagerheimia subsalsa",80,8,1.02322819350742
+"247","Lagerheimia subsalsa",80,8,0.730608381222866
+"248","Lagerheimia subsalsa",80,8,0.830001658073751
+"249","Lagerheimia subsalsa",400,8,0.754710514185804
+"250","Lagerheimia subsalsa",400,8,0.958781148108409
+"251","Lagerheimia subsalsa",400,8,0.637250560375137
+"252","Lagerheimia subsalsa",400,8,0.993849424568704
+"253","Lagerheimia subsalsa",800,8,0.873391578118995
+"254","Lagerheimia subsalsa",800,8,0.900844745164298
+"255","Lagerheimia subsalsa",800,8,0.924589514930581
+"256","Lagerheimia subsalsa",800,8,1.11813569956593
+"257","Messastrum gracile",0.5,9,0.44063393918156
+"258","Messastrum gracile",0.5,9,0.288808209414842
+"259","Messastrum gracile",0.5,9,0.493384619221234
+"260","Messastrum gracile",0.5,9,0.424280742298767
+"261","Messastrum gracile",1,9,1.02915612742253
+"262","Messastrum gracile",1,9,0.643846704540517
+"263","Messastrum gracile",1,9,0.886936038880026
+"264","Messastrum gracile",1,9,0.770555755205136
+"265","Messastrum gracile",2,9,0.397221758497696
+"266","Messastrum gracile",2,9,0.291534788363919
+"267","Messastrum gracile",2,9,0.507024181039169
+"268","Messastrum gracile",2,9,0.87531938739193
+"269","Messastrum gracile",5,9,0.7852213561991
+"270","Messastrum gracile",5,9,0.495760287523281
+"271","Messastrum gracile",5,9,0.552017810169396
+"272","Messastrum gracile",5,9,0.636137113219876
+"273","Messastrum gracile",20,9,0.680882104576966
+"274","Messastrum gracile",20,9,0.717295364034793
+"275","Messastrum gracile",20,9,0.798833700958012
+"276","Messastrum gracile",20,9,0.692548943577512
+"277","Messastrum gracile",80,9,0.853437481289111
+"278","Messastrum gracile",80,9,0.84283351663095
+"279","Messastrum gracile",80,9,0.735560106258603
+"280","Messastrum gracile",80,9,0.811753342467236
+"281","Messastrum gracile",400,9,1.117933548561
+"282","Messastrum gracile",400,9,1.08335730651489
+"283","Messastrum gracile",400,9,1.06920644776252
+"284","Messastrum gracile",400,9,0.981575131162924
+"285","Messastrum gracile",800,9,1.2561379105115
+"286","Messastrum gracile",800,9,1.22717043770085
+"287","Messastrum gracile",800,9,1.31280792021887
+"288","Messastrum gracile",800,9,1.01553520645197
+"289","Microcystis aeruginosa",0.5,10,0.096205370259785
+"290","Microcystis aeruginosa",0.5,10,-0.197264562604215
+"291","Microcystis aeruginosa",0.5,10,-0.0463209895635424
+"292","Microcystis aeruginosa",0.5,10,0.227950282832521
+"293","Microcystis aeruginosa",1,10,-0.142869089703049
+"294","Microcystis aeruginosa",1,10,0.106056734905236
+"295","Microcystis aeruginosa",1,10,-0.122717918810161
+"296","Microcystis aeruginosa",1,10,-0.17494673130818
+"297","Microcystis aeruginosa",2,10,0.197351179372237
+"298","Microcystis aeruginosa",2,10,0.11249690292496
+"299","Microcystis aeruginosa",2,10,0.312493985981425
+"300","Microcystis aeruginosa",2,10,0.495803197813037
+"301","Microcystis aeruginosa",5,10,0.772449134858604
+"302","Microcystis aeruginosa",5,10,0.592777932528624
+"303","Microcystis aeruginosa",5,10,0.664529973243295
+"304","Microcystis aeruginosa",5,10,0.297742552356526
+"305","Microcystis aeruginosa",20,10,0.978740585063976
+"306","Microcystis aeruginosa",20,10,0.860411773070162
+"307","Microcystis aeruginosa",20,10,1.18498353402012
+"308","Microcystis aeruginosa",20,10,1.27390608860971
+"309","Microcystis aeruginosa",80,10,1.89700149966001
+"310","Microcystis aeruginosa",80,10,2.12891996563922
+"311","Microcystis aeruginosa",80,10,2.0455807972181
+"312","Microcystis aeruginosa",80,10,2.14251649854231
+"313","Microcystis aeruginosa",400,10,1.90559641773534
+"314","Microcystis aeruginosa",400,10,1.89171594774433
+"315","Microcystis aeruginosa",400,10,2.06844202297121
+"316","Microcystis aeruginosa",400,10,1.84448905050752
+"317","Microcystis aeruginosa",800,10,2.13173716535521
+"318","Microcystis aeruginosa",800,10,1.83887808558318
+"319","Microcystis aeruginosa",800,10,2.01633697443625
+"320","Microcystis aeruginosa",800,10,1.90754735791874
+"321","Microcystis viridis",0.5,11,0.188580889884578
+"322","Microcystis viridis",0.5,11,0.57340498272291
+"323","Microcystis viridis",0.5,11,0.335008422311589
+"324","Microcystis viridis",0.5,11,0.26722487558617
+"325","Microcystis viridis",1,11,0.0112532218880121
+"326","Microcystis viridis",1,11,-0.0640431533257557
+"327","Microcystis viridis",1,11,0.0933330990359533
+"328","Microcystis viridis",1,11,0.00525882783698453
+"329","Microcystis viridis",2,11,-0.0563251108044377
+"330","Microcystis viridis",2,11,0.401375327185869
+"331","Microcystis viridis",2,11,-0.00656363593896357
+"332","Microcystis viridis",2,11,0.24390616912112
+"333","Microcystis viridis",5,11,0.917571922904654
+"334","Microcystis viridis",5,11,0.321402696984775
+"335","Microcystis viridis",5,11,0.52145131227659
+"336","Microcystis viridis",5,11,0.607698182413121
+"337","Microcystis viridis",20,11,1.8319843296472
+"338","Microcystis viridis",20,11,1.65986101935927
+"339","Microcystis viridis",20,11,1.87953754562275
+"340","Microcystis viridis",20,11,1.60984748830787
+"341","Microcystis viridis",80,11,2.09739677366603
+"342","Microcystis viridis",80,11,1.83601278989427
+"343","Microcystis viridis",80,11,1.85465081454926
+"344","Microcystis viridis",80,11,1.99984661178745
+"345","Microcystis viridis",400,11,2.06660927186476
+"346","Microcystis viridis",400,11,1.62101367535262
+"347","Microcystis viridis",400,11,1.86855813110426
+"348","Microcystis viridis",400,11,2.06534775767915
+"349","Microcystis viridis",800,11,1.74094752395362
+"350","Microcystis viridis",800,11,1.67885574743534
+"351","Microcystis viridis",800,11,1.87712564433971
+"352","Microcystis viridis",800,11,1.51739027826349
+"353","Nitzschia paela (C )",0.5,12,0.621330487215287
+"354","Nitzschia paela (C )",0.5,12,0.186430681814561
+"355","Nitzschia paela (C )",0.5,12,0.402936736370414
+"356","Nitzschia paela (C )",0.5,12,0.249834738233685
+"357","Nitzschia paela (C )",1,12,1.00980426442649
+"358","Nitzschia paela (C )",1,12,0.772339286862859
+"359","Nitzschia paela (C )",1,12,0.898647779754245
+"360","Nitzschia paela (C )",1,12,0.72845055229082
+"361","Nitzschia paela (C )",2,12,0.687221634641029
+"362","Nitzschia paela (C )",2,12,0.846724111327656
+"363","Nitzschia paela (C )",2,12,1.19848889240002
+"364","Nitzschia paela (C )",2,12,0.839463573371976
+"365","Nitzschia paela (C )",5,12,1.41960415283959
+"366","Nitzschia paela (C )",5,12,1.15042250360701
+"367","Nitzschia paela (C )",5,12,0.852697107271435
+"368","Nitzschia paela (C )",5,12,0.874221700142342
+"369","Nitzschia paela (C )",20,12,1.46103623511967
+"370","Nitzschia paela (C )",20,12,1.08468128252472
+"371","Nitzschia paela (C )",20,12,1.17618126409404
+"372","Nitzschia paela (C )",20,12,1.03932837423653
+"373","Nitzschia paela (C )",80,12,1.50976377437586
+"374","Nitzschia paela (C )",80,12,1.21610985292256
+"375","Nitzschia paela (C )",80,12,1.2587349978407
+"376","Nitzschia paela (C )",80,12,1.25338578266072
+"377","Nitzschia paela (C )",400,12,1.29729017854759
+"378","Nitzschia paela (C )",400,12,1.26755207784526
+"379","Nitzschia paela (C )",400,12,1.32722473476004
+"380","Nitzschia paela (C )",400,12,1.16585578760074
+"381","Nitzschia paela (C )",800,12,1.44591194829345
+"382","Nitzschia paela (C )",800,12,1.5112049010935
+"383","Nitzschia paela (C )",800,12,1.43590656623756
+"384","Nitzschia paela (C )",800,12,1.52427273949127
+"385","Nitzschia paela (G)",0.5,13,0.462954018720384
+"386","Nitzschia paela (G)",0.5,13,0.389663154084876
+"387","Nitzschia paela (G)",0.5,13,0.36060962700436
+"388","Nitzschia paela (G)",0.5,13,0.394889189950545
+"389","Nitzschia paela (G)",1,13,0.434018268243885
+"390","Nitzschia paela (G)",1,13,0.629107033982404
+"391","Nitzschia paela (G)",1,13,0.610928847554558
+"392","Nitzschia paela (G)",1,13,0.855338863465749
+"393","Nitzschia paela (G)",2,13,0.62509846419485
+"394","Nitzschia paela (G)",2,13,0.870993007437969
+"395","Nitzschia paela (G)",2,13,0.25671781374098
+"396","Nitzschia paela (G)",2,13,0.597071111496845
+"397","Nitzschia paela (G)",5,13,0.736917706178216
+"398","Nitzschia paela (G)",5,13,0.282520292198089
+"399","Nitzschia paela (G)",5,13,0.499162163669484
+"400","Nitzschia paela (G)",5,13,0.499071465298897
+"401","Nitzschia paela (G)",20,13,0.968814496094692
+"402","Nitzschia paela (G)",20,13,1.45554314139099
+"403","Nitzschia paela (G)",20,13,0.919885070130842
+"404","Nitzschia paela (G)",20,13,0.612698604371801
+"405","Nitzschia paela (G)",80,13,0.766708909143426
+"406","Nitzschia paela (G)",80,13,0.791255043165111
+"407","Nitzschia paela (G)",80,13,0.702037120231613
+"408","Nitzschia paela (G)",80,13,0.821389525339086
+"409","Nitzschia paela (G)",400,13,1.0960455679875
+"410","Nitzschia paela (G)",400,13,1.01937051280004
+"411","Nitzschia paela (G)",400,13,0.844699813298107
+"412","Nitzschia paela (G)",400,13,0.940920736464474
+"413","Nitzschia paela (G)",800,13,0.917812061855456
+"414","Nitzschia paela (G)",800,13,0.986147740256135
+"415","Nitzschia paela (G)",800,13,1.08711245582909
+"416","Nitzschia paela (G)",800,13,1.07895301240951
+"417","Oocystis sp.",0.5,14,0.40812631874122
+"418","Oocystis sp.",0.5,14,0.643597377129372
+"419","Oocystis sp.",0.5,14,0.677970301573044
+"420","Oocystis sp.",0.5,14,0.709269563005817
+"421","Oocystis sp.",1,14,0.589859217347302
+"422","Oocystis sp.",1,14,0.451713632035492
+"423","Oocystis sp.",1,14,0.357081233434202
+"424","Oocystis sp.",1,14,0.393785997496628
+"425","Oocystis sp.",2,14,0.340762918885933
+"426","Oocystis sp.",2,14,0.581415495604813
+"427","Oocystis sp.",2,14,0.468553939916546
+"428","Oocystis sp.",2,14,0.435568852531753
+"429","Oocystis sp.",5,14,0.628776189420867
+"430","Oocystis sp.",5,14,0.466700525936916
+"431","Oocystis sp.",5,14,0.449046715992208
+"432","Oocystis sp.",5,14,0.393286596889583
+"433","Oocystis sp.",20,14,0.539208902104349
+"434","Oocystis sp.",20,14,0.496348953865471
+"435","Oocystis sp.",20,14,0.526651675447436
+"436","Oocystis sp.",20,14,0.516618742719995
+"437","Oocystis sp.",80,14,0.695753474920346
+"438","Oocystis sp.",80,14,0.713580887819086
+"439","Oocystis sp.",80,14,0.562439489699504
+"440","Oocystis sp.",80,14,0.470576009431518
+"441","Oocystis sp.",400,14,0.734876260637576
+"442","Oocystis sp.",400,14,0.848904429354263
+"443","Oocystis sp.",400,14,0.750938853888554
+"444","Oocystis sp.",400,14,0.857945867978826
+"445","Oocystis sp.",800,14,0.754046838822593
+"446","Oocystis sp.",800,14,0.726145828267507
+"447","Oocystis sp.",800,14,0.647654644242288
+"448","Oocystis sp.",800,14,0.622455206359326
+"449","Pediastrum boryanum",0.5,15,0.425109553895232
+"450","Pediastrum boryanum",0.5,15,0.378896202654739
+"451","Pediastrum boryanum",0.5,15,0.300510953981209
+"452","Pediastrum boryanum",0.5,15,0.568575572398271
+"453","Pediastrum boryanum",1,15,0.613994293301456
+"454","Pediastrum boryanum",1,15,0.709424375131371
+"455","Pediastrum boryanum",1,15,0.506398975102538
+"456","Pediastrum boryanum",1,15,0.410136501204684
+"457","Pediastrum boryanum",2,15,-0.0286779590940541
+"458","Pediastrum boryanum",2,15,0.361826090441495
+"459","Pediastrum boryanum",2,15,0.555352171733414
+"460","Pediastrum boryanum",2,15,0.422946557001891
+"461","Pediastrum boryanum",5,15,0.474259854366299
+"462","Pediastrum boryanum",5,15,0.525333290918299
+"463","Pediastrum boryanum",5,15,0.672799581148096
+"464","Pediastrum boryanum",5,15,0.546771555855238
+"465","Pediastrum boryanum",20,15,0.912710627946676
+"466","Pediastrum boryanum",20,15,0.82540128439197
+"467","Pediastrum boryanum",20,15,0.797344563225834
+"468","Pediastrum boryanum",20,15,0.931025218565016
+"469","Pediastrum boryanum",80,15,0.932388136853236
+"470","Pediastrum boryanum",80,15,0.77254985882236
+"471","Pediastrum boryanum",80,15,0.808495545638361
+"472","Pediastrum boryanum",80,15,0.984345990292537
+"473","Pediastrum boryanum",400,15,1.13885853051941
+"474","Pediastrum boryanum",400,15,1.09010804852717
+"475","Pediastrum boryanum",400,15,1.02427853550871
+"476","Pediastrum boryanum",400,15,1.00910983548143
+"477","Pediastrum boryanum",800,15,0.992615640348271
+"478","Pediastrum boryanum",800,15,0.94756605971766
+"479","Pediastrum boryanum",800,15,0.912002305159763
+"480","Pediastrum boryanum",800,15,0.870728830567713
+"481","Planktothrix agardhii",0.5,16,-0.711925856241338
+"482","Planktothrix agardhii",0.5,16,-0.185704851366002
+"483","Planktothrix agardhii",0.5,16,-0.109788499078194
+"484","Planktothrix agardhii",0.5,16,0.104634719355256
+"485","Planktothrix agardhii",1,16,-0.145725837465617
+"486","Planktothrix agardhii",1,16,0.311681420223482
+"487","Planktothrix agardhii",1,16,0.0930090824779588
+"488","Planktothrix agardhii",1,16,-0.0330256982530236
+"489","Planktothrix agardhii",2,16,0.0524226381539239
+"490","Planktothrix agardhii",2,16,-0.0704343424298853
+"491","Planktothrix agardhii",2,16,-0.0128800207219761
+"492","Planktothrix agardhii",2,16,-0.101415421182296
+"493","Planktothrix agardhii",5,16,-0.136361265632952
+"494","Planktothrix agardhii",5,16,-0.0463643287068768
+"495","Planktothrix agardhii",5,16,0.217316958439449
+"496","Planktothrix agardhii",5,16,-0.0291550637213034
+"497","Planktothrix agardhii",20,16,0.525996357400355
+"498","Planktothrix agardhii",20,16,-0.0869451099201815
+"499","Planktothrix agardhii",20,16,0.30981103322607
+"500","Planktothrix agardhii",20,16,0.291221095191907
+"501","Planktothrix agardhii",80,16,0.293235292118091
+"502","Planktothrix agardhii",80,16,0.0860547406054418
+"503","Planktothrix agardhii",80,16,-0.0386336635142251
+"504","Planktothrix agardhii",80,16,-0.101296671732693
+"505","Planktothrix agardhii",400,16,0.0829713965603382
+"506","Planktothrix agardhii",400,16,0.120591826140739
+"507","Planktothrix agardhii",400,16,0.137209212175935
+"508","Planktothrix agardhii",400,16,0.30798078296727
+"509","Planktothrix agardhii",800,16,0.0768038032588397
+"510","Planktothrix agardhii",800,16,0.0578976833704247
+"511","Planktothrix agardhii",800,16,0.137419634940054
+"512","Planktothrix agardhii",800,16,0.290411120102513
+"513","Scenedesmus arcuatus var. Platydiscus",0.5,17,0.664011223897833
+"514","Scenedesmus arcuatus var. Platydiscus",0.5,17,0.730656434729408
+"515","Scenedesmus arcuatus var. Platydiscus",0.5,17,0.606891656156642
+"516","Scenedesmus arcuatus var. Platydiscus",0.5,17,0.784366257182573
+"517","Scenedesmus arcuatus var. Platydiscus",1,17,0.869652643951628
+"518","Scenedesmus arcuatus var. Platydiscus",1,17,0.894963711604631
+"519","Scenedesmus arcuatus var. Platydiscus",1,17,0.72486484833367
+"520","Scenedesmus arcuatus var. Platydiscus",1,17,0.6990340676885
+"521","Scenedesmus arcuatus var. Platydiscus",2,17,0.638282591525484
+"522","Scenedesmus arcuatus var. Platydiscus",2,17,0.972449459261428
+"523","Scenedesmus arcuatus var. Platydiscus",2,17,0.600599728754663
+"524","Scenedesmus arcuatus var. Platydiscus",2,17,0.898552199568589
+"525","Scenedesmus arcuatus var. Platydiscus",5,17,0.761790518724098
+"526","Scenedesmus arcuatus var. Platydiscus",5,17,0.752220221239808
+"527","Scenedesmus arcuatus var. Platydiscus",5,17,0.781918108676627
+"528","Scenedesmus arcuatus var. Platydiscus",5,17,1.1887665055212
+"529","Scenedesmus arcuatus var. Platydiscus",20,17,0.858553352733253
+"530","Scenedesmus arcuatus var. Platydiscus",20,17,0.831467644831566
+"531","Scenedesmus arcuatus var. Platydiscus",20,17,0.708280208381941
+"532","Scenedesmus arcuatus var. Platydiscus",20,17,0.826535589006449
+"533","Scenedesmus arcuatus var. Platydiscus",80,17,0.685389640138416
+"534","Scenedesmus arcuatus var. Platydiscus",80,17,0.526247884784901
+"535","Scenedesmus arcuatus var. Platydiscus",80,17,0.903165879482872
+"536","Scenedesmus arcuatus var. Platydiscus",80,17,1.24386013810085
+"537","Scenedesmus arcuatus var. Platydiscus",400,17,1.07039512129163
+"538","Scenedesmus arcuatus var. Platydiscus",400,17,1.10854482284975
+"539","Scenedesmus arcuatus var. Platydiscus",400,17,1.1866761405631
+"540","Scenedesmus arcuatus var. Platydiscus",400,17,1.16763178941768
+"541","Scenedesmus arcuatus var. Platydiscus",800,17,1.03463953741826
+"542","Scenedesmus arcuatus var. Platydiscus",800,17,1.00440017021244
+"543","Scenedesmus arcuatus var. Platydiscus",800,17,0.964660605210529
+"544","Scenedesmus arcuatus var. Platydiscus",800,17,0.736961934328305
+"545","Scenedesmus armatus",0.5,18,0.815782842821328
+"546","Scenedesmus armatus",0.5,18,0.879807031716817
+"547","Scenedesmus armatus",0.5,18,0.717113313486298
+"548","Scenedesmus armatus",0.5,18,1.01642967095098
+"549","Scenedesmus armatus",1,18,0.766422657526705
+"550","Scenedesmus armatus",1,18,0.597672050008199
+"551","Scenedesmus armatus",1,18,0.670444009792401
+"552","Scenedesmus armatus",1,18,0.922520321165532
+"553","Scenedesmus armatus",2,18,0.371879912288896
+"554","Scenedesmus armatus",2,18,0.45655651774145
+"555","Scenedesmus armatus",2,18,0.576487925375332
+"556","Scenedesmus armatus",2,18,0.604604688306836
+"557","Scenedesmus armatus",5,18,0.826773412580488
+"558","Scenedesmus armatus",5,18,0.645735650895861
+"559","Scenedesmus armatus",5,18,0.678673836411574
+"560","Scenedesmus armatus",5,18,0.706892150213283
+"561","Scenedesmus armatus",20,18,0.491824626500764
+"562","Scenedesmus armatus",20,18,0.498228815359181
+"563","Scenedesmus armatus",20,18,0.737042584789892
+"564","Scenedesmus armatus",20,18,0.589161302248917
+"565","Scenedesmus armatus",80,18,0.851803947966673
+"566","Scenedesmus armatus",80,18,0.857489456950485
+"567","Scenedesmus armatus",80,18,0.698630244510877
+"568","Scenedesmus armatus",80,18,0.724283696335328
+"569","Scenedesmus armatus",400,18,1.00612825761348
+"570","Scenedesmus armatus",400,18,0.969001391065769
+"571","Scenedesmus armatus",400,18,0.974840160547569
+"572","Scenedesmus armatus",400,18,0.98768095887717
+"573","Scenedesmus armatus",800,18,1.05574317875569
+"574","Scenedesmus armatus",800,18,0.979404953112372
+"575","Scenedesmus armatus",800,18,1.03782805548167
+"576","Scenedesmus armatus",800,18,0.871745037941565
+"577","Synechococcus elongatus",0.5,19,0.306030559622736
+"578","Synechococcus elongatus",0.5,19,0.0660632915933316
+"579","Synechococcus elongatus",0.5,19,0.0433015840784061
+"580","Synechococcus elongatus",0.5,19,-0.0299568132468812
+"581","Synechococcus elongatus",1,19,0.234868797877067
+"582","Synechococcus elongatus",1,19,0.0935696812791976
+"583","Synechococcus elongatus",1,19,0.0554706064845354
+"584","Synechococcus elongatus",1,19,0.117557542219325
+"585","Synechococcus elongatus",2,19,-0.0761787386540391
+"586","Synechococcus elongatus",2,19,-0.0622529519555653
+"587","Synechococcus elongatus",2,19,0.0910486111393495
+"588","Synechococcus elongatus",2,19,0.159094367162456
+"589","Synechococcus elongatus",5,19,-0.0822111977357246
+"590","Synechococcus elongatus",5,19,0.217316955039472
+"591","Synechococcus elongatus",5,19,0.109107648702121
+"592","Synechococcus elongatus",5,19,0.152159881892593
+"593","Synechococcus elongatus",20,19,-0.036993485881524
+"594","Synechococcus elongatus",20,19,-0.043797157016305
+"595","Synechococcus elongatus",20,19,0.0526628121759121
+"596","Synechococcus elongatus",20,19,0.473152726284264
+"597","Synechococcus elongatus",80,19,0.224699904404582
+"598","Synechococcus elongatus",80,19,0.295450135272767
+"599","Synechococcus elongatus",80,19,0.251251841231587
+"600","Synechococcus elongatus",80,19,0.439926456561731
+"601","Synechococcus elongatus",400,19,0.440272181925202
+"602","Synechococcus elongatus",400,19,0.349939025173115
+"603","Synechococcus elongatus",400,19,0.37593148436377
+"604","Synechococcus elongatus",400,19,0.421537724927056
+"605","Synechococcus elongatus",800,19,0.476743069078643
+"606","Synechococcus elongatus",800,19,0.545809916527843
+"607","Synechococcus elongatus",800,19,0.3656690957759
+"608","Synechococcus elongatus",800,19,0.522564529997805
+"609","Tetraedron minumum",0.5,20,0.540544299232551
+"610","Tetraedron minumum",0.5,20,0.0923420360670348
+"611","Tetraedron minumum",0.5,20,0.352224381236121
+"612","Tetraedron minumum",0.5,20,0.327320347391282
+"613","Tetraedron minumum",1,20,0.96154681132626
+"614","Tetraedron minumum",1,20,0.15093538688532
+"615","Tetraedron minumum",1,20,0.198540128226543
+"616","Tetraedron minumum",1,20,0.237415094145712
+"617","Tetraedron minumum",2,20,0.542491363021543
+"618","Tetraedron minumum",2,20,0.0333098729011663
+"619","Tetraedron minumum",2,20,0.19649770260068
+"620","Tetraedron minumum",2,20,0.2063502274594
+"621","Tetraedron minumum",5,20,0.115566735017544
+"622","Tetraedron minumum",5,20,0.272534282480355
+"623","Tetraedron minumum",5,20,0.305240696133519
+"624","Tetraedron minumum",5,20,0.34301916001401
+"625","Tetraedron minumum",20,20,0.782409912154752
+"626","Tetraedron minumum",20,20,0.549252289233563
+"627","Tetraedron minumum",20,20,0.375104109429556
+"628","Tetraedron minumum",20,20,0.370651375796306
+"629","Tetraedron minumum",80,20,0.513534953752377
+"630","Tetraedron minumum",80,20,0.445592765326334
+"631","Tetraedron minumum",80,20,0.476155006099754
+"632","Tetraedron minumum",80,20,0.451072955125013
+"633","Tetraedron minumum",400,20,0.465394787048089
+"634","Tetraedron minumum",400,20,0.298317348883178
+"635","Tetraedron minumum",400,20,0.492831731433674
+"636","Tetraedron minumum",400,20,0.515091633719691
+"637","Tetraedron minumum",800,20,0.508481637740857
+"638","Tetraedron minumum",800,20,0.399075535735722
+"639","Tetraedron minumum",800,20,0.451240167976932
+"640","Tetraedron minumum",800,20,0.524127608275915

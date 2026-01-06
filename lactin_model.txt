@@ -1,0 +1,24 @@
+
+  model {
+
+    a       ~ dunif(0.018348, 0.022425)
+    tmax    ~ dunif(31.095596, 38.005729)
+    d.t     ~ dunif(3.503854, 4.282488)
+    b       ~ dunif(-1.331109, -1.089089)
+    sigma   ~ dunif(0, 5)
+    tau <- pow(sigma, -2)
+
+    for (i in 1:N.obs) {
+      trait.mu[i] <- exp(a * temp[i]) -
+                     exp(a * tmax - (tmax - temp[i]) / d.t) +
+                     b
+      trait[i] ~ dnorm(trait.mu[i], tau)
+    }
+
+    for (j in 1:N.Temp.xs) {
+      r.pred[j] <- exp(a * Temp.xs[j]) -
+                   exp(a * tmax - (tmax - Temp.xs[j]) / d.t) +
+                   b
+    }
+  }
+  

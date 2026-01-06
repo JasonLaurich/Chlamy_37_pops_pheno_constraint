@@ -460,9 +460,9 @@ q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt3)
 q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt3) 
 q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt3)  
 
-summary(q50, se = "boot", R = 1000) # 0.04126, p 0.04252
-summary(q75, se = "boot", R = 1000) # 0.14878, p 0.04416
-summary(q90, se = "boot", R = 1000) # 0.29650, p 0.00903
+summary(q50, se = "boot", R = 1000) # -0.04590, p 0.12216
+summary(q75, se = "boot", R = 1000) # 0.01338, p 0.84550
+summary(q90, se = "boot", R = 1000) # 0.14039, p 0.33313
 
 LN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
@@ -1332,7 +1332,7 @@ q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt3)
 
 summary(q50, se = "boot", R = 1000) # -0.01160, p 0.00992
 summary(q75, se = "boot", R = 1000) # -0.01624, p 0.01380
-summary(q90, se = "boot", R = 1000) # -0.02533, p 0.03339
+summary(q90, se = "boot", R = 1000) # -0.02533, p 0.01913
 
 LS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
@@ -11044,7 +11044,7 @@ for (i in 1:1000){
   
 }
 
-mean(null.df$a.emp.n >= a.emp) # p-value 0.132
+mean(null.df$a.emp.n >= a.emp) # p-value 0.153
 
 # Randomize across optimal and near-optimal points
 
@@ -11093,9 +11093,9 @@ q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt)
 q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt) 
 q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt)  
 
-summary(q50, se = "boot", R = 1000) # -0.00013, p 0.04045
-summary(q75, se = "boot", R = 1000) # -0.00029, p 0.22206
-summary(q90, se = "boot", R = 1000) # -0.00096, p 0.07133
+summary(q50, se = "boot", R = 1000) # -0.00014, p 0.00215
+summary(q75, se = "boot", R = 1000) # -0.00032, p 0.00163
+summary(q90, se = "boot", R = 1000) # -0.00054, p 0.00056
 
 BvL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
@@ -11176,7 +11176,7 @@ for (i in 1:1000) { # Now we'll randomize and see how many light points should f
     nrow()
 }
 
-mean(null_counts>= n.75) # p = 00
+mean(null_counts>= n.75) # p = 0.433
 
 ###### top 33% of data ######
 
@@ -11263,15 +11263,15 @@ for (i in 1:1000){
   
 }
 
-mean(null.df3$a.emp.n >= a.emp) # p-value 0.051
+mean(null.df3$a.emp.n >= a.emp) # p-value 0.029
 
 q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt3) 
 q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt3) 
 q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt3)  
 
-summary(q50, se = "boot", R = 1000) # -0.00190, p 0.00178
-summary(q75, se = "boot", R = 1000) # -0.00275, p 0.00003
-summary(q90, se = "boot", R = 1000) # -0.00274, p 0.00000
+summary(q50, se = "boot", R = 1000) # -0.00056, p 0.02504
+summary(q75, se = "boot", R = 1000) # -0.00077, p 0.01890
+summary(q90, se = "boot", R = 1000) # -0.00120, p 0.00021
 
 BvL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
@@ -11390,7 +11390,7 @@ BvN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   labs(x = "Biovolume",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "H — Nitrogen ~ Pigmentation") +  # labels
+       title = "H — Nitrogen ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -11474,7 +11474,7 @@ for (i in 1:1000){
   
 }
 
-mean(null.df$a.emp.n >= a.emp) # p-value 0.519
+mean(null.df$a.emp.n >= a.emp) # p-value 0.011
 
 # Randomize across optimal and near-optimal points
 
@@ -11515,7 +11515,7 @@ for (i in 1:1000){
   
 }
 
-mean(null.df2$a.emp.n >= a.emp) # p-value 0.267
+mean(null.df2$a.emp.n >= a.emp) # p-value 0.069
 
 ###### Quantile regression ######
 
@@ -11523,21 +11523,21 @@ q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt)
 q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt) 
 q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt)  
 
-summary(q50, se = "boot", R = 1000) # -0.00140, p 0.81895
-summary(q75, se = "boot", R = 1000) # -0.00809, p 0.46017
-summary(q90, se = "boot", R = 1000) # -0.01662, p 0.55219
+summary(q50, se = "boot", R = 1000) # -0.00080, p 0.00037
+summary(q75, se = "boot", R = 1000) # -0.00136, p 0.00015
+summary(q90, se = "boot", R = 1000) # -0.00226, p 0.00062
 
-PigN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+BvN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
   
-  labs(x = "Pigmentation (PC1)",    
+  labs(x = "Biovolume",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "G — Nitrogen ~ Pigmentation") +  # labels
+       title = "H — Nitrogen ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -11568,7 +11568,7 @@ PigN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
-PigN.qr # Display the plot
+BvN.qr # Display the plot
 
 ###### 75th quantile PF testing ######
 
@@ -11606,7 +11606,7 @@ for (i in 1:1000) { # Now we'll randomize and see how many nit points should fal
     nrow()
 }
 
-mean(null_counts>= n.75) # p = 0.744
+mean(null_counts>= n.75) # p = 0.245
 
 ###### top 33% of data ######
 
@@ -11615,16 +11615,16 @@ df.filt3 <- df.filt %>%
   slice((floor(0.6667 * n()) + 1):n()) %>%          # keep *second* half
   select(-distance)
 
-PigN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+BvN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Pigmentation (PC1)",    
+  labs(x = "Biovolume",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "G — Nitrogen ~ Pigmentation") +  # labels
+       title = "H — Nitrogen ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -11655,7 +11655,7 @@ PigN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = e
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
-PigN.scam2  # Display the plot
+BvN.scam2  # Display the plot
 
 null.df3 <- data.frame(       # Null model results
   a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
@@ -11693,27 +11693,27 @@ for (i in 1:1000){
   
 }
 
-mean(null.df3$a.emp.n >= a.emp) # p-value 0.078
+mean(null.df3$a.emp.n >= a.emp) # p-value 0.005
 
 q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt3) 
 q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt3) 
 q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt3)  
 
-summary(q50, se = "boot", R = 1000) # -0.10026, p 0.00621
-summary(q75, se = "boot", R = 1000) # -0.10161, p 0.00422
-summary(q90, se = "boot", R = 1000) # -0.10937, p 0.03935
+summary(q50, se = "boot", R = 1000) # -0.00389, p 0.00106
+summary(q75, se = "boot", R = 1000) # -0.00348, p 0.00078
+summary(q90, se = "boot", R = 1000) # -0.00435, p 0.00073
 
-PigN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+BvN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
   
-  labs(x = "Pigmentation (PC1)",    
+  labs(x = "Biovolume",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "G — Nitrogen ~ Pigmentation") +  # labels
+       title = "H — Nitrogen ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -11744,9 +11744,9 @@ PigN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
-PigN.qr2 # Display the plot
+BvN.qr2 # Display the plot
 
-# Pigmentation v phosphorous ----------------------------------------------------
+# Biovolume v phosphorous ----------------------------------------------------
 
 df$evol.bin <- ifelse(df$Evol == "none", 'ancestral', 
                       ifelse(df$Evol == "P", 'phos', 'other')) # For binning into evolutionary treatments for plotting purposes.
@@ -11754,7 +11754,7 @@ df$evol.bin <- ifelse(df$Evol == "none", 'ancestral',
 df.filt <- df %>% 
   mutate(
     z.y = P.comp,
-    z.x = pig.PC
+    z.x = bio.vol
   ) # Specify the x and y variables and their 95% CIs
 
 plot(z.y~z.x, data=df.filt)
@@ -11812,16 +11812,16 @@ pred.curve.2 <- data.frame( # predicted data frame
   z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
 )
 
-PigP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+BvP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Pigmentation (PC1)",    
+  labs(x = "Biovolume",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "K — Phosphorous ~ Pigmentation") +  # labels
+       title = "L — Phosphorous ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -11852,7 +11852,7 @@ PigP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
-PigP.scam  # Display the plot
+BvP.scam  # Display the plot
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
@@ -11905,7 +11905,7 @@ for (i in 1:1000){
   
 }
 
-mean(null.df$a.emp.n >= a.emp) # p-value 0.926
+mean(null.df$a.emp.n >= a.emp) # p-value 0.317
 
 # Randomize across optimal and near-optimal points
 
@@ -11946,7 +11946,7 @@ for (i in 1:1000){
   
 }
 
-mean(null.df2$a.emp.n >= a.emp) # p-value 0.447
+mean(null.df2$a.emp.n >= a.emp) # p-value 0
 
 ###### Quantile regression ######
 
@@ -11954,21 +11954,21 @@ q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt)
 q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt) 
 q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt)  
 
-summary(q50, se = "boot", R = 1000) # -0.09807, p 0.00000
-summary(q75, se = "boot", R = 1000) # -0.06254, p 0.19259
-summary(q90, se = "boot", R = 1000) # 0.15957, p 0.41568
+summary(q50, se = "boot", R = 1000) # -0.00309, p 0.00000
+summary(q75, se = "boot", R = 1000) # -0.00479, p 0.01513
+summary(q90, se = "boot", R = 1000) # -0.01219, p 0.00247
 
-PigP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+BvP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
   
-  labs(x = "Pigmentation (PC1)",    
+  labs(x = "Biovolume",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "K — Phosphorous ~ Pigmentation") +  # labels
+       title = "L — Phosphorous ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -11999,7 +11999,7 @@ PigP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
-PigP.qr # Display the plot
+BvP.qr # Display the plot
 
 ###### 75th quantile PF testing ######
 
@@ -12037,7 +12037,7 @@ for (i in 1:1000) { # Now we'll randomize and see how many phos points should fa
     nrow()
 }
 
-mean(null_counts>= n.75) # p = 0.744
+mean(null_counts>= n.75) # p = 0.630
 
 ###### top 33% of data ######
 
@@ -12046,16 +12046,16 @@ df.filt3 <- df.filt %>%
   slice((floor(0.6667 * n()) + 1):n()) %>%          # keep *second* half
   select(-distance)
 
-PigP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+BvP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Pigmentation (PC1)",    
+  labs(x = "Biovolume",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "K — Phosphorous ~ Pigmentation") +  # labels
+       title = "L — Phosphorous ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12086,7 +12086,7 @@ PigP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = e
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
-PigP.scam2  # Display the plot
+BvP.scam2  # Display the plot
 
 null.df3 <- data.frame(       # Null model results
   a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
@@ -12124,27 +12124,27 @@ for (i in 1:1000){
   
 }
 
-mean(null.df3$a.emp.n >= a.emp) # p-value 0.742
+mean(null.df3$a.emp.n >= a.emp) # p-value 0.029
 
 q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt3) 
 q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt3) 
 q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt3)  
 
-summary(q50, se = "boot", R = 1000) # -0.48402, p 0.00071
-summary(q75, se = "boot", R = 1000) # -0.50566, p 0.00012
-summary(q90, se = "boot", R = 1000) # -0.49050, p 0.12495
+summary(q50, se = "boot", R = 1000) # -0.01735, p 0.00000
+summary(q75, se = "boot", R = 1000) # -0.01596, p 0.00000
+summary(q90, se = "boot", R = 1000) # -0.02070, p 0.03753
 
-PigP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+BvP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
   
-  labs(x = "Pigmentation (PC1)",    
+  labs(x = "Biovolume",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "K — Phosphorous ~ Pigmentation") +  # labels
+       title = "L — Phosphorous ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12175,7 +12175,7 @@ PigP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
-PigP.qr2 # Display the plot
+BvP.qr2 # Display the plot
 
 # Pigmentation v salt ----------------------------------------------------
 
@@ -12185,7 +12185,7 @@ df$evol.bin <- ifelse(df$Evol == "none", 'ancestral',
 df.filt <- df %>% 
   mutate(
     z.y = S.c,
-    z.x = pig.PC
+    z.x = bio.vol
   ) # Specify the x and y variables and their 95% CIs
 
 plot(z.y~z.x, data=df.filt)
@@ -12242,16 +12242,16 @@ pred.curve.2 <- data.frame( # predicted data frame
   z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
 )
 
-PigS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+BvS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Pigmentation (PC1)",    
+  labs(x = "Biovolume",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "O — Salt ~ Pigmentation") +  # labels
+       title = "P — Salt ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12282,7 +12282,7 @@ PigS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
-PigS.scam  # Display the plot
+BvS.scam  # Display the plot
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
@@ -12335,7 +12335,7 @@ for (i in 1:1000){
   
 }
 
-mean(null.df$a.emp.n >= a.emp) # p-value 0.115
+mean(null.df$a.emp.n >= a.emp) # p-value 0.119
 
 # Randomize across optimal and near-optimal points
 
@@ -12376,7 +12376,7 @@ for (i in 1:1000){
   
 }
 
-mean(null.df2$a.emp.n >= a.emp) # p-value 0.009
+mean(null.df2$a.emp.n >= a.emp) # p-value 0.028
 
 ###### Quantile regression ######
 
@@ -12384,21 +12384,21 @@ q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt)
 q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt) 
 q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt)  
 
-summary(q50, se = "boot", R = 1000) # 0.04638, p 0.36512
-summary(q75, se = "boot", R = 1000) # -0.04228, p 0.89727
-summary(q90, se = "boot", R = 1000) # 0.18792, p 0.71796
+summary(q50, se = "boot", R = 1000) # -0.00008, p 0.96924
+summary(q75, se = "boot", R = 1000) # 0.00682, p 0.14516
+summary(q90, se = "boot", R = 1000) # 0.00496, p 0.69589
 
-PigS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+BvS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
   
-  labs(x = "Pigmentation (PC1)",    
+  labs(x = "Biovolume",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "O — Salt ~ Pigmentation") +  # labels
+       title = "P — Salt ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12429,7 +12429,7 @@ PigS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
-PigS.qr # Display the plot
+BvS.qr # Display the plot
 
 ###### 75th quantile PF testing ######
 
@@ -12476,16 +12476,16 @@ df.filt3 <- df.filt %>%
   slice((floor(0.6667 * n()) + 1):n()) %>%          # keep *second* half
   select(-distance)
 
-PigS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+BvS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Pigmentation (PC1)",    
+  labs(x = "Biovolume",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "O — Salt ~ Pigmentation") +  # labels
+       title = "O — Salt ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12516,7 +12516,7 @@ PigS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = e
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
-PigS.scam2  # Display the plot
+BvS.scam2  # Display the plot
 
 null.df3 <- data.frame(       # Null model results
   a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
@@ -12554,27 +12554,27 @@ for (i in 1:1000){
   
 }
 
-mean(null.df3$a.emp.n >= a.emp) # p-value 0.012
+mean(null.df3$a.emp.n >= a.emp) # p-value 0.005
 
 q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt3) 
 q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt3) 
 q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt3)  
 
-summary(q50, se = "boot", R = 1000) # -1.02702, p 0.00000
-summary(q75, se = "boot", R = 1000) # -1.00315, p 0.00005
-summary(q90, se = "boot", R = 1000) # -0.45866, p 0.51590
+summary(q50, se = "boot", R = 1000) # -0.04609, p 0.00000
+summary(q75, se = "boot", R = 1000) # -0.04974, p 0.00002
+summary(q90, se = "boot", R = 1000) # -0.02555, p 0.01837
 
-PigS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+BvS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
   
-  labs(x = "Pigmentation (PC1)",    
+  labs(x = "Biovolume",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "O — Salt ~ Pigmentation") +  # labels
+       title = "P — Salt ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12605,7 +12605,7 @@ PigS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
-PigS.qr2 # Display the plot
+BvS.qr2 # Display the plot
 
 # Pigmentation v temperature ----------------------------------------------------
 
@@ -12614,7 +12614,7 @@ df$evol.bin <- ifelse(df$Evol == "none", "ancestral", "evolved") # For binning i
 df.filt <- df %>% 
   mutate(
     z.y = T.br,
-    z.x = pig.PC
+    z.x = bio.vol
   ) # Specify the x and y variables and their 95% CIs
 
 plot(z.y~z.x, data=df.filt)
@@ -12671,16 +12671,16 @@ pred.curve.2 <- data.frame( # predicted data frame
   z.y = predict(fit2, newdata = data.frame(z.x = x.vals))
 )
 
-PigT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+BvT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Pigmentation (PC1)",    
+  labs(x = "Biovolume",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "S — Temperature ~ Pigmentation") +  # labels
+       title = "T — Temperature ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12710,7 +12710,7 @@ PigT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
-PigT.scam  # Display the plot
+BvT.scam  # Display the plot
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
@@ -12763,7 +12763,7 @@ for (i in 1:1000){
   
 }
 
-mean(null.df$a.emp.n >= a.emp) # p-value 0.674
+mean(null.df$a.emp.n >= a.emp) # p-value 0.532
 
 # Randomize across optimal and near-optimal points
 
@@ -12804,7 +12804,7 @@ for (i in 1:1000){
   
 }
 
-mean(null.df2$a.emp.n >= a.emp) # p-value 0.271
+mean(null.df2$a.emp.n >= a.emp) # p-value 0.189
 
 ###### Quantile regression ######
 
@@ -12812,21 +12812,21 @@ q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt)
 q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt) 
 q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt)  
 
-summary(q50, se = "boot", R = 1000) # 0.17282, p 0.00139
-summary(q75, se = "boot", R = 1000) # 0.17257, p 0.02942
-summary(q90, se = "boot", R = 1000) # 0.15215, p 0.30250
+summary(q50, se = "boot", R = 1000) # -0.00125, p 0.58264
+summary(q75, se = "boot", R = 1000) # -0.00093, p 0.75008
+summary(q90, se = "boot", R = 1000) # -0.00920, p 0.04187
 
-PigT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+BvT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
   
-  labs(x = "Pigmentation (PC1)",    
+  labs(x = "Biovolume",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "S — Temperature ~ Pigmentation") +  # labels
+       title = "T — Temperature ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12856,7 +12856,7 @@ PigT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
-PigT.qr # Display the plot
+BvT.qr # Display the plot
 
 ###### 75th quantile PF testing ######
 
@@ -12869,16 +12869,16 @@ df.filt3 <- df.filt %>%
   slice((floor(0.6667 * n()) + 1):n()) %>%          # keep *second* half
   select(-distance)
 
-PigT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+BvT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Pigmentation (PC1)",    
+  labs(x = "Biovolume",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "S — Temperature ~ Pigmentation") +  # labels
+       title = "T — Temperature ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12908,7 +12908,7 @@ PigT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = e
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
-PigT.scam2  # Display the plot
+BvT.scam2  # Display the plot
 
 null.df3 <- data.frame(       # Null model results
   a.emp.n = numeric(),       # Area above the Pareto front (polygon with xmax, ymax) 
@@ -12946,27 +12946,27 @@ for (i in 1:1000){
   
 }
 
-mean(null.df3$a.emp.n >= a.emp) # p-value 0.309
+mean(null.df3$a.emp.n >= a.emp) # p-value 0.12
 
 q50  <- rq(z.y ~ z.x, tau = 0.50, data = df.filt3) 
 q75  <- rq(z.y ~ z.x, tau = 0.75, data = df.filt3) 
 q90  <- rq(z.y ~ z.x, tau = 0.90, data = df.filt3)  
 
-summary(q50, se = "boot", R = 1000) # -0.29647, p 0.00024
-summary(q75, se = "boot", R = 1000) # -0.20193, p 0.04939
-summary(q90, se = "boot", R = 1000) # -0.10280, p 0.72183
+summary(q50, se = "boot", R = 1000) # -0.01673, p 0.00000
+summary(q75, se = "boot", R = 1000) # -0.01834, p 0.00059
+summary(q90, se = "boot", R = 1000) # -0.02502, p 0.00002
 
-PigT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+BvT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
   
-  labs(x = "Pigmentation (PC1)",    
+  labs(x = "Biovolume",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "S — Temperature ~ Pigmentation") +  # labels
+       title = "T — Temperature ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12996,4 +12996,58 @@ PigT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
-PigT.qr2 # Display the plot
+BvT.qr2 # Display the plot
+
+# Compile & save the figures -----------------------------------------------
+
+extra_toffs <- plot_grid(
+  NcL.scam, PcL.scam, PigL.scam, BvL.scam,
+  NcN.scam, PcN.scam, PigN.scam, BvN.scam,
+  NcP.scam, PcP.scam, PigP.scam, BvP.scam,
+  NcS.scam, PcS.scam, PigS.scam, BvS.scam,
+  NcT.scam, PcT.scam, PigT.scam, BvT.scam,
+  ncol = 4,
+  align = "hv",
+  axis = "tblr"
+)
+
+ggsave("figures/107_figs8_extra_inter-gradient_toffs.jpeg", extra_toffs, width = 15, height = 20)
+
+extra_toffs2 <- plot_grid(
+  NcL.scam2, PcL.scam2, PigL.scam2, BvL.scam2,
+  NcN.scam2, PcN.scam2, PigN.scam2, BvN.scam2,
+  NcP.scam2, PcP.scam2, PigP.scam2, BvP.scam2,
+  NcS.scam2, PcS.scam2, PigS.scam2, BvS.scam2,
+  NcT.scam2, PcT.scam2, PigT.scam2, BvT.scam2,
+  ncol = 4,
+  align = "hv",
+  axis = "tblr"
+)
+
+ggsave("figures/107_figs8_extra_inter-gradient_toffs_v2.jpeg", extra_toffs2, width = 15, height = 20)
+
+extra_qrs <- plot_grid(
+  NcL.qr, PcL.qr, PigL.qr, BvL.qr,
+  NcN.qr, PcN.qr, PigN.qr, BvN.qr,
+  NcP.qr, PcP.qr, PigP.qr, BvP.qr,
+  NcS.qr, PcS.qr, PigS.qr, BvS.qr,
+  NcT.qr, PcT.qr, PigT.qr, BvT.qr,
+  ncol = 4,
+  align = "hv",
+  axis = "tblr"
+)
+
+ggsave("figures/108_figs9_extra_inter-gradient_toffs.jpeg", extra_qrs, width = 15, height = 20)
+
+extra_qrs2 <- plot_grid(
+  NcL.qr2, PcL.qr2, PigL.qr2, BvL.qr2,
+  NcN.qr2, PcN.qr2, PigN.qr2, BvN.qr2,
+  NcP.qr2, PcP.qr2, PigP.qr2, BvP.qr2,
+  NcS.qr2, PcS.qr2, PigS.qr2, BvS.qr2,
+  NcT.qr2, PcT.qr2, PigT.qr2, BvT.qr2,
+  ncol = 4,
+  align = "hv",
+  axis = "tblr"
+)
+
+ggsave("figures/108_figs9_extra_inter-gradient_toffs_v2.jpeg", extra_qrs2, width = 15, height = 20)

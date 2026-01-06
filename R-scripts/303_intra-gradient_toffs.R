@@ -554,7 +554,7 @@ I.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "light" = 16)  # filled circle
   ) +
   
-  ylim(0.025, 0.5) +
+  ylim(0, 0.5) +
   
   theme_classic() +
   theme(
@@ -701,7 +701,7 @@ I.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
                "light" = 16)  # filled circle
   ) +
   
-  ylim(0.025, 0.5) +
+  ylim(0, 0.5) +
   
   theme_classic() +
   theme(
@@ -788,7 +788,7 @@ I.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "light" = 16)  # filled circle
   ) +
   
-  ylim(0.025, 0.5) +
+  ylim(0, 0.5) +
   
   theme_classic() +
   theme(
@@ -877,7 +877,7 @@ I.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "light" = 16)  # filled circle
   ) +
   
-  ylim(0.025, 0.5) +
+  ylim(0, 0.5) +
   
   theme_classic() +
   theme(
@@ -984,7 +984,7 @@ N.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "nitrogen" = 16)  # filled circle
   ) +
   
-  ylim(0, 1.5) +
+  ylim(0, 1.25) +
   
   theme_classic() +
   theme(
@@ -1131,7 +1131,7 @@ N.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
                "nitrogen" = 16)  # filled circle
   ) +
   
-  ylim(0, 1.5) +
+  ylim(0, 1.25) +
   
   theme_classic() +
   theme(
@@ -1218,7 +1218,7 @@ N.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "nitrogen" = 16)  # filled circle
   ) +
   
-  ylim(0, 1.5) +
+  ylim(0, 1.25) +
   
   theme_classic() +
   theme(
@@ -1307,7 +1307,7 @@ N.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "nitrogen" = 16)  # filled circle
   ) +
   
-  ylim(0, 1.5) +
+  ylim(0, 1.25) +
   
   theme_classic() +
   theme(
@@ -1415,7 +1415,7 @@ P.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "phosphorous" = 16)  # filled circle
   ) +
   
-  ylim(0, 4.5) +
+  ylim(0, 5.5) +
   
   theme_classic() +
   theme(
@@ -1562,7 +1562,7 @@ P.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
                "phosphorous" = 16)  # filled circle
   ) +
   
-  ylim(0, 4.5) +
+  ylim(0, 5.5) +
   
   theme_classic() +
   theme(
@@ -1649,7 +1649,7 @@ P.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "phosphorous" = 16)  # filled circle
   ) +
   
-  ylim(0, 4.5) +
+  ylim(0, 5.5) +
   
   theme_classic() +
   theme(
@@ -1738,7 +1738,7 @@ P.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "phosphorous" = 16)  # filled circle
   ) +
   
-  ylim(0, 4.5) +
+  ylim(0, 5.5) +
   
   theme_classic() +
   theme(
@@ -1845,7 +1845,7 @@ S.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "salt" = 16)  # filled circle
   ) +
   
-  ylim(1.5,10) +
+  ylim(1,9.5) +
   
   theme_classic() +
   theme(
@@ -1992,7 +1992,7 @@ S.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
                "salt" = 16)  # filled circle
   ) +
   
-  ylim(1.5,10) +
+  ylim(1,9.5) +
   
   theme_classic() +
   theme(
@@ -2079,7 +2079,7 @@ S.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "salt" = 16)  # filled circle
   ) +
   
-  ylim(1.5,10) +
+  ylim(1,9.5) +
   
   theme_classic() +
   theme(
@@ -2168,7 +2168,7 @@ S.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "salt" = 16)  # filled circle
   ) +
   
-  ylim(1.5,10) +
+  ylim(1,9.5) +
   
   theme_classic() +
   theme(

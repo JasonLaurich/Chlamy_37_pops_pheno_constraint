@@ -157,12 +157,22 @@ df.pca.res <- data.frame(pca.result$x)
 df.pca.res <- df.pca.res %>%
   mutate(population = df.id$population)
 
+loadings <- as.data.frame(pca.result$rotation) # Extract PCA loadings (rotation matrix)
+
+loadings$PC1 <- loadings$PC1 * max(abs(df.pca.res$PC1)) # Scale loadings to fit within the PCA plot (can adjust scaling factor)
+loadings$PC2 <- loadings$PC2 * max(abs(df.pca.res$PC2))
+
+loadings$variable <- rownames(loadings) # Add variable names for annotation
+
 PCA <- ggplot(df.pca.res, aes(x = PC1, y = PC2)) +  # PCA biplot visualization
   geom_point(size = 3) +
   theme_classic() +
   labs(x = paste("PC1 (", round(pca.result$sdev[1]^2 / sum(pca.result$sdev^2) * 100, 2), "%)", sep = ""),
        y = paste("PC2 (", round(pca.result$sdev[2]^2 / sum(pca.result$sdev^2) * 100, 2), "%)", sep = ""),
-       title = "PCA of pigmentation") 
+       title = "PCA of pigmentation")  +
+  
+  geom_segment(data = loadings, aes(x = 0, y = 0, xend = PC1, yend = PC2),
+               arrow = arrow(length = unit(0.2, "cm")), color = "black", size= 1.1)
 
 PCA
 
