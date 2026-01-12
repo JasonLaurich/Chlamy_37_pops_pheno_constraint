@@ -68,9 +68,6 @@ df.t <- rbind(df.lt, df.nt, df.pt)
 df.t <- df.t %>% # We'll concatenate well id and resource level just in case the same well appears in different experiments
   mutate(unique.id = paste(well_id, level_of_resource, sep = "_")) # So that each entry is treated seperately!
 
-df.l <- df.l %>% 
-  filter(temperature == 20) # Filter out non 20C data. 
-
 df.l <- df.l %>% # We'll concatenate well id and resource level just in case the same well appears in different experiments
   mutate(unique.id = paste(well_id, level_of_resource, sep = "_")) # So that each entry is treated seperately!
 
@@ -273,9 +270,13 @@ write.csv(fit.df, "data-processed/402b_Levasseur_2025_TPCs_fits_newest.csv") # S
 light <- as.vector(unique(df.l$value_resource))# for looping through lights
 ord.light<- sort(light)
 
+temp <- as.vector(unique(df.l$temperature))
+ord.temp <- sort(temp)
+
 df.r.exp.l <- data.frame(              # Summary dataframe for r_exp
   Sp.id = character(),                 # Species
   light = numeric(),                   # Light
+  temp = numeric(),                    # Temperature
   id = character(),                    # Unique ID
   r.exp = numeric()                    # Thresholded r.exp
 )
@@ -284,63 +285,72 @@ for (i in 1:20){ # for every species
   
   for (t in ord.light){ # at every light level
     
-    df.i <- df.l[df.l$sp.num == i, ]
-    df.it <- df.i[df.i$value_resource == t, ]
-    df.it <- droplevels(df.it) # Drop unused levels to isolate well replicate IDs at given t
-    
-    for (w in unique(df.it$unique.id)){ # Doing this separately for each replicate
+    for (x in ord.temp){
       
-      df.it.wl <- subset(df.it, df.it$unique.id == w)
+      df.i <- df.l %>% 
+        filter(sp.num == i,
+               value_resource == t,
+               temperature == x)
       
-      df.it.wl <- df.it.wl[order(df.it.wl$Time_days), ]
-      df.it.wl <- df.it.wl %>% 
-        mutate(N0 = RFU[1])
+      df.it <- droplevels(df.i) # Drop unused levels to isolate well replicate IDs at given t
       
-      t.series <- unique(df.it.wl$Time_days) # Re-initialize this internally - we will only save summary data for each unique pop x P x well combo
-      t.series <- t.series[-1] # Trim off the first entry to make tracking easier.
-      
-      ln.slopes <- c() # Re-initialize this too!
-      
-      for (z in t.series){
+      for (w in unique(df.it$unique.id)){ # Doing this separately for each replicate
         
-        df.it.wl.sl <- df.it.wl[df.it.wl$Time_days <= z, ] # Subset the data to exclude time points above our window
+        df.it.wl <- subset(df.it, df.it$unique.id == w)
         
-        ln_slope <- lm(log.RFU~Time_days, data = df.it.wl.sl)
+        df.it.wl <- df.it.wl[order(df.it.wl$Time_days), ]
+        df.it.wl <- df.it.wl %>% 
+          mutate(N0 = RFU[1])
         
-        ln.slopes <- c(ln.slopes, summary(ln_slope)$coefficients[2,1])
+        t.series <- unique(df.it.wl$Time_days) # Re-initialize this internally - we will only save summary data for each unique pop x P x well combo
+        t.series <- t.series[-1] # Trim off the first entry to make tracking easier.
         
-      } # So now we have our slopes for each well.ID x Pop x P level
+        ln.slopes <- c() # Re-initialize this too!
+        
+        for (z in t.series){
+          
+          df.it.wl.sl <- df.it.wl[df.it.wl$Time_days <= z, ] # Subset the data to exclude time points above our window
+          
+          ln_slope <- lm(log.RFU~Time_days, data = df.it.wl.sl)
+          
+          ln.slopes <- c(ln.slopes, summary(ln_slope)$coefficients[2,1])
+          
+        } # So now we have our slopes for each well.ID x Pop x P level
+        
+        s <- which.max(ln.slopes[2:length(ln.slopes)])  # We need at least 3 data points
+        
+        df.it.wl.th <- df.it.wl[df.it.wl$Time_days <= t.series[s + 1], ] # Get the thresholded data according to our sliding window approach
+        # The + 1 here just corrects for the labelling mismatch (e.g. in the above line, s will return 1 when the 2nd slope is the highest)
+        
+        r_exp <- nls_multstart(RFU ~ N0 * exp(r*Time_days),  # Exponential growth model (N0 is in our dataframe)
+                               data = df.it.wl.th,
+                               start_lower = c(r = -4.5), 
+                               start_upper = c(r = 4.5),   
+                               iter = 500,
+                               supp_errors = 'Y',
+                               control = nls.control(maxiter = 200))
+        
+        if (is.null(r_exp)){
+          
+          df.r.exp.l <- rbind(df.r.exp.l, data.frame(
+            Sp.id = df.it.wl.th$species_updated[1],           
+            light = df.it.wl$value_resource[1],  
+            temp = df.it.wl$temperature[1],
+            id = df.it.wl$sp.num[1],                
+            r.exp = NA        
+          ))
+          
+        }else{
+          # Add data to our summary table
+          df.r.exp.l <- rbind(df.r.exp.l, data.frame(
+            Sp.id = df.it.wl.th$species_updated[1],    # Species
+            light = df.it.wl$value_resource[1],        # Light
+            temp = df.it.wl$temperature[1],            # Temperature
+            id = df.it.wl$sp.num[1],                   # ID
+            r.exp = summary(r_exp)$parameters[1,1]     # The calculated r.exp value
+          ))
+        }
       
-      s <- which.max(ln.slopes[2:length(ln.slopes)])  # We need at least 3 data points
-      
-      df.it.wl.th <- df.it.wl[df.it.wl$Time_days <= t.series[s + 1], ] # Get the thresholded data according to our sliding window approach
-      # The + 1 here just corrects for the labelling mismatch (e.g. in the above line, s will return 1 when the 2nd slope is the highest)
-      
-      r_exp <- nls_multstart(RFU ~ N0 * exp(r*Time_days),  # Exponential growth model (N0 is in our dataframe)
-                             data = df.it.wl.th,
-                             start_lower = c(r = -4.5), 
-                             start_upper = c(r = 4.5),   
-                             iter = 500,
-                             supp_errors = 'Y',
-                             control = nls.control(maxiter = 200))
-      
-      if (is.null(r_exp)){
-        
-        df.r.exp.l <- rbind(df.r.exp.l, data.frame(
-          Sp.id = df.it.wl.th$species_updated[1],           
-          light = df.it.wl$value_resource[1],        
-          id = df.it.wl$sp.num[1],                
-          r.exp = NA        
-        ))
-        
-      }else{
-        # Add data to our summary table
-        df.r.exp.l <- rbind(df.r.exp.l, data.frame(
-          Sp.id = df.it.wl.th$species_updated[1],    # Species
-          light = df.it.wl$value_resource[1],        # Light
-          id = df.it.wl$sp.num[1],                   # ID
-          r.exp = summary(r_exp)$parameters[1,1]     # The calculated r.exp value
-        ))
       }
       
     }

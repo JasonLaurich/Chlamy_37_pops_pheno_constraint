@@ -247,14 +247,18 @@ write.csv(fit.df, "data-processed/307b_Lewington-Pearce_2019_TPCs_fits_newest.cs
 # Calculate µ across Light and fit Monods -------------------------------------
 
 df.l <- df %>% 
-  filter(nitrate_level == 1000, temperature == 20)
+  filter(nitrate_level == 1000)
 
 light <- as.vector(unique(df.l$light_level))# for looping through light levels
 ord.light<- sort(light)
 
+temp <- as.vector(unique(df.l$temperature))
+ord.temp <-sort(temp)
+
 df.r.exp.l <- data.frame(              # Summary dataframe for r_exp
   Sp.id = character(),                 # Species
   light = numeric(),                   # Light level
+  temp = numeric(),                    # Temperature
   id = character(),                    # Unique ID
   r.exp = numeric()                    # Thresholded r.exp
 )
@@ -263,64 +267,72 @@ for (i in unique(df.l$Sp.fac)){ # for every species
   
   for (t in ord.light){ # at every light level
     
-    df.i <- df.l[df.l$Sp.fac == i, ]
-    df.it <- df.i[df.i$light_level == t, ]
-    df.it <- droplevels(df.it) # Drop unused levels to isolate well replicate IDs at given t
-    
-    for (w in unique(df.it$id)){ # Doing this separately for each replicate
+    for (x in ord.temp){ # at every temperature
       
-      df.it.wl <- subset(df.it, as.numeric(df.it$id) == w)
-      
-      df.it.wl <- df.it.wl[order(df.it.wl$day), ]
-      df.it.wl <- df.it.wl %>% 
-        mutate(N0 = fluorescence[1])
-      
-      t.series <- unique(df.it.wl$day) # Re-initialize this internally - we will only save summary data for each unique pop x P x well combo
-      t.series <- t.series[-1] # Trim off the first entry to make tracking easier.
-      
-      ln.slopes <- c() # Re-initialize this too!
-      
-      for (z in t.series){
+      df.i <- df.l %>%
+        filter(Sp.fac == i,
+               light_level == t,
+               temperature == x)
         
-        df.it.wl.sl <- df.it.wl[df.it.wl$day <= z, ] # Subset the data to exclude time points above our window
-        
-        ln_slope <- lm(log.fluorescence~day, data = df.it.wl.sl)
-        
-        ln.slopes <- c(ln.slopes, summary(ln_slope)$coefficients[2,1])
-        
-      } # So now we have our slopes for each well.ID x Pop x P level
+      df.it <- droplevels(df.i) # Drop unused levels to isolate well replicate IDs at given t 
       
-      s <- which.max(ln.slopes[2:length(ln.slopes)])  # We need at least 3 data points
-      
-      df.it.wl.th <- df.it.wl[df.it.wl$day <= t.series[s + 1], ] # Get the thresholded data according to our sliding window approach
-      # The + 1 here just corrects for the labelling mismatch (e.g. in the above line, s will return 1 when the 2nd slope is the highest)
-      
-      r_exp <- nls_multstart(fluorescence ~ N0 * exp(r*day),  # Exponential growth model (N0 is in our dataframe)
-                             data = df.it.wl.th,
-                             start_lower = c(r = -4.5), 
-                             start_upper = c(r = 4.5),   
-                             iter = 500,
-                             supp_errors = 'Y',
-                             control = nls.control(maxiter = 200))
-      
-      if (is.null(r_exp)){
+      for (w in unique(df.it$id)){ # Doing this separately for each replicate
         
-        df.r.exp.l <- rbind(df.r.exp.l, data.frame(
-          Sp.id = df.it.wl.th$Sp.fac[1],          
-          light = df.it.wl.th$light_level[1],           
-          id = df.it.wl$id[1],                
-          r.exp = NA        
-        ))
+        df.it.wl <- subset(df.it, as.numeric(df.it$id) == w)
         
-      }else{
-        # Add data to our summary table
-        df.r.exp.l <- rbind(df.r.exp.l, data.frame(
-          Sp.id = df.it.wl.th$Sp.fac[1],             # Species
-          light = df.it.wl.th$light_level[1],        # Light
-          id = df.it.wl$id[1],                       # ID
-          r.exp = summary(r_exp)$parameters[1,1]     # The calculated r.exp value
-        ))
-      }
+        df.it.wl <- df.it.wl[order(df.it.wl$day), ]
+        df.it.wl <- df.it.wl %>% 
+          mutate(N0 = fluorescence[1])
+        
+        t.series <- unique(df.it.wl$day) # Re-initialize this internally - we will only save summary data for each unique pop x P x well combo
+        t.series <- t.series[-1] # Trim off the first entry to make tracking easier.
+        
+        ln.slopes <- c() # Re-initialize this too!
+        
+        for (z in t.series){
+          
+          df.it.wl.sl <- df.it.wl[df.it.wl$day <= z, ] # Subset the data to exclude time points above our window
+          
+          ln_slope <- lm(log.fluorescence~day, data = df.it.wl.sl)
+          
+          ln.slopes <- c(ln.slopes, summary(ln_slope)$coefficients[2,1])
+          
+        } # So now we have our slopes for each well.ID x Pop x P level
+        
+        s <- which.max(ln.slopes[2:length(ln.slopes)])  # We need at least 3 data points
+        
+        df.it.wl.th <- df.it.wl[df.it.wl$day <= t.series[s + 1], ] # Get the thresholded data according to our sliding window approach
+        # The + 1 here just corrects for the labelling mismatch (e.g. in the above line, s will return 1 when the 2nd slope is the highest)
+        
+        r_exp <- nls_multstart(fluorescence ~ N0 * exp(r*day),  # Exponential growth model (N0 is in our dataframe)
+                               data = df.it.wl.th,
+                               start_lower = c(r = -4.5), 
+                               start_upper = c(r = 4.5),   
+                               iter = 500,
+                               supp_errors = 'Y',
+                               control = nls.control(maxiter = 200))
+        
+        if (is.null(r_exp)){
+          
+          df.r.exp.l <- rbind(df.r.exp.l, data.frame(
+            Sp.id = df.it.wl.th$Sp.fac[1],          
+            light = df.it.wl.th$light_level[1],  
+            temp = df.it.wl.th$temperature[1], 
+            id = df.it.wl$id[1],                
+            r.exp = NA        
+          ))
+          
+        }else{
+          # Add data to our summary table
+          df.r.exp.l <- rbind(df.r.exp.l, data.frame(
+            Sp.id = df.it.wl.th$Sp.fac[1],             # Species
+            light = df.it.wl.th$light_level[1],        # Light
+            temp = df.it.wl.th$temperature[1],         # Temperature
+            id = df.it.wl$id[1],                       # ID
+            r.exp = summary(r_exp)$parameters[1,1]     # The calculated r.exp value
+          ))
+        }
+       }
       
     }
     
@@ -439,14 +451,18 @@ write.csv(fit.df, "data-processed/307i_Lewington2019_Monod_light_fits_new.csv") 
 # Calculate µ across nitrogen and fit Monods -------------------------------------
 
 df.n <- df %>% 
-  filter(light_level >= 105.5, temperature == 20) # For some reason, light levels are not the same at different N levels...
+  filter(light_level >= 105.5) # For some reason, light levels are not the same at different N levels...
 
 nit <- as.vector(unique(df.n$nitrate_level))# for looping through nitrogen levels
 ord.nit<- sort(nit)
 
+temp <- as.vector(unique(df.n$temperature))
+ord.temp <-sort(temp)
+
 df.r.exp.n <- data.frame(              # Summary dataframe for r_exp
   Sp.id = character(),                 # Species
   nit = numeric(),                     # Nitrogen level
+  temp = numeric(),                    # Temperature
   id = character(),                    # Unique ID
   r.exp = numeric()                    # Thresholded r.exp
 )
@@ -455,63 +471,72 @@ for (i in unique(df.n$Sp.fac)){ # for every species
   
   for (t in ord.nit){ # at every nit level
     
-    df.i <- df.n[df.n$Sp.fac == i, ]
-    df.it <- df.i[df.i$nitrate_level == t, ]
-    df.it <- droplevels(df.it) # Drop unused levels to isolate well replicate IDs at given t
-    
-    for (w in unique(df.it$id)){ # Doing this separately for each replicate
+    for (x in ord.temp){
       
-      df.it.wl <- subset(df.it, as.numeric(df.it$id) == w)
+      df.i <- df.n %>%
+        filter(Sp.fac == i,
+               nitrate_level == t,
+               temperature == x)
       
-      df.it.wl <- df.it.wl[order(df.it.wl$day), ]
-      df.it.wl <- df.it.wl %>% 
-        mutate(N0 = fluorescence[1])
+      df.it <- droplevels(df.i) # Drop unused levels to isolate well replicate IDs at given t 
       
-      t.series <- unique(df.it.wl$day) # Re-initialize this internally - we will only save summary data for each unique pop x P x well combo
-      t.series <- t.series[-1] # Trim off the first entry to make tracking easier.
-      
-      ln.slopes <- c() # Re-initialize this too!
-      
-      for (z in t.series){
+      for (w in unique(df.it$id)){ # Doing this separately for each replicate
         
-        df.it.wl.sl <- df.it.wl[df.it.wl$day <= z, ] # Subset the data to exclude time points above our window
+        df.it.wl <- subset(df.it, as.numeric(df.it$id) == w)
         
-        ln_slope <- lm(log.fluorescence~day, data = df.it.wl.sl)
+        df.it.wl <- df.it.wl[order(df.it.wl$day), ]
+        df.it.wl <- df.it.wl %>% 
+          mutate(N0 = fluorescence[1])
         
-        ln.slopes <- c(ln.slopes, summary(ln_slope)$coefficients[2,1])
+        t.series <- unique(df.it.wl$day) # Re-initialize this internally - we will only save summary data for each unique pop x P x well combo
+        t.series <- t.series[-1] # Trim off the first entry to make tracking easier.
         
-      } # So now we have our slopes for each well.ID x Pop x P level
+        ln.slopes <- c() # Re-initialize this too!
+        
+        for (z in t.series){
+          
+          df.it.wl.sl <- df.it.wl[df.it.wl$day <= z, ] # Subset the data to exclude time points above our window
+          
+          ln_slope <- lm(log.fluorescence~day, data = df.it.wl.sl)
+          
+          ln.slopes <- c(ln.slopes, summary(ln_slope)$coefficients[2,1])
+          
+        } # So now we have our slopes for each well.ID x Pop x P level
+        
+        s <- which.max(ln.slopes[2:length(ln.slopes)])  # We need at least 3 data points
+        
+        df.it.wl.th <- df.it.wl[df.it.wl$day <= t.series[s + 1], ] # Get the thresholded data according to our sliding window approach
+        # The + 1 here just corrects for the labelling mismatch (e.g. in the above line, s will return 1 when the 2nd slope is the highest)
+        
+        r_exp <- nls_multstart(fluorescence ~ N0 * exp(r*day),  # Exponential growth model (N0 is in our dataframe)
+                               data = df.it.wl.th,
+                               start_lower = c(r = -4.5), 
+                               start_upper = c(r = 4.5),   
+                               iter = 500,
+                               supp_errors = 'Y',
+                               control = nls.control(maxiter = 200))
+        
+        if (is.null(r_exp)){
+          
+          df.r.exp.n <- rbind(df.r.exp.n, data.frame(
+            Sp.id = df.it.wl.th$Sp.fac[1],          
+            nit = df.it.wl.th$nitrate_level[1],  
+            temp = df.it.wl.th$temperature[1],    
+            id = df.it.wl$id[1],                
+            r.exp = NA        
+          ))
+          
+        }else{
+          # Add data to our summary table
+          df.r.exp.n <- rbind(df.r.exp.n, data.frame(
+            Sp.id = df.it.wl.th$Sp.fac[1],             # Species
+            nit = df.it.wl.th$nitrate_level[1],        # Nitrogen
+            temp = df.it.wl.th$temperature[1],         # Temperature
+            id = df.it.wl$id[1],                       # ID
+            r.exp = summary(r_exp)$parameters[1,1]     # The calculated r.exp value
+          ))
+        }
       
-      s <- which.max(ln.slopes[2:length(ln.slopes)])  # We need at least 3 data points
-      
-      df.it.wl.th <- df.it.wl[df.it.wl$day <= t.series[s + 1], ] # Get the thresholded data according to our sliding window approach
-      # The + 1 here just corrects for the labelling mismatch (e.g. in the above line, s will return 1 when the 2nd slope is the highest)
-      
-      r_exp <- nls_multstart(fluorescence ~ N0 * exp(r*day),  # Exponential growth model (N0 is in our dataframe)
-                             data = df.it.wl.th,
-                             start_lower = c(r = -4.5), 
-                             start_upper = c(r = 4.5),   
-                             iter = 500,
-                             supp_errors = 'Y',
-                             control = nls.control(maxiter = 200))
-      
-      if (is.null(r_exp)){
-        
-        df.r.exp.n <- rbind(df.r.exp.n, data.frame(
-          Sp.id = df.it.wl.th$Sp.fac[1],          
-          nit = df.it.wl.th$nitrate_level[1],           
-          id = df.it.wl$id[1],                
-          r.exp = NA        
-        ))
-        
-      }else{
-        # Add data to our summary table
-        df.r.exp.n <- rbind(df.r.exp.n, data.frame(
-          Sp.id = df.it.wl.th$Sp.fac[1],             # Species
-          nit = df.it.wl.th$nitrate_level[1],        # Nitrogen
-          id = df.it.wl$id[1],                       # ID
-          r.exp = summary(r_exp)$parameters[1,1]     # The calculated r.exp value
-        ))
       }
       
     }
