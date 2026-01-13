@@ -652,3 +652,7 @@ fit.df$Sp.id <- c(rep(1,4), rep(2,4), rep(3,4), rep(4,4), rep(5,4), rep(6,4), re
 
 write.csv(lewington.summ.df.n, "data-processed/307d_Lewington-Pearce_2019_Monod_nit_new.csv") # Save Lewington-Pearce 2019 Nitrogen Monod summary table
 write.csv(fit.df, "data-processed/307e_Lewington2019_Monod_nit_fits_new.csv") # Save model fit summary table
+
+# Calculate µ (P) ---------------------------------------------------------
+
+

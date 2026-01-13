@@ -2,12 +2,12 @@
 
 # January 12th, 2025
 
-# I am going to fit all of nitrogen Monod curves for all of the relevant datasets: 
-# That's the Edwards 2015, Lewington-Pearce 2019, and Levasseur 2025 datasets
-# Edwards 2015 only reports estimates, not raw data. 
+# I am going to fit all of phosphorous Monod curves for all of the relevant datasets: 
+# That's the Bestion 2018, Narwani 2015, Edwards 2015, and Levasseur 2025 datasets
+# Edwards 2015 and Narwani 2015 only report estimates, not raw data. 
 
 
-# Where possible (ie. light and T co-vary in the data — Levasseur, Edwards, and Lewington-Pearce),
+# Where possible (ie. phos and T co-vary in the data — Bestion, and Levasseur),
 # I will fit Monod curves at the temperature closest to a species' Topt (as determined by TPC fitting)
 # If I was unable to fit a TPC to the data (or if it was removed from consideration) I will fit Monod functions
 # at the temperature where the highest growth occurs in the raw data. I will record both numbers just for fun!
@@ -42,26 +42,27 @@ nb.fit <- 30000     # burn in periods for each chain
 nt.fit <- 300       # thinning interval : (330,000 - 30,000) / 300 = 1000 posterior estimates / chain
 nc.fit <- 3         # number of chains, total of 3,000 estimates for each model. 
 
-# Lewington-Pearce 2019 ------------------------------------------------------------
+# Bestion 2018 ------------------------------------------------------------
 
 ###### Load the data ######
 
-df.l.raw <- read.csv("data-processed/307c_Lewington-Pearce_2019_µ_estimates_nitrogen_new.csv") # Raw data file
+df.b.raw <- read.csv("data-processed/11_Bestion_2018_raw_data.csv") # Raw growth data
+head(df.b.raw)
 
-head(df.l.raw)
+df.b <-df.b.raw %>% 
+  rename(temp = Temperature_c,
+         id.number = SpeciesNb,
+         phos = Phosphate_c,
+         Species.name = SpeciesName)
 
-df.l <-df.l.raw %>% 
-  rename(mu = r.exp,
-         Species.name = Sp.id) %>% 
-  mutate(id.number = as.integer(factor(df.l.raw$Sp.id)))
+length(unique(df.b$id.number))
 
-length(unique(df.l$id.number))
-
-df.l.t <- read.csv("data-processed/501e_Lewington_2019_TPCs.csv") # Raw data file
+df.b.t <- read.csv("data-processed/501c_Bestion_2018_TPCs.csv") # Raw data file
+head(df.b.t)
 
 ###### Model fitting ######
 
-lewington.summ.df <- data.frame(   # We'll create a dataframe to store the data as we fit models.
+bestion.summ.df <- data.frame(   # We'll create a dataframe to store the data as we fit models.
   Sp.id = numeric(),        # Species id
   Sp.name = character(),    # Species name
   
@@ -100,11 +101,11 @@ fit.df <- data.frame(       # Save model fit estimates for examination
 
 n <-0 # progression tracker
 
-for (i in unique(df.l$id.number[df.l$id.number >= 1])) { # for each species ID. Can adjust starting point if running in chunks
+for (i in unique(df.b$id.number[df.b$id.number >= 1])) { # for each species ID. Can adjust starting point if running in chunks
   
   n <- n + 1
   
-  df.i <- df.l %>% 
+  df.i <- df.b %>% 
     filter(id.number == i) %>% 
     filter(!is.na(mu))
   
@@ -112,8 +113,8 @@ for (i in unique(df.l$id.number[df.l$id.number >= 1])) { # for each species ID. 
     filter(mu == max(mu, na.rm = TRUE)) %>% 
     pull(temp)
   
-  if (i %in% df.l.t$Sp.id) {                    # pull T.opt from external dataset
-    t.opt <- df.l.t %>%
+  if (i %in% df.b.t$Sp.id) {                    # pull T.opt from external dataset
+    t.opt <- df.b.t %>%
       filter(Sp.id == i) %>%
       pull(T.opt) 
     fit <- "y"
@@ -130,18 +131,18 @@ for (i in unique(df.l$id.number[df.l$id.number >= 1])) { # for each species ID. 
   trait <- df.i$mu    # format the data for jags
   N.obs <- length(trait)
   
-  nit <- df.i$nit
+  phos <- df.i$phos
   
-  S.pred <- seq(0, 1000, 0.5) # Nitrogen gradient we're interested in - upped the granularity here
+  S.pred <- seq(0, 50, 0.05) # Phosphorous gradient we're interested in - upped the granularity here
   N.S.pred <-length(S.pred) # We'll reset this internally since the gradient varies substantially
   
-  jag.data <- list(trait = trait, N.obs = N.obs, S = nit, S.pred = S.pred, N.S.pred = N.S.pred)
+  jag.data <- list(trait = trait, N.obs = N.obs, S = phos, S.pred = S.pred, N.S.pred = N.S.pred)
   
-  monod.jag <- jags( # Run the light Monod function. 
+  monod.jag <- jags( # Run the phos Monod function. 
     data = jag.data,
     inits = inits.monod,
     parameters.to.save = parameters.monod,
-    model.file = "monod.nit.txt",
+    model.file = "monod.txt",
     n.thin = nt.fit,
     n.chains = nc.fit,
     n.burnin = nb.fit,
@@ -153,7 +154,7 @@ for (i in unique(df.l$id.number[df.l$id.number >= 1])) { # for each species ID. 
   post <- as.data.frame(monod.jag$BUGSoutput$sims.matrix) # The posteriors
   post$R <- 0.1*post$K_s/(post$r_max - 0.1)
   
-  lewington.summ.df <- rbind(lewington.summ.df, data.frame(                     # Add data
+  bestion.summ.df <- rbind(bestion.summ.df, data.frame(                     # Add data
     Sp.id = df.i$id.number[1],                                                  # Species id
     Sp.name = df.i$Species.name[1],                                             # Species name
     
@@ -178,32 +179,32 @@ for (i in unique(df.l$id.number[df.l$id.number >= 1])) { # for each species ID. 
     T.max.raw = t.max                                                           # ~ Topt (temp in the raw data with highest growth rate)
   ))
   
-  nit_sum <- monod.jag$BUGSoutput$summary[c(1:3, (1000/0.5) + 5),] # Have to create a new frame for summaries (not listed 1 to 6)
+  phos_sum <- monod.jag$BUGSoutput$summary[c(1:3, (50/0.05) + 5),] # Have to create a new frame for summaries (not listed 1 to 6)
   
   for (j in 1:4){
     fit.df <- rbind(fit.df, data.frame(          # Model performance data
       Sp.id = df.i$id.number[1],                 # Species #
       Sp.name = df.i$Species.name[1],            # Species name      
-      Parameter = rownames(nit_sum)[j],          # Model parameter (e.g. K_s, r_max, etc.)
-      mean = nit_sum[j,1],                       # Posterior mean
-      Rhat = nit_sum[j,8],                       # Rhat values
-      n.eff = nit_sum[j,9]                       # Sample size estimates (should be ~3000)
+      Parameter = rownames(phos_sum)[j],         # Model parameter (e.g. K_s, r_max, etc.)
+      mean = phos_sum[j,1],                      # Posterior mean
+      Rhat = phos_sum[j,8],                      # Rhat values
+      n.eff = phos_sum[j,9]                      # Sample size estimates (should be ~3000)
     ))
     
   }
   
-  print(paste("Done", n, "of ", length(unique(df.l$id.number))))
+  print(paste("Done", n, "of ", length(unique(df.b$id.number))))
   
 }
 
-write.csv(lewington.summ.df, "data-processed/503a_Lewington_2019_nit_monods.csv") # Lewington_2019 summary table
-write.csv(fit.df, "data-processed/503b_Lewington_2019_nit_monods_fits.csv") # Save model fit summary table
+write.csv(bestion.summ.df, "data-processed/503a_Bestion_2018_phos_monods.csv") # Bestion_2018 summary table
+write.csv(fit.df, "data-processed/503b_Bestion_2018_phos_monods_fits.csv") # Save model fit summary table
 
 # Levasseur 2025 ------------------------------------------------------------
 
 ###### Load the data ######
 
-df.lv.raw <- read.csv("data-processed/405_Levasseur_2025_µ_estimates_nitrogen.csv") # Raw data file
+df.lv.raw <- read.csv("data-processed/406_Levasseur_2025_µ_estimates_phosphorous.csv") # Raw data file
 
 head(df.lv.raw)
 
@@ -287,18 +288,18 @@ for (i in unique(df.lv$id.number[df.lv$id.number >= 1])) { # for each species ID
   trait <- df.i$mu    # format the data for jags
   N.obs <- length(trait)
   
-  nit <- df.i$nit
+  phos <- df.i$phos
   
-  S.pred <- seq(0, 1000, 0.5) # Nitrogen gradient we're interested in - upped the granularity here
+  S.pred <- seq(0, 50, 0.05) # Phosphorous gradient we're interested in - upped the granularity here
   N.S.pred <-length(S.pred) # We'll reset this internally since the gradient varies substantially
   
-  jag.data <- list(trait = trait, N.obs = N.obs, S = nit, S.pred = S.pred, N.S.pred = N.S.pred)
+  jag.data <- list(trait = trait, N.obs = N.obs, S = phos, S.pred = S.pred, N.S.pred = N.S.pred)
   
-  monod.jag <- jags( # Run the light Monod function. 
+  monod.jag <- jags( # Run the phos Monod function. 
     data = jag.data,
     inits = inits.monod,
     parameters.to.save = parameters.monod,
-    model.file = "monod.nit.txt",
+    model.file = "monod.txt",
     n.thin = nt.fit,
     n.chains = nc.fit,
     n.burnin = nb.fit,
@@ -335,16 +336,16 @@ for (i in unique(df.lv$id.number[df.lv$id.number >= 1])) { # for each species ID
     T.max.raw = t.max                                                           # ~ Topt (temp in the raw data with highest growth rate)
   ))
   
-  nit_sum <- monod.jag$BUGSoutput$summary[c(1:3, (1000/0.5) + 5),] # Have to create a new frame for summaries (not listed 1 to 6)
+  phos_sum <- monod.jag$BUGSoutput$summary[c(1:3, (50/0.05) + 5),] # Have to create a new frame for summaries (not listed 1 to 6)
   
   for (j in 1:4){
     fit.df <- rbind(fit.df, data.frame(          # Model performance data
       Sp.id = df.i$id.number[1],                 # Species #
       Sp.name = df.i$Species.name[1],            # Species name      
-      Parameter = rownames(nit_sum)[j],          # Model parameter (e.g. K_s, r_max, etc.)
-      mean = nit_sum[j,1],                       # Posterior mean
-      Rhat = nit_sum[j,8],                       # Rhat values
-      n.eff = nit_sum[j,9]                       # Sample size estimates (should be ~3000)
+      Parameter = rownames(phos_sum)[j],         # Model parameter (e.g. K_s, r_max, etc.)
+      mean = phos_sum[j,1],                      # Posterior mean
+      Rhat = phos_sum[j,8],                      # Rhat values
+      n.eff = phos_sum[j,9]                      # Sample size estimates (should be ~3000)
     ))
     
   }
@@ -353,35 +354,35 @@ for (i in unique(df.lv$id.number[df.lv$id.number >= 1])) { # for each species ID
   
 }
 
-write.csv(levasseur.summ.df, "data-processed/503c_Levasseur_2025_nit_monods.csv") # Levasseur_2025 summary table
-write.csv(fit.df, "data-processed/503d_Levasseur_2025_nit_monods_fits.csv") # Save model fit summary table
+write.csv(levasseur.summ.df, "data-processed/503c_Levasseur_2025_phos_monods.csv") # Levasseur_2025 summary table
+write.csv(fit.df, "data-processed/503d_Levasseur_2025_phos_monods_fits.csv") # Save model fit summary table
 
 # Plotting & troubleshooting ----------------------------------------------
 
-p.l <- ggplot(data=lewington.summ.df, aes(x = T.opt.TPC, y = T.max.raw)) +
+p.b <- ggplot(data=bestion.summ.df, aes(x = T.opt.TPC, y = T.max.raw)) +
   geom_point() +
   theme_classic() +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
-  ylim(10,35) +
-  xlim(10,35) +
+  #ylim(10,35) +
+  #xlim(10,35) +
   labs(
     x = "Topt (from TPC)",
     y = "T at max growth (raw data)",
-    title = "Lewington 2019 - 6/7 TPCs fit"
+    title = "Bestion 2018 - 5/6 TPCs fit"
   )
 
 p.lv <- ggplot(data=levasseur.summ.df, aes(x = T.opt.TPC, y = T.max.raw)) +
   geom_point() +
   theme_classic() +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
-  ylim(5,35) +
-  xlim(5,35) +
+  #ylim(5,35) +
+  #xlim(5,35) +
   labs(
     x = "Topt (from TPC)",
     y = "T at max growth (raw data)",
     title = "Levasseur 2025 - 20/20 TPCs fit"
   )
 
-nit.ts <- plot_grid(p.l, p.lv,
-                      nrow = 1,
-                      align = "hv")
+phos.ts <- plot_grid(p.b, p.lv,
+                    nrow = 1,
+                    align = "hv")
