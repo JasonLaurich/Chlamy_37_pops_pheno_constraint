@@ -114,7 +114,7 @@ df.l <- df.l %>%
          r.max < 2.5,
          !is.na(comp))
 
-write.csv(df.l, "data-processed/504a_light_metadata") # Summary
+write.csv(df.l, "data-processed/504a_light_metadata.csv") # Summary
 
 hull.id <- chull(df.l$r.max, df.l$comp)
 
@@ -590,7 +590,7 @@ df.n <- df.n %>%
          !is.na(r.max),
          !is.na(comp))
 
-write.csv(df.n, "data-processed/504b_nit_metadata") # Summary
+write.csv(df.n, "data-processed/504b_nit_metadata.csv") # Summary
 
 hull.id <- chull(df.n$r.max, df.n$comp)
 
@@ -1080,7 +1080,7 @@ df.p <- df.p %>%
          !is.na(r.max),
          !is.na(comp))
 
-write.csv(df.p, "data-processed/504c_phos_metadata") # Summary
+write.csv(df.p, "data-processed/504c_phos_metadata.csv") # Summary
 
 hull.id <- chull(df.p$r.max, df.p$comp)
 
@@ -1570,7 +1570,7 @@ df.t <- df.t %>%
          !is.na(r.max),
          !is.na(T.br))
 
-write.csv(df.t, "data-processed/504d_temp_metadata") # Summary
+write.csv(df.t, "data-processed/504d_temp_metadata.csv") # Summary
 
 hull.id <- chull(df.t$r.max, df.t$T.br)
 
