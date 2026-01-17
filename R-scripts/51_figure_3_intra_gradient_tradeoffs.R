@@ -23,6 +23,7 @@ library(quantreg)
 library(sp) # For the point.in.polygon function
 library(scam)
 library(pracma) # For calculating polygon area
+library(cowplot)
 
 par_frt <- function(df, xvar, yvar) { # Simple Pareto front function / convex hull algorithm (one sided)
   
