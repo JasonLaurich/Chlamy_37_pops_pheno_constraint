@@ -2332,6 +2332,9 @@ I.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = dataset)) +  # We'll lay
 
 I.scam  # Display the plot
 
+p.l3 <- p.l + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE)  # Adding scam PF fits
+p.l3
+
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
 x.max <- max(df.filt$z.x) # Extract the max values for x and y.
@@ -2677,6 +2680,9 @@ N.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = dataset)) +  # We'll lay
 
 N.scam  # Display the plot
 
+p.n3 <- p.n + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE)  # Adding scam PF fits
+p.n3
+
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
 x.max <- max(df.filt$z.x) # Extract the max values for x and y.
@@ -3018,6 +3024,9 @@ P.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = dataset)) +  # We'll lay
   )
 
 P.scam  # Display the plot
+
+p.p3 <- p.p + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE)  # Adding scam PF fits
+p.p3
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
@@ -3365,6 +3374,9 @@ T.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = dataset)) +  # We'll lay
 
 T.scam  # Display the plot
 
+p.t3 <- p.t + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE)  # Adding scam PF fits
+p.t3
+
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
 x.max <- max(df.filt$z.x) # Extract the max values for x and y.
@@ -3645,3 +3657,11 @@ meta_QR2 <- plot_grid(I.qr2, N.qr2, P.qr2, T.qr2, legend_only,
                      align = "hv")
 
 ggsave("figures/109e_fig_Sx_meta_quantregs_33pruned.jpeg", meta_QR2, width = 8, height = 12)
+
+# Create panel with both Pareto fronts and triangles ----------------------
+
+meta_both <- plot_grid(p.l3, p.n3, p.p3, p.t3, legend_only,
+                     ncol = 2,
+                     align = "hv")
+
+ggsave("figures/109f_fig_Sx_meta_both_PF_shoval.jpeg", meta_both, width = 8, height = 12)
