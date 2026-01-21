@@ -1,226 +1,226 @@
-,Species,dataset,r.max,T.br,Sp count
-15,Acutodesmus obliquus,"Edwards et al., 2016",2.072598317,8.830818769,1
-61,Akashiwo sanguinea,"Thomas et al., 2012",0.286615473,13.18753627,2
-62,Alexandrium fundyense strain BoF,"Thomas et al., 2012",0.226824664,15.02990003,3
-63,Alexandrium fundyense strain MI,"Thomas et al., 2012",0.389357577,13.59682641,4
-64,Alexandrium ostenfeldii clone LF-37,"Thomas et al., 2012",0.208962865,11.22997385,5
-65,Alexandrium tamarense clone GTMP,"Thomas et al., 2012",0.309497761,15.03840903,6
-66,Amphiprora sp.,"Thomas et al., 2012",0.855936625,12.79301682,7
-11,Anabaena cylindrica,"Edwards et al., 2016",0.620505783,9.818094583,8
-1,Ankistrodesmus,"Bestion et al., 2018",1.278204978,21.26536927,9
-41,Asterionella formosa,"Levasseur et al., 2025",0.800955946,27.97290169,10
-67,Asterionellopsis glacialis,"Thomas et al., 2012",1.816071102,15.59164295,11
-68,Asterionellopsis glacialis,"Thomas et al., 2012",1.008254115,25.51665077,11
-69,Asterionellopsis glacialis,"Thomas et al., 2012",2.233002677,17.52429875,11
-70,Calcidiscus leptoporus strain N482-1,"Thomas et al., 2012",0.476528321,11.97259,12
-71,Calcidiscus leptoporus strain NS10-2,"Thomas et al., 2012",0.405916343,12.477296,13
-72,Calciodinellum albatrosianum Geob*26/5,"Thomas et al., 2012",0.150744531,16.47166017,14
-6,Ceratium furca,"Edwards et al., 2016",0.57219101,13.49431045,15
-7,Ceratium fusus,"Edwards et al., 2016",0.470361227,12.27361006,15
-31,Chaetoceros calcitrans,"Edwards et al., 2016",1.369883701,13.11163212,16
-17,Chaetoceros deflandrei,"Edwards et al., 2016",0.58901786,17.51228129,17
-73,Chaetoceros deflandrei,"Thomas et al., 2012",0.568569146,15.47423923,17
-74,Chaetoceros didymus,"Thomas et al., 2012",1.444788999,17.38984975,18
-75,Chaetoceros lorenzianus clone Bermuda,"Thomas et al., 2012",1.556583178,13.71983987,19
-76,Chaetoceros lorenzianus clone Bushehr,"Thomas et al., 2012",1.25916246,18.24351316,20
-77,Chaetoceros lorenzianus clone Slope water,"Thomas et al., 2012",1.631975569,16.58990105,21
-78,Chaetoceros pseudocurvisetus,"Thomas et al., 2012",1.465844083,14.45636141,22
-79,Chaetoceros sp.,"Thomas et al., 2012",0.51992277,13.97810102,23
-80,Chaetoceros sp. strain CS256,"Thomas et al., 2012",0.849617686,27.31865756,24
-81,Chattonella marina,"Thomas et al., 2012",0.413967623,17.49316196,25
-82,Chattonella marina var. antiqua strain Ho-1,"Thomas et al., 2012",0.475828922,10.94056449,26
-2,Chlamydomonas,"Bestion et al., 2018",1.832387508,24.60749181,27
-3,Chlorella,"Bestion et al., 2018",2.893655843,16.45583291,28
-42,Chlorella sp.,"Levasseur et al., 2025",0.994814569,32.28380508,29
-83,Chlorella sp. strain MFD-1,"Thomas et al., 2012",0.126403342,32.10006699,30
-9,Chroococcus minutus,"Edwards et al., 2016",1.367121188,22.28803322,31
-84,Chrysochromulina polylepis strain B3,"Thomas et al., 2012",0.778187597,14.46140749,32
-85,Chrysochromulina polylepis strain B4,"Thomas et al., 2012",0.679038249,13.21530139,33
-86,Chrysochromulina polylepis strain K,"Thomas et al., 2012",0.862462737,14.72910061,34
-27,Closterium parvulum,"Edwards et al., 2016",0.333638969,17.9628766,35
-87,Cochlodinium polykrikoides strain 02B1,"Thomas et al., 2012",0.560627747,13.890164,36
-88,Cochlodinium polykrikoides strain 02B2,"Thomas et al., 2012",0.560955047,11.20737241,37
-89,Cochlodinium polykrikoides strain 03H1,"Thomas et al., 2012",0.561742815,15.06012977,38
-90,Cochlodinium polykrikoides strain KG8-ND14,"Thomas et al., 2012",0.60246125,12.99978517,39
-43,Coelastrum sp.,"Levasseur et al., 2025",1.185299808,15.4449362,40
-91,Conticribra guillardii clone 7-15,"Thomas et al., 2012",1.589637221,18.02537813,41
-18,Corethron criophilum,"Edwards et al., 2016",0.225726964,8.348419548,42
-92,Corethron pennatum,"Thomas et al., 2012",0.221931064,7.855647661,43
-24,Cryptomonas sp. 1,"Edwards et al., 2016",0.548508315,11.18056478,44
-39,Cyclotella_meneghiniana,"Lewington-Pearce et al., 2019",0.833159706,12.23641581,45
-44,CyclotellaÂ pseudostelligera,"Levasseur et al., 2025",0.756801207,26.657758,46
-32,Cylindrotheca closterium,"Edwards et al., 2016",0.526107008,21.13290207,47
-93,Cylindrotheca closterium strain NT-6,"Thomas et al., 2012",0.424613341,13.51353156,48
-23,Dactyliosolen fragilissimus,"Edwards et al., 2016",0.938918715,19.77070152,49
-94,Dactyliosolen fragilissimus,"Thomas et al., 2012",0.783787043,23.58481664,49
-95,Detonula confervacea,"Thomas et al., 2012",0.660614659,17.96142407,50
-96,Detonula confervacea,"Thomas et al., 2012",0.908895937,14.45267374,50
-33,Diacronema lutheri,"Edwards et al., 2016",0.406782715,14.52619007,51
-97,Dunaliella tertiolecta strain CCAP 19/6B,"Thomas et al., 2012",1.326420156,17.37375812,52
-98,Emiliania huxleyi,"Thomas et al., 2012",1.061279346,13.13208969,53
-99,Emiliania huxleyi clone M,"Thomas et al., 2012",0.520099883,11.14058027,54
-100,Emiliania huxleyi R strain TQ26,"Thomas et al., 2012",1.451529422,12.46447305,55
-101,Emiliania huxleyi strain B92/21,"Thomas et al., 2012",0.943911903,16.75185772,56
-102,Emiliania huxleyi strain G1779Ga,"Thomas et al., 2012",1.156388513,16.57452578,57
-103,"Emiliania huxleyi strain M181, Bigelow 1A1","Thomas et al., 2012",1.029129473,12.6478691,58
-104,Emiliania huxleyi strain S. Africa,"Thomas et al., 2012",0.877305274,14.0736461,59
-105,Emiliania huxleyi strain Van556,"Thomas et al., 2012",0.760199253,27.27889492,60
-106,Eucampia zodiacus,"Thomas et al., 2012",3.337784983,13.80823816,61
-45,Eudorina elegans,"Levasseur et al., 2025",0.991466804,17.79832884,62
-107,Eutreptiella gymnastica,"Thomas et al., 2012",1.520170523,18.28150542,63
-108,Fibrocapsa japonica,"Thomas et al., 2012",0.483316178,20.85008467,64
-109,Fibrocapsa japonica strain CAWR-19,"Thomas et al., 2012",0.299859193,20.18696238,65
-110,Fibrocapsa japonica strain CCRuG-C13,"Thomas et al., 2012",0.412328654,15.79338614,66
-111,Fibrocapsa japonica strain CS-332,"Thomas et al., 2012",0.327262071,15.02866199,67
-46,FistuliferaÂ saprophila,"Levasseur et al., 2025",1.004451622,18.98654625,68
-12,Fragilaria bidens,"Edwards et al., 2016",0.856752945,20.50311277,69
-13,Fragilaria crotonensis,"Edwards et al., 2016",0.516122804,17.10604146,70
-47,Fragilaria crotonensis,"Levasseur et al., 2025",0.724471063,27.77566175,70
-112,Fragilariopsis cylindrus,"Thomas et al., 2012",0.505213588,11.4446339,71
-113,Fragilariopsis kerguelensis,"Thomas et al., 2012",0.475784583,8.799572978,72
-114,"Gephyrocapsa oceanica strain AB1, CAWPOT","Thomas et al., 2012",1.048248476,15.56337644,73
-115,Gephyrocapsa oceanica var. typica strain A4725,"Thomas et al., 2012",1.236339317,14.08079753,74
-116,Gephyrocapsa oceanica var. typica strain A4727,"Thomas et al., 2012",1.316764466,13.74738332,75
-117,Gymnodinium aureolum,"Thomas et al., 2012",0.413161127,11.2612298,76
-118,Gymnodinium catenatum,"Thomas et al., 2012",0.390125627,11.67362773,77
-119,Gymnodinium catenatum strain GCCV-10,"Thomas et al., 2012",0.204821407,16.6161269,78
-120,Gymnodinium corollarium clone GCTV-B4,"Thomas et al., 2012",0.307572555,10.42975142,79
-121,Gymnodinium isolate 581 (probably G. simplex),"Thomas et al., 2012",0.77470241,11.337367,80
-122,Gymnodinium isolate 582 (probably G. simplex),"Thomas et al., 2012",1.122138562,12.48623957,81
-123,Helicotheca tamesis,"Thomas et al., 2012",0.900820483,15.06499646,82
-124,Heterocapsa rotundata,"Thomas et al., 2012",1.268814033,21.67610995,83
-125,Heterosigma akashiwo,"Thomas et al., 2012",0.982417003,14.64189225,84
-126,"Isochrysis galbana clone T-ISO, NEPCC 601","Thomas et al., 2012",0.879918236,16.14768827,85
-127,Isochrysis sp. strain PS11,"Thomas et al., 2012",0.446774488,20.03010949,86
-128,Karenia brevis strain APA,"Thomas et al., 2012",0.200552768,13.5638949,87
-129,Karenia brevis strain MAN,"Thomas et al., 2012",0.146330246,12.52555145,88
-130,Karenia mikimotoi,"Thomas et al., 2012",0.645061537,12.61362398,89
-131,Karlodinium veneficum strain KT76E,"Thomas et al., 2012",0.476950136,15.46612821,90
-36,Kirchneriella_subcapitata,"Lewington-Pearce et al., 2019",0.681405211,17.28539179,91
-132,Klebsormidium strain UMACC 227,"Thomas et al., 2012",0.207631531,24.29080216,92
-48,LagerheimiaÂ subsalsa,"Levasseur et al., 2025",1.31691149,15.25660621,93
-133,Leonella granifera strain GeoB*38,"Thomas et al., 2012",0.188708943,13.99698209,94
-134,Leonella granifera strain GeoB*39,"Thomas et al., 2012",0.411009643,10.53650422,95
-135,Leptocylindrus danicus,"Thomas et al., 2012",1.380116958,12.81895297,96
-136,Men. 5 (Diatom),"Thomas et al., 2012",1.660591795,17.70959896,97
-49,Messastrum gracile,"Levasseur et al., 2025",1.63089956,16.65871154,98
-8,Micractinium pusillum,"Edwards et al., 2016",0.604468753,20.09860289,99
-37,Microcystis_aeruginosa,"Lewington-Pearce et al., 2019",0.400063288,14.21239388,100
-50,MicrocystisÂ aeruginosa,"Levasseur et al., 2025",1.734295979,14.23441016,100
-51,MicrocystisÂ viridis,"Levasseur et al., 2025",1.252639252,16.14126865,101
-137,Micromonas pusilla,"Thomas et al., 2012",2.57032369,22.38402878,102
-138,Micromonas sp. strain CCMP2099,"Thomas et al., 2012",0.519933078,14.83480195,103
-4,Monoraphidium,"Bestion et al., 2018",1.989058655,15.35195452,104
-28,Monoraphidium contortum,"Edwards et al., 2016",0.5883321,24.73420977,105
-142,Nannochloris (possibly Stichococcus) sp.,"Thomas et al., 2012",2.997066085,18.99566178,106
-25,Nannochloropsis oceanica,"Edwards et al., 2016",1.540563638,17.51080973,107
-143,Neoceratium furca,"Thomas et al., 2012",0.560205365,14.00797137,108
-144,Neoceratium furca,"Thomas et al., 2012",0.247612878,12.72022416,108
-145,Neoceratium fusus,"Thomas et al., 2012",0.457884699,13.74807359,108
-146,Neoceratium fusus,"Thomas et al., 2012",0.186832376,15.54845172,108
-147,Neoceratium lineatum,"Thomas et al., 2012",0.252793362,13.20730537,109
-139,N-fixing unicellular cyanobacterium strain A 2.5,"Thomas et al., 2012",1.288345071,4.598098379,110
-140,N-fixing unicellular cyanobacterium strain P-3,"Thomas et al., 2012",1.12213378,4.718615786,111
-141,N-fixing unicellular cyanobacterium strain P-7,"Thomas et al., 2012",0.363925645,4.317377449,112
-19,Nitzschia cylindrus,"Edwards et al., 2016",0.51503203,11.49344556,113
-20,Nitzschia kerguelensis,"Edwards et al., 2016",0.493344799,8.768715745,114
-52,Nitzschia paela (C ),"Levasseur et al., 2025",1.965785001,19.03457318,115
-53,Nitzschia paela (G),"Levasseur et al., 2025",1.648954516,18.3774089,115
-148,Nitzschia paleacea strain NT7,"Thomas et al., 2012",0.391397833,19.0006871,116
-21,Nitzschia turgiduloides,"Edwards et al., 2016",0.466617838,8.855119769,117
-149,Odontella mobiliensis,"Thomas et al., 2012",1.309784738,14.48282926,118
-150,Olisthodiscus luteus clone OLMS,"Thomas et al., 2012",0.955526288,23.44164911,119
-29,Oocystella mongolica,"Edwards et al., 2016",0.225847793,30.69227163,120
-54,Oocystis sp.,"Levasseur et al., 2025",0.791666391,17.13928163,121
-38,Pediastrum_boryanum,"Lewington-Pearce et al., 2019",0.637787357,18.6093939,122
-55,PediastrumÂ boryanum,"Levasseur et al., 2025",1.574701854,17.23564041,122
-151,Peridinium sp. 1,"Thomas et al., 2012",0.564982166,17.32309918,123
-152,Pernambugia tuberosa strain GeoB*74,"Thomas et al., 2012",0.327259015,14.35685173,124
-153,Phaeocystis antarctica strain CCMP 1871,"Thomas et al., 2012",0.253037782,6.89800019,125
-154,Phaeocystis globosa strain CCMP 1528,"Thomas et al., 2012",0.768536194,16.26292133,126
-155,Phaeocystis pouchetii,"Thomas et al., 2012",2.584371383,9.836528031,127
-16,Phaeodactylum tricornutum,"Edwards et al., 2016",1.503525348,16.99559713,128
-156,Phaeodactylum tricornutum,"Thomas et al., 2012",0.297349668,27.94762305,128
-157,Phaeodactylum tricornutum clone Pet Pd,"Thomas et al., 2012",1.469945177,15.36660976,129
-158,Picochlorum atomus,"Thomas et al., 2012",0.567555833,16.76037757,130
-10,Planktothrix agardhii,"Edwards et al., 2016",1.926909656,12.00207765,131
-56,PlanktothrixÂ agardhii,"Levasseur et al., 2025",0.161023645,19.44387,131
-159,Prochlorococcus marinus strain MED4 (clade 2),"Thomas et al., 2012",0.570197206,10.25507698,132
-160,Prochlorococcus marinus strain MIT9215 (clade 1),"Thomas et al., 2012",0.495731987,12.16608557,133
-161,Prochlorococcus marinus strain MIT9312 (clade 1),"Thomas et al., 2012",0.614024562,10.14589124,134
-162,Prochlorococcus marinus strain MIT9313,"Thomas et al., 2012",0.48996729,9.254114199,135
-163,Prochlorococcus marinus strain MIT9515 (clade 2),"Thomas et al., 2012",0.458017928,13.05272821,136
-164,Prochlorococcus marinus strain NATL2A,"Thomas et al., 2012",0.500702796,10.28363486,137
-165,Prochlorococcus marinus strain SS120,"Thomas et al., 2012",0.607718677,9.914556846,138
-166,Prorocentrum gracile,"Thomas et al., 2012",0.545493876,11.66839345,139
-167,Prorocentrum micans,"Thomas et al., 2012",0.534862157,14.3661972,140
-168,Prorocentrum minimum,"Thomas et al., 2012",0.697564968,16.29407294,141
-26,Pseudochattonella farcimen,"Edwards et al., 2016",0.54039125,12.99428995,142
-30,Pseudodidymocystis planctonica,"Edwards et al., 2016",0.479374162,19.15244268,143
-169,Pseudo-nitzschia americana,"Thomas et al., 2012",2.957719666,16.04202996,144
-170,Pseudo-nitzschia granii,"Thomas et al., 2012",0.906853439,15.90578012,145
-171,Pseudo-nitzschia multiseries,"Thomas et al., 2012",0.452059405,18.64101106,146
-172,Pseudo-nitzschia turgiduloides,"Thomas et al., 2012",0.472717126,9.09621293,147
-173,Pyrodinium bahamense var. compressum strain PbSA01,"Thomas et al., 2012",0.260743203,15.27004406,148
-5,Raphidocelis,"Bestion et al., 2018",1.5585824,20.48409281,149
-174,Rhizosolenia setigera,"Thomas et al., 2012",1.244706154,16.32112908,150
-175,Rhizosolenia setigera,"Thomas et al., 2012",0.504046384,14.61855931,150
-57,Scenedesmus arcuatus var. Platydiscus,"Levasseur et al., 2025",1.272289785,15.60634025,151
-58,Scenedesmus armatus,"Levasseur et al., 2025",1.233128952,17.49296766,152
-40,Scenedesmus_acuminatus,"Lewington-Pearce et al., 2019",0.76367789,18.20017868,153
-176,Scrippsiella trochoidea strain ScrpMxB,"Thomas et al., 2012",0.45952283,20.94354423,154
-177,Skeletonema ardens strain FDK003,"Thomas et al., 2012",2.323880456,17.71764952,155
-178,Skeletonema ardens strain FDK004,"Thomas et al., 2012",1.533172415,15.98615711,156
-179,Skeletonema ardens strain FDK005,"Thomas et al., 2012",2.198168983,16.75714939,157
-180,Skeletonema ardens strain FDK006,"Thomas et al., 2012",2.244654304,17.75954473,158
-181,Skeletonema ardens strain FDK007,"Thomas et al., 2012",2.233050043,17.84105159,159
-182,Skeletonema costatum,"Thomas et al., 2012",0.058281366,16.58762816,160
-183,Skeletonema costatum,"Thomas et al., 2012",1.01278061,18.69231276,160
-184,Skeletonema costatum,"Thomas et al., 2012",1.392533972,20.99010001,160
-185,Skeletonema costatum clone FHS 3,"Thomas et al., 2012",0.965035269,18.32101903,161
-186,Skeletonema costatum clone FHS 7,"Thomas et al., 2012",1.634795859,17.71996343,162
-187,Skeletonema costatum clone SK6C,"Thomas et al., 2012",1.294474299,21.19981256,163
-188,Skeletonema costatum s.s. strain FDK009,"Thomas et al., 2012",1.39970857,19.05333028,164
-189,Skeletonema japonicum strain FDK154,"Thomas et al., 2012",1.61167563,30.55313627,165
-190,Skeletonema japonicum strain FDK157,"Thomas et al., 2012",1.569263287,22.58938719,166
-191,Skeletonema japonicum strain FDK158,"Thomas et al., 2012",1.677588904,20.68318172,167
-192,Skeletonema japonicum strain FDK159,"Thomas et al., 2012",1.586730081,17.94394142,168
-193,Skeletonema japonicum strain FDK161,"Thomas et al., 2012",1.596622991,23.05850603,169
-194,Skeletonema marinoiÐdohrnii complex strain FDK031,"Thomas et al., 2012",1.76231566,31.19262046,170
-195,Skeletonema marinoiÐdohrnii complex strain FDK032,"Thomas et al., 2012",1.742727854,25.46839766,171
-196,Skeletonema marinoiÐdohrnii complex strain FDK035,"Thomas et al., 2012",1.591258707,23.95700855,172
-197,Skeletonema marinoiÐdohrnii complex strain FDK039,"Thomas et al., 2012",1.751064659,29.42293104,173
-198,Skeletonema menzelii strain DM08080630,"Thomas et al., 2012",2.220960151,21.89204729,174
-199,Skeletonema menzelii strain DM08080730,"Thomas et al., 2012",2.582908098,19.04778458,175
-200,Skeletonema menzelii strain FDK221,"Thomas et al., 2012",1.827292356,25.84991526,176
-201,Skeletonema menzelii strain FDK222,"Thomas et al., 2012",1.753910171,29.82148605,177
-202,Skeletonema pseudocostatum strain FDK225,"Thomas et al., 2012",1.82662283,19.28584675,178
-203,Skeletonema tropicum clone 21-L,"Thomas et al., 2012",1.542571386,10.74169015,179
-204,Skeletonema tropicum clone fall,"Thomas et al., 2012",1.979413816,14.80403979,180
-205,Skeletonema tropicum clone S. trop.,"Thomas et al., 2012",1.995649806,15.69411696,181
-206,Skeletonema tropicum clone spring,"Thomas et al., 2012",1.539327307,10.92831065,182
-207,Skeletonema tropicum strain FDK199,"Thomas et al., 2012",1.302619392,17.28304691,183
-208,Skeletonema tropicum strain FDK202,"Thomas et al., 2012",1.334169642,16.5652731,184
-209,Skeletonema tropicum strain FDK204,"Thomas et al., 2012",1.709039228,16.47749907,185
-210,Skeletonema tropicum strain FDK205,"Thomas et al., 2012",1.611328422,16.29179949,186
-211,Skeletonema tropicum strain FDK207,"Thomas et al., 2012",1.686747224,16.16283862,187
-14,Staurastrum pingue,"Edwards et al., 2016",0.668730704,25.31390058,188
-212,Stellarima microtrias,"Thomas et al., 2012",0.564476714,8.97458685,189
-213,Stephanopyxis palmeriana,"Thomas et al., 2012",1.10302058,11.0505874,190
-214,Stichococcus (possibly S. cylindricus),"Thomas et al., 2012",0.350543589,18.07560669,191
-35,Synechococcus,"Lewington-Pearce et al., 2019",0.781939942,19.81098525,192
-59,Synechococcus elongatus,"Levasseur et al., 2025",1.513324793,14.34660175,193
-215,Synechococcus strain WH8103,"Thomas et al., 2012",0.772484064,14.59824538,194
-216,Synedra sp.,"Thomas et al., 2012",0.377966516,9.312733607,195
-22,Synura sphagnicola,"Edwards et al., 2016",0.711049314,13.37940754,196
-60,TetraedronÂ minumum,"Levasseur et al., 2025",0.521763431,17.86496101,197
-34,Tetraselmis sp.,"Edwards et al., 2016",0.485343208,24.47728083,198
-217,Thalassionema nitzschioides,"Thomas et al., 2012",1.589937924,14.97016305,199
-218,Thalassionema nitzschioides,"Thomas et al., 2012",1.088223445,20.13835173,199
-219,Thalassiosira nordenskioeldii,"Thomas et al., 2012",0.986568008,18.28838911,200
-220,Thalassiosira nordenskioeldii clone TN-2,"Thomas et al., 2012",1.136229668,12.01480611,201
-221,Thalassiosira pseudonana clone 5A,"Thomas et al., 2012",1.945175556,16.11220293,202
-222,Thalassiosira rotula clone A8,"Thomas et al., 2012",1.068441562,19.30331218,203
-223,Thalassiosira rotula clone C8,"Thomas et al., 2012",1.487048896,19.45646641,204
-224,"Trichodesmium erythraeum strain IMS101, CCMP 1985","Thomas et al., 2012",0.420135334,11.2131157,205
-225,Unidentified prymnesiophyte strain NT19,"Thomas et al., 2012",0.551529839,35.82319752,206
+,Species,dataset,r.max,T.br,Sp count,Sp.name
+15,Acutodesmus obliquus,"Edwards et al., 2016",2.072598317,8.830818769,1,Acutodesmus obliquus
+61,Akashiwo sanguinea,"Thomas et al., 2012",0.286615473,13.18753627,2,Akashiwo sanguinea
+62,Alexandrium fundyense strain BoF,"Thomas et al., 2012",0.226824664,15.02990003,3,Alexandrium fundyense
+63,Alexandrium fundyense strain MI,"Thomas et al., 2012",0.389357577,13.59682641,4,Alexandrium fundyense
+64,Alexandrium ostenfeldii clone LF-37,"Thomas et al., 2012",0.208962865,11.22997385,5,Alexandrium ostenfeldii
+65,Alexandrium tamarense clone GTMP,"Thomas et al., 2012",0.309497761,15.03840903,6,Alexandrium tamarense
+66,Amphiprora sp.,"Thomas et al., 2012",0.855936625,12.79301682,7,NA
+11,Anabaena cylindrica,"Edwards et al., 2016",0.620505783,9.818094583,8,Anabaena cylindrica
+1,Ankistrodesmus,"Bestion et al., 2018",1.278204978,21.26536927,9,NA
+41,Asterionella formosa,"Levasseur et al., 2025",0.800955946,27.97290169,10,Asterionella formosa
+67,Asterionellopsis glacialis,"Thomas et al., 2012",1.816071102,15.59164295,11,Asterionellopsis glacialis
+68,Asterionellopsis glacialis,"Thomas et al., 2012",1.008254115,25.51665077,11,Asterionellopsis glacialis
+69,Asterionellopsis glacialis,"Thomas et al., 2012",2.233002677,17.52429875,11,Asterionellopsis glacialis
+70,Calcidiscus leptoporus strain N482-1,"Thomas et al., 2012",0.476528321,11.97259,12,Calcidiscus leptoporus
+71,Calcidiscus leptoporus strain NS10-2,"Thomas et al., 2012",0.405916343,12.477296,13,Calcidiscus leptoporus
+72,Calciodinellum albatrosianum Geob*26/5,"Thomas et al., 2012",0.150744531,16.47166017,14,Calciodinellum albatrosianum
+6,Ceratium furca,"Edwards et al., 2016",0.57219101,13.49431045,15,Ceratium furca
+7,Ceratium fusus,"Edwards et al., 2016",0.470361227,12.27361006,15,Ceratium fusus
+31,Chaetoceros calcitrans,"Edwards et al., 2016",1.369883701,13.11163212,16,Chaetoceros calcitrans
+17,Chaetoceros deflandrei,"Edwards et al., 2016",0.58901786,17.51228129,17,Chaetoceros deflandrei
+73,Chaetoceros deflandrei,"Thomas et al., 2012",0.568569146,15.47423923,17,Chaetoceros deflandrei
+74,Chaetoceros didymus,"Thomas et al., 2012",1.444788999,17.38984975,18,Chaetoceros didymus
+75,Chaetoceros lorenzianus clone Bermuda,"Thomas et al., 2012",1.556583178,13.71983987,19,Chaetoceros lorenzianus
+76,Chaetoceros lorenzianus clone Bushehr,"Thomas et al., 2012",1.25916246,18.24351316,20,Chaetoceros lorenzianus
+77,Chaetoceros lorenzianus clone Slope water,"Thomas et al., 2012",1.631975569,16.58990105,21,Chaetoceros lorenzianus
+78,Chaetoceros pseudocurvisetus,"Thomas et al., 2012",1.465844083,14.45636141,22,Chaetoceros pseudocurvisetus
+79,Chaetoceros sp.,"Thomas et al., 2012",0.51992277,13.97810102,23,NA
+80,Chaetoceros sp. strain CS256,"Thomas et al., 2012",0.849617686,27.31865756,24,NA
+81,Chattonella marina,"Thomas et al., 2012",0.413967623,17.49316196,25,Chattonella marina
+82,Chattonella marina var. antiqua strain Ho-1,"Thomas et al., 2012",0.475828922,10.94056449,26,Chattonella marina
+2,Chlamydomonas,"Bestion et al., 2018",1.832387508,24.60749181,27,NA
+3,Chlorella,"Bestion et al., 2018",2.893655843,16.45583291,28,NA
+42,Chlorella sp.,"Levasseur et al., 2025",0.994814569,32.28380508,29,NA
+83,Chlorella sp. strain MFD-1,"Thomas et al., 2012",0.126403342,32.10006699,30,NA
+9,Chroococcus minutus,"Edwards et al., 2016",1.367121188,22.28803322,31,Chroococcus minutus
+84,Chrysochromulina polylepis strain B3,"Thomas et al., 2012",0.778187597,14.46140749,32,Chrysochromulina polylepis
+85,Chrysochromulina polylepis strain B4,"Thomas et al., 2012",0.679038249,13.21530139,33,Chrysochromulina polylepis
+86,Chrysochromulina polylepis strain K,"Thomas et al., 2012",0.862462737,14.72910061,34,Chrysochromulina polylepis
+27,Closterium parvulum,"Edwards et al., 2016",0.333638969,17.9628766,35,Closterium parvulum
+87,Cochlodinium polykrikoides strain 02B1,"Thomas et al., 2012",0.560627747,13.890164,36,Cochlodinium polykrikoides
+88,Cochlodinium polykrikoides strain 02B2,"Thomas et al., 2012",0.560955047,11.20737241,37,Cochlodinium polykrikoides
+89,Cochlodinium polykrikoides strain 03H1,"Thomas et al., 2012",0.561742815,15.06012977,38,Cochlodinium polykrikoides
+90,Cochlodinium polykrikoides strain KG8-ND14,"Thomas et al., 2012",0.60246125,12.99978517,39,Cochlodinium polykrikoides
+43,Coelastrum sp.,"Levasseur et al., 2025",1.185299808,15.4449362,40,NA
+91,Conticribra guillardii clone 7-15,"Thomas et al., 2012",1.589637221,18.02537813,41,Conticribra guillardii
+18,Corethron criophilum,"Edwards et al., 2016",0.225726964,8.348419548,42,Corethron criophilum
+92,Corethron pennatum,"Thomas et al., 2012",0.221931064,7.855647661,43,Corethron pennatum
+24,Cryptomonas sp. 1,"Edwards et al., 2016",0.548508315,11.18056478,44,NA
+39,Cyclotella_meneghiniana,"Lewington-Pearce et al., 2019",0.833159706,12.23641581,45,Cyclotella meneghiniana
+44,CyclotellaÂ pseudostelligera,"Levasseur et al., 2025",0.756801207,26.657758,46,Cyclotella pseudostelligera
+32,Cylindrotheca closterium,"Edwards et al., 2016",0.526107008,21.13290207,47,Cylindrotheca closterium
+93,Cylindrotheca closterium strain NT-6,"Thomas et al., 2012",0.424613341,13.51353156,48,Cylindrotheca closterium
+23,Dactyliosolen fragilissimus,"Edwards et al., 2016",0.938918715,19.77070152,49,Dactyliosolen fragilissimus
+94,Dactyliosolen fragilissimus,"Thomas et al., 2012",0.783787043,23.58481664,49,Dactyliosolen fragilissimus
+95,Detonula confervacea,"Thomas et al., 2012",0.660614659,17.96142407,50,Detonula confervacea
+96,Detonula confervacea,"Thomas et al., 2012",0.908895937,14.45267374,50,Detonula confervacea
+33,Diacronema lutheri,"Edwards et al., 2016",0.406782715,14.52619007,51,Diacronema lutheri
+97,Dunaliella tertiolecta strain CCAP 19/6B,"Thomas et al., 2012",1.326420156,17.37375812,52,Dunaliella tertiolecta
+98,Emiliania huxleyi,"Thomas et al., 2012",1.061279346,13.13208969,53,Emiliania huxleyi
+99,Emiliania huxleyi clone M,"Thomas et al., 2012",0.520099883,11.14058027,54,Emiliania huxleyi
+100,Emiliania huxleyi R strain TQ26,"Thomas et al., 2012",1.451529422,12.46447305,55,Emiliania huxleyi
+101,Emiliania huxleyi strain B92/21,"Thomas et al., 2012",0.943911903,16.75185772,56,Emiliania huxleyi
+102,Emiliania huxleyi strain G1779Ga,"Thomas et al., 2012",1.156388513,16.57452578,57,Emiliania huxleyi
+103,"Emiliania huxleyi strain M181, Bigelow 1A1","Thomas et al., 2012",1.029129473,12.6478691,58,Emiliania huxleyi
+104,Emiliania huxleyi strain S. Africa,"Thomas et al., 2012",0.877305274,14.0736461,59,Emiliania huxleyi
+105,Emiliania huxleyi strain Van556,"Thomas et al., 2012",0.760199253,27.27889492,60,Emiliania huxleyi
+106,Eucampia zodiacus,"Thomas et al., 2012",3.337784983,13.80823816,61,Eucampia zodiacus
+45,Eudorina elegans,"Levasseur et al., 2025",0.991466804,17.79832884,62,Eudorina elegans
+107,Eutreptiella gymnastica,"Thomas et al., 2012",1.520170523,18.28150542,63,Eutreptiella gymnastica
+108,Fibrocapsa japonica,"Thomas et al., 2012",0.483316178,20.85008467,64,Fibrocapsa japonica
+109,Fibrocapsa japonica strain CAWR-19,"Thomas et al., 2012",0.299859193,20.18696238,65,Fibrocapsa japonica
+110,Fibrocapsa japonica strain CCRuG-C13,"Thomas et al., 2012",0.412328654,15.79338614,66,Fibrocapsa japonica
+111,Fibrocapsa japonica strain CS-332,"Thomas et al., 2012",0.327262071,15.02866199,67,Fibrocapsa japonica
+46,FistuliferaÂ saprophila,"Levasseur et al., 2025",1.004451622,18.98654625,68,Fistulifera saprophila
+12,Fragilaria bidens,"Edwards et al., 2016",0.856752945,20.50311277,69,Fragilaria bidens
+13,Fragilaria crotonensis,"Edwards et al., 2016",0.516122804,17.10604146,70,Fragilaria crotonensis
+47,Fragilaria crotonensis,"Levasseur et al., 2025",0.724471063,27.77566175,70,Fragilaria crotonensis
+112,Fragilariopsis cylindrus,"Thomas et al., 2012",0.505213588,11.4446339,71,Fragilariopsis cylindrus
+113,Fragilariopsis kerguelensis,"Thomas et al., 2012",0.475784583,8.799572978,72,Fragilariopsis kerguelensis
+114,"Gephyrocapsa oceanica strain AB1, CAWPOT","Thomas et al., 2012",1.048248476,15.56337644,73,Gephyrocapsa oceanica
+115,Gephyrocapsa oceanica var. typica strain A4725,"Thomas et al., 2012",1.236339317,14.08079753,74,Gephyrocapsa oceanica
+116,Gephyrocapsa oceanica var. typica strain A4727,"Thomas et al., 2012",1.316764466,13.74738332,75,Gephyrocapsa oceanica
+117,Gymnodinium aureolum,"Thomas et al., 2012",0.413161127,11.2612298,76,Gymnodinium aureolum
+118,Gymnodinium catenatum,"Thomas et al., 2012",0.390125627,11.67362773,77,Gymnodinium catenatum
+119,Gymnodinium catenatum strain GCCV-10,"Thomas et al., 2012",0.204821407,16.6161269,78,Gymnodinium catenatum
+120,Gymnodinium corollarium clone GCTV-B4,"Thomas et al., 2012",0.307572555,10.42975142,79,Gymnodinium corollarium
+121,Gymnodinium isolate 581 (probably G. simplex),"Thomas et al., 2012",0.77470241,11.337367,80,Gymnodinium simplex
+122,Gymnodinium isolate 582 (probably G. simplex),"Thomas et al., 2012",1.122138562,12.48623957,81,Gymnodinium simplex
+123,Helicotheca tamesis,"Thomas et al., 2012",0.900820483,15.06499646,82,Helicotheca tamesis
+124,Heterocapsa rotundata,"Thomas et al., 2012",1.268814033,21.67610995,83,Heterocapsa rotundata
+125,Heterosigma akashiwo,"Thomas et al., 2012",0.982417003,14.64189225,84,Heterosigma akashiwo
+126,"Isochrysis galbana clone T-ISO, NEPCC 601","Thomas et al., 2012",0.879918236,16.14768827,85,Isochrysis galbana
+127,Isochrysis sp. strain PS11,"Thomas et al., 2012",0.446774488,20.03010949,86,NA
+128,Karenia brevis strain APA,"Thomas et al., 2012",0.200552768,13.5638949,87,Karenia brevis
+129,Karenia brevis strain MAN,"Thomas et al., 2012",0.146330246,12.52555145,88,Karenia brevis
+130,Karenia mikimotoi,"Thomas et al., 2012",0.645061537,12.61362398,89,Karenia mikimotoi
+131,Karlodinium veneficum strain KT76E,"Thomas et al., 2012",0.476950136,15.46612821,90,Karlodinium veneficum
+36,Kirchneriella_subcapitata,"Lewington-Pearce et al., 2019",0.681405211,17.28539179,91,Kirchneriella subcapitata
+132,Klebsormidium strain UMACC 227,"Thomas et al., 2012",0.207631531,24.29080216,92,NA
+48,LagerheimiaÂ subsalsa,"Levasseur et al., 2025",1.31691149,15.25660621,93,Lagerheimia subsalsa
+133,Leonella granifera strain GeoB*38,"Thomas et al., 2012",0.188708943,13.99698209,94,Leonella granifera
+134,Leonella granifera strain GeoB*39,"Thomas et al., 2012",0.411009643,10.53650422,95,Leonella granifera
+135,Leptocylindrus danicus,"Thomas et al., 2012",1.380116958,12.81895297,96,Leptocylindrus danicus
+136,Men. 5 (Diatom),"Thomas et al., 2012",1.660591795,17.70959896,97,NA
+49,Messastrum gracile,"Levasseur et al., 2025",1.63089956,16.65871154,98,Messastrum gracile
+8,Micractinium pusillum,"Edwards et al., 2016",0.604468753,20.09860289,99,Micractinium pusillum
+37,Microcystis_aeruginosa,"Lewington-Pearce et al., 2019",0.400063288,14.21239388,100,Microcystis aeruginosa
+50,MicrocystisÂ aeruginosa,"Levasseur et al., 2025",1.734295979,14.23441016,100,Microcystis aeruginosa
+51,MicrocystisÂ viridis,"Levasseur et al., 2025",1.252639252,16.14126865,101,Microcystis viridis
+137,Micromonas pusilla,"Thomas et al., 2012",2.57032369,22.38402878,102,Micromonas pusilla
+138,Micromonas sp. strain CCMP2099,"Thomas et al., 2012",0.519933078,14.83480195,103,NA
+4,Monoraphidium,"Bestion et al., 2018",1.989058655,15.35195452,104,NA
+28,Monoraphidium contortum,"Edwards et al., 2016",0.5883321,24.73420977,105,Monoraphidium contortum
+142,Nannochloris (possibly Stichococcus) sp.,"Thomas et al., 2012",2.997066085,18.99566178,106,NA
+25,Nannochloropsis oceanica,"Edwards et al., 2016",1.540563638,17.51080973,107,Nannochloropsis oceanica
+143,Neoceratium furca,"Thomas et al., 2012",0.560205365,14.00797137,108,Neoceratium furca
+144,Neoceratium furca,"Thomas et al., 2012",0.247612878,12.72022416,108,Neoceratium furca
+145,Neoceratium fusus,"Thomas et al., 2012",0.457884699,13.74807359,108,Neoceratium fusus
+146,Neoceratium fusus,"Thomas et al., 2012",0.186832376,15.54845172,108,Neoceratium fusus
+147,Neoceratium lineatum,"Thomas et al., 2012",0.252793362,13.20730537,109,Neoceratium lineatum
+139,N-fixing unicellular cyanobacterium strain A 2.5,"Thomas et al., 2012",1.288345071,4.598098379,110,NA
+140,N-fixing unicellular cyanobacterium strain P-3,"Thomas et al., 2012",1.12213378,4.718615786,111,NA
+141,N-fixing unicellular cyanobacterium strain P-7,"Thomas et al., 2012",0.363925645,4.317377449,112,NA
+19,Nitzschia cylindrus,"Edwards et al., 2016",0.51503203,11.49344556,113,Nitzschia cylindrus
+20,Nitzschia kerguelensis,"Edwards et al., 2016",0.493344799,8.768715745,114,Nitzschia kerguelensis
+52,Nitzschia paela (C ),"Levasseur et al., 2025",1.965785001,19.03457318,115,Nitzschia paela
+53,Nitzschia paela (G),"Levasseur et al., 2025",1.648954516,18.3774089,115,Nitzschia paela
+148,Nitzschia paleacea strain NT7,"Thomas et al., 2012",0.391397833,19.0006871,116,Nitzschia paelacea
+21,Nitzschia turgiduloides,"Edwards et al., 2016",0.466617838,8.855119769,117,Nitzschia turgiduloides
+149,Odontella mobiliensis,"Thomas et al., 2012",1.309784738,14.48282926,118,Odontella mobiliensis
+150,Olisthodiscus luteus clone OLMS,"Thomas et al., 2012",0.955526288,23.44164911,119,Olisthodiscus luteus
+29,Oocystella mongolica,"Edwards et al., 2016",0.225847793,30.69227163,120,Oocystella mongolica
+54,Oocystis sp.,"Levasseur et al., 2025",0.791666391,17.13928163,121,NA
+38,Pediastrum_boryanum,"Lewington-Pearce et al., 2019",0.637787357,18.6093939,122,Pediastrum boryanum
+55,PediastrumÂ boryanum,"Levasseur et al., 2025",1.574701854,17.23564041,122,Pediastrum boryanum
+151,Peridinium sp. 1,"Thomas et al., 2012",0.564982166,17.32309918,123,NA
+152,Pernambugia tuberosa strain GeoB*74,"Thomas et al., 2012",0.327259015,14.35685173,124,Pernambugia tuberosa
+153,Phaeocystis antarctica strain CCMP 1871,"Thomas et al., 2012",0.253037782,6.89800019,125,Phaeocystis antarctica
+154,Phaeocystis globosa strain CCMP 1528,"Thomas et al., 2012",0.768536194,16.26292133,126,Phaeocystis globosa
+155,Phaeocystis pouchetii,"Thomas et al., 2012",2.584371383,9.836528031,127,Phaeocystis pouchetii
+16,Phaeodactylum tricornutum,"Edwards et al., 2016",1.503525348,16.99559713,128,Phaeodactylum tricornutum
+156,Phaeodactylum tricornutum,"Thomas et al., 2012",0.297349668,27.94762305,128,Phaeodactylum tricornutum
+157,Phaeodactylum tricornutum clone Pet Pd,"Thomas et al., 2012",1.469945177,15.36660976,129,Phaeodactylum tricornutum
+158,Picochlorum atomus,"Thomas et al., 2012",0.567555833,16.76037757,130,Picochlorum atomus
+10,Planktothrix agardhii,"Edwards et al., 2016",1.926909656,12.00207765,131,Planktothrix agardhii
+56,PlanktothrixÂ agardhii,"Levasseur et al., 2025",0.161023645,19.44387,131,Planktothrix agardhii
+159,Prochlorococcus marinus strain MED4 (clade 2),"Thomas et al., 2012",0.570197206,10.25507698,132,Prochlorococcus marinus
+160,Prochlorococcus marinus strain MIT9215 (clade 1),"Thomas et al., 2012",0.495731987,12.16608557,133,Prochlorococcus marinus
+161,Prochlorococcus marinus strain MIT9312 (clade 1),"Thomas et al., 2012",0.614024562,10.14589124,134,Prochlorococcus marinus
+162,Prochlorococcus marinus strain MIT9313,"Thomas et al., 2012",0.48996729,9.254114199,135,Prochlorococcus marinus
+163,Prochlorococcus marinus strain MIT9515 (clade 2),"Thomas et al., 2012",0.458017928,13.05272821,136,Prochlorococcus marinus
+164,Prochlorococcus marinus strain NATL2A,"Thomas et al., 2012",0.500702796,10.28363486,137,Prochlorococcus marinus
+165,Prochlorococcus marinus strain SS120,"Thomas et al., 2012",0.607718677,9.914556846,138,Prochlorococcus marinus
+166,Prorocentrum gracile,"Thomas et al., 2012",0.545493876,11.66839345,139,Prorocentrum gracile
+167,Prorocentrum micans,"Thomas et al., 2012",0.534862157,14.3661972,140,Prorocentrum micans
+168,Prorocentrum minimum,"Thomas et al., 2012",0.697564968,16.29407294,141,Prorocentrum minimum
+26,Pseudochattonella farcimen,"Edwards et al., 2016",0.54039125,12.99428995,142,Pseudochattonella farcimen
+30,Pseudodidymocystis planctonica,"Edwards et al., 2016",0.479374162,19.15244268,143,Pseudodidymocystis planctonica
+169,Pseudo-nitzschia americana,"Thomas et al., 2012",2.957719666,16.04202996,144,Pseudo-nitzschia americana
+170,Pseudo-nitzschia granii,"Thomas et al., 2012",0.906853439,15.90578012,145,Pseudo-nitzschia granii
+171,Pseudo-nitzschia multiseries,"Thomas et al., 2012",0.452059405,18.64101106,146,Pseudo-nitzschia multiseries
+172,Pseudo-nitzschia turgiduloides,"Thomas et al., 2012",0.472717126,9.09621293,147,Pseudo-nitzschia turgiduloides
+173,Pyrodinium bahamense var. compressum strain PbSA01,"Thomas et al., 2012",0.260743203,15.27004406,148,Pyrodinium bahamense
+5,Raphidocelis,"Bestion et al., 2018",1.5585824,20.48409281,149,NA
+174,Rhizosolenia setigera,"Thomas et al., 2012",1.244706154,16.32112908,150,Rhizosolenia setigera
+175,Rhizosolenia setigera,"Thomas et al., 2012",0.504046384,14.61855931,150,Rhizosolenia setigera
+57,Scenedesmus arcuatus var. Platydiscus,"Levasseur et al., 2025",1.272289785,15.60634025,151,Scenedesmus arcuatus
+58,Scenedesmus armatus,"Levasseur et al., 2025",1.233128952,17.49296766,152,Scenedesmus armatus
+40,Scenedesmus_acuminatus,"Lewington-Pearce et al., 2019",0.76367789,18.20017868,153,Scenedesmus acuminatus
+176,Scrippsiella trochoidea strain ScrpMxB,"Thomas et al., 2012",0.45952283,20.94354423,154,Scrippsiella trochoidea
+177,Skeletonema ardens strain FDK003,"Thomas et al., 2012",2.323880456,17.71764952,155,Skeletonema ardens
+178,Skeletonema ardens strain FDK004,"Thomas et al., 2012",1.533172415,15.98615711,156,Skeletonema ardens
+179,Skeletonema ardens strain FDK005,"Thomas et al., 2012",2.198168983,16.75714939,157,Skeletonema ardens
+180,Skeletonema ardens strain FDK006,"Thomas et al., 2012",2.244654304,17.75954473,158,Skeletonema ardens
+181,Skeletonema ardens strain FDK007,"Thomas et al., 2012",2.233050043,17.84105159,159,Skeletonema ardens
+182,Skeletonema costatum,"Thomas et al., 2012",0.058281366,16.58762816,160,Skeletonema costatum
+183,Skeletonema costatum,"Thomas et al., 2012",1.01278061,18.69231276,160,Skeletonema costatum
+184,Skeletonema costatum,"Thomas et al., 2012",1.392533972,20.99010001,160,Skeletonema costatum
+185,Skeletonema costatum clone FHS 3,"Thomas et al., 2012",0.965035269,18.32101903,161,Skeletonema costatum
+186,Skeletonema costatum clone FHS 7,"Thomas et al., 2012",1.634795859,17.71996343,162,Skeletonema costatum
+187,Skeletonema costatum clone SK6C,"Thomas et al., 2012",1.294474299,21.19981256,163,Skeletonema costatum
+188,Skeletonema costatum s.s. strain FDK009,"Thomas et al., 2012",1.39970857,19.05333028,164,Skeletonema costatum
+189,Skeletonema japonicum strain FDK154,"Thomas et al., 2012",1.61167563,30.55313627,165,Skeletonema japonicum
+190,Skeletonema japonicum strain FDK157,"Thomas et al., 2012",1.569263287,22.58938719,166,Skeletonema japonicum
+191,Skeletonema japonicum strain FDK158,"Thomas et al., 2012",1.677588904,20.68318172,167,Skeletonema japonicum
+192,Skeletonema japonicum strain FDK159,"Thomas et al., 2012",1.586730081,17.94394142,168,Skeletonema japonicum
+193,Skeletonema japonicum strain FDK161,"Thomas et al., 2012",1.596622991,23.05850603,169,Skeletonema japonicum
+194,Skeletonema marinoiÐdohrnii complex strain FDK031,"Thomas et al., 2012",1.76231566,31.19262046,170,Skeletonema marinoi
+195,Skeletonema marinoiÐdohrnii complex strain FDK032,"Thomas et al., 2012",1.742727854,25.46839766,171,Skeletonema marinoi
+196,Skeletonema marinoiÐdohrnii complex strain FDK035,"Thomas et al., 2012",1.591258707,23.95700855,172,Skeletonema marinoi
+197,Skeletonema marinoiÐdohrnii complex strain FDK039,"Thomas et al., 2012",1.751064659,29.42293104,173,Skeletonema marinoi
+198,Skeletonema menzelii strain DM08080630,"Thomas et al., 2012",2.220960151,21.89204729,174,Skeletonema menzelii
+199,Skeletonema menzelii strain DM08080730,"Thomas et al., 2012",2.582908098,19.04778458,175,Skeletonema menzelii
+200,Skeletonema menzelii strain FDK221,"Thomas et al., 2012",1.827292356,25.84991526,176,Skeletonema menzelii
+201,Skeletonema menzelii strain FDK222,"Thomas et al., 2012",1.753910171,29.82148605,177,Skeletonema menzelii
+202,Skeletonema pseudocostatum strain FDK225,"Thomas et al., 2012",1.82662283,19.28584675,178,Skeletonema pseudocostatum
+203,Skeletonema tropicum clone 21-L,"Thomas et al., 2012",1.542571386,10.74169015,179,Skeletonema tropicum
+204,Skeletonema tropicum clone fall,"Thomas et al., 2012",1.979413816,14.80403979,180,Skeletonema tropicum
+205,Skeletonema tropicum clone S. trop.,"Thomas et al., 2012",1.995649806,15.69411696,181,Skeletonema tropicum
+206,Skeletonema tropicum clone spring,"Thomas et al., 2012",1.539327307,10.92831065,182,Skeletonema tropicum
+207,Skeletonema tropicum strain FDK199,"Thomas et al., 2012",1.302619392,17.28304691,183,Skeletonema tropicum
+208,Skeletonema tropicum strain FDK202,"Thomas et al., 2012",1.334169642,16.5652731,184,Skeletonema tropicum
+209,Skeletonema tropicum strain FDK204,"Thomas et al., 2012",1.709039228,16.47749907,185,Skeletonema tropicum
+210,Skeletonema tropicum strain FDK205,"Thomas et al., 2012",1.611328422,16.29179949,186,Skeletonema tropicum
+211,Skeletonema tropicum strain FDK207,"Thomas et al., 2012",1.686747224,16.16283862,187,Skeletonema tropicum
+14,Staurastrum pingue,"Edwards et al., 2016",0.668730704,25.31390058,188,Staurastrum pingue
+212,Stellarima microtrias,"Thomas et al., 2012",0.564476714,8.97458685,189,Stellarima microtrias
+213,Stephanopyxis palmeriana,"Thomas et al., 2012",1.10302058,11.0505874,190,Stephanopyxis palmeriana
+214,Stichococcus (possibly S. cylindricus),"Thomas et al., 2012",0.350543589,18.07560669,191,NA
+35,Synechococcus,"Lewington-Pearce et al., 2019",0.781939942,19.81098525,192,NA
+59,Synechococcus elongatus,"Levasseur et al., 2025",1.513324793,14.34660175,193,Synechococcus elongatus
+215,Synechococcus strain WH8103,"Thomas et al., 2012",0.772484064,14.59824538,194,NA
+216,Synedra sp.,"Thomas et al., 2012",0.377966516,9.312733607,195,NA
+22,Synura sphagnicola,"Edwards et al., 2016",0.711049314,13.37940754,196,Synura sphagnicola
+60,TetraedronÂ minumum,"Levasseur et al., 2025",0.521763431,17.86496101,197,Tetraedron minumum
+34,Tetraselmis sp.,"Edwards et al., 2016",0.485343208,24.47728083,198,NA
+217,Thalassionema nitzschioides,"Thomas et al., 2012",1.589937924,14.97016305,199,Thalassionema nitzschioides
+218,Thalassionema nitzschioides,"Thomas et al., 2012",1.088223445,20.13835173,199,Thalassionema nitzschioides
+219,Thalassiosira nordenskioeldii,"Thomas et al., 2012",0.986568008,18.28838911,200,Thalassiosira nordenskioeldii
+220,Thalassiosira nordenskioeldii clone TN-2,"Thomas et al., 2012",1.136229668,12.01480611,201,Thalassiosira nordenskioeldii
+221,Thalassiosira pseudonana clone 5A,"Thomas et al., 2012",1.945175556,16.11220293,202,Thalassiosira pseudonana
+222,Thalassiosira rotula clone A8,"Thomas et al., 2012",1.068441562,19.30331218,203,Thalassiosira rotula
+223,Thalassiosira rotula clone C8,"Thomas et al., 2012",1.487048896,19.45646641,204,Thalassiosira rotula
+224,"Trichodesmium erythraeum strain IMS101, CCMP 1985","Thomas et al., 2012",0.420135334,11.2131157,205,Trichodesmium erythraeum
+225,Unidentified prymnesiophyte strain NT19,"Thomas et al., 2012",0.551529839,35.82319752,206,NA
