@@ -128,18 +128,18 @@ p.B <- ggplot(df.B, aes(x = x, y = y)) +
     xend = 9,   yend = 15,
     colour = "goldenrod2", linewidth = 1.5) +
   
-  annotate(
-    "rect",
-    xmin = 12.5, xmax = 14,
-    ymin = 8.2, ymax = 9.7,
-    fill = NA, colour = "black", linewidth = 1.5
-  ) +
+  # annotate(
+  #  "rect",
+  #  xmin = 12.5, xmax = 14,
+  #  ymin = 8.2, ymax = 9.7,
+  #  fill = NA, colour = "black", linewidth = 1.5
+  #) +
   
   geom_point(size= 3) +
   
   labs(x = "Trait 1 (e.g. maximum growth rate)",    
        y = "Trait 2 (e.g. stress tolerance)", 
-       title = "B — genotypic variation") +  # labels
+       title = "A — genotypic variation") +  # labels
   
   theme(
     legend.position = "none",  
@@ -148,7 +148,7 @@ p.B <- ggplot(df.B, aes(x = x, y = y)) +
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) +
   
-  annotate("text", x = 12.5, y = 12.5, label = "Pareto front", size = 5.1, fontface = "bold", colour = "goldenrod2", angle = -45) +
+#  annotate("text", x = 12.5, y = 12.5, label = "Pareto front", size = 5.1, fontface = "bold", colour = "goldenrod2", angle = -45) +
   
   coord_cartesian(xlim = c(5,18), ylim = c(5,18), expand = FALSE) 
 
@@ -184,7 +184,7 @@ p.C <- ggplot(df.C, aes(x = x, y = y)) +
   
   labs(x = "Trait 1 (e.g. nutrient acquisition)",    
        y = "Trait 2 (e.g. stress tolerance)", 
-       title = "C — genotypic variation") +  # labels
+       title = "B — genotypic variation") +  # labels
   
   theme(
     legend.position = "none",  
@@ -237,7 +237,7 @@ p.C2 <- ggplot(df.C2, aes(x = x, y = y)) +
   
   labs(x = "Trait 1 (e.g. maximum growth rate)",    
        y = "Trait 2 (e.g. stress tolerance)",  
-       title = "C — genotypic variation") +  # labels
+       title = "B — genotypic variation") +  # labels
   
   theme(
     legend.position = "none",  
@@ -246,7 +246,7 @@ p.C2 <- ggplot(df.C2, aes(x = x, y = y)) +
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) +
   
-  annotate("text", x = 14, y = 14, label = "Pareto fronts", size = 5.1, fontface = "bold", colour = "goldenrod2", angle = -45) +
+  # annotate("text", x = 14, y = 14, label = "Pareto fronts", size = 5.1, fontface = "bold", colour = "goldenrod2", angle = -45) +
   
   coord_cartesian(xlim = c(5,18), ylim = c(5,18), expand = FALSE) 
 
@@ -292,7 +292,7 @@ p.E <- ggplot(df.E, aes(x = x, y = y)) +
   
   labs(x = "Trait 1 (e.g. maximum growth rate)",    
        y = "Trait 2 (e.g. stress tolerance)",  
-       title = "E — variation among species") +  # labels
+       title = "D — variation among species") +  # labels
   
   theme_classic() +
   
@@ -303,7 +303,7 @@ p.E <- ggplot(df.E, aes(x = x, y = y)) +
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) +
   
-  annotate("text", x = 15.25, y = 15.25, label = "Pareto front", size = 5.1, fontface = "bold", colour = "goldenrod2", angle = -45) +
+  # annotate("text", x = 15.25, y = 15.25, label = "Pareto front", size = 5.1, fontface = "bold", colour = "goldenrod2", angle = -45) +
   
   coord_cartesian(xlim = c(0,21), ylim = c(0,21), expand = FALSE)
 
@@ -352,7 +352,7 @@ p.D <- ggplot(df.D, aes(x = x, y = y)) +
   
   labs(x = "Trait 1 (e.g. maximum growth rate)",    
        y = "Trait 2 (e.g. stress tolerance)", 
-       title = "D — variation among species") +  # labels
+       title = "C — variation among species") +  # labels
   
   theme_classic() +
   
@@ -363,9 +363,9 @@ p.D <- ggplot(df.D, aes(x = x, y = y)) +
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) +
   
-  coord_cartesian(xlim = c(0,21), ylim = c(0,21), expand = FALSE) +
+  coord_cartesian(xlim = c(0,21), ylim = c(0,21), expand = FALSE) 
   
-  annotate("text", x = 15.25, y = 15.25, label = "Pareto front", size = 5.1, fontface = "bold", colour = "goldenrod2", angle = -45)
+  # annotate("text", x = 15.25, y = 15.25, label = "Pareto front", size = 5.1, fontface = "bold", colour = "goldenrod2", angle = -45)
 
 p.D
 
@@ -373,5 +373,10 @@ top   <- plot_spacer() + p.A + plot_spacer() + plot_layout(widths = c(0.25, 0.5,
 p.final <- top / (p.B | p.C2) / (p.D | p.E)
 p.final
 
+p.final2 <- (p.B | p.C2) / (p.D | p.E)
+p.final2
+
 ggsave("figures/15_fig_conceptual.jpeg", p.final, width = 15, height = 21)
 ggsave("figures/15_fig_conceptual.pdf", p.final, width = 15, height = 21)
+
+ggsave("figures/15_fig_conceptual_v2.jpeg", p.final2, width = 15, height = 15)

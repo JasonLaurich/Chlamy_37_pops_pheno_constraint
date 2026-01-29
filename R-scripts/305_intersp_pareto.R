@@ -2591,8 +2591,8 @@ I.qr2 # Display the plot
 
 df.filt <- df.n %>% 
   mutate(
-    z.y = comp,
-    z.x = r.max
+    z.y = comp.L,
+    z.x = r.max.L
   ) # Specify the x and y variables and their 95% CIs
 
 plot(z.y ~ z.x, data= df.filt) # do we need to exclude any points?
