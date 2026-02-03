@@ -43,28 +43,6 @@ lactin2_halfmax <- function(temp, a, b, tmax, d.t, r_half) {
   exp(a * temp) - exp(a * tmax - (tmax - temp) / d.t) + b - r_half
 } # OK we're going to modify the function to calculate T_breadth, based on a modified lactin.
 
-add_left_zero_if_needed <- function(df, add_temp = -1.8, add_mu = 0) {
-  stopifnot(all(c("temp","mu") %in% names(df)))
-  
-  # putative Topt: temp at max mu (if ties, uses the first row)
-  topt <- df$temp[which.max(df$mu)]
-  
-  # condition: any mu <= 0 at temps strictly less than Topt?
-  has_left_zero <- any(df$temp < topt & df$mu <= 0, na.rm = TRUE)
-  
-  if (!has_left_zero) {
-    # build new row by copying the first row's metadata, then overwriting temp/mu
-    new_row <- df[1, , drop = FALSE]
-    new_row$temp <- add_temp
-    new_row$mu   <- add_mu
-    
-    df <- dplyr::bind_rows(df, new_row) |>
-      dplyr::arrange(temp)
-  }
-  
-  df
-}
-
 # Thomas 2012 ------------------------------------------------------------
 
 ###### Load the data ######
