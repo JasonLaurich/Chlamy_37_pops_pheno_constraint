@@ -140,5 +140,6 @@ for (i in unique(df$well.ID[df$well.ID >= 1])) { # This allows code below to be 
 df.µ %>% 
   filter(is.na(µ))  # No null values
 
-write.csv(df.µ, "processed-data/02_µ_estimates_temp.csv") # 888 measurements
+write.csv(df.µ, "processed-data/02_µ_estimates_temp.csv",
+          row.names = FALSE) # 888 measurements
 
