@@ -6,8 +6,9 @@
 # We fit 12 different TPC curves to our populations using the rTPC package, before comparing the best-performing models in R2jags
 # We then iteratively fit the most suitable model (Lactin II) to all of our replicates. 
 
-# Inputs: 01_temp_rfus.time.csv
-# Outputs: 02_µ_estimates_temp.csv, 03_nls_rTPC_comparison_AICcs.csv
+# Inputs: in processed-data : 01_temp_rfus.time.csv
+# Outputs: in processed-data : 02_µ_estimates_temp.csv, 03_nls_rTPC_comparison_AICcs.csv, 04_TPC_summary.csv, 05_TPC_fits.csv
+  # in R2jags-models : rep_i_lactin2.RData (Lactin II TPCs R2jags objects, saved but not pushed)
 
 # Packages & functions ----------------------------------------------------
 
@@ -515,9 +516,11 @@ inits.lactin <- function() { # The other static initial values.
   )
 }
 
+rep.ids <- unique(df.µ$rep.id) # Save the unique rep ids so we can run the foor loop in chunks if needed
+
 n <- 0 # for tracking progress
 
-for (i in unique(df.µ$rep.id)){ # for each replicate
+for (i in rep.ids[129:length(rep.ids)]) { # For all replicates, here starting at 129 to account for multiple coding sessions to generate all of the objects
   
   n <- n + 1
   
@@ -744,20 +747,6 @@ for (i in unique(df.µ$rep.id)){ # for each replicate
     d.t.mod =  lac.jag$BUGSoutput$summary[3,1]                                  # Jags parameter: deltaT
   ))
   
-  for (j in 1:4){
-    fit.df <- rbind(fit.df, data.frame(                                         # Model performance data
-      
-      population = df.i$population[1],                                          # population ID
-      rep.ID = df.i$rep.id[1],                                                  # rep ID
-      
-      Parameter = df.nls$parameter[j],                                          # Model parameter (e.g. a, b, tmax etc.)
-      est = df.nls$Estimate[j],                                                 # Estimate
-      se = df.nls$`Std. Error`[j],                                              # Error
-      p = df.nls$`Pr(>|t|)`[j],                                                 # p-values
-      stringsAsFactors = FALSE            
-    ))
-  }
-  
   for (j in c(1:3,907)){
     fit.df <- rbind(fit.df, data.frame(                         # Model performance data
      
@@ -775,4 +764,9 @@ for (i in unique(df.µ$rep.id)){ # for each replicate
   print(paste("Done", n, "of ", length(unique(df.µ$rep.id))))
   
 }
-    
+ 
+write.csv(summary.df, "processed-data/04_TPC_summary.csv",
+          row.names = FALSE) # 144 measurements
+
+write.csv(fit.df, "processed-data/05_TPC_fits.csv",
+          row.names = FALSE) # 144 measurements
