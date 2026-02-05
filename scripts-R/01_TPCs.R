@@ -70,7 +70,6 @@ N0.df <- df %>% # We want to create an additional column that holds N0 data - we
 df <- df %>% # Recombine this with our dataframe
   left_join(N0.df, by = "well.ID") 
 
-
 # Estimate µ --------------------------------------------------------------
 
 df.µ <- data.frame(                          # Initializing a data frame to store the results for each well, pop, and temperature
@@ -111,6 +110,12 @@ for (i in unique(df$well.ID[df$well.ID >= 1])) { # This allows code below to be 
   
   df.i.th <- df.i[df.i$days <= t.series[s+1], ] # Get the thresholded data according to our sliding window approach
   
+  if(n_distinct(df.i.th$RFU == 1)) {
+    
+    µ.est <- 0    # If all of the thresholded values have the same RFU scores
+  }else{
+    
+  
   µ.mod <- tryCatch(                          # Run the exponential growth model on the thresholded data
     nls_multstart(
       RFU ~ N0 * exp(r * days),
@@ -129,6 +134,8 @@ for (i in unique(df$well.ID[df$well.ID >= 1])) { # This allows code below to be 
   } else {
     µ.est <- coef(µ.mod)[["r"]]           # else return the model value for r
   } 
+  
+  }
   
   df.µ <- rbind(df.µ, data.frame(                     # add the data to the summary data frame
     
