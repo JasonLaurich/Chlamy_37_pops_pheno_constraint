@@ -1,12 +1,12 @@
 # Jason R Laurich
 
-# February 5th, 2026
+# February 6th, 2026
 
-# This file will fit µ to our time series growth data (RFUs) for C. reinhardtii populations for our light gradient data
+# This file will fit µ to our time series growth data (RFUs) for C. reinhardtii populations for our nitrogen gradient data
 # Then we will fit Monod curves to the data. 
 
-# Inputs: in processed-data : 06_light_rfus_time.csv
-# Outputs: in processed-data : 07_µ_estimates_light.csv, 08_light_monod_summary.csv, 09_light_monod_fits.csv
+# Inputs: in processed-data : 10_nitrogen_rfus_time.csv
+# Outputs: in processed-data : 11_µ_estimates_nitrogen.csv, 12_nitrogen_monod_summary.csv, 13_nitrogen_monod_fits.csv
 
 # Packages & functions ----------------------------------------------------
 
@@ -19,19 +19,16 @@ library(cowplot)
 
 # Upload & examine the data -----------------------------------------------
 
-df <- read_csv("processed-data/06_light_rfus_time.csv")
-head(df) #RFU is density, days is time, percentage is light in percentages
-
-df$percentage <- as.numeric(df$percentage) # From an examination of the csv, the light level 2 corresponds to "0.5-0.7"
-df$percentage[is.na(df$percentage)] <- 0.6 # Set to 0.6
+df <- read_csv("processed-data/10_nitrogen_rfus_time.csv")
+head(df) #RFU is density, days is time, nitrate_concentration does what it says on the tin
 
 df <- df %>% 
-  mutate(light = as.numeric(percentage) * 2.5) %>% 
-  select(well_plate, RFU, population, light, days) %>% 
+  rename(nit = nitrate_concentration) %>% 
+  select(well_plate, RFU, population, nit, days) %>% 
   filter(population != "COMBO") # A control treatment, not relevant to this experimental analysis
 
 unique(df$population)
-unique(df$light)
+unique(df$nit)
 
 df <- df %>% 
   
@@ -52,7 +49,7 @@ df <- df %>% # Recombine this with our dataframe
 df.µ <- data.frame(                          # Initializing a data frame to store the results for each well, pop, and light
   
   population = character(),                  # population ID
-  light = numeric(),                         # light
+  nit = numeric(),                           # nitrogen
   well.ID = character(),                     # well ID
   
   µ = numeric()                              # intrinsic growth rate estimate
@@ -118,7 +115,7 @@ for (i in unique(df$well.ID[df$well.ID >= 1])) { # This allows code below to be 
   df.µ <- rbind(df.µ, data.frame(                     # add the data to the summary data frame
     
     population = df.i$population[1],                  # population ID
-    light = df.i$light[1],                            # light
+    nit = df.i$nit[1],                                # nitrogen
     well.ID = df.i$well.ID[1],                        # well ID
     
     µ = µ.est                                         # intrinsic growth rate. 
@@ -131,7 +128,7 @@ for (i in unique(df$well.ID[df$well.ID >= 1])) { # This allows code below to be 
 df.µ %>% 
   filter(is.na(µ))  # No null values
 
-write.csv(df.µ, "processed-data/07_µ_estimates_light.csv",
+write.csv(df.µ, "processed-data/11_µ_estimates_nitrogen.csv",
           row.names = FALSE) # 1480 measurements
 
 # Bayesian modelling ------------------------------------------------------
@@ -141,7 +138,28 @@ write.csv(df.µ, "processed-data/07_µ_estimates_light.csv",
 df.µ <- df.µ %>%
   mutate(rep.id = str_c(population, str_sub(well.ID, 1, 3), sep = ".")) # Need to create a unique replicate ID
 
-length(unique(df.µ$rep.id)) # 148, should be 148! 1480/148 = 10 light levels per replicate. 37 x 4 = 148 (pops, reps)
+length(unique(df.µ$rep.id)) # 164, should be 148! 
+
+by_pop <- df.µ %>%
+  distinct(population, rep.id) %>%   # one row per (pop, unique.id)
+  count(population, name = "n_unique")  # how many unique.id per pop
+
+by_pop # Pops 11, 30, 5, and anc5 are getting double the unique hits.
+
+df.µ.11 <- df.µ[df.µ$population == "11",] # N100 is the issue
+
+df.µ.30 <- df.µ[df.µ$population == "30",] # N400 is the issue
+
+df.µ.5 <- df.µ[df.µ$population == "5",] # N400 is the issue (swapped with 30)
+
+df.µ.anc5 <- df.µ[df.µ$population == "anc5",] # N100 is the issue (swapped with 11)
+# These are perfectly swapped — but for now I'm going to remove them.  
+
+df.µ <- df.µ %>%
+  filter(!(population %in% c("11", "anc5") & nit == 100)) %>% 
+  filter(!(population %in% c("30", "5") & nit == 400))
+
+length(unique(df.µ$rep.id)) # 148, should be 1480/10 = 148! Fixed for now. 37 x 4 = 148 (pops, reps). Now missing some level replicates but that's OK, we deleted them. 
 
 summary.df <- data.frame(   # We'll create a dataframe to store the data as we fit models.
   
@@ -196,14 +214,14 @@ inits.monod <- function() { # Set the initial values for our Monod curve
 
 parameters.monod <- c("r_max", "K_s", "sigma", "r_pred_new") # Save these
 
-S.pred <- seq(0, 275, 0.25) # Light gradient we're interested in - upped the granularity here
-N.S.pred <-length(S.pred) 
+S.pred <- seq(0, 1000, 0.5) # Nitrogen gradient we are interested in here (concentration)
+N.S.pred <-length(S.pred)
 
-rep.ids <- unique(df.µ$rep.id) # Save the unique rep ids so we can run the foor loop in chunks if needed
+rep.ids <- unique(df.µ$rep.id) # Save the unique rep ids so we can run the for loop in chunks if needed
 
 n <- 0 # for tracking progress
 
-for (i in rep.ids[1:length(rep.ids)]) { # # For all replicates, can account for multiple coding sessions to generate all of the objects
+for (i in rep.ids[1:length(rep.ids)]) { # For all replicates, can account for multiple coding sessions to generate all of the objects
   
   n <- n + 1
   
@@ -214,15 +232,15 @@ for (i in rep.ids[1:length(rep.ids)]) { # # For all replicates, can account for 
   trait <- df.i$µ    # format the data for jags
   N.obs <- length(trait)
   
-  light <- df.i$light
+  nit <- df.i$nit
   
-  jag.data <- list(trait = trait, N.obs = N.obs, S = light, S.pred = S.pred, N.S.pred = N.S.pred)
+  jag.data <- list(trait = trait, N.obs = N.obs, S = nit, S.pred = S.pred, N.S.pred = N.S.pred)
   
-  monod.jag <- jags( # Run the light Monod function. 
+  monod.jag <- jags( # Run the nitrogen Monod function. 
     data = jag.data,
     inits = inits.monod,
     parameters.to.save = parameters.monod,
-    model.file = "monod.light.txt",
+    model.file = "monod.nit.txt",
     n.thin = nt.fit,
     n.chains = nc.fit,
     n.burnin = nb.fit,
@@ -231,7 +249,7 @@ for (i in rep.ids[1:length(rep.ids)]) { # # For all replicates, can account for 
     working.directory = getwd()
   )
   
-  save(monod.jag, file = paste0("R2jags-models/rep_", i, "_light_monod.RData")) # save the monod model
+  save(monod.jag, file = paste0("R2jags-models/rep_", i, "_nit_monod.RData")) # save the monod model
   # This folder is listed in gitignore, because the objects are too big to load
   
   post <- as.data.frame(monod.jag$BUGSoutput$sims.matrix) # The posteriors
@@ -261,18 +279,18 @@ for (i in rep.ids[1:length(rep.ids)]) { # # For all replicates, can account for 
     
   ))
   
-  light_sum <- monod.jag$BUGSoutput$summary[c(1:3, (max(df.i$light) - S.pred[1])/0.5 + 11),] # Have to create a new frame for summaries (not listed 1 to 6)
+  nit_sum <- monod.jag$BUGSoutput$summary[c(1:3),] # Have to create a new frame for summaries (not listed 1 to 6)
   
-  for (j in 1:4){
+  for (j in 1:3){
     fit.df <- rbind(fit.df, data.frame(          # Model performance data
       
       population = df.i$population[1],           # population ID
       rep.ID = df.i$rep.id[1],                   # rep ID    
       
-      Parameter = rownames(light_sum)[j],        # Model parameter (e.g. K_s, r_max, etc.)
-      mean = light_sum[j,1],                     # Posterior mean
-      Rhat = light_sum[j,8],                     # Rhat values
-      n.eff = light_sum[j,9]                     # Sample size estimates (should be ~3000)
+      Parameter = rownames(nit_sum)[j],          # Model parameter (e.g. K_s, r_max, etc.)
+      mean = nit_sum[j,1],                       # Posterior mean
+      Rhat = nit_sum[j,8],                       # Rhat values
+      n.eff = nit_sum[j,9]                       # Sample size estimates (should be ~3000)
     ))
     
   }
@@ -281,8 +299,8 @@ for (i in rep.ids[1:length(rep.ids)]) { # # For all replicates, can account for 
   
 }
 
-write.csv(summary.df, "processed-data/08_light_monod_summary.csv",
+write.csv(summary.df, "processed-data/12_nit_monod_summary.csv",
           row.names = FALSE) # 148 measurements
 
-write.csv(fit.df, "processed-data/09_light_monod_fits.csv",
+write.csv(fit.df, "processed-data/13_nit_monod_fits.csv",
           row.names = FALSE) # 148 measurements

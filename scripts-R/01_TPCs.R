@@ -773,7 +773,7 @@ for (i in rep.ids[129:length(rep.ids)]) { # For all replicates, here starting at
 }
  
 write.csv(summary.df, "processed-data/04_TPC_summary.csv",
-          row.names = FALSE) # 144 measurements
+          row.names = FALSE) # 148 measurements
 
 write.csv(fit.df, "processed-data/05_TPC_fits.csv",
-          row.names = FALSE) # 144 measurements
+          row.names = FALSE) # 148 measurements
