@@ -110,7 +110,7 @@ for (i in unique(df$well.ID[df$well.ID >= 1])) { # This allows code below to be 
   
   df.i.th <- df.i[df.i$days <= t.series[s+1], ] # Get the thresholded data according to our sliding window approach
   
-  if(n_distinct(df.i.th$RFU == 1)) {
+  if(n_distinct(df.i.th$RFU) == 1) {
     
     µ.est <- 0    # If all of the thresholded values have the same RFU scores
   }else{

@@ -6,7 +6,7 @@
 # Then we will fit Monod curves to the data. 
 
 # Inputs: in processed-data : 06_light_rfus_time.csv
-# Outputs: in processed-data : 07_µ_estimates_light.csv,
+# Outputs: in processed-data : 07_µ_estimates_light.csv, 08_light_monod_summary.csv, 09_light_monod_fits.csv
 
 # Packages & functions ----------------------------------------------------
 
@@ -88,11 +88,11 @@ for (i in unique(df$well.ID[df$well.ID >= 1])) { # This allows code below to be 
   
   df.i.th <- df.i[df.i$days <= t.series[s+1], ] # Get the thresholded data according to our sliding window approach
   
-  if(n_distinct(df.i.th$RFU == 1)) {
+  if(n_distinct(df.i.th$RFU) == 1) {
     
     µ.est <- 0    # If all of the thresholded values have the same RFU scores
-  }else{
     
+  }else{
     
     µ.mod <- tryCatch(                          # Run the exponential growth model on the thresholded data
       nls_multstart(
@@ -133,3 +133,158 @@ df.µ %>%
 
 write.csv(df.µ, "processed-data/07_µ_estimates_light.csv",
           row.names = FALSE) # 1480 measurements
+
+# Bayesian modelling ------------------------------------------------------
+
+# Now we are going to fit Lactin II TPCs to each replicate using R2jags. 
+# We selected this model because it (1) was consistently among the best-performing models based on AICc scores,
+# (2) allows growth rates to be negative at low and high temperatures, and (3) is simple enough to permit fitting with R2jags. 
+
+df.µ <- df.µ %>%
+  mutate(rep.id = str_c(population, str_sub(well.ID, 1, 3), sep = ".")) # Need to create a unique replicate ID
+
+length(unique(df.µ$rep.id)) # 148, should be 148! 1480/148 = 10 temperatures per replicate. 37 x 4 = 148 (pops, reps)
+
+summary.df <- data.frame(   # We'll create a dataframe to store the data as we fit models.
+  
+  population = character(), # population ID
+  rep.ID = character(),     # rep ID
+  
+  K.s.mod = numeric(),      # Half saturation constant (model output)
+  K.s.post = numeric(),     # Half saturation constant (posterior median)
+  K.s.min = numeric(),      # Half saturation constant (lower HDPI)
+  K.s.max = numeric(),      # Half saturation constant (upper HDPI)
+  K.s.na = numeric(),       # % NA returns
+  
+  r.max.mod = numeric(),    # Maximum growth rate (model output)
+  r.max.post = numeric(),   # Maximum growth rate (posterior median)
+  r.max.min = numeric(),    # Maximum growth rate (lower HDPI)
+  r.max.max = numeric(),    # Maximum growth rate (upper HDPI)
+  r.max.na = numeric(),     # % NA returns
+  
+  R.post = numeric(),       # R* (m = 0.1) (posterior median)
+  R.min = numeric(),        # R* (m = 0.1) (lower HDPI)
+  R.max = numeric(),        # R* (m = 0.1) (upper HDPI)
+  R.na = numeric(),         # % NA returns
+  
+  stringsAsFactors = FALSE  # Avoid factor conversion
+)
+
+fit.df <- data.frame(       # Save model fit estimates for examination
+  
+  population = character(), # population ID
+  rep.ID = character(),     # rep ID
+  
+  Parameter = character(),  # Model parameter (e.g. cf.a, cf.tmax, etc.)
+  mean = numeric(),         # Posterior mean
+  Rhat = numeric(),         # Rhat values
+  n.eff = numeric(),        # Sample size estimates (should be ~6000)
+  stringsAsFactors = FALSE            
+)
+
+# Set generous MCMC settings still for our models. 
+ni.fit <- 330000   # iterations / chain
+nb.fit <- 30000    # burn in periods for each chain
+nt.fit <- 300      # thinning interval : (330,000 - 30,000) / 300 = 1000 posterior estimates / chain
+nc.fit <- 6        # number of chains, total of 6,000 estimates for each model. 
+
+inits.monod <- function() { # Set the initial values for our Monod curve
+  list(
+    r_max = runif(1, 0.1, 5), # Initial guess for r_max
+    K_s = runif(1, 0.1, 5),   # Initial guess for K_s
+    sigma = runif(1, 0.1, 1)  # Initial guess for error
+  )
+}
+
+parameters.monod <- c("r_max", "K_s", "sigma", "r_pred_new") # Save these
+
+S.pred <- seq(0, 275, 0.25) # Light gradient we're interested in - upped the granularity here
+N.S.pred <-length(S.pred) 
+
+rep.ids <- unique(df.µ$rep.id) # Save the unique rep ids so we can run the foor loop in chunks if needed
+
+n <- 0 # for tracking progress
+
+for (i in rep.ids[1:length(rep.ids)]) { # For all replicates, here starting at 129 to account for multiple coding sessions to generate all of the objects
+  
+  n <- n + 1
+  
+  df.i <- df.µ %>% 
+    filter(rep.id == i) %>% 
+    filter(!is.na(µ))
+  
+  trait <- df.i$µ    # format the data for jags
+  N.obs <- length(trait)
+  
+  light <- df.i$light
+  
+  jag.data <- list(trait = trait, N.obs = N.obs, S = light, S.pred = S.pred, N.S.pred = N.S.pred)
+  
+  monod.jag <- jags( # Run the light Monod function. 
+    data = jag.data,
+    inits = inits.monod,
+    parameters.to.save = parameters.monod,
+    model.file = "monod.light.txt",
+    n.thin = nt.fit,
+    n.chains = nc.fit,
+    n.burnin = nb.fit,
+    n.iter = ni.fit,
+    DIC = TRUE,
+    working.directory = getwd()
+  )
+  
+  save(monod.jag, file = paste0("R2jags-models/rep_", i, "_light_monod.RData")) # save the monod model
+  # This folder is listed in gitignore, because the objects are too big to load
+  
+  post <- as.data.frame(monod.jag$BUGSoutput$sims.matrix) # The posteriors
+  post$R <- 0.56*post$K_s/(post$r_max - 0.56)
+  
+  summary.df <- rbind(summary.df, data.frame(                                   # Add summary data
+    
+    population = df.i$population[1],                                            # population ID
+    rep.ID = df.i$rep.id[1],                                                    # rep ID
+    
+    K.s.mod = monod.jag$BUGSoutput$summary[1,1],                                # Half saturation constant (model output)
+    K.s.post = median(post$K_s, na.rm = T),                                     # Half saturation constant (posterior median)
+    K.s.min = hdi(post$K_s, ci = 0.95)$CI_low,                                  # Half saturation constant (lower HDPI)
+    K.s.max = hdi(post$K_s, ci = 0.95)$CI_high,                                 # Half saturation constant (upper HDPI)
+    K.s.na = mean(is.na(post$K_s)),                                             # % NA returns
+    
+    r.max.mod = monod.jag$BUGSoutput$summary[3,1],                              # Maximum growth rate (model output)
+    r.max.post = median(post$r_max, na.rm = T),                                 # Maximum growth rate (posterior median)
+    r.max.min = hdi(post$r_max, ci = 0.95)$CI_low,                              # Maximum growth rate (lower HDPI)
+    r.max.max = hdi(post$r_max, ci = 0.95)$CI_high,                             # Maximum growth rate (upper HDPI)
+    r.max.na = mean(is.na(post$r_max)),                                         # % NA returns
+    
+    R.post = median(post$R, na.rm = T),                                         # R* (m = 0.1) (posterior median)
+    R.min = hdi(post$R, ci = 0.95)$CI_low,                                      # R* (m = 0.1) (lower HDPI)
+    R.max = hdi(post$R, ci = 0.95)$CI_high,                                     # R* (m = 0.1) (upper HDPI)
+    R.na = mean(is.na(post$R))                                                  # % NA returns
+    
+  ))
+  
+  light_sum <- monod.jag$BUGSoutput$summary[c(1:3, (max(df.i$light) - S.pred[1])/0.5 + 11),] # Have to create a new frame for summaries (not listed 1 to 6)
+  
+  for (j in 1:4){
+    fit.df <- rbind(fit.df, data.frame(          # Model performance data
+      
+      population = df.i$population[1],           # population ID
+      rep.ID = df.i$rep.id[1],                   # rep ID    
+      
+      Parameter = rownames(light_sum)[j],        # Model parameter (e.g. K_s, r_max, etc.)
+      mean = light_sum[j,1],                     # Posterior mean
+      Rhat = light_sum[j,8],                     # Rhat values
+      n.eff = light_sum[j,9]                     # Sample size estimates (should be ~3000)
+    ))
+    
+  }
+  
+  print(paste("Done", n, "of ", length(unique(df.µ$rep.id))))
+  
+}
+
+write.csv(summary.df, "processed-data/08_light_monod_summary.csv",
+          row.names = FALSE) # 148 measurements
+
+write.csv(fit.df, "processed-data/09_light_monod_fits.csv",
+          row.names = FALSE) # 148 measurements
