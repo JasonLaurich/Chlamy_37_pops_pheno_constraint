@@ -7,6 +7,7 @@
 
 # Inputs: in processed-data : 06_light_rfus_time.csv
 # Outputs: in processed-data : 07_µ_estimates_light.csv, 08_light_monod_summary.csv, 09_light_monod_fits.csv
+  # in R2jags-models : rep_i_light_monod.RData (Monod curve R2jags objects, saved but not pushed)
 
 # Packages & functions ----------------------------------------------------
 
@@ -15,7 +16,6 @@ library(tidyverse)
 library(R2jags)
 library(mcmcplots)
 library(bayestestR)
-library(cowplot)
 
 # Upload & examine the data -----------------------------------------------
 

@@ -7,6 +7,7 @@
 
 # Inputs: in processed-data : 10_nitrogen_rfus_time.csv
 # Outputs: in processed-data : 11_µ_estimates_nitrogen.csv, 12_nitrogen_monod_summary.csv, 13_nitrogen_monod_fits.csv
+  # in R2jags-models : rep_i_nit_monod.RData (Monod curve R2jags objects, saved but not pushed)
 
 # Packages & functions ----------------------------------------------------
 
@@ -15,7 +16,6 @@ library(tidyverse)
 library(R2jags)
 library(mcmcplots)
 library(bayestestR)
-library(cowplot)
 
 # Upload & examine the data -----------------------------------------------
 
@@ -46,7 +46,7 @@ df <- df %>% # Recombine this with our dataframe
 
 # Estimate µ --------------------------------------------------------------
 
-df.µ <- data.frame(                          # Initializing a data frame to store the results for each well, pop, and light
+df.µ <- data.frame(                          # Initializing a data frame to store the results for each well, pop, and nitrogen
   
   population = character(),                  # population ID
   nit = numeric(),                           # nitrogen
@@ -67,7 +67,7 @@ for (i in unique(df$well.ID[df$well.ID >= 1])) { # This allows code below to be 
   
   df.i <- df.i[order(df.i$days), ]  # in case data are not ordered by time of observation
   
-  t.series <- unique(df.i$days)           # Re-initialize this internally - we will only save summary data for each unique pop x light x well combo
+  t.series <- unique(df.i$days)           # Re-initialize this internally - we will only save summary data for each unique pop x nit x well combo
   
   ln.slopes <- c() # Re-initialize this too!
   

@@ -7,6 +7,7 @@
 
 # Inputs: in processed-data : 14_phosphorous_rfus_time.csv
 # Outputs: in processed-data : 15_µ_estimates_phosphorous.csv, 16_phosphorous_monod_summary.csv, 17_phosphorous_monod_fits.csv
+  # in R2jags-models : rep_i_phos_monod.RData (Monod curve R2jags objects, saved but not pushed)
 
 # Packages & functions ----------------------------------------------------
 
@@ -15,7 +16,6 @@ library(tidyverse)
 library(R2jags)
 library(mcmcplots)
 library(bayestestR)
-library(cowplot)
 
 # Upload & examine the data -----------------------------------------------
 
@@ -46,7 +46,7 @@ df <- df %>% # Recombine this with our dataframe
 
 # Estimate µ --------------------------------------------------------------
 
-df.µ <- data.frame(                          # Initializing a data frame to store the results for each well, pop, and light
+df.µ <- data.frame(                          # Initializing a data frame to store the results for each well, pop, and phos
   
   population = character(),                  # population ID
   phos = numeric(),                          # phosphorous
@@ -67,7 +67,7 @@ for (i in unique(df$well.ID[df$well.ID >= 1])) { # This allows code below to be 
   
   df.i <- df.i[order(df.i$days), ]  # in case data are not ordered by time of observation
   
-  t.series <- unique(df.i$days)           # Re-initialize this internally - we will only save summary data for each unique pop x light x well combo
+  t.series <- unique(df.i$days)           # Re-initialize this internally - we will only save summary data for each unique pop x phos x well combo
   
   ln.slopes <- c() # Re-initialize this too!
   
