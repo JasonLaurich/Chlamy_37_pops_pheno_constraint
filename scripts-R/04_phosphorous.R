@@ -2,11 +2,11 @@
 
 # February 6th, 2026
 
-# This file will fit µ to our time series growth data (RFUs) for C. reinhardtii populations for our nitrogen gradient data
+# This file will fit µ to our time series growth data (RFUs) for C. reinhardtii populations for our phosphorous gradient data
 # Then we will fit Monod curves to the data. 
 
-# Inputs: in processed-data : 10_nitrogen_rfus_time.csv
-# Outputs: in processed-data : 11_µ_estimates_nitrogen.csv, 12_nitrogen_monod_summary.csv, 13_nitrogen_monod_fits.csv
+# Inputs: in processed-data : 14_phosphorous_rfus_time.csv
+# Outputs: in processed-data : 15_µ_estimates_phosphorous.csv, 16_phosphorous_monod_summary.csv, 17_phosphorous_monod_fits.csv
 
 # Packages & functions ----------------------------------------------------
 
@@ -19,16 +19,16 @@ library(cowplot)
 
 # Upload & examine the data -----------------------------------------------
 
-df <- read_csv("processed-data/10_nitrogen_rfus_time.csv")
-head(df) #RFU is density, days is time, nitrate_concentration does what it says on the tin
+df <- read_csv("processed-data/14_phosphorous_rfus_time.csv")
+head(df) #RFU is density, days is time, phosphate_concentration does what it says on the tin
 
 df <- df %>% 
-  rename(nit = nitrate_concentration) %>% 
-  select(well_plate, RFU, population, nit, days) %>% 
+  rename(phos = phosphate_concentration) %>% 
+  select(well_plate, RFU, population, phos, days) %>% 
   filter(population != "COMBO") # A control treatment, not relevant to this experimental analysis
 
 unique(df$population)
-unique(df$nit)
+unique(df$phos)
 
 df <- df %>% 
   
@@ -49,7 +49,7 @@ df <- df %>% # Recombine this with our dataframe
 df.µ <- data.frame(                          # Initializing a data frame to store the results for each well, pop, and light
   
   population = character(),                  # population ID
-  nit = numeric(),                           # nitrogen
+  phos = numeric(),                          # phosphorous
   well.ID = character(),                     # well ID
   
   µ = numeric()                              # intrinsic growth rate estimate
@@ -115,7 +115,7 @@ for (i in unique(df$well.ID[df$well.ID >= 1])) { # This allows code below to be 
   df.µ <- rbind(df.µ, data.frame(                     # add the data to the summary data frame
     
     population = df.i$population[1],                  # population ID
-    nit = df.i$nit[1],                                # nitrogen
+    phos = df.i$phos[1],                              # phosphorous
     well.ID = df.i$well.ID[1],                        # well ID
     
     µ = µ.est                                         # intrinsic growth rate. 
@@ -128,7 +128,7 @@ for (i in unique(df$well.ID[df$well.ID >= 1])) { # This allows code below to be 
 df.µ %>% 
   filter(is.na(µ))  # No null values
 
-write.csv(df.µ, "processed-data/11_µ_estimates_nitrogen.csv",
+write.csv(df.µ, "processed-data/15_µ_estimates_phosphorous.csv",
           row.names = FALSE) # 1480 measurements
 
 # Bayesian modelling ------------------------------------------------------
@@ -138,26 +138,21 @@ write.csv(df.µ, "processed-data/11_µ_estimates_nitrogen.csv",
 df.µ <- df.µ %>%
   mutate(rep.id = str_c(population, str_sub(well.ID, 1, 3), sep = ".")) # Need to create a unique replicate ID
 
-length(unique(df.µ$rep.id)) # 164, should be 148! 
+length(unique(df.µ$rep.id)) # 156, should be 148! 
 
 by_pop <- df.µ %>%
   distinct(population, rep.id) %>%   # one row per (pop, unique.id)
   count(population, name = "n_unique")  # how many unique.id per pop
 
-by_pop # Pops 11, 30, 5, and anc5 are getting double the unique hits.
+by_pop # Pops 22 and anc2 are getting double the unique hits.
 
-df.µ.11 <- df.µ[df.µ$population == "11",] # N100 is the issue
+df.µ.22 <- df.µ[df.µ$population == "22",] # P20 is the issue
 
-df.µ.30 <- df.µ[df.µ$population == "30",] # N400 is the issue
-
-df.µ.5 <- df.µ[df.µ$population == "5",] # N400 is the issue (swapped with 30)
-
-df.µ.anc5 <- df.µ[df.µ$population == "anc5",] # N100 is the issue (swapped with 11)
+df.µ.anc2 <- df.µ[df.µ$population == "anc2",] # P20 is the issue
 # These are perfectly swapped — but for now I'm going to remove them.  
 
 df.µ <- df.µ %>%
-  filter(!(population %in% c("11", "anc5") & nit == 100)) %>% 
-  filter(!(population %in% c("30", "5") & nit == 400))
+  filter(!(population %in% c("22", "anc2") & phos == 20)) 
 
 length(unique(df.µ$rep.id)) # 148, should be 1480/10 = 148! Fixed for now. 37 x 4 = 148 (pops, reps). Now missing some level replicates but that's OK, we deleted them. 
 
@@ -214,7 +209,7 @@ inits.monod <- function() { # Set the initial values for our Monod curve
 
 parameters.monod <- c("r_max", "K_s", "sigma", "r_pred_new") # Save these
 
-S.pred <- seq(0, 1000, 0.5) # Nitrogen gradient we are interested in here (concentration)
+S.pred <- seq(0, 50, 0.025) # Phosphorous gradient we are interested in here (concentration)
 N.S.pred <-length(S.pred)
 
 rep.ids <- unique(df.µ$rep.id) # Save the unique rep ids so we can run the for loop in chunks if needed
@@ -232,15 +227,15 @@ for (i in rep.ids[1:length(rep.ids)]) { # For all replicates, can account for mu
   trait <- df.i$µ    # format the data for jags
   N.obs <- length(trait)
   
-  nit <- df.i$nit
+  phos <- df.i$phos
   
-  jag.data <- list(trait = trait, N.obs = N.obs, S = nit, S.pred = S.pred, N.S.pred = N.S.pred)
+  jag.data <- list(trait = trait, N.obs = N.obs, S = phos, S.pred = S.pred, N.S.pred = N.S.pred)
   
-  monod.jag <- jags( # Run the nitrogen Monod function. 
+  monod.jag <- jags( # Run the phosphorous Monod function. 
     data = jag.data,
     inits = inits.monod,
     parameters.to.save = parameters.monod,
-    model.file = "monod.nit.txt",
+    model.file = "monod.txt",
     n.thin = nt.fit,
     n.chains = nc.fit,
     n.burnin = nb.fit,
@@ -249,7 +244,7 @@ for (i in rep.ids[1:length(rep.ids)]) { # For all replicates, can account for mu
     working.directory = getwd()
   )
   
-  save(monod.jag, file = paste0("R2jags-models/rep_", i, "_nit_monod.RData")) # save the monod model
+  save(monod.jag, file = paste0("R2jags-models/rep_", i, "_phos_monod.RData")) # save the monod model
   # This folder is listed in gitignore, because the objects are too big to load
   
   post <- as.data.frame(monod.jag$BUGSoutput$sims.matrix) # The posteriors
@@ -279,7 +274,7 @@ for (i in rep.ids[1:length(rep.ids)]) { # For all replicates, can account for mu
     
   ))
   
-  nit_sum <- monod.jag$BUGSoutput$summary[c(1:3),] # Have to create a new frame for summaries (not listed 1 to 6)
+  phos_sum <- monod.jag$BUGSoutput$summary[c(1:3),] # Have to create a new frame for summaries (not listed 1 to 6)
   
   for (j in 1:3){
     fit.df <- rbind(fit.df, data.frame(          # Model performance data
@@ -287,10 +282,10 @@ for (i in rep.ids[1:length(rep.ids)]) { # For all replicates, can account for mu
       population = df.i$population[1],           # population ID
       rep.ID = df.i$rep.id[1],                   # rep ID    
       
-      Parameter = rownames(nit_sum)[j],          # Model parameter (e.g. K_s, r_max, etc.)
-      mean = nit_sum[j,1],                       # Posterior mean
-      Rhat = nit_sum[j,8],                       # Rhat values
-      n.eff = nit_sum[j,9]                       # Sample size estimates (should be ~3000)
+      Parameter = rownames(phos_sum)[j],         # Model parameter (e.g. K_s, r_max, etc.)
+      mean = phos_sum[j,1],                      # Posterior mean
+      Rhat = phos_sum[j,8],                      # Rhat values
+      n.eff = phos_sum[j,9]                      # Sample size estimates (should be ~3000)
     ))
     
   }
@@ -299,8 +294,8 @@ for (i in rep.ids[1:length(rep.ids)]) { # For all replicates, can account for mu
   
 }
 
-write.csv(summary.df, "processed-data/12_nit_monod_summary.csv",
+write.csv(summary.df, "processed-data/16_phos_monod_summary.csv",
           row.names = FALSE) # 148 measurements
 
-write.csv(fit.df, "processed-data/13_nit_monod_fits.csv",
+write.csv(fit.df, "processed-data/17_phos_monod_fits.csv",
           row.names = FALSE) # 148 measurements
