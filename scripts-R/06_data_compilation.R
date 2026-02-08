@@ -246,4 +246,4 @@ df.summ <- df.summ %>%
                         Evol = evol), 
             by = c("population" = "population"))
 
-write.csv(df.summ, "data-processed/27_summary_table.csv") # Save summary table!
+write.csv(df.summ, "processed-data/27_summary_table.csv") # Save summary table!
