@@ -285,7 +285,7 @@ for (i in rep.ids[1:length(rep.ids)]) { # For all replicates, can account for mu
       Parameter = rownames(phos_sum)[j],         # Model parameter (e.g. K_s, r_max, etc.)
       mean = phos_sum[j,1],                      # Posterior mean
       Rhat = phos_sum[j,8],                      # Rhat values
-      n.eff = phos_sum[j,9]                      # Sample size estimates (should be ~3000)
+      n.eff = phos_sum[j,9]                      # Sample size estimates (should be ~6000)
     ))
     
   }

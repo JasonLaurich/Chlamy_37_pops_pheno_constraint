@@ -272,7 +272,7 @@ for (i in rep.ids[1:length(rep.ids)]) { # # For all replicates, can account for 
       Parameter = rownames(light_sum)[j],        # Model parameter (e.g. K_s, r_max, etc.)
       mean = light_sum[j,1],                     # Posterior mean
       Rhat = light_sum[j,8],                     # Rhat values
-      n.eff = light_sum[j,9]                     # Sample size estimates (should be ~3000)
+      n.eff = light_sum[j,9]                     # Sample size estimates (should be ~6000)
     ))
     
   }
