@@ -26,7 +26,7 @@ df$percentage <- as.numeric(df$percentage) # From an examination of the csv, the
 df$percentage[is.na(df$percentage)] <- 0.6 # Set to 0.6
 
 df <- df %>% 
-  mutate(light = as.numeric(percentage) * 2.5) %>% 
+  mutate(light = as.numeric(percentage) * 2.5) %>% # Convert from percentages to µmol/m^2/s photons
   select(well_plate, RFU, population, light, days) %>% 
   filter(population != "COMBO") # A control treatment, not relevant to this experimental analysis
 

@@ -170,10 +170,16 @@ summary.df <- data.frame(   # We'll create a dataframe to store the data as we f
   r.max.na = numeric(),     # % NA returns
   
   c.mod = numeric(),        # salt concentration at which r is half of alpha (extracted from model)
-  c.mod.post = numeric(),   # salt concentration at which r is half of alpha (posterior median)
-  c.mod.min = numeric(),    # salt concentration at which r is half of alpha (lower HDPI)
-  c.mod.max = numeric(),    # salt concentration at which r is half of alpha (upper HDPI)
-  c.mod.na = numeric(),     # % NA returns
+  c.post = numeric(),       # salt concentration at which r is half of alpha (posterior median)
+  c.post.min = numeric(),   # salt concentration at which r is half of alpha (lower HDPI)
+  c.post.max = numeric(),   # salt concentration at which r is half of alpha (upper HDPI)
+  c.post.na = numeric(),    # % NA returns
+  
+  b.mod = numeric(),        # decline rate (extracted from model)
+  b.post = numeric(),       # decline rate (posterior median)
+  b.post.min = numeric(),   # decline rate (lower HDPI)
+  b.post.max = numeric(),   # decline rate (upper HDPI)
+  b.post.na = numeric(),    # % NA returns
   
   stringsAsFactors = FALSE  # Avoid factor conversion
 )
@@ -230,17 +236,23 @@ for (i in rep.ids[1:length(rep.ids)]) { # For all replicates, can account for mu
     
     population = df.i$population[1],                                            # population ID
     
-    r.max.mod = salt.jag$BUGSoutput$summary[1,1],    # Maximum population growth rate (alpha) (model output)
-    r.max.post = median(post$a, na.rm = T),   # Maximum population growth rate (posterior median)
-    r.max.min = hdi(post$a, ci = 0.95)$CI_low,    # Maximum population growth rate (lower HDPI)
-    r.max.max = hdi(post$a, ci = 0.95)$CI_high,    # Maximum population growth rate (upper HDPI)
-    r.max.na = mean(is.na(post$a)),     # % NA returns
+    r.max.mod = salt.jag$BUGSoutput$summary[1,1],                               # Maximum population growth rate (alpha) (model output)
+    r.max.post = median(post$a, na.rm = T),                                     # Maximum population growth rate (posterior median)
+    r.max.min = hdi(post$a, ci = 0.95)$CI_low,                                  # Maximum population growth rate (lower HDPI)
+    r.max.max = hdi(post$a, ci = 0.95)$CI_high,                                 # Maximum population growth rate (upper HDPI)
+    r.max.na = mean(is.na(post$a)),                                             # % NA returns
     
-    c.mod = salt.jag$BUGSoutput$summary[3,1],        # salt concentration at which r is half of alpha (extracted from model)
-    c.mod.post = median(post$c, na.rm = T),   # salt concentration at which r is half of alpha (posterior median)
-    c.mod.min = hdi(post$c, ci = 0.95)$CI_low,    # salt concentration at which r is half of alpha (lower HDPI)
-    c.mod.max = hdi(post$c, ci = 0.95)$CI_high,    # salt concentration at which r is half of alpha (upper HDPI)
-    c.mod.na = mean(is.na(post$c))      # % NA returns
+    c.mod = salt.jag$BUGSoutput$summary[3,1],                                   # salt concentration at which r is half of alpha (extracted from model)
+    c.post = median(post$c, na.rm = T),                                         # salt concentration at which r is half of alpha (posterior median)
+    c.post.min = hdi(post$c, ci = 0.95)$CI_low,                                 # salt concentration at which r is half of alpha (lower HDPI)
+    c.post.max = hdi(post$c, ci = 0.95)$CI_high,                                # salt concentration at which r is half of alpha (upper HDPI)
+    c.post.na = mean(is.na(post$c)),                                            # % NA returns
+    
+    b.mod = salt.jag$BUGSoutput$summary[2,1],                                   # decline rate (extracted from model)
+    b.post = median(post$b, na.rm = T),                                         # decline rate (posterior median)
+    b.post.min = hdi(post$b, ci = 0.95)$CI_low,                                 # decline rate (lower HDPI)
+    b.post.max = hdi(post$b, ci = 0.95)$CI_high,                                # decline rate (upper HDPI)
+    b.post.na = mean(is.na(post$b))                                             # % NA returns
     
   ))
   
