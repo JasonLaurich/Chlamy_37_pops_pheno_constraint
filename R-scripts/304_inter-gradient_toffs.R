@@ -12177,7 +12177,7 @@ BvP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
 
 BvP.qr2 # Display the plot
 
-# Pigmentation v salt ----------------------------------------------------
+# Biovolume v salt ----------------------------------------------------
 
 df$evol.bin <- ifelse(df$Evol == "none", 'ancestral', 
                       ifelse(df$Evol %in% c("S", "BS"), 'salt', 'other')) # Ss and BSs are treated as equivalent
