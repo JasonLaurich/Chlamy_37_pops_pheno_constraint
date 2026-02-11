@@ -31,10 +31,6 @@ library(car)
 library(boot)
 library(minpack.lm)
 
-library(R2jags)
-library(mcmcplots)
-library(bayestestR)
-
 lactin2 <- function(temp, a, tmax, d.t, b) { 
   exp(a * temp) - exp(a * tmax - (tmax - temp) / d.t) + b
 } # Define the Lactin II function
