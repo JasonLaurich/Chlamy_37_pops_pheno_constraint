@@ -1,0 +1,12 @@
+name: JRL_intersp_phos_check
+title: JRL_intersp_phos_check
+username: jlaurich
+account: jlaurich
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 16413011
+bundleId: 11436271
+url: https://jlaurich.shinyapps.io/JRL_intersp_phos_check/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
