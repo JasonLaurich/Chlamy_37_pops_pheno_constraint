@@ -1,0 +1,12 @@
+name: JRL_intersp_TPC_check
+title: JRL_intersp_TPC_check
+username: jlaurich
+account: jlaurich
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 16368801
+bundleId: 11429717
+url: https://jlaurich.shinyapps.io/JRL_intersp_TPC_check/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
