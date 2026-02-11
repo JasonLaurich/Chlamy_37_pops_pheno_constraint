@@ -1,0 +1,122 @@
+,Species,dataset,r.max,R,comp,Sp.name
+1,Ceratium furca,"Edwards et al., 2016",0.618343431,13.49837675,0.074082982,Ceratium furca
+2,Ceratium fusus,"Edwards et al., 2016",0.718048659,14.05678478,0.071140024,Ceratium fusus
+3,Micractinium pusillum,"Edwards et al., 2016",0.633620516,5.17248107,0.193330819,Micractinium pusillum
+4,Chroococcus minutus,"Edwards et al., 2016",1.570487702,1.737796114,0.575441499,Chroococcus minutus
+5,Microcystis flos-aquae,"Edwards et al., 2016",2.149794662,1.932546533,0.517451965,Microcystis flos-aquae
+6,Planktothrix agardhii,"Edwards et al., 2016",2.000128638,0.780573773,1.281108891,Planktothrix agardhii
+7,Coelastrum microporum f. astroidea,"Edwards et al., 2016",1.646032533,5.321139465,0.187929673,Coelastrum microporum
+8,Cosmarium subprotumidum,"Edwards et al., 2016",1.112760519,8.892187559,0.112458267,Cosmarium subprotumidum
+9,Selenastrum minutum,"Edwards et al., 2016",1.737654781,5.116276402,0.195454647,Selenastrum minutum
+10,Asterionella formosa,"Edwards et al., 2016",1.222029146,3.455015281,0.28943432,Asterionella formosa
+11,Anabaena cylindrica,"Edwards et al., 2016",0.602659244,0.961454066,1.04009129,Anabaena cylindrica
+12,Coelastrum microporum,"Edwards et al., 2016",2.195779014,2.39987781,0.416687881,Coelastrum microporum
+13,Dictyosphaerium pulchellum,"Edwards et al., 2016",1.57887464,2.622174438,0.381362882,Dictyosphaerium pulchellum
+14,Fragilaria bidens,"Edwards et al., 2016",0.992931426,2.257786298,0.442911714,Fragilaria bidens
+15,Monoraphidium minutum,"Edwards et al., 2016",1.978043885,4.699952987,0.212768086,Monoraphidium minutum
+16,Pediastrum boryanum,"Edwards et al., 2016",1.36213511,3.735022987,0.267735969,Pediastrum boryanum
+17,Scenedesmus crassus,"Edwards et al., 2016",1.997745662,3.222716538,0.310297225,Scenedesmus crassus
+18,Scenedesmus quadricauda,"Edwards et al., 2016",1.951133268,3.107607578,0.321790952,Scenedesmus quadricauda
+19,Chlorella vulgaris,"Edwards et al., 2016",1.244297763,2.080406393,0.480675316,Chlorella vulgaris
+20,Fragilaria crotonensis,"Edwards et al., 2016",0.689270369,6.546441985,0.152754733,Fragilaria crotonensis
+21,Staurastrum pingue,"Edwards et al., 2016",0.99118565,9.612223011,0.104034207,Staurastrum pingue
+22,Synechocystis minima,"Edwards et al., 2016",2.085485955,2.488159717,0.40190346,Synechocystis minima
+23,Acutodesmus obliquus,"Edwards et al., 2016",1.967490547,1.303286822,0.767290809,Acutodesmus obliquus
+24,Phaeodactylum tricornutum,"Edwards et al., 2016",1.887836244,2.356687603,0.424324378,Phaeodactylum tricornutum
+25,Chaetoceros deflandrei,"Edwards et al., 2016",0.677855382,9.895570346,0.101055317,Chaetoceros deflandrei
+26,Corethron criophilum,"Edwards et al., 2016",0.212420812,29.55819489,0.033831565,Corethron criophilum
+27,Nitzschia cylindrus,"Edwards et al., 2016",0.575573523,14.12805532,0.07078115,Nitzschia cylindrus
+28,Nitzschia kerguelensis,"Edwards et al., 2016",0.604800717,6.05037744,0.165278945,Nitzschia kerguelensis
+29,Nitzschia turgiduloides,"Edwards et al., 2016",0.545703577,6.937630878,0.144141425,Nitzschia turgiduloides
+30,Stellarima microtrias,"Edwards et al., 2016",0.700699077,7.268453776,0.137580843,Stellarima microtrias
+31,Synedra sp.,"Edwards et al., 2016",0.453932268,8.442572979,0.118447303,NA
+32,Fragilaria crotonensis,"Edwards et al., 2016",0.598746266,4.666528938,0.214292039,Fragilaria crotonensis
+33,Synura sphagnicola,"Edwards et al., 2016",1.060072658,8.394952008,0.119119204,Synura sphagnicola
+34,Rhodomonas salina,"Edwards et al., 2016",1.761251159,0.623744687,1.603220068,Rhodomonas salina
+35,Dactyliosolen fragilissimus,"Edwards et al., 2016",1.016168361,2.300592652,0.434670605,Dactyliosolen fragilissimus
+36,Rhizosolenia fragilissima,"Edwards et al., 2016",0.978461793,1.996285675,0.500930309,Rhizosolenia fragilissima
+37,Fragilaria barbararum,"Edwards et al., 2016",1.148251416,0.322871545,3.097206975,Fragilaria barbararum
+38,Coscinodiscus granii,"Edwards et al., 2016",1.605794478,4.57817372,0.21842771,Coscinodiscus granii
+39,Coscinodiscus wailesii,"Edwards et al., 2016",1.575919894,6.302811401,0.158659356,Coscinodiscus wailesii
+40,Cryptomonas sp. 1,"Edwards et al., 2016",0.737462667,11.73776418,0.085195101,NA
+41,Cryptomonas sp. 2,"Edwards et al., 2016",1.438158477,6.261899054,0.159695963,NA
+42,Thalassiosira curviseriata,"Edwards et al., 2016",1.908828368,1.626322332,0.614884258,Thalassiosira curviseriata
+43,Microcystis ichthyoblabe,"Edwards et al., 2016",1.419593843,2.688396302,0.371968969,Microcystis ichthyoblabe
+44,Nannochloropsis oceanica,"Edwards et al., 2016",2.028097643,1.191212901,0.839480499,Nannochloropsis oceanica
+45,Pseudochattonella farcimen,"Edwards et al., 2016",0.846301795,8.228467952,0.121529306,Pseudochattonella farcimen
+46,Ankistrodesmus falcatus,"Edwards et al., 2016",1.608112242,3.254069011,0.307307558,Ankistrodesmus falcatus
+47,Planktothrix agardhii,"Edwards et al., 2016",0.528757666,4.242725979,0.235697522,Planktothrix agardhii
+48,Closterium parvulum,"Edwards et al., 2016",0.401354871,5.533964485,0.18070228,Closterium parvulum
+49,Monoraphidium contortum,"Edwards et al., 2016",0.885690506,5.204158483,0.192154025,Monoraphidium contortum
+50,Oocystella mongolica,"Edwards et al., 2016",0.346457372,13.11758651,0.076233536,Oocystella mongolica
+51,Pseudodidymocystis planctonica,"Edwards et al., 2016",0.795923361,9.522920455,0.105009803,Pseudodidymocystis planctonica
+52,Leptocylindricus danicus,"Edwards et al., 2016",2.281111411,0.962558369,1.038898037,Leptocylindricus danicus
+53,Phaeocystis pouchetii,"Edwards et al., 2016",1.861538044,4.368728332,0.228899562,Phaeocystis pouchetii
+54,Ochromonas sp.,"Edwards et al., 2016",0.442361314,15.78625015,0.063346266,NA
+55,Chaetoceros calcitrans,"Edwards et al., 2016",2.013223047,2.580209585,0.387565415,Chaetoceros calcitrans
+56,Cylindrotheca closterium,"Edwards et al., 2016",0.730847307,7.149202762,0.139875736,Cylindrotheca closterium
+57,Diacronema lutheri,"Edwards et al., 2016",0.627525171,8.702940611,0.114903691,Diacronema lutheri
+58,Tetraselmis sp.,"Edwards et al., 2016",0.735381271,6.407447662,0.156068384,NA
+59,Skeletonema costatum,"Edwards et al., 2016",1.44272629,4.760508359,0.210061599,Skeletonema costatum
+60,Synechococcus,"Lewington-Pearce et al., 2019",1.000848457,6.647239877,0.15043838,NA
+61,Kirchneriella_subcapitata,"Lewington-Pearce et al., 2019",0.181089625,26.44172614,0.037819014,Kirchneriella subcapitata
+62,Microcystis_aeruginosa,"Lewington-Pearce et al., 2019",0.489981139,16.04719151,0.0623162,Microcystis aeruginosa
+63,Pediastrum_boryanum,"Lewington-Pearce et al., 2019",0.673601383,6.223369445,0.160684659,Pediastrum boryanum
+64,Cyclotella_meneghiniana,"Lewington-Pearce et al., 2019",1.233915393,4.86633813,0.205493324,Cyclotella meneghiniana
+65,Scenedesmus_acuminatus,"Lewington-Pearce et al., 2019",0.684586996,3.123832189,0.320119629,Scenedesmus acuminatus
+66,Chlamydomonas_reinhardtii,"Lewington-Pearce et al., 2019",1.080029354,1.755145199,0.569753432,Chlamydomonas reinhardtii
+67,Asterionella formosa,"Levasseur et al., 2025",0.761497591,2.256564985,0.44315143,Asterionella formosa
+68,Chlorella sp.,"Levasseur et al., 2025",1.189950762,0.600183449,1.666157242,NA
+69,Coelastrum sp.,"Levasseur et al., 2025",1.519725873,2.115453135,0.472711961,NA
+70,Cyclotella pseudostelligera,"Levasseur et al., 2025",1.013641425,0.556986464,1.795375767,Cyclotella pseudostelligera
+71,Eudorina elegans,"Levasseur et al., 2025",1.190023462,3.096067146,0.322990411,Eudorina elegans
+72,Fistulifera saprophila,"Levasseur et al., 2025",1.175826153,5.472868085,0.182719551,Fistulifera saprophila
+73,Fragilaria crotonensis,"Levasseur et al., 2025",0.491195369,2.197170597,0.455130795,Fragilaria crotonensis
+74,Lagerheimia subsalsa,"Levasseur et al., 2025",1.481443646,2.300204512,0.434743952,Lagerheimia subsalsa
+75,Messastrum gracile,"Levasseur et al., 2025",1.730680177,1.994123729,0.501473397,Messastrum gracile
+76,Microcystis viridis,"Levasseur et al., 2025",1.330628748,0.583910526,1.712591151,Microcystis viridis
+77,Nitzschia paela (C ),"Levasseur et al., 2025",2.356329606,1.35501529,0.737999052,Nitzschia paela
+78,Nitzschia paela (G),"Levasseur et al., 2025",2.466109335,2.257562559,0.44295561,Nitzschia paela
+79,Oocystis sp.,"Levasseur et al., 2025",1.026265667,4.692369173,0.213111962,NA
+80,Pediastrum boryanum,"Levasseur et al., 2025",1.761884173,1.463952672,0.683082192,Pediastrum boryanum
+81,Scenedesmus arcuatus var. Platydiscus,"Levasseur et al., 2025",1.587320179,1.69792291,0.58895489,Scenedesmus arcuatus
+82,Scenedesmus armatus,"Levasseur et al., 2025",1.398065859,1.344623077,0.743702839,Scenedesmus armatus
+83,Tetraedron minumum,"Levasseur et al., 2025",0.613946155,4.308361528,0.232106798,Tetraedron minumum
+84,Actinastrum hantzschii ,"Narwani et al., 2015",1.796146,0.937413,1.066765663,Actinastrum hantzschii 
+85,Ankistrodesmus falcatus,"Narwani et al., 2015",0.4703815,0.877619,1.139446616,Ankistrodesmus falcatus
+86,Arthrodesmus convergens,"Narwani et al., 2015",0.255406,0.977597,1.022916396,Arthrodesmus convergens
+87,Botryococcus braunii,"Narwani et al., 2015",0.3061119,0.802917,1.245458746,Botryococcus braunii
+88,Botryococcus sudeticus,"Narwani et al., 2015",0.7588419,0.784562,1.274596526,Botryococcus sudeticus
+89,Chlamydocapsa ampla,"Narwani et al., 2015",1.3801,1.62668,0.614749059,Chlamydocapsa ampla
+90,Chlorella sorokiniana,"Narwani et al., 2015",0.9982451,1.04369,0.958138911,Chlorella sorokiniana
+91,Chlorococcum aquaticum ,"Narwani et al., 2015",1.22698,0.999712,1.000288083,Chlorococcum aquaticum 
+92,Coelastrum cambricum,"Narwani et al., 2015",0.651015,0.649421,1.539833174,Coelastrum cambricum
+93,Coelastrum microporum,"Narwani et al., 2015",0.9071787,0.523071,1.911786354,Coelastrum microporum
+94,Coelastrum reticulatum,"Narwani et al., 2015",1.169209,1.01025,0.989853997,Coelastrum reticulatum
+95,Cosmarium botrytis,"Narwani et al., 2015",0.6185089,1.40967,0.709385885,Cosmarium botrytis
+96,Cosmarium turpinii,"Narwani et al., 2015",0.6884805,0.903932,1.106277906,Cosmarium turpinii
+97,Crucigenia tetrapedia,"Narwani et al., 2015",0.8763568,1.23398,0.810385906,Crucigenia tetrapedia
+98,Dictyosphaerium ehrenbergianum,"Narwani et al., 2015",1.183461,0.941612,1.062008556,Dictyosphaerium ehrenbergianum
+99,Elakatothrix viridis,"Narwani et al., 2015",0.5076739,0.999903,1.000097009,Elakatothrix viridis
+100,Gloeomonas kupfferi,"Narwani et al., 2015",0.3395763,1.60962,0.621264646,Gloeomonas kupfferi
+101,Monoraphidium minutum,"Narwani et al., 2015",1.268607,0.748452,1.336091025,Monoraphidium minutum
+102,Monoraphidium arcuatum,"Narwani et al., 2015",1.038019,0.380897,2.625381665,Monoraphidium arcuatum
+103,Oocystis parva,"Narwani et al., 2015",0.7220038,1.56033,0.640890068,Oocystis parva
+104,Oocystis polymorpha ,"Narwani et al., 2015",1.381854,0.477272,2.095241288,Oocystis polymorpha 
+105,Oocystis solitaria,"Narwani et al., 2015",0.6964549,2.44251,0.409414905,Oocystis solitaria
+106,Pandorina charkowiensis,"Narwani et al., 2015",0.7187422,1.53973,0.649464517,Pandorina charkowiensis
+107,Pediastrum boryanum,"Narwani et al., 2015",0.6473504,0.489869,2.041362078,Pediastrum boryanum
+108,Pediastrum duplex,"Narwani et al., 2015",0.6738454,2.10924,0.474104417,Pediastrum duplex
+109,Pediastrum tetras,"Narwani et al., 2015",0.8572004,0.811073,1.232934643,Pediastrum tetras
+110,Planktosphaeria botryoides,"Narwani et al., 2015",1.584183,0.615952,1.62350313,Planktosphaeria botryoides
+111,Quadrigula closterioides,"Narwani et al., 2015",0.3985955,1.26388,0.791214356,Quadrigula closterioides
+112,Radiococcus polycoccus,"Narwani et al., 2015",0.7514775,1.21754,0.821328252,Radiococcus polycoccus
+113,Scenedesmus acuminatus,"Narwani et al., 2015",1.082324,2.3041,0.434008941,Scenedesmus acuminatus
+114,Selenastrum capricornutum,"Narwani et al., 2015",1.214062,0.509584,1.962385004,Selenastrum capricornutum
+115,Sphaerocystis schroeteri,"Narwani et al., 2015",0.5980179,1.051,0.951474786,Sphaerocystis schroeteri
+116,Spondylosium planum,"Narwani et al., 2015",0.4304931,3.19772,0.312722815,Spondylosium planum
+117,Staurastrum cingulum,"Narwani et al., 2015",0.4849764,1.74027,0.574623478,Staurastrum cingulum
+118,Staurastrum punctulatum,"Narwani et al., 2015",0.7275168,1.20967,0.826671737,Staurastrum punctulatum
+119,Staurastrum tetracerum,"Narwani et al., 2015",0.6708826,1.15508,0.865740901,Staurastrum tetracerum
+120,Tetraedron minutum,"Narwani et al., 2015",0.6570455,1.63196,0.612760117,Tetraedron minutum
+121,Tetrastrum heteracantum,"Narwani et al., 2015",0.5982583,1.12191,0.891337095,Tetrastrum heteracantum

@@ -12,8 +12,8 @@
 # Inputs: 47_Edwards_2016_light_monods.csv, 50_Lewington_2019_light_monods.csv, 53_Levasseur_2025_light_monods.csv, 66_Narwani_2015_summary.csv,
   # 68_Edwards_2015_summary.csv, 56_Lewington_2019_nit_monods.csv, 59_Levasseur_2025_nit_monods.csv, 61_Bestion_2018_phos_monods.csv,
   # 64_Levasseur_2025_phos_monods.csv, 32_Bestion_2018_TPCs.csv, 39_Edwards_2016_TPCs.csv, 36_Lewington_2019_TPCs.csv, 45_Levasseur_2025_TPCs.csv,
-  # 29_Thomas_2012_TPCs.csv
-# Outputs: in processed-data : 67_light_metadata.csv, 69_nit_metadata.csv, 70_phos_metadata.csv, 71_temp_metadata.csv
+  # 29_Thomas_2012_TPCs.csv, 67a_light_metadata_sp.csv, 69_nit_metadata_sp.csv, 70_phos_metadata_sp.csv, 71_temp_metadata_sp.csv
+# Outputs: in processed-data : 67_light_metadata.csv, 69_nit_metadata.csv, 70_phos_metadata.csv, 71_temp_metadata.csv, 72_synthesis_metadata_sp_summary.csv
 
 # Packages & functions ----------------------------------------------------
 
@@ -360,63 +360,42 @@ write.csv(df.t, "processed-data/71_temp_metadata.csv") # Summary
 
 # For comparing across gradients, where we cannot be confident that observations on the x and y axis were obtained from the same study.
 
-Encoding(df.l$Sp.name) <- "bytes" # make sure R treats the strings as bytes (prevents “invalid UTF-8” headaches)
+df.l <- read.csv("processed-data/67a_light_metadata_sp.csv")
+head(df.l)
 
-nbsp.byte <- rawToChar(as.raw(0xA0)) # build a literal 0xA0 byte and replace it with a normal space
-df.l$Sp.name <- gsub(nbsp.byte, " ", df.l$Sp.name, fixed = TRUE, useBytes = TRUE)
-
-df.l$Sp.name <- enc2utf8(df.l$Sp.name) # now safely convert to UTF-8 for downstream joins
-df.l$Sp.name <- trimws(df.l$Sp.name)
-
-length(unique(df.l$Sp.name)) # 98 species
+length(unique(df.l$Sp.name)) # 99 species
+sort(unique(df.l$Sp.name))
 
 # Nitrogen
 
-df.n <- read.csv("data-processed/504b_nit_metadata.csv")
+df.n <- read.csv("processed-data/69a_nit_metadata_sp.csv")
 head(df.n)
 
-Encoding(df.n$Sp.name) <- "bytes" # make sure R treats the strings as bytes (prevents “invalid UTF-8” headaches)
-
-df.n$Sp.name <- gsub(nbsp.byte, " ", df.n$Sp.name, fixed = TRUE, useBytes = TRUE)
-
-df.n$Sp.name <- enc2utf8(df.n$Sp.name) # now safely convert to UTF-8 for downstream joins
-df.n$Sp.name <- trimws(df.n$Sp.name)
-
-length(unique(df.n$Sp.name)) #31 species
+length(unique(df.n$Sp.name)) #30 species
+sort(unique(df.n$Sp.name))
 
 # Phosphorous 
 
-df.p <- read.csv("data-processed/504c_phos_metadata.csv")
+df.p <- read.csv("processed-data/70a_phos_metadata_sp.csv")
 head(df.p)
 
-Encoding(df.p$Sp.name) <- "bytes" # make sure R treats the strings as bytes (prevents “invalid UTF-8” headaches)
-
-df.p$Sp.name <- gsub(nbsp.byte, " ", df.p$Sp.name, fixed = TRUE, useBytes = TRUE)
-
-df.p$Sp.name <- enc2utf8(df.p$Sp.name) # now safely convert to UTF-8 for downstream joins
-df.p$Sp.name <- trimws(df.p$Sp.name)
-
-length(unique(df.p$Sp.name)) # 58 species
+length(unique(df.p$Sp.name)) # 57 species
+sort(unique(df.p$Sp.name))
 
 # Temperature
 
-df.t <- read.csv("data-processed/504d_temp_metadata.csv")
+df.t <- read.csv("processed-data/71a_temp_metadata_sp.csv")
 head(df.t)
 
-Encoding(df.t$Sp.name) <- "bytes" # make sure R treats the strings as bytes (prevents “invalid UTF-8” headaches)
-
-df.t$Sp.name <- gsub(nbsp.byte, " ", df.t$Sp.name, fixed = TRUE, useBytes = TRUE)
-
-df.t$Sp.name <- enc2utf8(df.t$Sp.name) # now safely convert to UTF-8 for downstream joins
-df.t$Sp.name <- trimws(df.t$Sp.name)
-
-length(unique(df.t$Sp.name)) # 119 species
+length(unique(df.t$Sp.name)) # 117 species
+sort(unique(df.t$Sp.name))
 
 # OK so we have r.max and either T.br or comp for all. We need to combine these into a single data frame. 
 # Combine the data frames
 
 df.t.1 <- df.t %>%
   group_by(Sp.name) %>%
+  filter(Sp.name != "NA") %>% 
   summarise(
     r.max.T = mean(r.max, na.rm = TRUE),
     T.br    = mean(T.br,  na.rm = TRUE),
@@ -425,6 +404,7 @@ df.t.1 <- df.t %>%
 
 df.n.1 <- df.n %>%
   group_by(Sp.name) %>%
+  filter(Sp.name != "NA") %>% 
   summarise(
     r.max.N = mean(r.max, na.rm = TRUE),
     comp.N  = mean(comp,  na.rm = TRUE),
@@ -433,6 +413,7 @@ df.n.1 <- df.n %>%
 
 df.p.1 <- df.p %>%
   group_by(Sp.name) %>%
+  filter(Sp.name != "NA") %>% 
   summarise(
     r.max.P = mean(r.max, na.rm = TRUE),
     comp.P  = mean(comp,  na.rm = TRUE),
@@ -441,6 +422,7 @@ df.p.1 <- df.p %>%
 
 df.l.1 <- df.l %>%
   group_by(Sp.name) %>%
+  filter(Sp.name != "NA") %>% 
   summarise(
     r.max.L = mean(r.max, na.rm = TRUE),
     comp.L  = mean(comp,  na.rm = TRUE),
@@ -452,7 +434,7 @@ df <- df.t.1 %>%
   full_join(df.p.1, by = "Sp.name") %>%
   full_join(df.l.1, by = "Sp.name")
 
-write.csv(df, "data-processed/505_synthesis_metadata_sp_summary.csv") # Summary
+write.csv(df, "processed-data/72_synthesis_metadata_sp_summary.csv") # Summary
 
 # OK so now we will move on to performing the relevant analyses.
 
