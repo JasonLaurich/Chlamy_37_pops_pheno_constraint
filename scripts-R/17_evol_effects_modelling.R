@@ -218,6 +218,7 @@ mod.mean.N.µg.l.full <- lmer(d.mean.N.µg.l ~ Evol + (1 | Anc), data = df.sum, 
 
 anova(mod.mean.N.µg.l.null, mod.mean.N.µg.l.full)
 performance::r2(mod.mean.N.µg.l.full)
+performance::icc(mod.mean.N.µg.l.full)
 
 emm.mean.N.µg.l <- emmeans(mod.mean.N.µg.l.full, ~ Evol)
 test(emm.mean.N.µg.l)
@@ -227,6 +228,7 @@ mod.mean.P.µg.l.full <- lmer(d.mean.P.µg.l ~ Evol + (1 | Anc), data = df.sum, 
 
 anova(mod.mean.P.µg.l.null, mod.mean.P.µg.l.full)
 performance::r2(mod.mean.P.µg.l.full)
+performance::icc(mod.mean.P.µg.l.full)
 
 emm.mean.P.µg.l <- emmeans(mod.mean.P.µg.l.full, ~ Evol)
 test(emm.mean.P.µg.l)
@@ -238,17 +240,19 @@ mod.pig.PC.full <- lmer(d.pig.PC ~ Evol + (1 | Anc), data = df.sum, REML = FALSE
 
 anova(mod.pig.PC.null, mod.pig.PC.full)
 performance::r2(mod.pig.PC.full)
+performance::icc(mod.pig.PC.full)
 
 emm.pig.PC <- emmeans(mod.pig.PC.full, ~ Evol)
 test(emm.pig.PC)
 
-# Pigmentation
+# Biovolume
 
 mod.bio.vol.null <- lmer(d.bio.vol ~ (1 | Anc), data = df.sum, REML = FALSE)
 mod.bio.vol.full <- lmer(d.bio.vol ~ Evol + (1 | Anc), data = df.sum, REML = FALSE)
 
 anova(mod.bio.vol.null, mod.bio.vol.full)
 performance::r2(mod.bio.vol.full)
+performance::icc(mod.bio.vol.full)
 
 emm.bio.vol <- emmeans(mod.bio.vol.full, ~ Evol)
 test(emm.bio.vol)

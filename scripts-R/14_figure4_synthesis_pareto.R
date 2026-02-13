@@ -1179,8 +1179,11 @@ df.filt <- df %>%
 plot(z.y ~ z.x, data= df.filt) # look at the data 
 # A really high data point in the upper right
 
+x90 <- quantile(df.filt$z.x, 0.90, na.rm = TRUE)
+y90 <- quantile(df.filt$z.y, 0.90, na.rm = TRUE)
+
 df.filt.x <- df.filt %>% 
-  filter(z.x < 45)
+  filter(!(z.x >= x90 & z.y >= y90)) # Filter out points in the 90th quantile + for both x and y
 
 ###### Shoval et al triangular analysis ######
 
@@ -1870,8 +1873,12 @@ df.filt <- df %>%
 
 plot(z.y ~ z.x, data= df.filt) # look at the data 
 # Another high point in the upper right that will drive relationships here.
+
+x90 <- quantile(df.filt$z.x, 0.90, na.rm = TRUE)
+y90 <- quantile(df.filt$z.y, 0.90, na.rm = TRUE)
+
 df.filt.x <- df.filt %>% 
-  filter(z.y < 2.5)
+  filter(!(z.x >= x90 & z.y >= y90)) # Filter out points in the 90th quantile + for both x and y
 
 ###### Shoval et al triangular analysis ######
 
@@ -2560,8 +2567,12 @@ df.filt <- df %>%
 
 plot(z.y ~ z.x, data= df.filt) # look at the data 
 # Another high point in the upper right that will drive relationships here. 
+
+x90 <- quantile(df.filt$z.x, 0.90, na.rm = TRUE)
+y90 <- quantile(df.filt$z.y, 0.90, na.rm = TRUE)
+
 df.filt.x <- df.filt %>% 
-  filter(z.y < 1.795)
+  filter(!(z.x >= x90 & z.y >= y90)) # Filter out points in the 90th quantile + for both x and y
 
 ###### Shoval et al triangular analysis ######
 
@@ -6054,8 +6065,11 @@ df.filt <- df %>%
 plot(z.y ~ z.x, data= df.filt) # look at the data 
 # Not going to work. Point in the upper right
 
+x90 <- quantile(df.filt$z.x, 0.90, na.rm = TRUE)
+y90 <- quantile(df.filt$z.y, 0.90, na.rm = TRUE)
+
 df.filt.x <- df.filt %>% 
-  filter(z.x < 27.9)
+  filter(!(z.x >= x90 & z.y >= y90)) # Filter out points in the 90th quantile + for both x and y
 
 ###### Shoval et al triangular analysis ######
 
