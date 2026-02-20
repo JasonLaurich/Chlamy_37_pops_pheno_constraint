@@ -7508,3 +7508,29 @@ meta_cross_PF <- plot_grid(p.l3, p.ln3, p.lp3, p.lt3,
                            axis = "tblr")
 
 ggsave("figures-main/04_fig4_synthesis_comps.jpeg", meta_cross_PF, width = 18, height = 18)
+
+# Supplemental figure 11
+
+meta_cross_QR <- plot_grid(I.qr, LN.qr, LP.qr, LT.qr,
+                           NULL, N.qr, NP.qr, NT.qr,
+                           NULL, NULL, P.qr, PT.qr,
+                           legend_only, NULL, NULL, T.qr,
+                           ncol = 4,
+                           align = "hv",
+                           axis = "tblr")
+
+ggsave("figures-supplemental/11_figs11_synthesis_qr.jpeg", meta_cross_QR, width = 18, height = 18)
+
+# Supplemental figure 12
+
+meta_cross_QR_33 <- plot_grid(I.qr2, LN.qr2, LP.qr2, LT.qr2,
+                              NULL, N.qr2, NP.qr2, NT.qr2,
+                              NULL, NULL, P.qr2, PT.qr2,
+                              legend_only, NULL, NULL, T.qr2,
+                              ncol = 4,
+                              align = "hv",
+                              axis = "tblr")
+
+ggsave("figures-supplemental/12_figs12_synthesis_qr_33.jpeg", meta_cross_QR_33, width = 18, height = 18)
+
+
