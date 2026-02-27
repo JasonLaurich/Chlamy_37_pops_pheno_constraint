@@ -688,6 +688,61 @@ LP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
 
 LP.qr # Display the plot
 
+LP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q50)[1], slope = coef(q90)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), colour = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  
+  labs(x = expression("Competitive ability (1/" * italic(P) * "*)"),    
+       y = expression("Competitive ability (1/" * italic(I) * "*)"), 
+       color = "Evolutionary History",
+       title = "B — Light ~ Phosphorous") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "phos" = 16,
+               "light" = 16)  # filled circle
+  ) +
+  
+  ylim(0, 0.6) +
+  xlim(0, 6) +
+  
+  annotate(
+    "text",
+    x = 0 + 0.85 * (6 - 0),
+    y = 0 + 0.95 * (0.6 - 0),
+    label = "PF\nQR\nEvo",
+    hjust = 0,
+    vjust = 1,
+    size = 3.5,
+    fontface = "bold"
+  ) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "plain"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+LP.qp # Display the plot
+
 ###### 75th quantile PF testing ######
 
 n.75 <- df.filt %>% # Now calculate the number of light or phos points above the 75th % quantile Pareto front. 

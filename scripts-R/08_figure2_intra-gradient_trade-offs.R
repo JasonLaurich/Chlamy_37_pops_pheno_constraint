@@ -286,6 +286,47 @@ T.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
 
 T.qr # Display the plot
 
+T.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_abline(intercept = coef(q50)[1], slope = coef(q90)[2], lwd = 1.1, linetype = "dashed") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),  
+       y = "Thermal breadth (°C)", 
+       color = "Evolutionary History",
+       title = "E — Temperature") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("evolved" = 1,  # open circle
+               "ancestral" = 5)  # diamond
+  ) +
+  
+  ylim(14,22) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "plain"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+T.qp # Display the plot
+
 ###### 75th quantile PF testing ######
 
 # Cannot do for temperature data, as no populations evolved under temperature stress
