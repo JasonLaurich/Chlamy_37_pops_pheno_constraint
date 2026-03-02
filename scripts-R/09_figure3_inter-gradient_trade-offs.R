@@ -9,9 +9,9 @@
 # It will also generate Figure 3. 
 
 # Inputs: 27_summary_table.csv
-# Outputs: in figures-main : 03_fig3_inter-gradient_toffs.jpeg
+# Outputs: in figures-main : 03_fig_3_inter-gradient_toffs.jpeg
   # in figures-supp: 05_fig_s5_inter-gradient_qrs.jpeg, 06_fig_s6_inter-gradient_qrs_33.jpeg, 07_fig_s7_extra_inter-gradient_toffs.jpeg
-    # 08_fig_s8_extra_inter-gradient_toffs_qrs.jpeg, 09_fig_s9_extra_inter-gradient_toffs_qrs_33.jpeg
+    # 08_fig_s8_extra_inter-gradient_toffs_qrs.jpeg, 09_fig_s9_extra_inter-gradient_toffs_qrs_33.jpeg, figures-supplemental/11_fig_s11_inter-gradient_toffs.jpeg
   # in figures-misc: 02_fig3_inter-gradient_toffs_33.jpeg, 03_fig_s7_extra_inter-gradient_toffs_33.jpeg
 
 # Packages & functions ----------------------------------------------------
@@ -169,7 +169,7 @@ LN.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -276,12 +276,56 @@ LN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LN.qr # Display the plot
+
+LN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
+  
+  labs(x = "Competitive ability (1/N*)",    
+       y = "Competitive ability (1/I*)", 
+       color = "Evolutionary History",
+       title = "A — Light ~ Nitrogen") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "nit" = 16,
+               "light" = 16)  # filled circle
+  ) +
+  
+  ylim(0, 0.6) +
+  xlim(0, 1.35) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "plain"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+LN.qp  # Display the plot
 
 ###### 75th quantile PF testing ######
 
@@ -364,7 +408,7 @@ LN.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -454,7 +498,7 @@ LN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -560,21 +604,10 @@ LP.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   ylim(0, 0.6) +
   xlim(0, 6) +
   
-  annotate(
-    "text",
-    x = 0 + 0.85 * (6 - 0),
-    y = 0 + 0.95 * (0.6 - 0),
-    label = "PF\nQR\nEvo",
-    hjust = 0,
-    vjust = 1,
-    size = 3.5,
-    fontface = "bold"
-  ) +
-  
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -681,7 +714,7 @@ LP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -691,11 +724,11 @@ LP.qr # Display the plot
 LP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q50)[1], slope = coef(q90)[2], lwd = 1.1, linetype = "dashed", colour = "black") +
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), colour = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
   
-  labs(x = expression("Competitive ability (1/" * italic(P) * "*)"),    
-       y = expression("Competitive ability (1/" * italic(I) * "*)"), 
+  labs(x = "Competitive ability (1/P*)",    
+       y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
        title = "B — Light ~ Phosphorous") +  # labels
   
@@ -741,7 +774,7 @@ LP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
-LP.qp # Display the plot
+LP.qp  # Display the plot
 
 ###### 75th quantile PF testing ######
 
@@ -824,7 +857,7 @@ LP.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -914,7 +947,7 @@ LP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -1020,21 +1053,10 @@ LS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   ylim(0, 0.6) +
   xlim(1, 9.5) +
   
-  annotate(
-    "text",
-    x = 1 + 0.85 * (9.5 - 1),
-    y = 0 + 0.95 * (0.6 - 0),
-    label = "QR\nEvo",
-    hjust = 0,
-    vjust = 1,
-    size = 3.5,
-    fontface = "bold"
-  ) +
-  
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -1141,12 +1163,67 @@ LS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LS.qr # Display the plot
+
+LS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  
+  labs(x = "Salt tolerance (c)",    
+       y = "Competitive ability (1/I*)", 
+       color = "Evolutionary History",
+       title = "C — Light ~ Salt") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "salt" = 16,
+               "light" = 16)  # filled circle
+  ) +
+  
+  ylim(0, 0.6) +
+  xlim(1, 9.5) +
+  
+  annotate(
+    "text",
+    x = 1 + 0.85 * (9.5 - 1),
+    y = 0 + 0.95 * (0.6 - 0),
+    label = "QR\nEvo",
+    hjust = 0,
+    vjust = 1,
+    size = 3.5,
+    fontface = "bold"
+  ) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "plain"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+LS.qp # Display the plot
 
 ###### 75th quantile PF testing ######
 
@@ -1229,7 +1306,7 @@ LS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -1319,7 +1396,7 @@ LS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -1424,21 +1501,10 @@ LT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   ylim(0, 0.6) +
   xlim(14, 22) +
   
-  annotate(
-    "text",
-    x = 14 + 0.85 * (22 - 14),
-    y = 0 + 0.95 * (0.6 - 0),
-    label = "PF\nQR",
-    hjust = 0,
-    vjust = 1,
-    size = 3.5,
-    fontface = "bold"
-  ) +
-  
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -1544,12 +1610,66 @@ LT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LT.qr # Display the plot
+
+LT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour ="grey75") +
+  
+  labs(x = "Thermal breadth (°C)",    
+       y = "Competitive ability (1/I*)", 
+       color = "Evolutionary History",
+       title = "D — Light ~ Temperature") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "light" = 16)  # filled circle
+  ) +
+  
+  ylim(0, 0.6) +
+  xlim(14, 22) +
+  
+  annotate(
+    "text",
+    x = 14 + 0.85 * (22 - 14),
+    y = 0 + 0.95 * (0.6 - 0),
+    label = "PF\nQR",
+    hjust = 0,
+    vjust = 1,
+    size = 3.5,
+    fontface = "bold"
+  ) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "plain"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+LT.qp  # Display the plot
 
 ###### 75th quantile PF testing ######
 
@@ -1631,7 +1751,7 @@ LT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -1720,7 +1840,7 @@ LT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -1828,21 +1948,10 @@ NP.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   ylim(0, 1.35) +
   xlim(0, 6) +
   
-  annotate(
-    "text",
-    x = 0 + 0.85 * (6 - 0),
-    y = 0 + 0.95 * (1.35 - 0),
-    label = "PF\nEvo",
-    hjust = 0,
-    vjust = 1,
-    size = 3.5,
-    fontface = "bold"
-  ) +
-  
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -1949,12 +2058,67 @@ NP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NP.qr # Display the plot
+
+NP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
+  
+  labs(x = "Competitive ability (1/P*)",    
+       y = "Competitive ability (1/N*)", 
+       color = "Evolutionary History",
+       title = "E — Nitrogen ~ Phosphorous") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "phos" = 16,
+               "nit" = 16)  # filled circle
+  ) +
+  
+  ylim(0, 1.35) +
+  xlim(0, 6) +
+  
+  annotate(
+    "text",
+    x = 0 + 0.85 * (6 - 0),
+    y = 0 + 0.95 * (1.35 - 0),
+    label = "PF\nEvo",
+    hjust = 0,
+    vjust = 1,
+    size = 3.5,
+    fontface = "bold"
+  ) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "plain"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+NP.qp  # Display the plot
 
 ###### 75th quantile PF testing ######
 
@@ -2037,7 +2201,7 @@ NP.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -2127,7 +2291,7 @@ NP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -2233,21 +2397,10 @@ NS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   ylim(0, 1.35) +
   xlim(1, 9.5) +
   
-  annotate(
-    "text",
-    x = 1 + 0.85 * (9.5 - 1),
-    y = 0 + 0.95 * (1.35 - 0),
-    label = "PF\nQR\nEvo",
-    hjust = 0,
-    vjust = 1,
-    size = 3.5,
-    fontface = "bold"
-  ) +
-  
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -2354,12 +2507,67 @@ NS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NS.qr # Display the plot
+
+NS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
+  
+  labs(x = "Salt tolerance (c)",    
+       y = "Competitive ability (1/N*)", 
+       color = "Evolutionary History",
+       title = "F — Nitrogen ~ Salt") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "salt" = 16,
+               "nit" = 16)  # filled circle
+  ) +
+  
+  ylim(0, 1.35) +
+  xlim(1, 9.5) +
+  
+  annotate(
+    "text",
+    x = 1 + 0.85 * (9.5 - 1),
+    y = 0 + 0.95 * (1.35 - 0),
+    label = "PF\nQR\nEvo",
+    hjust = 0,
+    vjust = 1,
+    size = 3.5,
+    fontface = "bold"
+  ) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "plain"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+NS.qp  # Display the plot
 
 ###### 75th quantile PF testing ######
 
@@ -2442,7 +2650,7 @@ NS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -2532,7 +2740,7 @@ NS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -2637,21 +2845,10 @@ NT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   ylim(0, 1.35) +
   xlim(14, 22) +
   
-  annotate(
-    "text",
-    x = 14 + 0.85 * (22 - 14),
-    y = 0 + 0.95 * (1.35 - 0),
-    label = "QR\nEvo",
-    hjust = 0,
-    vjust = 1,
-    size = 3.5,
-    fontface = "bold"
-  ) +
-  
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -2757,12 +2954,66 @@ NT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NT.qr # Display the plot
+
+NT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  
+  labs(x = "Thermal breadth  (°C)",    
+       y = "Competitive ability (1/N*)", 
+       color = "Evolutionary History",
+       title = "G — Nitrogen ~ Temperature") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "nit" = 16)  # filled circle
+  ) +
+  
+  ylim(0, 1.35) +
+  xlim(14, 22) +
+  
+  annotate(
+    "text",
+    x = 14 + 0.85 * (22 - 14),
+    y = 0 + 0.95 * (1.35 - 0),
+    label = "QR\nEvo",
+    hjust = 0,
+    vjust = 1,
+    size = 3.5,
+    fontface = "bold"
+  ) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "plain"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+NT.qp  # Display the plot
 
 ###### 75th quantile PF testing ######
 
@@ -2844,7 +3095,7 @@ NT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -2933,7 +3184,7 @@ NT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -3041,21 +3292,10 @@ PS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   ylim(0, 6) +
   xlim(1, 9.5) +
   
-  annotate(
-    "text",
-    x = 1 + 0.85 * (9.5 - 1),
-    y = 0 + 0.95 * (6 - 0),
-    label = "PF\nQR\nEvo",
-    hjust = 0,
-    vjust = 1,
-    size = 3.5,
-    fontface = "bold"
-  ) +
-  
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -3162,12 +3402,67 @@ PS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PS.qr # Display the plot
+
+PS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  
+  labs(x = "Salt tolerance (c)",    
+       y = "Competitive ability (1/P*)", 
+       color = "Evolutionary History",
+       title = "H — Phosphorous ~ Salt") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "salt" = 16,
+               "phos" = 16)  # filled circle
+  ) +
+  
+  ylim(0, 6) +
+  xlim(1, 9.5) +
+  
+  annotate(
+    "text",
+    x = 1 + 0.85 * (9.5 - 1),
+    y = 0 + 0.95 * (6 - 0),
+    label = "PF\nQR\nEvo",
+    hjust = 0,
+    vjust = 1,
+    size = 3.5,
+    fontface = "bold"
+  ) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "plain"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PS.qp  # Display the plot
 
 ###### 75th quantile PF testing ######
 
@@ -3250,7 +3545,7 @@ PS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -3340,7 +3635,7 @@ PS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -3444,21 +3739,10 @@ PT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   ylim(0, 6) +
   xlim(14, 22) +
   
-  annotate(
-    "text",
-    x = 14 + 0.85 * (22 - 14),
-    y = 0 + 0.95 * (6 - 0),
-    label = "QR",
-    hjust = 0,
-    vjust = 1,
-    size = 3.5,
-    fontface = "bold"
-  ) +
-  
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -3564,12 +3848,66 @@ PT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PT.qr # Display the plot
+
+PT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
+  
+  labs(x = "Thermal breadth  (°C)",    
+       y = "Competitive ability (1/P*)", 
+       color = "Evolutionary History",
+       title = "I — Phosphorous ~ Temperature") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "phos" = 16)  # filled circle
+  ) +
+  
+  ylim(0, 6) +
+  xlim(14, 22) +
+  
+  annotate(
+    "text",
+    x = 14 + 0.85 * (22 - 14),
+    y = 0 + 0.95 * (6 - 0),
+    label = "QR",
+    hjust = 0,
+    vjust = 1,
+    size = 3.5,
+    fontface = "bold"
+  ) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "plain"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+PT.qp  # Display the plot
 
 ###### 75th quantile PF testing ######
 
@@ -3651,7 +3989,7 @@ PT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -3740,7 +4078,7 @@ PT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -3847,21 +4185,10 @@ ST.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   ylim(1, 9.5) +
   xlim(14, 22) +
   
-  annotate(
-    "text",
-    x = 14 + 0.85 * (22 - 14),
-    y = 1 + 0.95 * (9.5 - 1),
-    label = "PF\nQR\nEvo",
-    hjust = 0,
-    vjust = 1,
-    size = 3.5,
-    fontface = "bold"
-  ) +
-  
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -3967,12 +4294,67 @@ ST.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
 ST.qr # Display the plot
+
+ST.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
+  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  
+  labs(x = "Thermal breadth  (°C)",    
+       y = "Salt tolerance (c)", 
+       color = "Evolutionary History",
+       title = "J — Salt ~ Temperature") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_shape_manual(
+    name = "Evolutionary status",
+    values = c("other" = 1,  # open circle
+               "ancestral" = 5, # diamond
+               "salt" = 16)  # filled circle
+  ) +
+  
+  ylim(1, 9.5) +
+  xlim(14, 22) +
+  
+  annotate(
+    "text",
+    x = 14 + 0.85 * (22 - 14),
+    y = 1 + 0.95 * (9.5 - 1),
+    label = "PF\nQR\nEvo",
+    hjust = 0,
+    vjust = 1,
+    size = 3.5,
+    fontface = "bold"
+  ) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 12, face = "plain"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+ST.qp  # Display the plot
+
 
 ###### 75th quantile PF testing ######
 
@@ -4054,7 +4436,7 @@ ST.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -4143,7 +4525,7 @@ ST.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -4202,7 +4584,7 @@ full_toffs <- plot_grid(
   axis = "tblr"
 )
 
-ggsave("figures-main/03_fig3_inter-gradient_toffs.jpeg", full_toffs, width = 15, height = 15)
+ggsave("figures-supplemental/11_fig_s11_inter-gradient_toffs.jpeg", full_toffs, width = 15, height = 15)
 
 full_toffs2 <- plot_grid(
   LN.scam.PF2, LP.scam.PF2, LS.scam.PF2, LT.scam.PF2,
@@ -4281,6 +4663,65 @@ full_qrs2 <- plot_grid(
 )
 
 ggsave("figures-supplemental/06_fig_s6_inter-gradient_qrs_33.jpeg", full_qrs2, width = 15, height = 15)
+
+###### Figure 3 ######
+
+legend_df3 <- data.frame(
+  x = c(1, 2, 1, 2, 1, 2, 1, 2),
+  y = c(1, 1, 2, 2, 1, 1, 2, 2),
+  Group = factor(c("Ancestral", "Other", "Matching", "Matching", "Ancestral", "Other", "Matching", "Matching")),
+  Group2 = factor(c("Biotic depletion", "Biotic depletion x Salt", "Control", "Light limitation", "Nitrogen limitation", "Ancestral", "Phosphorous limitation", "Salt stress")),
+  LineType = factor(c("Pareto front", "50th quantile regression", "Pareto front", "50th quantile regression", "Pareto front", "50th quantile regression", "Pareto front", "50th quantile regression"))
+)
+
+legend_plot3 <- ggplot(legend_df3, aes(x = x, y = y)) +
+  geom_point(aes(shape = Group, colour = Group2), size = 3, stroke = 1.5) +
+  geom_line(aes(linetype = LineType), size = 1) +
+  scale_shape_manual(name = NULL,
+                     values = c("Ancestral" = 5, 
+                                "Other" = 1, 
+                                "Matching" = 16)) +
+  
+  scale_color_manual(
+    values = c("Biotic depletion" = "darkorange",
+               "Biotic depletion x Salt" = "deepskyblue1",
+               "Control" = "forestgreen",
+               "Light limitation" = "gold",
+               "Nitrogen limitation" = "magenta3",
+               "Ancestral" = "black",
+               "Phosphorous limitation" = "firebrick",  
+               "Salt stress" = "blue")
+  ) +
+  
+  scale_linetype_manual(
+    name = expression("Line fit type"),
+    values = c("Pareto front" = "solid",
+               "50th quantile regression" = "dashed"),
+    labels = c("Pareto front" = "Pareto front",
+               "50th quantile regression" = expression(paste("Quantile regression (", tau, " = 0.5)")))
+  ) +
+  
+  theme_void() +
+  theme(
+    legend.title = element_text(size = 12, face = "bold"),
+    legend.text = element_text(size = 12),
+    legend.key.size = unit(1.2, "lines")
+  )
+
+
+legend_only3 <- get_legend(legend_plot3)
+
+full_qps <- plot_grid(
+  LN.qp, LP.qp, LS.qp, LT.qp,
+  NULL, NP.qp, NS.qp, NT.qp,
+  legend_only3, NULL, PS.qp, PT.qp,
+  NULL, NULL, NULL, ST.qp,
+  ncol = 4,
+  align = "hv",
+  axis = "tblr"
+)
+
+ggsave("figures-main/03_fig_3_inter-gradient_toffs.jpeg", full_qps, width = 15, height = 15)
 
 # Supplementary figure? Other traits and ecological parameters ------------
 
