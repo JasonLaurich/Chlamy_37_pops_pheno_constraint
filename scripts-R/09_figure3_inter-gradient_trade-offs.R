@@ -691,7 +691,7 @@ LP.qr # Display the plot
 LP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q50)[1], slope = coef(q90)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q90)[2], lwd = 1.1, linetype = "dashed", colour = "black") +
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), colour = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   
   labs(x = expression("Competitive ability (1/" * italic(P) * "*)"),    
