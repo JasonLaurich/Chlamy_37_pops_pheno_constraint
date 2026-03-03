@@ -103,7 +103,7 @@ p.t1 <- ggplot(df.t.mu[df.t.mu$rep.id == "2.E04",], aes(x = temp, y = µ)) +
   theme_classic() +
   theme(
     legend.position = "none",  # delete legend
-    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.title = element_text(size = 12, face = "plain"),  # Bold & larger axis titles
     axis.text = element_text(size = 10),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
   ) +
@@ -114,8 +114,8 @@ p.t1 <- ggplot(df.t.mu[df.t.mu$rep.id == "2.E04",], aes(x = temp, y = µ)) +
                linetype = "dashed", colour = "black", size = 1.2) +
   
   
-  annotate("text", x = t.tpc$T.opt - 5, y = t.tpc$T.µ.max + 0.15, label = "µ max", size = 4.5, fontface = "bold") +
-  annotate("text", x = t.tpc$T.opt - 2.5, y = t.tpc$T.µ.max/2 + 0.25 , label = "Thermal breadth", size = 4.5, fontface = "bold")
+  annotate("text", x = t.tpc$T.opt - 5, y = t.tpc$T.µ.max + 0.15, label = expression(italic(mu)[max]), size = 4.5, fontface = "plain") +
+  annotate("text", x = t.tpc$T.opt - 2.5, y = t.tpc$T.µ.max/2 + 0.25 , label = "Thermal breadth", size = 4.5, fontface = "plain")
 
 p.t1
 
@@ -152,7 +152,7 @@ p.t2 <- ggplot(df.t.mu[df.t.mu$unique.id == "2.E04",], aes(x = temp, y = µ, col
   theme_classic() +
   theme(
     legend.position = "none",  # delete legend
-    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.title = element_text(size = 12, face = "plain"),  # Bold & larger axis titles
     axis.text = element_text(size = 10),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
   ) 
@@ -165,14 +165,14 @@ p.t3 <- ggplot(df[df$rep.ID %in% c("2.E04", "4.B03", "27.C07"),], aes(x = T.µ.m
   geom_point(size=4.5) +
   scale_colour_manual(values = c("forestgreen", "darkorange", "magenta2")) +
   
-  labs(x = "Maximum exponential growth rate (µ max)", 
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"), 
        y = "Thermal breadth (°C)",
        title = "C - Temperature") +
   
   theme_classic() +
   theme(
     legend.position = "none",  # delete legend
-    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.title = element_text(size = 12, face = "plain"),  # Bold & larger axis titles
     axis.text = element_text(size = 10),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
   ) 
@@ -207,7 +207,7 @@ p.p1 <- ggplot(df.p.mu[df.p.mu$rep.id == "32.D07",], aes(x = phos, y = µ)) +
   theme_classic() +
   theme(
     legend.position = "none",  # delete legend
-    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.title = element_text(size = 12, face = "plain"),  # Bold & larger axis titles
     axis.text = element_text(size = 10),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
   ) +
@@ -218,8 +218,8 @@ p.p1 <- ggplot(df.p.mu[df.p.mu$rep.id == "32.D07",], aes(x = phos, y = µ)) +
                linetype = "dashed", colour = "black", size = 1.2) +
   
   
-  annotate("text", x = 25, y = p.monod$P.µ.max + 0.1, label = "µ max", size = 4.5, fontface = "bold") +
-  annotate("text", x = 1/p.monod$P.comp + 2, y = 0.28, label = "P*", size = 4.5, fontface = "bold")
+  annotate("text", x = 25, y = p.monod$P.µ.max + 0.1, label = expression(italic(mu)[max]), size = 4.5, fontface = "plain") +
+  annotate("text", x = 1/p.monod$P.comp + 2, y = 0.28, label = "P*", size = 4.5, fontface = "plain")
 
 p.p1
 
@@ -256,7 +256,7 @@ p.p2 <- ggplot(df.p.mu[df.p.mu$rep.id == "35.D07",], aes(x = phos, y = µ, colou
   theme_classic() +
   theme(
     legend.position = "none",  # delete legend
-    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.title = element_text(size = 12, face = "plain"),  # Bold & larger axis titles
     axis.text = element_text(size = 10),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
   ) 
@@ -269,14 +269,14 @@ p.p3 <- ggplot(df[df$rep.ID %in% c("22.D03", "35.D07", "32.D07"),], aes(x = P.µ
   geom_point(size=4.5) +
   scale_colour_manual(values = c("magenta2", "forestgreen", "darkorange")) +
   
-  labs(x = "Maximum exponential growth rate (µ max)", 
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/P*)",
        title = "F - Phosphorous") +
   
   theme_classic() +
   theme(
     legend.position = "none",  # delete legend
-    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.title = element_text(size = 12, face = "plain"),  # Bold & larger axis titles
     axis.text = element_text(size = 10),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
   ) 
@@ -312,7 +312,7 @@ p.s1 <- ggplot(df.s.mu[df.s.mu$population==10,], aes(x = salt, y = µ)) +
   theme_classic() +
   theme(
     legend.position = "none",  # delete legend
-    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.title = element_text(size = 12, face = "plain"),  # Bold & larger axis titles
     axis.text = element_text(size = 10),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
   ) +
@@ -323,8 +323,8 @@ p.s1 <- ggplot(df.s.mu[df.s.mu$population==10,], aes(x = salt, y = µ)) +
                linetype = "dashed", colour = "black", size = 1.2) +
   
   
-  annotate("text", x = 5, y = s.tol$S.µ.max[1] + 0.1, label = "µ max", size = 4.5, fontface = "bold") +
-  annotate("text", x = s.tol$S.c[1] - 1.5, y = s.tol$S.µ.max[1]/4, label = "Salt \n tolerance (c)", size = 4.5, fontface = "bold")
+  annotate("text", x = 5, y = s.tol$S.µ.max[1] + 0.1, label = expression(italic(mu)[max]), size = 4.5, fontface = "plain") +
+  annotate("text", x = s.tol$S.c[1] - 1.5, y = s.tol$S.µ.max[1]/4, label = "Salt \n tolerance (c)", size = 4.5, fontface = "plain")
 
 p.s1
 
@@ -360,7 +360,7 @@ p.s2 <- ggplot(df.s.mu[df.s.mu$population==10,], aes(x = salt, y = µ, colour = 
   theme_classic() +
   theme(
     legend.position = "none",  # delete legend
-    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.title = element_text(size = 12, face = "plain"),  # Bold & larger axis titles
     axis.text = element_text(size = 10),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
   ) 
@@ -373,14 +373,14 @@ p.s3 <- ggplot(df[df$population %in% c("1", "10", "15"),], aes(x = S.µ.max, y =
   geom_point(size=4.5) +
   scale_colour_manual(values = c("magenta2", "forestgreen", "darkorange")) +
   
-  labs(x = "Maximum exponential growth rate (µ max)", 
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"), 
        y = "Salt tolerance (c)",
        title = "I - Salt") +
   
   theme_classic() +
   theme(
     legend.position = "none",  # delete legend
-    axis.title = element_text(size = 12, face = "bold"),  # Bold & larger axis titles
+    axis.title = element_text(size = 12, face = "plain"),  # Bold & larger axis titles
     axis.text = element_text(size = 10),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
   ) 

@@ -5,7 +5,7 @@
 # Here I am going to going to run PCAs and RDAs on the experimental evolution Chlamydomonas reinhardtii data, and output some supplemental figures. 
 
 # Inputs: 27_summary_table.csv
-# Outputs: in figures-supplemental : 04_figs4_PCA.jpeg, 10_figs10_rdas.jpeg
+# Outputs: in figures-supplemental : 04_fig_s4_PCA.jpeg, 12_fig_s12_rdas.jpeg
 
 # Packages & Functions ----------------------------------------------------
 
@@ -94,14 +94,14 @@ loadings$metric <- factor(loadings$variable,
                                      "P.comp", "P.µ.max", "S.µ.max", "S.c", "chl.a", "chl.b", "luthein",
                                      "mean.N.µg.l", "mean.P.µg.l", "bio.vol"),
                           labels = c("Thermal~breadth",
-                                     "mu~max~(T)", 
+                                     "italic(mu)[max]~(T)", 
                                      "1/I^\"*\"", 
-                                     "mu~max~(I)",
+                                     "italic(mu)[max]~(I)",
                                      "1/N^\"*\"", 
-                                     "mu~max~(N)",
+                                     "italic(mu)[max]~(N)",
                                      "1/P^\"*\"", 
-                                     "mu~max~(P)", 
-                                     "mu~max~(Salt)", 
+                                     "italic(mu)[max]~(P)", 
+                                     "italic(mu)[max]~(Salt)", 
                                      "Salt~tolerance",
                                      "Chlorophyll~italic(a)",
                                      "Chlorophyll~italic(b)",
@@ -145,12 +145,12 @@ pca_plot_arrows <- ggplot(df.pca.res, aes(x = PC1, y = PC2, color = Evolution)) 
   theme(legend.position = c(0.8, 0.8),
         legend.title = element_text(size = 12, face = "bold"),
         legend.text  = element_text(size = 12, face = "plain"),
-        axis.title.x = element_text(size = 12, face = "bold"),
-        axis.title.y = element_text(size = 12, face = "bold")) 
+        axis.title.x = element_text(size = 12, face = "plain"),
+        axis.title.y = element_text(size = 12, face = "plain")) 
 
 pca_plot_arrows
 
-ggsave("figures-supplemental/04_figs4_PCA.jpeg", pca_plot_arrows, width = 12, height = 9)
+ggsave("figures-supplemental/04_fig_s4_PCA.jpeg", pca_plot_arrows, width = 12, height = 9)
 
 ###### Evolutionary history RDA #######
 
@@ -232,8 +232,8 @@ rda_evol_plot_arrows <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, color = E
   theme(legend.position = "none",
         legend.title = element_text(size = 12, face = "bold"),
         legend.text  = element_text(size = 12, face = "plain"),
-        axis.title.x = element_text(size = 12, face = "bold"),
-        axis.title.y = element_text(size = 12, face = "bold"),
+        axis.title.x = element_text(size = 12, face = "plain"),
+        axis.title.y = element_text(size = 12, face = "plain"),
         plot.title = element_text(size = 14, face = "bold", hjust = 0.03)) 
 
 rda_evol_plot_arrows # Biovolume, N and P content is skewing everything. 
@@ -308,8 +308,8 @@ rda_evol_plot_arrows_no_NP <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, col
   geom_text(data = rda_species_evol, aes(x = var.x, y = var.y, label = metric),
             vjust = 1, hjust = 1, color = "black", size = 5, parse = T) +
   theme(legend.position = "none",
-        axis.title.x = element_text(size = 12, face = "bold"),
-        axis.title.y = element_text(size = 12, face = "bold"),
+        axis.title.x = element_text(size = 12, face = "plain"),
+        axis.title.y = element_text(size = 12, face = "plain"),
         plot.title = element_text(size = 14, face = "bold", hjust = 0.03))
 
 rda_evol_plot_arrows_no_NP
@@ -395,8 +395,8 @@ rda_anc_plot_arrows <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color = Anc
   theme(legend.position= "none",
         legend.title = element_text(size = 12, face = "bold"),
         legend.text  = element_text(size = 12, face = "plain"),
-        axis.title.x = element_text(size = 12, face = "bold"),
-        axis.title.y = element_text(size = 12, face = "bold"),
+        axis.title.x = element_text(size = 12, face = "plain"),
+        axis.title.y = element_text(size = 12, face = "plain"),
         plot.title = element_text(size = 14, face = "bold", hjust = 0.03))
 
 rda_anc_plot_arrows # Again, N and P are skewing everything
@@ -428,7 +428,7 @@ rda_species_anc$metric <- factor(rownames(rda_species_anc),
                                  levels = c("T.br", "T.µ.max","I.comp", "I.µ.max", "N.comp", "N.µ.max",
                                             "P.comp", "P.µ.max", "S.µ.max", "S.c", "chl.a", "chl.b", "luthein"),
                                  labels = c(" ", 
-                                            "mu~max~(T)", 
+                                            "italic(mu)[max]~(T)", 
                                             " ", 
                                             " ", 
                                             " ", 
@@ -471,8 +471,8 @@ rda_anc_plot_arrows_no_NP <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color
   geom_text(data = rda_species_anc, aes(x = var.x, y = var.y, label = metric),
             vjust = 1, hjust = 1, color = "black", size = 5, parse = T) +
   theme(legend.position = "none",
-        axis.title.x = element_text(size = 12, face = "bold"),
-        axis.title.y = element_text(size = 12, face = "bold"),
+        axis.title.x = element_text(size = 12, face = "plain"),
+        axis.title.y = element_text(size = 12, face = "plain"),
         plot.title = element_text(size = 14, face = "bold", hjust = 0.03))
 
 rda_anc_plot_arrows_no_NP 
@@ -538,4 +538,4 @@ rdas <- plot_grid(rda_evol_plot_arrows, rda_evol_plot_arrows_no_NP, evol_legend,
                   align= 'hv',
                   nrow = 2)
 
-ggsave("figures-supplemental/10_figs10_rdas.jpeg", rdas, width = 16, height = 8) # PDF was rendering weird
+ggsave("figures-supplemental/12_fig_s12_rdas.jpeg", rdas, width = 16, height = 8) # PDF was rendering weird
