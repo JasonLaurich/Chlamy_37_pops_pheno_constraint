@@ -56,7 +56,7 @@ p.A <- ggplot(df.A, aes(x = x, y = y)) +
   
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) +
@@ -107,7 +107,7 @@ p.B <- ggplot(df.B, aes(x = x, y = y)) +
   
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) +
@@ -176,7 +176,7 @@ p.C <- ggplot(df.C, aes(x = x, y = y)) +
   
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) +
@@ -222,7 +222,7 @@ p.D <- ggplot(df.D, aes(x = x, y = y)) +
   
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) +

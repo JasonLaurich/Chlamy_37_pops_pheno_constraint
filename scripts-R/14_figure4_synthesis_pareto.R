@@ -15,6 +15,7 @@
   # 29_Thomas_2012_TPCs.csv, 67a_light_metadata_sp.csv, 69_nit_metadata_sp.csv, 70_phos_metadata_sp.csv, 71_temp_metadata_sp.csv
 # Outputs: in processed-data : 67_light_metadata.csv, 69_nit_metadata.csv, 70_phos_metadata.csv, 71_temp_metadata.csv, 72_synthesis_metadata_sp_summary.csv
   # in figures-main : 04_fig4_synthesis_comps.jpeg
+  # in figures-supp : 13_fig_s13_synthesis_qr.jpeg, 14_fig_s14_synthesis_qr_33.jpeg, 15_fig_s15_synthesis_with_Laurich_2026_data.jpeg
 
 # Packages & functions ----------------------------------------------------
 
@@ -439,6 +440,11 @@ write.csv(df, "processed-data/72_synthesis_metadata_sp_summary.csv") # Summary
 
 # OK so now we will move on to performing the relevant analyses.
 
+###### Add in our data ######
+
+df.cr <- read.csv("processed-data/27_summary_table.csv") # Summary file
+head(df.cr)
+
 # Light v Light -------------------------------------------------------------------
 
 df.filt <- df.l %>% 
@@ -640,7 +646,7 @@ tri.poly <- data.frame(
 p.l <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
   geom_point(size = 2) +
   
-  labs(x = "Maximum exponential growth rate (µ max)",    
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),
        y = "Competitive ability (1/I*)", 
        title = "A — Light") +  # labels
   
@@ -678,7 +684,7 @@ p.l <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) 
@@ -955,6 +961,9 @@ I.scam  # Display the plot
 p.l3 <- p.l + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE)  # Adding scam PF fits
 p.l3
 
+p.l4 <- p.l3 + geom_point(data = df.cr, aes(x = I.µ.max, y = I.comp), size = 2, shape = 8, inherit.aes = FALSE)
+p.l4
+
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
 x.max <- max(df.filt$z.x) # Extract the max values for x and y.
@@ -1025,7 +1034,7 @@ I.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay 
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
   
-  labs(x = "Maximum exponential growth rate (µ max)",    
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),     
        y = "Competitive ability (1/I*)", 
        title = "A — Light") +  # labels
   
@@ -1043,7 +1052,7 @@ I.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -1063,7 +1072,7 @@ I.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll 
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Maximum exponential growth rate (µ max)",    
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"), 
        y = "Competitive ability (1/I*)", 
        title = "A — Light") +  # labels
   
@@ -1081,7 +1090,7 @@ I.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -1141,7 +1150,7 @@ I.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
   
-  labs(x = "Maximum exponential growth rate (µ max)",    
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),     
        y = "Competitive ability (1/I*)", 
        title = "A — Light") +  # labels
   
@@ -1159,7 +1168,7 @@ I.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -1372,7 +1381,7 @@ tri.poly <- data.frame(
 )
 
 p.ln <- ggplot(df.filt, aes(z.x, z.y)) +
-  geom_point(size = 2) +
+  geom_point(size = 2, colour = ) +
   
   labs(x = "Competitive ability (1/N*)",    
        y = "Competitive ability (1/I*)", 
@@ -1404,7 +1413,7 @@ p.ln <- ggplot(df.filt, aes(z.x, z.y)) +
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) 
@@ -1664,7 +1673,7 @@ LN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -1673,6 +1682,9 @@ LN.scam  # Display the plot
 
 p.ln3 <- p.ln  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE)  # Adding scam PF fits
 p.ln3
+
+p.ln4 <- p.ln3 + geom_point(data = df.cr, aes(x = N.comp, y = I.comp), size = 2, shape = 8, inherit.aes = FALSE)
+p.ln4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
@@ -1754,7 +1766,7 @@ LN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -1784,7 +1796,7 @@ LN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs o
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -1854,7 +1866,7 @@ LN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -2099,7 +2111,7 @@ p.lp <- ggplot(df.filt, aes(z.x, z.y)) +
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) 
@@ -2358,7 +2370,7 @@ LP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -2367,6 +2379,9 @@ LP.scam  # Display the plot
 
 p.lp3 <- p.lp  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) # Adding scam PF fits
 p.lp3
+
+p.lp4 <- p.lp3 + geom_point(data = df.cr, aes(x = P.comp, y = I.comp), size = 2, shape = 8, inherit.aes = FALSE)
+p.lp4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
@@ -2448,7 +2463,7 @@ LP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -2478,7 +2493,7 @@ LP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs o
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -2548,7 +2563,7 @@ LP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -2793,7 +2808,7 @@ p.lt <- ggplot(df.filt, aes(z.x, z.y)) +
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) 
@@ -3052,7 +3067,7 @@ LT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -3061,6 +3076,9 @@ LT.scam  # Display the plot
 
 p.lt3 <- p.lt  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) # Adding scam PF fits
 p.lt3
+
+p.lt4 <- p.lt3 + geom_point(data = df.cr, aes(x = T.br, y = I.comp), size = 2, shape = 8, inherit.aes = FALSE)
+p.lt4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
@@ -3142,7 +3160,7 @@ LT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -3171,7 +3189,7 @@ LT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs o
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -3240,7 +3258,7 @@ LT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -3448,7 +3466,7 @@ tri.poly <- data.frame(
 p.n <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
   geom_point(size = 2) +
   
-  labs(x = "Maximum exponential growth rate (µ max)", 
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"), 
        y = "Competitive ability (1/N*)", 
        title = "E — Nitrogen") +  # labels
   
@@ -3474,7 +3492,7 @@ p.n <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) 
@@ -3724,7 +3742,7 @@ N.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Maximum exponential growth rate (µ max)", 
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),
        y = "Competitive ability (1/N*)", 
        title = "E — Nitrogen") +  # labels
   
@@ -3741,15 +3759,18 @@ N.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
 N.scam  # Display the plot
 
-p.n3 <- p.n  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) # Adding scam PF fits
+p.n3 <- p.n  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) # Adding scam PF fits
 p.n3
+
+p.n4 <- p.n3 + geom_point(data = df.cr, aes(x = N.µ.max, y = N.comp), size = 2, shape = 8, inherit.aes = FALSE)
+p.n4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
@@ -3821,7 +3842,7 @@ N.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay 
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
   
-  labs(x = "Maximum exponential growth rate (µ max)", 
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"), 
        y = "Competitive ability (1/N*)", 
        title = "E — Nitrogen") +  # labels
   
@@ -3838,7 +3859,7 @@ N.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -3858,7 +3879,7 @@ N.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll 
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Maximum exponential growth rate (µ max)", 
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),
        y = "Competitive ability (1/N*)", 
        title = "E — Nitrogen") +  # labels
   
@@ -3875,7 +3896,7 @@ N.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -3935,7 +3956,7 @@ N.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
   
-  labs(x = "Maximum exponential growth rate (µ max)", 
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"), 
        y = "Competitive ability (1/N*)", 
        title = "E — Nitrogen") +  # labels
   
@@ -3952,7 +3973,7 @@ N.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -4179,7 +4200,7 @@ p.np <- ggplot(df.filt, aes(z.x, z.y)) +
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) 
@@ -4440,15 +4461,18 @@ NP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NP.scam  # Display the plot
 
-p.np3 <- p.np  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) # Adding scam PF fits
+p.np3 <- p.np  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) # Adding scam PF fits
 p.np3
+
+p.np4 <- p.np3 + geom_point(data = df.cr, aes(x = P.comp, y = N.comp), size = 2, shape = 8, inherit.aes = FALSE)
+p.np4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
@@ -4530,7 +4554,7 @@ NP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -4560,7 +4584,7 @@ NP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs o
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -4630,7 +4654,7 @@ NP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -4868,7 +4892,7 @@ p.nt <- ggplot(df.filt, aes(z.x, z.y)) +
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) 
@@ -5127,7 +5151,7 @@ NT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -5136,6 +5160,9 @@ NT.scam  # Display the plot
 
 p.nt3 <- p.nt  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) # Adding scam PF fits
 p.nt3
+
+p.nt4 <- p.nt3 + geom_point(data = df.cr, aes(x = T.br, y = N.comp), size = 2, shape = 8, inherit.aes = FALSE)
+p.nt4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
@@ -5217,7 +5244,7 @@ NT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -5247,7 +5274,7 @@ NT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs o
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -5317,7 +5344,7 @@ NT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -5525,7 +5552,7 @@ tri.poly <- data.frame(
 p.p <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
   geom_point(size = 2) +
   
-  labs(x = "Maximum exponential growth rate (µ max)", 
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/P*)", 
        title = "H — Phosphorous") +  # labels
   
@@ -5563,7 +5590,7 @@ p.p <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) 
@@ -5812,7 +5839,7 @@ P.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Maximum exponential growth rate (µ max)", 
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),  
        y = "Competitive ability (1/P*)", 
        title = "H — Phosphorous") +  # labels
   
@@ -5830,7 +5857,7 @@ P.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -5839,6 +5866,9 @@ P.scam  # Display the plot
 
 p.p3 <- p.p  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) # Adding scam PF fits
 p.p3
+
+p.p4 <- p.p3 + geom_point(data = df.cr, aes(x = P.µ.max, y = P.comp), size = 2, shape = 8, inherit.aes = FALSE)
+p.p4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
@@ -5910,7 +5940,7 @@ P.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay 
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
   
-  labs(x = "Maximum exponential growth rate (µ max)", 
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/P*)", 
        title = "H — Phosphorous") +  # labels
   
@@ -5928,7 +5958,7 @@ P.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -5948,7 +5978,7 @@ P.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll 
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Maximum exponential growth rate (µ max)", 
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/P*)", 
        title = "H — Phosphorous") +  # labels
   
@@ -5966,7 +5996,7 @@ P.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -6026,7 +6056,7 @@ P.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
   
-  labs(x = "Maximum exponential growth rate (µ max)", 
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/P*)", 
        title = "H — Phosphorous") +  # labels
   
@@ -6045,7 +6075,7 @@ P.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -6279,7 +6309,7 @@ p.pt <- ggplot(df.filt, aes(z.x, z.y)) +
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) 
@@ -6539,15 +6569,18 @@ PT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PT.scam  # Display the plot
 
-p.pt3 <- p.pt + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) # Adding scam PF fits
+p.pt3 <- p.pt + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) # Adding scam PF fits
 p.pt3
+
+p.pt4 <- p.pt3 + geom_point(data = df.cr, aes(x = T.br, y = P.comp), size = 2, shape = 8, inherit.aes = FALSE)
+p.pt4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
@@ -6629,7 +6662,7 @@ PT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -6659,7 +6692,7 @@ PT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs o
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -6729,7 +6762,7 @@ PT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -6937,7 +6970,7 @@ tri.poly <- data.frame(
 p.t <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
   geom_point(size = 2) +
   
-  labs(x = "Maximum exponential growth rate (µ max)", 
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),  
        y = "Thermal breadth (°C)", 
        title = "J — Temperature") +  # labels
   
@@ -6976,7 +7009,7 @@ p.t <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   ) 
@@ -7225,7 +7258,7 @@ T.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Maximum exponential growth rate (µ max)", 
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
        y = "Thermal breadth (°C)", 
        title = "J — Temperature") +  # labels
   
@@ -7244,7 +7277,7 @@ T.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -7253,6 +7286,9 @@ T.scam  # Display the plot
 
 p.t3 <- p.t  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) # Adding scam PF fits
 p.t3
+
+p.t4 <- p.t3 + geom_point(data = df.cr, aes(x = T.µ.max, y = T.br), size = 2, shape = 8, inherit.aes = FALSE)
+p.t4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
@@ -7324,7 +7360,7 @@ T.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay 
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
   
-  labs(x = "Maximum exponential growth rate (µ max)", 
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
        y = "Thermal breadth (°C)", 
        title = "J — Temperature") +  # labels
   
@@ -7343,7 +7379,7 @@ T.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -7363,7 +7399,7 @@ T.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll 
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Maximum exponential growth rate (µ max)", 
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
        y = "Thermal breadth (°C)", 
        title = "J — Temperature") +  # labels
   
@@ -7382,7 +7418,7 @@ T.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll 
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -7442,7 +7478,7 @@ T.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
   
-  labs(x = "Maximum exponential growth rate (µ max)", 
+  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
        y = "Thermal breadth (°C)", 
        title = "J — Temperature") +  # labels
   
@@ -7461,7 +7497,7 @@ T.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -7509,7 +7545,7 @@ meta_cross_PF <- plot_grid(p.l3, p.ln3, p.lp3, p.lt3,
 
 ggsave("figures-main/04_fig4_synthesis_comps.jpeg", meta_cross_PF, width = 18, height = 18)
 
-# Supplemental figure 11
+# Supplemental figure 13
 
 meta_cross_QR <- plot_grid(I.qr, LN.qr, LP.qr, LT.qr,
                            NULL, N.qr, NP.qr, NT.qr,
@@ -7519,9 +7555,9 @@ meta_cross_QR <- plot_grid(I.qr, LN.qr, LP.qr, LT.qr,
                            align = "hv",
                            axis = "tblr")
 
-ggsave("figures-supplemental/11_figs11_synthesis_qr.jpeg", meta_cross_QR, width = 18, height = 18)
+ggsave("figures-supplemental/13_fig_s13_synthesis_qr.jpeg", meta_cross_QR, width = 18, height = 18)
 
-# Supplemental figure 12
+# Supplemental figure 14
 
 meta_cross_QR_33 <- plot_grid(I.qr2, LN.qr2, LP.qr2, LT.qr2,
                               NULL, N.qr2, NP.qr2, NT.qr2,
@@ -7531,6 +7567,16 @@ meta_cross_QR_33 <- plot_grid(I.qr2, LN.qr2, LP.qr2, LT.qr2,
                               align = "hv",
                               axis = "tblr")
 
-ggsave("figures-supplemental/12_figs12_synthesis_qr_33.jpeg", meta_cross_QR_33, width = 18, height = 18)
+ggsave("figures-supplemental/14_fig_s14_synthesis_qr_33.jpeg", meta_cross_QR_33, width = 18, height = 18)
 
+# Supplemental figure 15
 
+meta_cross_ourdata <- plot_grid(p.l4, p.ln4, p.lp4, p.lt4,
+                                NULL, p.n4, p.np4, p.nt4,
+                                NULL, NULL, p.p4, p.pt4,
+                                legend_only, NULL, NULL, p.t4,
+                                ncol = 4,
+                                align = "hv",
+                                axis = "tblr")
+
+ggsave("figures-supplemental/15_fig_s15_synthesis_with_Laurich_2026_data.jpeg", meta_cross_ourdata, width = 18, height = 18)
