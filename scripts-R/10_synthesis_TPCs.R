@@ -23,7 +23,6 @@
 # Packages & functions ----------------------------------------------------
 
 library(tidyverse)
-library(dplyr)
 library(rTPC)
 library(nls.multstart)
 library(Deriv)

@@ -18,7 +18,6 @@
 # Packages & functions ----------------------------------------------------
 
 library(tidyverse)
-library(dplyr)
 library(Deriv)
 library(car)
 library(minpack.lm)
