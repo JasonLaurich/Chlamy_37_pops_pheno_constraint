@@ -569,7 +569,7 @@ I.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -675,7 +675,7 @@ I.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "bold"),  
+    axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -685,8 +685,8 @@ I.qr # Display the plot
 I.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
   
   labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),    
        y = "Competitive ability (1/I*)", 
@@ -2385,6 +2385,7 @@ legend_df3 <- data.frame(
 legend_plot3 <- ggplot(legend_df3, aes(x = x, y = y)) +
   geom_point(aes(shape = Group, colour = Group2), size = 3, stroke = 1.5) +
   geom_line(aes(linetype = LineType), size = 1) +
+  
   scale_shape_manual(name = NULL,
                      values = c("Ancestral" = 5, 
                                 "Other" = 1, 
@@ -2402,11 +2403,19 @@ legend_plot3 <- ggplot(legend_df3, aes(x = x, y = y)) +
   ) +
   
   scale_linetype_manual(
-    name = expression("Line fit type"),
+    name = "Line",
     values = c("Pareto front" = "solid",
                "50th quantile regression" = "dashed"),
     labels = c("Pareto front" = "Pareto front",
                "50th quantile regression" = expression(paste("Quantile regression (", tau, " = 0.5)")))
+  ) +
+  
+  labs(linetype = "Quantile regression", color = "Evolutionary context") +
+  
+  guides(
+    colour = guide_legend(order = 1),
+    shape = guide_legend(order = 2),
+    linetype = guide_legend(order = 3)
   ) +
   
   theme_void() +
@@ -2415,7 +2424,6 @@ legend_plot3 <- ggplot(legend_df3, aes(x = x, y = y)) +
     legend.text = element_text(size = 12),
     legend.key.size = unit(1.2, "lines")
   )
-
 
 legend_only3 <- get_legend(legend_plot3)
 

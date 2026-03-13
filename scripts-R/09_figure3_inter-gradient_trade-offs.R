@@ -4677,6 +4677,7 @@ legend_df3 <- data.frame(
 legend_plot3 <- ggplot(legend_df3, aes(x = x, y = y)) +
   geom_point(aes(shape = Group, colour = Group2), size = 3, stroke = 1.5) +
   geom_line(aes(linetype = LineType), size = 1) +
+  
   scale_shape_manual(name = NULL,
                      values = c("Ancestral" = 5, 
                                 "Other" = 1, 
@@ -4694,11 +4695,19 @@ legend_plot3 <- ggplot(legend_df3, aes(x = x, y = y)) +
   ) +
   
   scale_linetype_manual(
-    name = expression("Line fit type"),
+    name = "Line",
     values = c("Pareto front" = "solid",
                "50th quantile regression" = "dashed"),
     labels = c("Pareto front" = "Pareto front",
                "50th quantile regression" = expression(paste("Quantile regression (", tau, " = 0.5)")))
+  ) +
+  
+  labs(linetype = "Quantile regression", color = "Evolutionary context") +
+  
+  guides(
+    colour = guide_legend(order = 1),
+    shape = guide_legend(order = 2),
+    linetype = guide_legend(order = 3)
   ) +
   
   theme_void() +
@@ -4707,7 +4716,6 @@ legend_plot3 <- ggplot(legend_df3, aes(x = x, y = y)) +
     legend.text = element_text(size = 12),
     legend.key.size = unit(1.2, "lines")
   )
-
 
 legend_only3 <- get_legend(legend_plot3)
 
