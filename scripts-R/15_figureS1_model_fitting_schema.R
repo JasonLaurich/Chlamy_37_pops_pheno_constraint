@@ -90,9 +90,9 @@ p.t1 <- ggplot(df.t.mu[df.t.mu$rep.id == "2.E04",], aes(x = temp, y = µ)) +
   ylim(-2, 5) +
   xlim(0, 45) +
   
-  geom_line(data = curve.med, aes(x = res, y= rate), colour = "forestgreen", linewidth = 1) +
+  geom_line(data = curve.med, aes(x = res, y= rate), colour = "forestgreen", linewidth = 0.6) +
   
-  geom_jitter(size = 2.5,width = 0.5, height = 0) + # small horizontal shift 
+  geom_jitter(size = 1,width = 0.5, height = 0) + # small horizontal shift 
   
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray40", size = 0.6) +
   
@@ -105,17 +105,17 @@ p.t1 <- ggplot(df.t.mu[df.t.mu$rep.id == "2.E04",], aes(x = temp, y = µ)) +
     legend.position = "none",  # delete legend
     axis.title = element_text(size = 12, face = "plain"),  # Bold & larger axis titles
     axis.text = element_text(size = 10),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)
   ) +
   
-  geom_segment(aes(x = -Inf, xend = t.tpc$T.opt, y = t.tpc$T.µ.max - 0.1, yend = t.tpc$T.µ.max - 0.1), linetype = "dashed", colour = "black", size = 1.2) +
+  geom_segment(aes(x = -Inf, xend = t.tpc$T.opt, y = t.tpc$T.µ.max - 0.1, yend = t.tpc$T.µ.max - 0.1), linetype = "dashed", colour = "black", size = 0.6) +
   geom_segment(aes(x = t.tpc$T.br.min, xend = t.tpc$T.br.max, 
                    y = t.tpc$T.µ.max/2, yend = t.tpc$T.µ.max/2),
-               linetype = "dashed", colour = "black", size = 1.2) +
+               linetype = "dashed", colour = "black", size = 0.6) +
   
   
-  annotate("text", x = t.tpc$T.opt - 5, y = t.tpc$T.µ.max + 0.15, label = expression(italic(mu)[max]), size = 4.5, fontface = "plain") +
-  annotate("text", x = t.tpc$T.opt - 2.5, y = t.tpc$T.µ.max/2 + 0.25 , label = "Thermal breadth", size = 4.5, fontface = "plain")
+  annotate("text", x = t.tpc$T.opt - 5, y = t.tpc$T.µ.max + 0.15, label = expression(italic(mu)[max]), size = 3, fontface = "plain") +
+  annotate("text", x = t.tpc$T.opt - 2.5, y = t.tpc$T.µ.max/2 + 0.25 , label = "Thermal breadth", size = 3, fontface = "plain")
 
 p.t1
 
@@ -139,9 +139,9 @@ p.t2 <- ggplot(df.t.mu[df.t.mu$unique.id == "2.E04",], aes(x = temp, y = µ, col
   ylim(-2, 5) +
   xlim(0, 45) +
   
-  geom_line(data = curve.min, aes(x = res, y= rate), colour = "magenta2", size = 1) +
-  geom_line(data = curve.med, aes(x = res, y= rate), colour = "forestgreen", linewidth = 1) +
-  geom_line(data = curve.max, aes(x = res, y= rate), colour = "darkorange1", size = 1) +
+  geom_line(data = curve.min, aes(x = res, y= rate), colour = "magenta2", size = 0.6) +
+  geom_line(data = curve.med, aes(x = res, y= rate), colour = "forestgreen", size = 0.6) +
+  geom_line(data = curve.max, aes(x = res, y= rate), colour = "darkorange1", size = 0.6) +
   
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray40", size = 0.6) +
   
@@ -154,7 +154,7 @@ p.t2 <- ggplot(df.t.mu[df.t.mu$unique.id == "2.E04",], aes(x = temp, y = µ, col
     legend.position = "none",  # delete legend
     axis.title = element_text(size = 12, face = "plain"),  # Bold & larger axis titles
     axis.text = element_text(size = 10),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)
   ) 
 
 p.t2
@@ -162,10 +162,10 @@ p.t2
 # Panel C
 
 p.t3 <- ggplot(df[df$rep.ID %in% c("2.E04", "4.B03", "27.C07"),], aes(x = T.µ.max, y = T.br, colour = population)) +
-  geom_point(size=4.5) +
+  geom_point(size = 1.5) +
   scale_colour_manual(values = c("forestgreen", "darkorange", "magenta2")) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"), 
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"), 
        y = "Thermal breadth (°C)",
        title = "C - Temperature") +
   
@@ -174,7 +174,7 @@ p.t3 <- ggplot(df[df$rep.ID %in% c("2.E04", "4.B03", "27.C07"),], aes(x = T.µ.m
     legend.position = "none",  # delete legend
     axis.title = element_text(size = 12, face = "plain"),  # Bold & larger axis titles
     axis.text = element_text(size = 10),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)
   ) 
 
 p.t3
@@ -194,9 +194,9 @@ p.p1 <- ggplot(df.p.mu[df.p.mu$rep.id == "32.D07",], aes(x = phos, y = µ)) +
   scale_colour_manual(values = c("forestgreen")) +
   ylim(-0.2, 1.7) +
   
-  geom_line(data = curve.med.p, aes(x = res, y= rate), colour = "forestgreen", linewidth = 1) +
+  geom_line(data = curve.med.p, aes(x = res, y= rate), colour = "forestgreen", size = 0.6) +
   
-  geom_jitter(size = 2.5,width = 0.5, height = 0) + # small horizontal shift 
+  geom_jitter(size = 1,width = 0.5, height = 0) + # small horizontal shift 
   
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray40", size = 0.6) +
   
@@ -209,17 +209,17 @@ p.p1 <- ggplot(df.p.mu[df.p.mu$rep.id == "32.D07",], aes(x = phos, y = µ)) +
     legend.position = "none",  # delete legend
     axis.title = element_text(size = 12, face = "plain"),  # Bold & larger axis titles
     axis.text = element_text(size = 10),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)
   ) +
   
-  geom_segment(aes(x = -Inf, xend = 50, y = p.monod$P.µ.max, yend = p.monod$P.µ.max), linetype = "dashed", colour = "black", size = 1.2) +
+  geom_segment(aes(x = -Inf, xend = 50, y = p.monod$P.µ.max, yend = p.monod$P.µ.max), linetype = "dashed", colour = "black", size = 0.6) +
   geom_segment(aes(x = 1/p.monod$P.comp, xend = 1/p.monod$P.comp, 
                    y = 0, yend = 0.56),
-               linetype = "dashed", colour = "black", size = 1.2) +
+               linetype = "dashed", colour = "black", size = 0.6) +
   
   
-  annotate("text", x = 25, y = p.monod$P.µ.max + 0.1, label = expression(italic(mu)[max]), size = 4.5, fontface = "plain") +
-  annotate("text", x = 1/p.monod$P.comp + 2, y = 0.28, label = "P*", size = 4.5, fontface = "plain")
+  annotate("text", x = 25, y = p.monod$P.µ.max + 0.1, label = expression(italic(mu)[max]), size = 3, fontface = "plain") +
+  annotate("text", x = 1/p.monod$P.comp + 2, y = 0.28, label = "P*", size = 3, fontface = "plain")
 
 p.p1
 
@@ -243,9 +243,9 @@ p.p2 <- ggplot(df.p.mu[df.p.mu$rep.id == "35.D07",], aes(x = phos, y = µ, colou
   
   ylim(-0.2, 1.7) +
   
-  geom_line(data = curve.min.p, aes(x = res, y= rate), colour = "magenta2", size = 1) +
-  geom_line(data = curve.med.p, aes(x = res, y= rate), colour = "forestgreen", linewidth = 1) +
-  geom_line(data = curve.max.p, aes(x = res, y= rate), colour = "darkorange1", size = 1) +
+  geom_line(data = curve.min.p, aes(x = res, y= rate), colour = "magenta2", size = 0.6) +
+  geom_line(data = curve.med.p, aes(x = res, y= rate), colour = "forestgreen", size = 0.6) +
+  geom_line(data = curve.max.p, aes(x = res, y= rate), colour = "darkorange1", size = 0.6) +
   
   labs(x = "Phosphorous concentration (µM)", 
        y = "Exponential growth rate (µ)",
@@ -258,7 +258,7 @@ p.p2 <- ggplot(df.p.mu[df.p.mu$rep.id == "35.D07",], aes(x = phos, y = µ, colou
     legend.position = "none",  # delete legend
     axis.title = element_text(size = 12, face = "plain"),  # Bold & larger axis titles
     axis.text = element_text(size = 10),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)
   ) 
 
 p.p2
@@ -266,10 +266,10 @@ p.p2
 # Panel F
 
 p.p3 <- ggplot(df[df$rep.ID %in% c("22.D03", "35.D07", "32.D07"),], aes(x = P.µ.max, y = P.comp, colour = population)) +
-  geom_point(size=4.5) +
+  geom_point(size=1.5) +
   scale_colour_manual(values = c("magenta2", "forestgreen", "darkorange")) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/P*)",
        title = "F - Phosphorous") +
   
@@ -278,7 +278,7 @@ p.p3 <- ggplot(df[df$rep.ID %in% c("22.D03", "35.D07", "32.D07"),], aes(x = P.µ
     legend.position = "none",  # delete legend
     axis.title = element_text(size = 12, face = "plain"),  # Bold & larger axis titles
     axis.text = element_text(size = 10),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)
   ) 
 
 p.p3
@@ -299,9 +299,9 @@ p.s1 <- ggplot(df.s.mu[df.s.mu$population==10,], aes(x = salt, y = µ)) +
   scale_colour_manual(values = c("forestgreen")) +
   ylim(-0.2, 1.7) +
   
-  geom_line(data = curve.s, aes(x = salt, y= rate), colour = "forestgreen", size = 1) +
+  geom_line(data = curve.s, aes(x = salt, y= rate), colour = "forestgreen", size = 0.6) +
   
-  geom_jitter(size = 2.5,width = 0.5, height = 0) + # small horizontal shift 
+  geom_jitter(size = 1,width = 0.5, height = 0) + # small horizontal shift 
   
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray40", size = 0.6) +
   
@@ -314,17 +314,17 @@ p.s1 <- ggplot(df.s.mu[df.s.mu$population==10,], aes(x = salt, y = µ)) +
     legend.position = "none",  # delete legend
     axis.title = element_text(size = 12, face = "plain"),  # Bold & larger axis titles
     axis.text = element_text(size = 10),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)
   ) +
   
-  geom_segment(aes(x = -Inf, xend = 10, y = s.tol$S.µ.max[1], yend = s.tol$S.µ.max[1]), linetype = "dashed", colour = "black", size = 1.2) +
+  geom_segment(aes(x = -Inf, xend = 10, y = s.tol$S.µ.max[1], yend = s.tol$S.µ.max[1]), linetype = "dashed", colour = "black", size = 0.6) +
   geom_segment(aes(x = s.tol$S.c[1], xend = s.tol$S.c[1], 
                    y = 0, yend = s.tol$S.µ.max[1]/2),
-               linetype = "dashed", colour = "black", size = 1.2) +
+               linetype = "dashed", colour = "black", size = 0.6) +
   
   
-  annotate("text", x = 5, y = s.tol$S.µ.max[1] + 0.1, label = expression(italic(mu)[max]), size = 4.5, fontface = "plain") +
-  annotate("text", x = s.tol$S.c[1] - 1.5, y = s.tol$S.µ.max[1]/4, label = "Salt \n tolerance (c)", size = 4.5, fontface = "plain")
+  annotate("text", x = 5, y = s.tol$S.µ.max[1] + 0.1, label = expression(italic(mu)[max]), size = 3, fontface = "plain") +
+  annotate("text", x = s.tol$S.c[1] - 1.5, y = s.tol$S.µ.max[1]/4, label = "Salt \n tolerance (c)", size = 3, fontface = "plain")
 
 p.s1
 
@@ -347,9 +347,9 @@ curve.max.s <- tibble::tibble(
 p.s2 <- ggplot(df.s.mu[df.s.mu$population==10,], aes(x = salt, y = µ, colour = population)) +
   ylim(-0.2, 1.7) +
   
-  geom_line(data = curve.min.s, aes(x = salt, y= rate), colour = "magenta2", size = 1) +
-  geom_line(data = curve.s, aes(x = salt, y= rate), colour = "forestgreen", size = 1) +
-  geom_line(data = curve.max.s, aes(x = salt, y= rate), colour = "darkorange1", size = 1) +
+  geom_line(data = curve.min.s, aes(x = salt, y= rate), colour = "magenta2", size = 0.6) +
+  geom_line(data = curve.s, aes(x = salt, y= rate), colour = "forestgreen", size = 0.6) +
+  geom_line(data = curve.max.s, aes(x = salt, y= rate), colour = "darkorange1", size = 0.6) +
   
   labs(x = "Salt concentration (g/L)", 
        y = "Exponential growth rate (µ)",
@@ -362,7 +362,7 @@ p.s2 <- ggplot(df.s.mu[df.s.mu$population==10,], aes(x = salt, y = µ, colour = 
     legend.position = "none",  # delete legend
     axis.title = element_text(size = 12, face = "plain"),  # Bold & larger axis titles
     axis.text = element_text(size = 10),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)
   ) 
 
 p.s2
@@ -370,10 +370,10 @@ p.s2
 # Panel I
 
 p.s3 <- ggplot(df[df$population %in% c("1", "10", "15"),], aes(x = S.µ.max, y = S.c, colour = population)) +
-  geom_point(size=4.5) +
+  geom_point(size=1.5) +
   scale_colour_manual(values = c("magenta2", "forestgreen", "darkorange")) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"), 
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"), 
        y = "Salt tolerance (c)",
        title = "I - Salt") +
   
@@ -382,7 +382,7 @@ p.s3 <- ggplot(df[df$population %in% c("1", "10", "15"),], aes(x = S.µ.max, y =
     legend.position = "none",  # delete legend
     axis.title = element_text(size = 12, face = "plain"),  # Bold & larger axis titles
     axis.text = element_text(size = 10),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)
   ) 
 
 p.s3
@@ -391,4 +391,4 @@ fig.S1 <- plot_grid(p.t1, p.t2, p.t3, p.p1, p.p2, p.p3, p.s1, p.s2, p.s3, nrow =
 
 fig.S1
 
-ggsave("figures-supplemental/01_fig_s1_model_fitting.jpeg", fig.S1, width = 15, height = 15)
+ggsave("figures-supplemental/01_fig_s1_model_fitting.jpeg", fig.S1, width = 10, height = 10)

@@ -644,9 +644,9 @@ tri.poly <- data.frame(
 )
 
 p.l <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
-  geom_point(size = 2) +
+  geom_point(size = 1) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),
        y = "Competitive ability (1/I*)", 
        title = "A — Light") +  # labels
   
@@ -669,7 +669,7 @@ p.l <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
     label = "Tri\nPF\nQR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -686,7 +686,7 @@ p.l <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   ) 
 
 p.l
@@ -928,12 +928,12 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 I.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Maximum exponential growth rate (µ max)",    
+  labs(x = "Maximum growth rate (µ max)",    
        y = "Competitive ability (1/I*)", 
        title = "A — Light") +  # labels
   
@@ -953,15 +953,15 @@ I.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "bold"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 I.scam  # Display the plot
 
-p.l3 <- p.l + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE)  # Adding scam PF fits
+p.l3 <- p.l + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE)  # Adding scam PF fits
 p.l3
 
-p.l4 <- p.l3 + geom_point(data = df.cr, aes(x = I.µ.max, y = I.comp), size = 2, shape = 8, inherit.aes = FALSE)
+p.l4 <- p.l3 + geom_point(data = df.cr, aes(x = I.µ.max, y = I.comp), size = 1, shape = 8, inherit.aes = FALSE)
 p.l4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -1028,13 +1028,13 @@ summary(q75, se = "boot", R = 1000) # -0.03627, p 0.79385
 summary(q90, se = "boot", R = 1000) # 0.24586, p 0.42630 
 
 I.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),     
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),     
        y = "Competitive ability (1/I*)", 
        title = "A — Light") +  # labels
   
@@ -1054,7 +1054,7 @@ I.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 I.qr # Display the plot
@@ -1067,12 +1067,12 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 I.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"), 
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"), 
        y = "Competitive ability (1/I*)", 
        title = "A — Light") +  # labels
   
@@ -1092,7 +1092,7 @@ I.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 I.scam2  # Display the plot
@@ -1144,13 +1144,13 @@ summary(q75, se = "boot", R = 1000) # -1.11815, p 0.00153
 summary(q90, se = "boot", R = 1000) # -1.41332, p 0.00027
 
 I.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),     
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),     
        y = "Competitive ability (1/I*)", 
        title = "A — Light") +  # labels
   
@@ -1170,7 +1170,7 @@ I.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 I.qr2 # Display the plot
@@ -1381,11 +1381,11 @@ tri.poly <- data.frame(
 )
 
 p.ln <- ggplot(df.filt, aes(z.x, z.y)) +
-  geom_point(size = 2, colour = ) +
+  geom_point(size = 1) +
   
   labs(x = "Competitive ability (1/N*)",    
        y = "Competitive ability (1/I*)", 
-       title = "B — Light ~ Nitrogen") +  # labels
+       title = "B — L ~ N") +  # labels
   
   geom_polygon(
     data = tri.poly,
@@ -1406,7 +1406,7 @@ p.ln <- ggplot(df.filt, aes(z.x, z.y)) +
     label = "Tri\nPF",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -1415,7 +1415,7 @@ p.ln <- ggplot(df.filt, aes(z.x, z.y)) +
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   ) 
 
 p.ln
@@ -1658,14 +1658,14 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 LN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Competitive ability (1/N*)",    
        y = "Competitive ability (1/I*)", 
-       title = "B — Light ~ Nitrogen") +  # labels
+       title = "B — L ~ N") +  # labels
   
   ylim(-0.10, 2.25) +
   #xlim(-0.25, 3) +
@@ -1675,15 +1675,15 @@ LN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LN.scam  # Display the plot
 
-p.ln3 <- p.ln  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE)  # Adding scam PF fits
+p.ln3 <- p.ln  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE)  # Adding scam PF fits
 p.ln3
 
-p.ln4 <- p.ln3 + geom_point(data = df.cr, aes(x = N.comp, y = I.comp), size = 2, shape = 8, inherit.aes = FALSE)
+p.ln4 <- p.ln3 + geom_point(data = df.cr, aes(x = N.comp, y = I.comp), size = 1, shape = 8, inherit.aes = FALSE)
 p.ln4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -1750,15 +1750,15 @@ summary(q75, se = "boot", R = 1000) # -0.00073, p 0.97499
 summary(q90, se = "boot", R = 1000) # -0.03021, p 0.46629
 
 LN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Competitive ability (1/N*)",    
        y = "Competitive ability (1/I*)", 
-       title = "B — Light ~ Nitrogen") +  # labels
+       title = "B — L ~ N") +  # labels
   
   ylim(-0.10, 2.25) +
   #xlim(-0.25, 3) +
@@ -1768,7 +1768,7 @@ LN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LN.qr # Display the plot
@@ -1781,14 +1781,14 @@ df.filt3 <- df.filt.x %>%
   select(-distance)
 
 LN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Competitive ability (1/N*)",    
        y = "Competitive ability (1/I*)", 
-       title = "B — Light ~ Nitrogen") +  # labels
+       title = "B — L ~ N") +  # labels
   
   ylim(-0.10, 2.25) +
   #xlim(-0.25, 3) +
@@ -1798,7 +1798,7 @@ LN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs o
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LN.scam2  # Display the plot
@@ -1850,15 +1850,15 @@ summary(q75, se = "boot", R = 1000) # -0.03021, p 0.19789
 summary(q90, se = "boot", R = 1000) # -0.03298, p 0.19928
 
 LN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Competitive ability (1/N*)",    
        y = "Competitive ability (1/I*)", 
-       title = "B — Light ~ Nitrogen") +  # labels
+       title = "B — L ~ N") +  # labels
   
   ylim(-0.10, 2.25) +
   #xlim(-0.25, 3) +
@@ -1868,7 +1868,7 @@ LN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LN.qr2 # Display the plot
@@ -2079,11 +2079,11 @@ tri.poly <- data.frame(
 )
 
 p.lp <- ggplot(df.filt, aes(z.x, z.y)) +
-  geom_point(size = 2) +
+  geom_point(size = 1) +
   
   labs(x = "Competitive ability (1/P*)",    
        y = "Competitive ability (1/I*)", 
-       title = "C — Light ~ Phosphorous") +  # labels
+       title = "C — L ~ P") +  # labels
   
   geom_polygon(
     data = tri.poly,
@@ -2104,7 +2104,7 @@ p.lp <- ggplot(df.filt, aes(z.x, z.y)) +
     label = "PF",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -2113,7 +2113,7 @@ p.lp <- ggplot(df.filt, aes(z.x, z.y)) +
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   ) 
 
 p.lp
@@ -2355,14 +2355,14 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 LP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Competitive ability (1/P*)",    
        y = "Competitive ability (1/I*)", 
-       title = "C — Light ~ Phosphorous") +  # labels
+       title = "C — L ~ P") +  # labels
   
   ylim(-0.10, 3.25) +
   #xlim(-0.25, 3) +
@@ -2372,15 +2372,15 @@ LP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LP.scam  # Display the plot
 
-p.lp3 <- p.lp  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) # Adding scam PF fits
+p.lp3 <- p.lp  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) # Adding scam PF fits
 p.lp3
 
-p.lp4 <- p.lp3 + geom_point(data = df.cr, aes(x = P.comp, y = I.comp), size = 2, shape = 8, inherit.aes = FALSE)
+p.lp4 <- p.lp3 + geom_point(data = df.cr, aes(x = P.comp, y = I.comp), size = 1, shape = 8, inherit.aes = FALSE)
 p.lp4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -2447,15 +2447,15 @@ summary(q75, se = "boot", R = 1000) # -0.00162, p 0.48585
 summary(q90, se = "boot", R = 1000) # -0.00368, p 0.23022
 
 LP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Competitive ability (1/P*)",    
        y = "Competitive ability (1/I*)", 
-       title = "C — Light ~ Phosphorous") +  # labels
+       title = "C — L ~ P") +  # labels
   
   ylim(-0.10, 3.25) +
   #xlim(-0.25, 3) +
@@ -2465,7 +2465,7 @@ LP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LP.qr # Display the plot
@@ -2478,14 +2478,14 @@ df.filt3 <- df.filt.x %>%
   select(-distance)
 
 LP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Competitive ability (1/P*)",    
        y = "Competitive ability (1/I*)", 
-       title = "C — Light ~ Phosphorous") +  # labels
+       title = "C — L ~ P") +  # labels
   
   ylim(-0.10, 3.25) +
   #xlim(-0.25, 3) +
@@ -2495,7 +2495,7 @@ LP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs o
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LP.scam2  # Display the plot
@@ -2547,15 +2547,15 @@ summary(q75, se = "boot", R = 1000) # -0.00400, p 0.15171
 summary(q90, se = "boot", R = 1000) # -0.00620, p 0.07802
 
 LP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Competitive ability (1/P*)",    
        y = "Competitive ability (1/I*)", 
-       title = "C — Light ~ Phosphorous") +  # labels
+       title = "C — L ~ P") +  # labels
   
   ylim(-0.10, 3.25) +
   #xlim(-0.25, 3) +
@@ -2565,7 +2565,7 @@ LP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LP.qr2 # Display the plot
@@ -2776,11 +2776,11 @@ tri.poly <- data.frame(
 )
 
 p.lt <- ggplot(df.filt, aes(z.x, z.y)) +
-  geom_point(size = 2) +
+  geom_point(size = 1) +
   
   labs(x = "Thermal breadth (°C)",    
        y = "Competitive ability (1/I*)", 
-       title = "D — Light ~ Temperature") +  # labels
+       title = "D — L ~ T") +  # labels
   
   geom_polygon(
     data = tri.poly,
@@ -2801,7 +2801,7 @@ p.lt <- ggplot(df.filt, aes(z.x, z.y)) +
     label = "PF\nQR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -2810,7 +2810,7 @@ p.lt <- ggplot(df.filt, aes(z.x, z.y)) +
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   ) 
 
 p.lt
@@ -3052,14 +3052,14 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 LT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Thermal breadth (°C)",    
        y = "Competitive ability (1/I*)", 
-       title = "D — Light ~ Temperature") +  # labels
+       title = "D — L ~ T") +  # labels
   
   ylim(0, 2.1) +
   #xlim(-0.25, 3) +
@@ -3069,15 +3069,15 @@ LT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LT.scam  # Display the plot
 
-p.lt3 <- p.lt  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) # Adding scam PF fits
+p.lt3 <- p.lt  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) # Adding scam PF fits
 p.lt3
 
-p.lt4 <- p.lt3 + geom_point(data = df.cr, aes(x = T.br, y = I.comp), size = 2, shape = 8, inherit.aes = FALSE)
+p.lt4 <- p.lt3 + geom_point(data = df.cr, aes(x = T.br, y = I.comp), size = 1, shape = 8, inherit.aes = FALSE)
 p.lt4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -3144,15 +3144,15 @@ summary(q75, se = "boot", R = 1000) # -0.01195, p 0.60494
 summary(q90, se = "boot", R = 1000) # -0.03679, p 0.16686 
 
 LT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Thermal breadth (°C)",    
        y = "Competitive ability (1/I*)", 
-       title = "D — Light ~ Temperature") +  # labels
+       title = "D — L ~ T") +  # labels
   
   ylim(0, 2.1) +
   #xlim(-0.25, 3) +
@@ -3162,7 +3162,7 @@ LT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LT.qr # Display the plot
@@ -3175,14 +3175,14 @@ df.filt3 <- df.filt.x %>%
   select(-distance)
 
 LT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Thermal breadth (°C)",    
        y = "Competitive ability (1/I*)", 
-       title = "D — Light ~ Temperature") +  # labels
+       title = "D — L ~ T") +  # labels
   
   ylim(0, 2.1) +
   
@@ -3191,7 +3191,7 @@ LT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs o
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LT.scam2  # Display the plot
@@ -3243,15 +3243,15 @@ summary(q75, se = "boot", R = 1000) # -0.04874, p 0.13643
 summary(q90, se = "boot", R = 1000) # -0.10666, p 0.02034
 
 LT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Thermal breadth (°C)",    
        y = "Competitive ability (1/I*)", 
-       title = "D — Light ~ Temperature") +  # labels
+       title = "D — L ~ T") +  # labels
   
   ylim(0, 2.1) +
   
@@ -3260,7 +3260,7 @@ LT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LT.qr2 # Display the plot
@@ -3464,9 +3464,9 @@ tri.poly <- data.frame(
 )
 
 p.n <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
-  geom_point(size = 2) +
+  geom_point(size = 1) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"), 
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"), 
        y = "Competitive ability (1/N*)", 
        title = "E — Nitrogen") +  # labels
   
@@ -3494,7 +3494,7 @@ p.n <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   ) 
 
 p.n
@@ -3737,12 +3737,12 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 N.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),
        y = "Competitive ability (1/N*)", 
        title = "E — Nitrogen") +  # labels
   
@@ -3761,15 +3761,15 @@ N.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 N.scam  # Display the plot
 
-p.n3 <- p.n  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) # Adding scam PF fits
+p.n3 <- p.n  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) # Adding scam PF fits
 p.n3
 
-p.n4 <- p.n3 + geom_point(data = df.cr, aes(x = N.µ.max, y = N.comp), size = 2, shape = 8, inherit.aes = FALSE)
+p.n4 <- p.n3 + geom_point(data = df.cr, aes(x = N.µ.max, y = N.comp), size = 1, shape = 8, inherit.aes = FALSE)
 p.n4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -3836,13 +3836,13 @@ summary(q75, se = "boot", R = 1000) # 12.10420, p 0.00495
 summary(q90, se = "boot", R = 1000) # 26.00688, p 0.00542 
 
 N.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"), 
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"), 
        y = "Competitive ability (1/N*)", 
        title = "E — Nitrogen") +  # labels
   
@@ -3861,7 +3861,7 @@ N.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 N.qr # Display the plot
@@ -3874,12 +3874,12 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 N.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),
        y = "Competitive ability (1/N*)", 
        title = "E — Nitrogen") +  # labels
   
@@ -3898,7 +3898,7 @@ N.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 N.scam2  # Display the plot
@@ -3950,13 +3950,13 @@ summary(q75, se = "boot", R = 1000) # -10.59224, p 0.43187
 summary(q90, se = "boot", R = 1000) # -13.60864, p 0.28216
 
 N.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"), 
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"), 
        y = "Competitive ability (1/N*)", 
        title = "E — Nitrogen") +  # labels
   
@@ -3975,7 +3975,7 @@ N.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 N.qr2 # Display the plot
@@ -4179,11 +4179,11 @@ tri.poly <- data.frame(
 )
 
 p.np <- ggplot(df.filt, aes(z.x, z.y)) +
-  geom_point(size = 2) +
+  geom_point(size = 1) +
   
   labs(x = "Competitive ability (1/P*)", 
        y = "Competitive ability (1/N*)", 
-       title = "F — Nitrogen ~ Phosphorous") +  # labels
+       title = "F — N ~ P") +  # labels
   
   geom_polygon(
     data = tri.poly,
@@ -4202,7 +4202,7 @@ p.np <- ggplot(df.filt, aes(z.x, z.y)) +
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   ) 
 
 p.np
@@ -4446,14 +4446,14 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Competitive ability (1/P*)", 
        y = "Competitive ability (1/N*)", 
-       title = "F — Nitrogen ~ Phosphorous") +  # labels
+       title = "F — N ~ P") +  # labels
   
   ylim(-0.10, 55) +
   #xlim(-0.25, 3) +
@@ -4463,15 +4463,15 @@ NP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NP.scam  # Display the plot
 
-p.np3 <- p.np  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) # Adding scam PF fits
+p.np3 <- p.np  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) # Adding scam PF fits
 p.np3
 
-p.np4 <- p.np3 + geom_point(data = df.cr, aes(x = P.comp, y = N.comp), size = 2, shape = 8, inherit.aes = FALSE)
+p.np4 <- p.np3 + geom_point(data = df.cr, aes(x = P.comp, y = N.comp), size = 1, shape = 8, inherit.aes = FALSE)
 p.np4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -4538,15 +4538,15 @@ summary(q75, se = "boot", R = 1000) # -0.03540, p 0.87148
 summary(q90, se = "boot", R = 1000) # 0.23716, p 0.35713
 
 NP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Competitive ability (1/P*)", 
        y = "Competitive ability (1/N*)", 
-       title = "F — Nitrogen ~ Phosphorous") +  # labels
+       title = "F — N ~ P") +  # labels
   
   ylim(-0.10, 55) +
   #xlim(-0.25, 3) +
@@ -4556,7 +4556,7 @@ NP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NP.qr # Display the plot
@@ -4569,14 +4569,14 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Competitive ability (1/P*)", 
        y = "Competitive ability (1/N*)", 
-       title = "F — Nitrogen ~ Phosphorous") +  # labels
+       title = "F — N ~ P") +  # labels
   
   ylim(-0.10, 55) +
   #xlim(-0.25, 3) +
@@ -4586,7 +4586,7 @@ NP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs o
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NP.scam2  # Display the plot
@@ -4638,15 +4638,15 @@ summary(q75, se = "boot", R = 1000) # -0.22174, p 0.30668
 summary(q90, se = "boot", R = 1000) # 0.10430, p 0.71859
 
 NP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Competitive ability (1/P*)", 
        y = "Competitive ability (1/N*)", 
-       title = "F — Nitrogen ~ Phosphorous") +  # labels
+       title = "F — N ~ P") +  # labels
   
   ylim(-0.10, 55) +
   #xlim(-0.25, 3) +
@@ -4656,7 +4656,7 @@ NP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NP.qr2 # Display the plot
@@ -4860,11 +4860,11 @@ tri.poly <- data.frame(
 )
 
 p.nt <- ggplot(df.filt, aes(z.x, z.y)) +
-  geom_point(size = 2) +
+  geom_point(size = 1) +
   
   labs(x = "Thermal breadth (°C)", 
        y = "Competitive ability (1/N*)", 
-       title = "G — Nitrogen ~ Temperature") +  # labels
+       title = "G — N ~ T") +  # labels
   
   geom_polygon(
     data = tri.poly,
@@ -4885,7 +4885,7 @@ p.nt <- ggplot(df.filt, aes(z.x, z.y)) +
     label = "Tri\nPF\nQR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -4894,7 +4894,7 @@ p.nt <- ggplot(df.filt, aes(z.x, z.y)) +
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   ) 
 
 p.nt
@@ -5136,14 +5136,14 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Thermal breadth (°C)", 
        y = "Competitive ability (1/N*)", 
-       title = "G — Nitrogen ~ Temperature") +  # labels
+       title = "G — N ~ T") +  # labels
   
   ylim(-0.10, 45) +
   #xlim(-0.25, 3) +
@@ -5153,15 +5153,15 @@ NT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NT.scam  # Display the plot
 
-p.nt3 <- p.nt  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) # Adding scam PF fits
+p.nt3 <- p.nt  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) # Adding scam PF fits
 p.nt3
 
-p.nt4 <- p.nt3 + geom_point(data = df.cr, aes(x = T.br, y = N.comp), size = 2, shape = 8, inherit.aes = FALSE)
+p.nt4 <- p.nt3 + geom_point(data = df.cr, aes(x = T.br, y = N.comp), size = 1, shape = 8, inherit.aes = FALSE)
 p.nt4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -5228,15 +5228,15 @@ summary(q75, se = "boot", R = 1000) # -1.32741, p 0.28479
 summary(q90, se = "boot", R = 1000) # -2.63843, p 0.15974
 
 NT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Thermal breadth (°C)", 
        y = "Competitive ability (1/N*)", 
-       title = "G — Nitrogen ~ Temperature") +  # labels
+       title = "G — N ~ T") +  # labels
   
   ylim(-0.10, 45) +
   #xlim(-0.25, 3) +
@@ -5246,7 +5246,7 @@ NT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NT.qr # Display the plot
@@ -5259,14 +5259,14 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Thermal breadth (°C)", 
        y = "Competitive ability (1/N*)", 
-       title = "G — Nitrogen ~ Temperature") +  # labels
+       title = "G — N ~ T") +  # labels
   
   ylim(-0.10, 45) +
   #xlim(-0.25, 3) +
@@ -5276,7 +5276,7 @@ NT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs o
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NT.scam2  # Display the plot
@@ -5328,15 +5328,15 @@ summary(q75, se = "boot", R = 1000) # -2.63843, p 0.10835
 summary(q90, se = "boot", R = 1000) # -3.28776, p 0.04782
 
 NT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Thermal breadth (°C)", 
        y = "Competitive ability (1/N*)", 
-       title = "G — Nitrogen ~ Temperature") +  # labels
+       title = "G — N ~ T") +  # labels
   
   ylim(-0.10, 55) +
   #xlim(-0.25, 3) +
@@ -5346,7 +5346,7 @@ NT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NT.qr2 # Display the plot
@@ -5550,9 +5550,9 @@ tri.poly <- data.frame(
 )
 
 p.p <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
-  geom_point(size = 2) +
+  geom_point(size = 1) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/P*)", 
        title = "H — Phosphorous") +  # labels
   
@@ -5575,7 +5575,7 @@ p.p <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
     label = "Tri\nPF\nQR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -5592,7 +5592,7 @@ p.p <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   ) 
 
 p.p
@@ -5834,12 +5834,12 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 P.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),  
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),  
        y = "Competitive ability (1/P*)", 
        title = "H — Phosphorous") +  # labels
   
@@ -5859,15 +5859,15 @@ P.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 P.scam  # Display the plot
 
-p.p3 <- p.p  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) # Adding scam PF fits
+p.p3 <- p.p  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) # Adding scam PF fits
 p.p3
 
-p.p4 <- p.p3 + geom_point(data = df.cr, aes(x = P.µ.max, y = P.comp), size = 2, shape = 8, inherit.aes = FALSE)
+p.p4 <- p.p3 + geom_point(data = df.cr, aes(x = P.µ.max, y = P.comp), size = 1, shape = 8, inherit.aes = FALSE)
 p.p4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -5934,13 +5934,13 @@ summary(q75, se = "boot", R = 1000) # -77.86779, p 0.00031
 summary(q90, se = "boot", R = 1000) # -114.21657, p 0.00002 
 
 P.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/P*)", 
        title = "H — Phosphorous") +  # labels
   
@@ -5960,7 +5960,7 @@ P.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 P.qr # Display the plot
@@ -5973,12 +5973,12 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 P.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/P*)", 
        title = "H — Phosphorous") +  # labels
   
@@ -5998,7 +5998,7 @@ P.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 P.scam2  # Display the plot
@@ -6050,13 +6050,13 @@ summary(q75, se = "boot", R = 1000) # -173.05897, p 0.00000
 summary(q90, se = "boot", R = 1000) # -149.80227, p 0.00000
 
 P.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/P*)", 
        title = "H — Phosphorous") +  # labels
   
@@ -6077,7 +6077,7 @@ P.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 P.qr2 # Display the plot
@@ -6288,11 +6288,11 @@ tri.poly <- data.frame(
 )
 
 p.pt <- ggplot(df.filt, aes(z.x, z.y)) +
-  geom_point(size = 2) +
+  geom_point(size = 1) +
   
   labs(x = "Thermal breadth (°C)", 
        y = "Competitive ability (1/P*)", 
-       title = "I — Phosphorous ~ Temperature") +  # labels
+       title = "I — P ~ T") +  # labels
   
   geom_polygon(
     data = tri.poly,
@@ -6311,7 +6311,7 @@ p.pt <- ggplot(df.filt, aes(z.x, z.y)) +
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   ) 
 
 p.pt
@@ -6554,14 +6554,14 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Thermal breadth (°C)", 
        y = "Competitive ability (1/P*)", 
-       title = "I — Phosphorous ~ Temperature") +  # labels
+       title = "I — P ~ T") +  # labels
   
   ylim(-0.10, 200) +
   #xlim(-0.25, 3) +
@@ -6571,15 +6571,15 @@ PT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PT.scam  # Display the plot
 
-p.pt3 <- p.pt + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) # Adding scam PF fits
+p.pt3 <- p.pt + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) # Adding scam PF fits
 p.pt3
 
-p.pt4 <- p.pt3 + geom_point(data = df.cr, aes(x = T.br, y = P.comp), size = 2, shape = 8, inherit.aes = FALSE)
+p.pt4 <- p.pt3 + geom_point(data = df.cr, aes(x = T.br, y = P.comp), size = 1, shape = 8, inherit.aes = FALSE)
 p.pt4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -6646,15 +6646,15 @@ summary(q75, se = "boot", R = 1000) # 5.76372, p 0.36896
 summary(q90, se = "boot", R = 1000) # 13.68815, p 0.32776
 
 PT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Thermal breadth (°C)", 
        y = "Competitive ability (1/P*)", 
-       title = "I — Phosphorous ~ Temperature") +  # labels
+       title = "I — P ~ T") +  # labels
   
   ylim(-0.10, 200) +
   #xlim(-0.25, 3) +
@@ -6664,7 +6664,7 @@ PT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PT.qr # Display the plot
@@ -6677,14 +6677,14 @@ df.filt3 <- df.filt.x %>%
   select(-distance)
 
 PT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Thermal breadth (°C)", 
        y = "Competitive ability (1/P*)", 
-       title = "I — Phosphorous ~ Temperature") +  # labels
+       title = "I — P ~ T") +  # labels
   
   ylim(-0.10, 200) +
   #xlim(-0.25, 3) +
@@ -6694,7 +6694,7 @@ PT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs o
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PT.scam2  # Display the plot
@@ -6746,15 +6746,15 @@ summary(q75, se = "boot", R = 1000) # -16.40869, p 0.50140
 summary(q90, se = "boot", R = 1000) # -15.45442, p 0.56041
 
 PT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Thermal breadth (°C)", 
        y = "Competitive ability (1/P*)", 
-       title = "I — Phosphorous ~ Temperature") +  # labels
+       title = "I — P ~ T") +  # labels
   
   ylim(-0.10, 200) +
   #xlim(-0.25, 3) +
@@ -6764,7 +6764,7 @@ PT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PT.qr2 # Display the plot
@@ -6968,9 +6968,9 @@ tri.poly <- data.frame(
 )
 
 p.t <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
-  geom_point(size = 2) +
+  geom_point(size = 1) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),  
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),  
        y = "Thermal breadth (°C)", 
        title = "J — Temperature") +  # labels
   
@@ -6993,7 +6993,7 @@ p.t <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
     label = "PF\nQR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -7011,7 +7011,7 @@ p.t <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   ) 
 
 p.t
@@ -7253,12 +7253,12 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 T.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Thermal breadth (°C)", 
        title = "J — Temperature") +  # labels
   
@@ -7279,15 +7279,15 @@ T.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 T.scam  # Display the plot
 
-p.t3 <- p.t  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) # Adding scam PF fits
+p.t3 <- p.t  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) # Adding scam PF fits
 p.t3
 
-p.t4 <- p.t3 + geom_point(data = df.cr, aes(x = T.µ.max, y = T.br), size = 2, shape = 8, inherit.aes = FALSE)
+p.t4 <- p.t3 + geom_point(data = df.cr, aes(x = T.µ.max, y = T.br), size = 1, shape = 8, inherit.aes = FALSE)
 p.t4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -7354,13 +7354,13 @@ summary(q75, se = "boot", R = 1000) # 1.07406, p 0.26978
 summary(q90, se = "boot", R = 1000) # -0.24125, p 0.90881 
 
 T.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Thermal breadth (°C)", 
        title = "J — Temperature") +  # labels
   
@@ -7381,7 +7381,7 @@ T.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 T.qr # Display the plot
@@ -7394,12 +7394,12 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 T.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Thermal breadth (°C)", 
        title = "J — Temperature") +  # labels
   
@@ -7420,7 +7420,7 @@ T.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 T.scam2  # Display the plot
@@ -7472,13 +7472,13 @@ summary(q75, se = "boot", R = 1000) # -5.21847, p 0.00000
 summary(q90, se = "boot", R = 1000) # -4.66452, p 0.00840
 
 T.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 2) +  # Scatter plot of raw data
+  geom_point(size = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Thermal breadth (°C)", 
        title = "J — Temperature") +  # labels
   
@@ -7499,7 +7499,7 @@ T.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 T.qr2 # Display the plot
@@ -7513,7 +7513,7 @@ df.t.leg <- df.t %>%
 df.leg <- rbind(df.l, df.n, df.p, df.t.leg)
 
 legend_plot <- ggplot(df.leg, aes(x = r.max, y = comp)) +
-  geom_point(aes(colour = dataset), size = 3, stroke = 1.5) +
+  geom_point(aes(colour = dataset), size = 1, stroke = 1) +
   
   scale_color_manual(name = "Dataset",
                      values = c("Bestion et al., 2018" = "firebrick2",
@@ -7527,9 +7527,10 @@ legend_plot <- ggplot(df.leg, aes(x = r.max, y = comp)) +
   
   theme_void() +
   theme(
-    legend.title = element_text(size = 12, face = "bold"),
-    legend.text = element_text(size = 12),
-    legend.key.size = unit(1.2, "lines")
+    legend.title = element_text(size = 10, face = "bold"),
+    legend.text = element_text(size = 10),
+    legend.key.size = unit(0.6, "lines"),
+    legend.key.width = unit(1.2, "lines")
   )
 
 
@@ -7543,7 +7544,7 @@ meta_cross_PF <- plot_grid(p.l3, p.ln3, p.lp3, p.lt3,
                            align = "hv",
                            axis = "tblr")
 
-ggsave("figures-main/04_fig4_synthesis_comps.jpeg", meta_cross_PF, width = 18, height = 18)
+ggsave("figures-main/04_fig4_synthesis_comps.jpeg", meta_cross_PF, width = 10.5, height = 10.5)
 
 # Supplemental figure 13
 
@@ -7555,7 +7556,7 @@ meta_cross_QR <- plot_grid(I.qr, LN.qr, LP.qr, LT.qr,
                            align = "hv",
                            axis = "tblr")
 
-ggsave("figures-supplemental/13_fig_s13_synthesis_qr.jpeg", meta_cross_QR, width = 18, height = 18)
+ggsave("figures-supplemental/13_fig_s13_synthesis_qr.jpeg", meta_cross_QR, width = 10.5, height = 10.5)
 
 # Supplemental figure 14
 
@@ -7567,7 +7568,7 @@ meta_cross_QR_33 <- plot_grid(I.qr2, LN.qr2, LP.qr2, LT.qr2,
                               align = "hv",
                               axis = "tblr")
 
-ggsave("figures-supplemental/14_fig_s14_synthesis_qr_33.jpeg", meta_cross_QR_33, width = 18, height = 18)
+ggsave("figures-supplemental/14_fig_s14_synthesis_qr_33.jpeg", meta_cross_QR_33, width = 10.5, height = 10.5)
 
 # Supplemental figure 15
 
@@ -7579,4 +7580,4 @@ meta_cross_ourdata <- plot_grid(p.l4, p.ln4, p.lp4, p.lt4,
                                 align = "hv",
                                 axis = "tblr")
 
-ggsave("figures-supplemental/15_fig_s15_synthesis_with_Laurich_2026_data.jpeg", meta_cross_ourdata, width = 18, height = 18)
+ggsave("figures-supplemental/15_fig_s15_synthesis_with_Laurich_2026_data.jpeg", meta_cross_ourdata, width = 10.5, height = 10.5)

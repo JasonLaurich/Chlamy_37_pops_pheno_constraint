@@ -4569,8 +4569,8 @@ legend_plot <- ggplot(legend_df, aes(x = x, y = y)) +
   labs(linetype = "Quantile regression", color = "Evolutionary context") +
   theme_void() +
   theme(
-    legend.title = element_text(size = 12, face = "bold"),
-    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 10, face = "bold"),
+    legend.text = element_text(size = 10),
     legend.key.size = unit(0.6, "lines"),
     legend.key.width = unit(1.2, "lines")
   )
@@ -4637,8 +4637,8 @@ legend_plot2 <- ggplot(legend_df2, aes(x = x, y = y)) +
   
   theme_void() +
   theme(
-    legend.title = element_text(size = 12, face = "bold"),
-    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 10, face = "bold"),
+    legend.text = element_text(size = 10),
     legend.key.size = unit(0.6, "lines"),
     legend.key.width = unit(1.2, "lines")
   )
@@ -4719,8 +4719,8 @@ legend_plot3 <- ggplot(legend_df3, aes(x = x, y = y)) +
   
   theme_void() +
   theme(
-    legend.title = element_text(size = 12, face = "bold"),
-    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 10, face = "bold"),
+    legend.text = element_text(size = 10),
     legend.key.size = unit(0.6, "lines"),
     legend.key.width = unit(1.2, "lines")
   )

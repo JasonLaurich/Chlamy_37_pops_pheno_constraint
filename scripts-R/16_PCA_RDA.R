@@ -118,7 +118,7 @@ loadings$var.y <- loadings$PC2 + adjust.y
 
 # Create PCA plot with arrows
 pca_plot_arrows <- ggplot(df.pca.res, aes(x = PC1, y = PC2, color = Evolution)) +
-  geom_point(size = 3) +
+  geom_point(size = 1) +
   theme_classic() +
   labs(x = paste("PC 1 (", round(pca.result$sdev[1]^2 / sum(pca.result$sdev^2) * 100, 2), "%)", sep = ""),
        y = paste("PC 2 (", round(pca.result$sdev[2]^2 / sum(pca.result$sdev^2) * 100, 2), "%)", sep = "")) +
@@ -135,7 +135,7 @@ pca_plot_arrows <- ggplot(df.pca.res, aes(x = PC1, y = PC2, color = Evolution)) 
   ) + 
   
   geom_segment(data = loadings, aes(x = 0, y = 0, xend = PC1, yend = PC2),
-               arrow = arrow(length = unit(0.2, "cm")), color = "black", size= 1.1) + # Add arrows for variable contributions
+               arrow = arrow(length = unit(0.1, "cm")), color = "black", size = 0.6) + # Add arrows for variable contributions
   scale_x_continuous(breaks = seq(-5, 5, by = 1)) +
   scale_y_continuous(breaks = seq(-5, 7, by = 1)) +
   
@@ -143,8 +143,8 @@ pca_plot_arrows <- ggplot(df.pca.res, aes(x = PC1, y = PC2, color = Evolution)) 
             vjust = 1, hjust = 1,  color = "black", size = 5, parse = T) + # Add variable names to the plot
   
   theme(legend.position = c(0.8, 0.8),
-        legend.title = element_text(size = 12, face = "bold"),
-        legend.text  = element_text(size = 12, face = "plain"),
+        legend.title = element_text(size = 10, face = "bold"),
+        legend.text  = element_text(size = 10, face = "plain"),
         axis.title.x = element_text(size = 12, face = "plain"),
         axis.title.y = element_text(size = 12, face = "plain")) 
 
@@ -202,7 +202,7 @@ rda_species_evol$var.y <- rda_species_evol$RDA2 + adjust.y.rda1
 
 # Create evolutionary environment RDA plot with arrows
 rda_evol_plot_arrows <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, color = Evolution)) +
-  geom_point(size = 3) +
+  geom_point(size = 1) +
   theme_classic() +
   labs(x = paste0("RDA 1 (", round(rda_var_explained[1], 2), "%)"),
        y = paste0("RDA 2 (", round(rda_var_explained[2], 2), "%)"),
@@ -221,20 +221,20 @@ rda_evol_plot_arrows <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, color = E
   ) +
   
   geom_segment(data = rda_species_evol, aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
-               arrow = arrow(length = unit(0.2, "cm")), color = "black", size= 1.1) +
+               arrow = arrow(length = unit(0.1, "cm")), color = "black", size = 0.6) +
   scale_x_continuous(breaks = seq(-20, 25, by = 5)) +
   scale_y_continuous(breaks = seq(-20, 40, by = 5)) + # Add arrows for variable contributions
   
   
   geom_text(data = rda_species_evol, aes(x = var.x, y = var.y, label = metric),
-            vjust = 1, hjust = 1, color = "black", size = 5, parse = T) + # Add variable names to the plot
+            vjust = 1, hjust = 1, color = "black", size = 2.4, parse = T) + # Add variable names to the plot
   
   theme(legend.position = "none",
-        legend.title = element_text(size = 12, face = "bold"),
-        legend.text  = element_text(size = 12, face = "plain"),
+        legend.title = element_text(size = 10, face = "bold"),
+        legend.text  = element_text(size = 10, face = "plain"),
         axis.title.x = element_text(size = 12, face = "plain"),
         axis.title.y = element_text(size = 12, face = "plain"),
-        plot.title = element_text(size = 14, face = "bold", hjust = 0.03)) 
+        plot.title = element_text(size = 12, face = "bold", hjust = 0.03)) 
 
 rda_evol_plot_arrows # Biovolume, N and P content is skewing everything. 
 
@@ -283,7 +283,7 @@ rda_species_evol$var.y <- rda_species_evol$RDA2 + adjust.y.rda1
 
 # Create evolutionary environment RDA plot with arrows
 rda_evol_plot_arrows_no_NP <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, color = Evolution)) +
-  geom_point(size = 3) +
+  geom_point(size = 1) +
   theme_classic() +
   labs(x = paste("RDA 1 (", round(summary(rda_result_evol)$cont$importance[2, 1] * 100, 2), "%)", sep = ""),
        y = paste("RDA 2 (", round(summary(rda_result_evol)$cont$importance[2, 2] * 100, 2), "%)", sep = ""),
@@ -301,16 +301,16 @@ rda_evol_plot_arrows_no_NP <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, col
   ) +  # Use your custom colors
   # Add arrows for variable contributions
   geom_segment(data = rda_species_evol, aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
-               arrow = arrow(length = unit(0.2, "cm")), color = "black", size= 1.1) +
+               arrow = arrow(length = unit(0.1, "cm")), color = "black", size = 0.6) +
   scale_x_continuous(breaks = seq(-5, 6, by = 1)) +
   scale_y_continuous(breaks = seq(-3, 5, by = 1)) +
   # Add variable names to the plot
   geom_text(data = rda_species_evol, aes(x = var.x, y = var.y, label = metric),
-            vjust = 1, hjust = 1, color = "black", size = 5, parse = T) +
+            vjust = 1, hjust = 1, color = "black", size = 2.4, parse = T) +
   theme(legend.position = "none",
         axis.title.x = element_text(size = 12, face = "plain"),
         axis.title.y = element_text(size = 12, face = "plain"),
-        plot.title = element_text(size = 14, face = "bold", hjust = 0.03))
+        plot.title = element_text(size = 12, face = "bold", hjust = 0.03))
 
 rda_evol_plot_arrows_no_NP
 
@@ -386,18 +386,18 @@ rda_anc_plot_arrows <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color = Anc
   ) +  # Use custom colors
   # Add arrows for variable contributions
   geom_segment(data = rda_species_anc, aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
-               arrow = arrow(length = unit(0.2, "cm")), color = "black", size= 1.1) +
+               arrow = arrow(length = unit(0.1, "cm")), color = "black", size = 0.6) +
   scale_x_continuous(breaks = seq(-35, 25, by = 5)) +
   scale_y_continuous(breaks = seq(-35, 20, by = 5)) +
   # Add variable names to the plot
   geom_text(data = rda_species_anc, aes(x = var.x, y = var.y, label = metric),
-            vjust = 1, hjust = 1, color = "black", size = 5, parse = T) +
+            vjust = 1, hjust = 1, color = "black", size = 2.4, parse = T) +
   theme(legend.position= "none",
-        legend.title = element_text(size = 12, face = "bold"),
-        legend.text  = element_text(size = 12, face = "plain"),
+        legend.title = element_text(size = 10, face = "bold"),
+        legend.text  = element_text(size = 10, face = "plain"),
         axis.title.x = element_text(size = 12, face = "plain"),
         axis.title.y = element_text(size = 12, face = "plain"),
-        plot.title = element_text(size = 14, face = "bold", hjust = 0.03))
+        plot.title = element_text(size = 12, face = "bold", hjust = 0.03))
 
 rda_anc_plot_arrows # Again, N and P are skewing everything
 
@@ -449,7 +449,7 @@ rda_species_anc$var.y <- rda_species_anc$RDA2 + adjust.y.rda2
 
 # Create evolutionary environment RDA plot with arrows
 rda_anc_plot_arrows_no_NP <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color = Ancestry)) +
-  geom_point(size = 3) +
+  geom_point(size = 1) +
   theme_classic() +
   labs(x = paste("RDA 1 (", round(summary(rda_result_anc)$cont$importance[2, 1] * 100, 2), "%)", sep = ""),
        y = paste("RDA 2 (", round(summary(rda_result_anc)$cont$importance[2, 2] * 100, 2), "%)", sep = ""),
@@ -464,16 +464,16 @@ rda_anc_plot_arrows_no_NP <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color
   ) +  # Use custom colors
   # Add arrows for variable contributions
   geom_segment(data = rda_species_anc, aes(x = 0, y = 0, xend = RDA1*10, yend = RDA2*10),
-               arrow = arrow(length = unit(0.2, "cm")), color = "black", size= 1.1) +
+               arrow = arrow(length = unit(0.1, "cm")), color = "black", size = 0.6) +
   scale_x_continuous(breaks = seq(-60, 100, by = 10)) +
   scale_y_continuous(breaks = seq(-100, 60, by = 10)) +
   # Add variable names to the plot
   geom_text(data = rda_species_anc, aes(x = var.x, y = var.y, label = metric),
-            vjust = 1, hjust = 1, color = "black", size = 5, parse = T) +
+            vjust = 1, hjust = 1, color = "black", size = 2.4, parse = T) +
   theme(legend.position = "none",
         axis.title.x = element_text(size = 12, face = "plain"),
         axis.title.y = element_text(size = 12, face = "plain"),
-        plot.title = element_text(size = 14, face = "bold", hjust = 0.03))
+        plot.title = element_text(size = 12, face = "bold", hjust = 0.03))
 
 rda_anc_plot_arrows_no_NP 
 
@@ -502,8 +502,8 @@ legend_evol <- ggplot(df.evol.dummy.leg, aes(x = RDA1, y = RDA2, color = Evoluti
   ) +
   theme_void() +
   theme(legend.position = "right",
-        legend.title = element_text(size = 12, face = "bold"),
-        legend.text  = element_text(size = 12, face = "plain"))
+        legend.title = element_text(size = 10, face = "bold"),
+        legend.text  = element_text(size = 10, face = "plain"))
 
 evol_legend <- get_legend(legend_evol)
 
@@ -526,8 +526,8 @@ legend_anc <- ggplot(df.anc.dummy.leg, aes(x = RDA1, y = RDA2, color = Ancestry)
   ) +
   theme_void() +
   theme(legend.position = "right",
-        legend.title = element_text(size = 12, face = "bold"),
-        legend.text  = element_text(size = 12, face = "plain"))
+        legend.title = element_text(size = 10, face = "bold"),
+        legend.text  = element_text(size = 10, face = "plain"))
 
 anc_legend <- get_legend(legend_anc)
 
@@ -538,4 +538,4 @@ rdas <- plot_grid(rda_evol_plot_arrows, rda_evol_plot_arrows_no_NP, evol_legend,
                   align= 'hv',
                   nrow = 2)
 
-ggsave("figures-supplemental/12_fig_s12_rdas.jpeg", rdas, width = 16, height = 8) # PDF was rendering weird
+ggsave("figures-supplemental/12_fig_s12_rdas.jpeg", rdas, width = 10, height = 6.5) # PDF was rendering weird
