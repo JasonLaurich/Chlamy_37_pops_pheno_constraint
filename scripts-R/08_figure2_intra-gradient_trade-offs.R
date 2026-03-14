@@ -129,12 +129,12 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 T.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),  
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),  
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
        title = "E — Temperature") +  # labels
@@ -165,7 +165,7 @@ T.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 T.scam  # Display the plot
@@ -234,13 +234,13 @@ summary(q75, se = "boot", R = 1000) # -1.68710, p 0.00000
 summary(q90, se = "boot", R = 1000) # -1.53971, p 0.00000
 
 T.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
        title = "E — Temperature") +  # labels
@@ -270,18 +270,18 @@ T.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 T.qr # Display the plot
 
 T.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),  
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),  
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
        title = "E — Temperature") +  # labels
@@ -314,7 +314,7 @@ T.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     label = "PF\nQR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -323,7 +323,7 @@ T.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 T.qp # Display the plot
@@ -340,12 +340,12 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 T.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
        title = "E — Temperature") +  # labels
@@ -375,7 +375,7 @@ T.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 T.scam2  # Display the plot
@@ -427,13 +427,13 @@ summary(q75, se = "boot", R = 1000) # -1.79136, p 0.00000
 summary(q90, se = "boot", R = 1000) # -1.94895, p 0.00000
 
 T.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
        title = "E — Temperature") +  # labels
@@ -463,7 +463,7 @@ T.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 T.qr2 # Display the plot
@@ -534,12 +534,12 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 I.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),,    
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),,    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
        title = "A — Light") +  # labels
@@ -571,7 +571,7 @@ I.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 I.scam  # Display the plot
@@ -640,13 +640,13 @@ summary(q75, se = "boot", R = 1000) # -0.16903, p 0.00000
 summary(q90, se = "boot", R = 1000) # -0.19118, p 0.00004
 
 I.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),    
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
        title = "A — Light") +  # labels
@@ -677,18 +677,18 @@ I.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 I.qr # Display the plot
 
 I.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", inherit.aes = FALSE) +
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),    
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
        title = "A — Light") +  # labels
@@ -722,7 +722,7 @@ I.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     label = "PF\nQR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -731,7 +731,7 @@ I.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 I.qp # Display the plot
@@ -782,12 +782,12 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 I.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),    
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
        title = "A — Light") +  # labels
@@ -818,7 +818,7 @@ I.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 I.scam2  # Display the plot
@@ -870,13 +870,13 @@ summary(q75, se = "boot", R = 1000) # -0.38870, p 0.00133
 summary(q90, se = "boot", R = 1000) # -0.41216, p 0.03140
 
 I.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),  
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),  
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
        title = "A — Light") +  # labels
@@ -907,7 +907,7 @@ I.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 I.qr2 # Display the plot
@@ -978,12 +978,12 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 N.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
        title = "B — Nitrogen") +  # labels
@@ -1015,7 +1015,7 @@ N.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 N.scam  # Display the plot
@@ -1084,13 +1084,13 @@ summary(q75, se = "boot", R = 1000) # -0.67837, p 0.00000
 summary(q90, se = "boot", R = 1000) # -1.13655, p 0.00336
 
 N.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),  
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),  
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
        title = "B — Nitrogen") +  # labels
@@ -1121,18 +1121,18 @@ N.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 N.qr # Display the plot
 
 N.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
        title = "B — Nitrogen") +  # labels
@@ -1166,7 +1166,7 @@ N.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     label = "PF\nQR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -1175,7 +1175,7 @@ N.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 N.qp  # Display the plot
@@ -1226,12 +1226,12 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 N.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),  
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),  
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
        title = "B — Nitrogen") +  # labels
@@ -1262,7 +1262,7 @@ N.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 N.scam2 # Display the plot
@@ -1314,13 +1314,13 @@ summary(q75, se = "boot", R = 1000) # -2.25745, p 0.00000
 summary(q90, se = "boot", R = 1000) # -2.33776, p 0.00000
 
 N.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw dat
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),  
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),  
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
        title = "B — Nitrogen") +  # labels
@@ -1351,7 +1351,7 @@ N.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 N.qr2 # Display the plot
@@ -1422,12 +1422,12 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 P.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"), 
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"), 
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
        title = "C — Phosphorous") +  # labels
@@ -1459,7 +1459,7 @@ P.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 P.scam  # Display the plot
@@ -1528,13 +1528,13 @@ summary(q75, se = "boot", R = 1000) # -3.73904, p 0.02977
 summary(q90, se = "boot", R = 1000) # -5.98270, p 0.00403
 
 P.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
        title = "C — Phosphorous") +  # labels
@@ -1565,18 +1565,18 @@ P.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 P.qr # Display the plot
 
 P.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"), 
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"), 
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
        title = "C — Phosphorous") +  # labels
@@ -1610,7 +1610,7 @@ P.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     label = "PF\nQR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -1619,7 +1619,7 @@ P.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 P.qp  # Display the plot
@@ -1670,12 +1670,12 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 P.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),    
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
        title = "C — Phosphorous") +  # labels
@@ -1706,7 +1706,7 @@ P.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 P.scam2  # Display the plot
@@ -1758,13 +1758,13 @@ summary(q75, se = "boot", R = 1000) # -10.28615, p 0.00000
 summary(q90, se = "boot", R = 1000) # -9.68149, p 0.00011
 
 P.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
        title = "C — Phosphorous") +  # labels
@@ -1795,7 +1795,7 @@ P.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 P.qr2 # Display the plot
@@ -1866,12 +1866,12 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 S.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
        title = "D — Salt") +  # labels
@@ -1903,7 +1903,7 @@ S.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 S.scam  # Display the plot
@@ -1972,13 +1972,13 @@ summary(q75, se = "boot", R = 1000) # -0.55661, p 0.83217
 summary(q90, se = "boot", R = 1000) # -1.07525, p 0.63378
 
 S.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),    
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
        title = "D — Salt") +  # labels
@@ -2009,18 +2009,18 @@ S.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 S.qr # Display the plot
 
 S.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
        title = "D — Salt") +  # labels
@@ -2054,7 +2054,7 @@ S.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     label = "PF\nQR\nEvo",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -2063,7 +2063,7 @@ S.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 S.qp  # Display the plot
@@ -2114,12 +2114,12 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 S.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
        title = "D — Salt") +  # labels
@@ -2150,7 +2150,7 @@ S.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 S.scam2  # Display the plot
@@ -2202,13 +2202,13 @@ summary(q75, se = "boot", R = 1000) # -5.15181, p 0.01334
 summary(q90, se = "boot", R = 1000) # -6.64584, p 0.00000
 
 S.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum exponential growth rate (" * italic(mu)[max] * ")"),   
+  labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
        title = "D — Salt") +  # labels
@@ -2239,7 +2239,7 @@ S.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 S.qr2 # Display the plot
@@ -2257,8 +2257,8 @@ legend_df <- data.frame(
 )
 
 legend_plot <- ggplot(legend_df, aes(x = x, y = y)) +
-  geom_point(aes(shape = Group, colour = Group2), size = 3, stroke = 1.5) +
-  geom_line(aes(linetype = LineType), size = 1) +
+  geom_point(aes(shape = Group, colour = Group2), size = 1, stroke = 1) +
+  geom_line(aes(linetype = LineType), size = 0.6) +
   scale_shape_manual(name = NULL,
                      values = c("Ancestral" = 5, 
                                 "Other" = 1, 
@@ -2277,13 +2277,17 @@ legend_plot <- ggplot(legend_df, aes(x = x, y = y)) +
   
   scale_linetype_manual(values = c("Outer" = "dashed", "Inner (75%)" = "solid"),
                         labels = c("Outer", "Inner (75%)"),
-                        name = "Pareto front") +
+                        name = "Pareto front",
+                        guide = guide_legend(override.aes = list(linewidth = 0.3))
+  ) +
+  
   labs(linetype = "Quantile regression", color = "Evolutionary context") +
   theme_void() +
   theme(
-    legend.title = element_text(size = 12, face = "bold"),
-    legend.text = element_text(size = 12),
-    legend.key.size = unit(1.2, "lines")
+    legend.title = element_text(size = 10, face = "bold"),
+    legend.text = element_text(size = 10),
+    legend.key.size = unit(0.6, "lines"),
+    legend.key.width = unit(1.2, "lines")
   )
 
 
@@ -2295,7 +2299,7 @@ grad_toffs <- plot_grid(plotlist = all_plots,
                         ncol = 2,
                         align = "hv")
 
-ggsave("figures-supplemental/10_fig_s10_intra-gradient_evol.jpeg", grad_toffs, width = 8, height = 12)
+ggsave("figures-supplemental/10_fig_s10_intra-gradient_evol.jpeg", grad_toffs, width = 5.5, height = 8.25)
 
 plots2 <- list(I.scam2, N.scam2, P.scam2, S.scam2, T.scam2)
 all_plots2 <- c(plots2, list(legend_only))
@@ -2304,7 +2308,7 @@ grad_toffs2 <- plot_grid(plotlist = all_plots2,
                          ncol = 2,
                          align = "hv")
 
-ggsave("figures-misc/01_intra-gradient_tradeoffs_fig2.jpeg", grad_toffs2, width = 8, height = 12)
+ggsave("figures-misc/01_intra-gradient_tradeoffs_fig2.jpeg", grad_toffs2, width = 5.5, height = 8.25)
 
 ###### QRs ######
 
@@ -2319,8 +2323,8 @@ legend_df2 <- data.frame(
 )
 
 legend_plot2 <- ggplot(legend_df2, aes(x = x, y = y)) +
-  geom_point(aes(shape = Group, colour = Group2), size = 3, stroke = 1.5) +
-  geom_line(aes(linetype = LineType), size = 1) +
+  geom_point(aes(shape = Group, colour = Group2), size = 1, stroke = 1) +
+  geom_line(aes(linetype = LineType), size = 0.6) +
   scale_shape_manual(name = NULL,
                      values = c("Ancestral" = 5, 
                                 "Other" = 1, 
@@ -2339,14 +2343,18 @@ legend_plot2 <- ggplot(legend_df2, aes(x = x, y = y)) +
   
   scale_linetype_manual(values = c("50th" = "dotted", "75th" = "dashed", "90th" = "solid"),
                         labels = c("50th", "75th", "90th"),
-                        name = "Quantile regression") +
+                        name = "Quantile regression",
+                        guide = guide_legend(override.aes = list(linewidth = 0.3))
+  ) +
+  
   labs(linetype = "Quantile regression", color = "Evolutionary context") +
   
   theme_void() +
   theme(
-    legend.title = element_text(size = 12, face = "bold"),
-    legend.text = element_text(size = 12),
-    legend.key.size = unit(1.2, "lines")
+    legend.title = element_text(size = 10, face = "bold"),
+    legend.text = element_text(size = 10),
+    legend.key.size = unit(0.6, "lines"),
+    legend.key.width = unit(1.2, "lines")
   )
 
 
@@ -2358,7 +2366,7 @@ qr_toffs <- plot_grid(plotlist = all_plots_qr,
                       ncol = 2,
                       align = "hv")
 
-ggsave("figures-supplemental/02_fig_s2_intra-gradient_tradeoffs_qr.jpeg", qr_toffs, width = 8, height = 12)
+ggsave("figures-supplemental/02_fig_s2_intra-gradient_tradeoffs_qr.jpeg", qr_toffs, width = 5.5, height = 8.25)
 
 plots.qr2 <- list(I.qr2, N.qr2, P.qr2, S.qr2, T.qr2)
 
@@ -2368,7 +2376,7 @@ qr_toffs2 <- plot_grid(plotlist = all_plots_qr2,
                        ncol = 2,
                        align = "hv")
 
-ggsave("figures-supplemental/03_fig_s3_intra-gradient_tradeoffs_qr_0.33.jpeg", qr_toffs2, width = 8, height = 12)
+ggsave("figures-supplemental/03_fig_s3_intra-gradient_tradeoffs_qr_0.33.jpeg", qr_toffs2, width = 5.5, height = 8.25)
 
 ###### Figure 2 ######
 
@@ -2383,8 +2391,8 @@ legend_df3 <- data.frame(
 )
 
 legend_plot3 <- ggplot(legend_df3, aes(x = x, y = y)) +
-  geom_point(aes(shape = Group, colour = Group2), size = 3, stroke = 1.5) +
-  geom_line(aes(linetype = LineType), size = 1) +
+  geom_point(aes(shape = Group, colour = Group2), size = 1, stroke = 1) +
+  geom_line(aes(linetype = LineType), size = 0.6) +
   
   scale_shape_manual(name = NULL,
                      values = c("Ancestral" = 5, 
@@ -2407,7 +2415,8 @@ legend_plot3 <- ggplot(legend_df3, aes(x = x, y = y)) +
     values = c("Pareto front" = "solid",
                "50th quantile regression" = "dashed"),
     labels = c("Pareto front" = "Pareto front",
-               "50th quantile regression" = expression(paste("Quantile regression (", tau, " = 0.5)")))
+               "50th quantile regression" = expression(paste("Quantile regression (", tau, " = 0.5)"))),
+    guide = guide_legend(override.aes = list(linewidth = 0.3))
   ) +
   
   labs(linetype = "Quantile regression", color = "Evolutionary context") +
@@ -2420,9 +2429,10 @@ legend_plot3 <- ggplot(legend_df3, aes(x = x, y = y)) +
   
   theme_void() +
   theme(
-    legend.title = element_text(size = 12, face = "bold"),
-    legend.text = element_text(size = 12),
-    legend.key.size = unit(1.2, "lines")
+    legend.title = element_text(size = 10, face = "bold"),
+    legend.text = element_text(size = 10),
+    legend.key.size = unit(0.6, "lines"),
+    legend.key.width = unit(1.2, "lines")
   )
 
 legend_only3 <- get_legend(legend_plot3)
@@ -2433,4 +2443,4 @@ qp_toffs <- plot_grid(plotlist = all_plots_qp,
                        ncol = 2,
                        align = "hv")
 
-ggsave("figures-main/02_fig_2_intra-gradient_tradeoffs.jpeg", qp_toffs, width = 8, height = 12)
+ggsave("figures-main/02_fig_2_intra-gradient_tradeoffs.jpeg", qp_toffs, width = 5.5, height = 8.25)

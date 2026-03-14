@@ -133,15 +133,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 LN.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Competitive ability (1/N*)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "A — Light ~ Nitrogen") +  # labels
+       title = "A — L ~ N") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -171,7 +171,7 @@ LN.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LN.scam.PF  # Display the plot
@@ -240,16 +240,16 @@ summary(q75, se = "boot", R = 1000) # 0.09192, p 0.19607
 summary(q90, se = "boot", R = 1000) # 0.30813, p 0.01439
 
 LN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Competitive ability (1/N*)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "A — Light ~ Nitrogen") +  # labels
+       title = "A — L ~ N") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -278,21 +278,21 @@ LN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LN.qr # Display the plot
 
 LN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
   
   labs(x = "Competitive ability (1/N*)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "A — Light ~ Nitrogen") +  # labels
+       title = "A — L ~ N") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -322,7 +322,7 @@ LN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LN.qp  # Display the plot
@@ -373,15 +373,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 LN.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Competitive ability (1/N*)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "A — Light ~ Nitrogen") +  # labels
+       title = "A — L ~ N") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -410,7 +410,7 @@ LN.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LN.scam.PF2  # Display the plot
@@ -462,16 +462,16 @@ summary(q75, se = "boot", R = 1000) # -0.02992, p 0.64586
 summary(q90, se = "boot", R = 1000) # 0.24567, p 0.11803
 
 LN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Competitive ability (1/N*)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "A — Light ~ Nitrogen") +  # labels
+       title = "A — L ~ N") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -500,7 +500,7 @@ LN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LN.qr2 # Display the plot
@@ -571,15 +571,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 LP.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Competitive ability (1/P*)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "B — Light ~ Phosphorous") +  # labels
+       title = "B — L ~ P") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -609,7 +609,7 @@ LP.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LP.scam.PF  # Display the plot
@@ -678,16 +678,16 @@ summary(q75, se = "boot", R = 1000) # 0.03210, p 0.00050
 summary(q90, se = "boot", R = 1000) # 0.02415, p 0.33480
 
 LP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Competitive ability (1/P*)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "B — Light ~ Phosphorous") +  # labels
+       title = "B — L ~ P") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -716,21 +716,21 @@ LP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LP.qr # Display the plot
 
 LP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
   
   labs(x = "Competitive ability (1/P*)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "B — Light ~ Phosphorous") +  # labels
+       title = "B — L ~ P") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -762,7 +762,7 @@ LP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     label = "PF\nQR\nEvo",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -771,7 +771,7 @@ LP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LP.qp  # Display the plot
@@ -822,15 +822,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 LP.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Competitive ability (1/P*)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "B — Light ~ Phosphorous") +  # labels
+       title = "B — L ~ P") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -859,7 +859,7 @@ LP.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LP.scam.PF2  # Display the plot
@@ -911,16 +911,16 @@ summary(q75, se = "boot", R = 1000) # -0.01812, p 0.06452
 summary(q90, se = "boot", R = 1000) # -0.04438, p 0.02535
 
 LP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Competitive ability (1/P*)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "B — Light ~ Phosphorous") +  # labels
+       title = "B — L ~ P") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -949,7 +949,7 @@ LP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LP.qr2 # Display the plot
@@ -1020,15 +1020,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 LS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Salt tolerance (c)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "C — Light ~ Salt") +  # labels
+       title = "C — L ~ S") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -1058,7 +1058,7 @@ LS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LS.scam.PF  # Display the plot
@@ -1127,16 +1127,16 @@ summary(q75, se = "boot", R = 1000) # 0.00260, p 0.38334
 summary(q90, se = "boot", R = 1000) # -0.00028, p 0.95135
 
 LS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Salt tolerance (c)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "C — Light ~ Salt") +  # labels
+       title = "C — L ~ S") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -1165,21 +1165,21 @@ LS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LS.qr # Display the plot
 
 LS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
   
   labs(x = "Salt tolerance (c)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "C — Light ~ Salt") +  # labels
+       title = "C — L ~ S") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -1211,7 +1211,7 @@ LS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     label = "QR\nEvo",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -1220,7 +1220,7 @@ LS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LS.qp # Display the plot
@@ -1271,15 +1271,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 LS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Salt tolerance (c)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "C — Light ~ Salt") +  # labels
+       title = "C — L ~ S") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -1308,7 +1308,7 @@ LS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LS.scam.PF2  # Display the plot
@@ -1360,16 +1360,16 @@ summary(q75, se = "boot", R = 1000) # -0.01298, p 0.15615
 summary(q90, se = "boot", R = 1000) # -0.03065, p 0.03394
 
 LS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Salt tolerance (c)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "C — Light ~ Salt") +  # labels
+       title = "C — L ~ S") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -1398,7 +1398,7 @@ LS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LS.qr2 # Display the plot
@@ -1469,15 +1469,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 LT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Thermal breadth (°C)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "D — Light ~ Temperature") +  # labels
+       title = "D — L ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -1506,7 +1506,7 @@ LT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LT.scam.PF  # Display the plot
@@ -1575,16 +1575,16 @@ summary(q75, se = "boot", R = 1000) # -0.00547, p 0.40499
 summary(q90, se = "boot", R = 1000) # -0.01590, p 0.14033
 
 LT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Thermal breadth (°C)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "D — Light ~ Temperature") +  # labels
+       title = "D — L ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -1612,21 +1612,21 @@ LT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LT.qr # Display the plot
 
 LT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour ="grey75") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour ="grey75") +
   
   labs(x = "Thermal breadth (°C)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "D — Light ~ Temperature") +  # labels
+       title = "D — L ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -1657,7 +1657,7 @@ LT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     label = "PF\nQR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -1666,7 +1666,7 @@ LT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LT.qp  # Display the plot
@@ -1717,15 +1717,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 LT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Thermal breadth (°C)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "D — Light ~ Temperature") +  # labels
+       title = "D — L ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -1753,7 +1753,7 @@ LT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LT.scam.PF2  # Display the plot
@@ -1805,16 +1805,16 @@ summary(q75, se = "boot", R = 1000) # -0.06586, p 0.02414
 summary(q90, se = "boot", R = 1000) # -0.04010, p 0.26075
 
 LT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Thermal breadth (°C)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "D — Light ~ Temperature") +  # labels
+       title = "D — L ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -1842,7 +1842,7 @@ LT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 LT.qr2 # Display the plot
@@ -1915,15 +1915,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NP.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Competitive ability (1/P*)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "E — Nitrogen ~ Phosphorous") +  # labels
+       title = "E — N ~ P") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -1953,7 +1953,7 @@ NP.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NP.scam.PF  # Display the plot
@@ -2022,16 +2022,16 @@ summary(q75, se = "boot", R = 1000) # 0.09402, p 0.00166
 summary(q90, se = "boot", R = 1000) # 0.22667, p 0.00119
 
 NP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Competitive ability (1/P*)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "E — Nitrogen ~ Phosphorous") +  # labels
+       title = "E — N ~ P") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -2060,21 +2060,21 @@ NP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NP.qr # Display the plot
 
 NP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
   
   labs(x = "Competitive ability (1/P*)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "E — Nitrogen ~ Phosphorous") +  # labels
+       title = "E — N ~ P") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -2106,7 +2106,7 @@ NP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     label = "PF\nEvo",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -2115,7 +2115,7 @@ NP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NP.qp  # Display the plot
@@ -2166,15 +2166,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NP.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Competitive ability (1/P*)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "E — Nitrogen ~ Phosphorous") +  # labels
+       title = "E — N ~ P") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -2203,7 +2203,7 @@ NP.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NP.scam.PF2  # Display the plot
@@ -2255,16 +2255,16 @@ summary(q75, se = "boot", R = 1000) # -0.06268, p 0.10995
 summary(q90, se = "boot", R = 1000) # -0.17067, p 0.07251
 
 NP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Competitive ability (1/P*)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "E — Nitrogen ~ Phosphorous") +  # labels
+       title = "E — N ~ P") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -2293,7 +2293,7 @@ NP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NP.qr2 # Display the plot
@@ -2364,15 +2364,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Salt tolerance (c)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "F — Nitrogen ~ Salt") +  # labels
+       title = "F — N ~ S") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -2402,7 +2402,7 @@ NS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NS.scam.PF  # Display the plot
@@ -2471,16 +2471,16 @@ summary(q75, se = "boot", R = 1000) # -0.02768, p 0.00147
 summary(q90, se = "boot", R = 1000) # -0.06527, p 0.00000
 
 NS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Salt tolerance (c)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "F — Nitrogen ~ Salt") +  # labels
+       title = "F — N ~ S") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -2509,21 +2509,21 @@ NS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NS.qr # Display the plot
 
 NS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
   
   labs(x = "Salt tolerance (c)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "F — Nitrogen ~ Salt") +  # labels
+       title = "F — N ~ S") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -2555,7 +2555,7 @@ NS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     label = "PF\nQR\nEvo",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -2564,7 +2564,7 @@ NS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NS.qp  # Display the plot
@@ -2615,15 +2615,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Salt tolerance (c)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "F — Nitrogen ~ Salt") +  # labels
+       title = "F — N ~ S") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -2652,7 +2652,7 @@ NS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NS.scam.PF2  # Display the plot
@@ -2704,16 +2704,16 @@ summary(q75, se = "boot", R = 1000) # -0.09032, p 0.00006
 summary(q90, se = "boot", R = 1000) # -0.13925, p 0.00000
 
 NS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Salt tolerance (c)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "F — Nitrogen ~ Salt") +  # labels
+       title = "F — N ~ S") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -2742,7 +2742,7 @@ NS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NS.qr2 # Display the plot
@@ -2813,15 +2813,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Thermal breadth  (°C)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "G — Nitrogen ~ Temperature") +  # labels
+       title = "G — N ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -2850,7 +2850,7 @@ NT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NT.scam.PF  # Display the plot
@@ -2919,16 +2919,16 @@ summary(q75, se = "boot", R = 1000) # 0.00464, p 0.85017
 summary(q90, se = "boot", R = 1000) # -0.00888, p 0.91359
 
 NT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Thermal breadth  (°C)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "G — Nitrogen ~ Temperature") +  # labels
+       title = "G — N ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -2956,21 +2956,21 @@ NT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NT.qr # Display the plot
 
 NT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
   
   labs(x = "Thermal breadth  (°C)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "G — Nitrogen ~ Temperature") +  # labels
+       title = "G — N ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -3001,7 +3001,7 @@ NT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     label = "QR\nEvo",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -3010,7 +3010,7 @@ NT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NT.qp  # Display the plot
@@ -3061,15 +3061,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Thermal breadth  (°C)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "G — Nitrogen ~ Temperature") +  # labels
+       title = "G — N ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -3097,7 +3097,7 @@ NT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NT.scam.PF2  # Display the plot
@@ -3149,16 +3149,16 @@ summary(q75, se = "boot", R = 1000) # -0.16831, p 0.01299
 summary(q90, se = "boot", R = 1000) # -0.18959, p 0.03341
 
 NT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Thermal breadth  (°C)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "G — Nitrogen ~ Temperature") +  # labels
+       title = "G — N ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -3186,7 +3186,7 @@ NT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NT.qr2 # Display the plot
@@ -3259,15 +3259,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Salt tolerance (c)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "H — Phosphorous ~ Salt") +  # labels
+       title = "H — P ~ S") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -3297,7 +3297,7 @@ PS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PS.scam.PF  # Display the plot
@@ -3366,16 +3366,16 @@ summary(q75, se = "boot", R = 1000) # -0.05791, p 0.34517
 summary(q90, se = "boot", R = 1000) # 0.00233, p 0.98237
 
 PS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Salt tolerance (c)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "H — Phosphorous ~ Salt") +  # labels
+       title = "H — P ~ S") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -3404,21 +3404,21 @@ PS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PS.qr # Display the plot
 
 PS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
   
   labs(x = "Salt tolerance (c)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "H — Phosphorous ~ Salt") +  # labels
+       title = "H — P ~ S") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -3450,7 +3450,7 @@ PS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     label = "PF\nQR\nEvo",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -3459,7 +3459,7 @@ PS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PS.qp  # Display the plot
@@ -3510,15 +3510,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Salt tolerance (c)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "H — Phosphorous ~ Salt") +  # labels
+       title = "H — P ~ S") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -3547,7 +3547,7 @@ PS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PS.scam.PF2  # Display the plot
@@ -3599,16 +3599,16 @@ summary(q75, se = "boot", R = 1000) # -0.32403, p 0.00012
 summary(q90, se = "boot", R = 1000) # -0.50261, p 0.00124
 
 PS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Salt tolerance (c)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "H — Phosphorous ~ Salt") +  # labels
+       title = "H — P ~ S") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -3637,7 +3637,7 @@ PS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PS.qr2 # Display the plot
@@ -3707,15 +3707,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Thermal breadth  (°C)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "I — Phosphorous ~ Temperature") +  # labels
+       title = "I — P ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -3744,7 +3744,7 @@ PT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PT.scam.PF  # Display the plot
@@ -3813,16 +3813,16 @@ summary(q75, se = "boot", R = 1000) # -0.11350, p 0.08494
 summary(q90, se = "boot", R = 1000) # -0.00321, p 0.99148
 
 PT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Thermal breadth  (°C)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "I — Phosphorous ~ Temperature") +  # labels
+       title = "I — P ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -3850,21 +3850,21 @@ PT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PT.qr # Display the plot
 
 PT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
   
   labs(x = "Thermal breadth  (°C)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "I — Phosphorous ~ Temperature") +  # labels
+       title = "I — P ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -3895,7 +3895,7 @@ PT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     label = "QR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -3904,7 +3904,7 @@ PT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PT.qp  # Display the plot
@@ -3955,15 +3955,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Thermal breadth  (°C)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "I — Phosphorous ~ Temperature") +  # labels
+       title = "I — P ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -3991,7 +3991,7 @@ PT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PT.scam.PF2  # Display the plot
@@ -4043,16 +4043,16 @@ summary(q75, se = "boot", R = 1000) # -0.55033, p 0.01965
 summary(q90, se = "boot", R = 1000) # -0.60035, p 0.05660
 
 PT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Thermal breadth  (°C)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "I — Phosphorous ~ Temperature") +  # labels
+       title = "I — P ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -4080,7 +4080,7 @@ PT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PT.qr2 # Display the plot
@@ -4153,15 +4153,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 ST.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Thermal breadth  (°C)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "J — Salt ~ Temperature") +  # labels
+       title = "J — S ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -4190,7 +4190,7 @@ ST.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 ST.scam.PF  # Display the plot
@@ -4259,16 +4259,16 @@ summary(q75, se = "boot", R = 1000) # 0.73870, p 0.02432
 summary(q90, se = "boot", R = 1000) # -0.05454, p 0.91506
 
 ST.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Thermal breadth  (°C)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "J — Salt ~ Temperature") +  # labels
+       title = "J — S ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -4296,21 +4296,21 @@ ST.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 ST.qr # Display the plot
 
 ST.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
   
   labs(x = "Thermal breadth  (°C)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "J — Salt ~ Temperature") +  # labels
+       title = "J — S ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -4341,7 +4341,7 @@ ST.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     label = "PF\nQR\nEvo",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -4350,7 +4350,7 @@ ST.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 ST.qp  # Display the plot
@@ -4402,15 +4402,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 ST.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Thermal breadth  (°C)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "J — Salt ~ Temperature") +  # labels
+       title = "J — S ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -4438,7 +4438,7 @@ ST.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 ST.scam.PF2  # Display the plot
@@ -4490,16 +4490,16 @@ summary(q75, se = "boot", R = 1000) # -1.40537, p 0.00035
 summary(q90, se = "boot", R = 1000) # -1.54548, p 0.00000
 
 ST.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Thermal breadth  (°C)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "J — Salt ~ Temperature") +  # labels
+       title = "J — S ~ T") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -4527,7 +4527,7 @@ ST.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 ST.qr2 # Display the plot
@@ -4543,8 +4543,8 @@ legend_df <- data.frame(
 )
 
 legend_plot <- ggplot(legend_df, aes(x = x, y = y)) +
-  geom_point(aes(shape = Group, colour = Group2), size = 3, stroke = 1.5) +
-  geom_line(aes(linetype = LineType), size = 1) +
+  geom_point(aes(shape = Group, colour = Group2), size = 1, stroke = 1) +
+  geom_line(aes(linetype = LineType), size = 0.6) +
   scale_shape_manual(name = NULL,
                      values = c("Ancestral" = 5, 
                                 "Other" = 1, 
@@ -4563,13 +4563,16 @@ legend_plot <- ggplot(legend_df, aes(x = x, y = y)) +
   
   scale_linetype_manual(values = c("Outer" = "dashed", "Inner (75%)" = "solid"),
                         labels = c("Outer", "Inner (75%)"),
-                        name = "Pareto front") +
+                        name = "Pareto front",
+                        guide = guide_legend(override.aes = list(linewidth = 0.3))) +
+  
   labs(linetype = "Quantile regression", color = "Evolutionary context") +
   theme_void() +
   theme(
     legend.title = element_text(size = 12, face = "bold"),
     legend.text = element_text(size = 12),
-    legend.key.size = unit(1.2, "lines")
+    legend.key.size = unit(0.6, "lines"),
+    legend.key.width = unit(1.2, "lines")
   )
 
 legend_only <- get_legend(legend_plot)
@@ -4584,7 +4587,7 @@ full_toffs <- plot_grid(
   axis = "tblr"
 )
 
-ggsave("figures-supplemental/11_fig_s11_inter-gradient_toffs.jpeg", full_toffs, width = 15, height = 15)
+ggsave("figures-supplemental/11_fig_s11_inter-gradient_toffs.jpeg", full_toffs, width = 10, height = 10)
 
 full_toffs2 <- plot_grid(
   LN.scam.PF2, LP.scam.PF2, LS.scam.PF2, LT.scam.PF2,
@@ -4596,7 +4599,7 @@ full_toffs2 <- plot_grid(
   axis = "tblr"
 )
 
-ggsave("figures-misc/02_fig3_inter-gradient_toffs_33.jpeg", full_toffs2, width = 15, height = 15)
+ggsave("figures-misc/02_fig3_inter-gradient_toffs_33.jpeg", full_toffs2, width = 10, height = 10)
 
 legend_df2 <- data.frame(
   x = c(1, 2, 1, 2, 1, 2, 1, 2),
@@ -4607,8 +4610,8 @@ legend_df2 <- data.frame(
 )
 
 legend_plot2 <- ggplot(legend_df2, aes(x = x, y = y)) +
-  geom_point(aes(shape = Group, colour = Group2), size = 3, stroke = 1.5) +
-  geom_line(aes(linetype = LineType), size = 1) +
+  geom_point(aes(shape = Group, colour = Group2), size = 1, stroke = 1) +
+  geom_line(aes(linetype = LineType), size = 0.6) +
   scale_shape_manual(name = NULL,
                      values = c("Ancestral" = 5, 
                                 "Other" = 1, 
@@ -4627,14 +4630,17 @@ legend_plot2 <- ggplot(legend_df2, aes(x = x, y = y)) +
   
   scale_linetype_manual(values = c("50th" = "dotted", "75th" = "dashed", "90th" = "solid"),
                         labels = c("50th", "75th", "90th"),
-                        name = "Quantile regression") +
+                        name = "Quantile regression",
+                        guide = guide_legend(override.aes = list(linewidth = 0.3))) +
+  
   labs(linetype = "Quantile regression", color = "Evolutionary context") +
   
   theme_void() +
   theme(
     legend.title = element_text(size = 12, face = "bold"),
     legend.text = element_text(size = 12),
-    legend.key.size = unit(1.2, "lines")
+    legend.key.size = unit(0.6, "lines"),
+    legend.key.width = unit(1.2, "lines")
   )
 
 
@@ -4650,7 +4656,7 @@ full_qrs <- plot_grid(
   axis = "tblr"
 )
 
-ggsave("figures-supplemental/05_fig_s5_inter-gradient_qrs.jpeg", full_qrs, width = 15, height = 15)
+ggsave("figures-supplemental/05_fig_s5_inter-gradient_qrs.jpeg", full_qrs, width = 10, height = 10)
 
 full_qrs2 <- plot_grid(
   LN.qr2, LP.qr2, LS.qr2, LT.qr2,
@@ -4662,7 +4668,7 @@ full_qrs2 <- plot_grid(
   axis = "tblr"
 )
 
-ggsave("figures-supplemental/06_fig_s6_inter-gradient_qrs_33.jpeg", full_qrs2, width = 15, height = 15)
+ggsave("figures-supplemental/06_fig_s6_inter-gradient_qrs_33.jpeg", full_qrs2, width = 10, height = 10)
 
 ###### Figure 3 ######
 
@@ -4675,8 +4681,8 @@ legend_df3 <- data.frame(
 )
 
 legend_plot3 <- ggplot(legend_df3, aes(x = x, y = y)) +
-  geom_point(aes(shape = Group, colour = Group2), size = 3, stroke = 1.5) +
-  geom_line(aes(linetype = LineType), size = 1) +
+  geom_point(aes(shape = Group, colour = Group2), size = 1, stroke = 1) +
+  geom_line(aes(linetype = LineType), size = 0.6) +
   
   scale_shape_manual(name = NULL,
                      values = c("Ancestral" = 5, 
@@ -4699,7 +4705,8 @@ legend_plot3 <- ggplot(legend_df3, aes(x = x, y = y)) +
     values = c("Pareto front" = "solid",
                "50th quantile regression" = "dashed"),
     labels = c("Pareto front" = "Pareto front",
-               "50th quantile regression" = expression(paste("Quantile regression (", tau, " = 0.5)")))
+               "50th quantile regression" = expression(paste("Quantile regression (", tau, " = 0.5)"))),
+    guide = guide_legend(override.aes = list(linewidth = 0.3))
   ) +
   
   labs(linetype = "Quantile regression", color = "Evolutionary context") +
@@ -4714,7 +4721,8 @@ legend_plot3 <- ggplot(legend_df3, aes(x = x, y = y)) +
   theme(
     legend.title = element_text(size = 12, face = "bold"),
     legend.text = element_text(size = 12),
-    legend.key.size = unit(1.2, "lines")
+    legend.key.size = unit(0.6, "lines"),
+    legend.key.width = unit(1.2, "lines")
   )
 
 legend_only3 <- get_legend(legend_plot3)
@@ -4729,7 +4737,7 @@ full_qps <- plot_grid(
   axis = "tblr"
 )
 
-ggsave("figures-main/03_fig_3_inter-gradient_toffs.jpeg", full_qps, width = 15, height = 15)
+ggsave("figures-main/03_fig_3_inter-gradient_toffs.jpeg", full_qps, width = 10, height = 10)
 
 # Supplementary figure? Other traits and ecological parameters ------------
 
@@ -4801,15 +4809,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NcL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "A — Light ~ Nitrogen content") +  # labels
+       title = "A — L ~ N content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -4838,7 +4846,7 @@ NcL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcL.scam  # Display the plot
@@ -4907,16 +4915,16 @@ summary(q75, se = "boot", R = 1000) # 0.00009, p 0.04977
 summary(q90, se = "boot", R = 1000) # 0.00008, p 0.44367
 
 NcL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "A — Light ~ Nitrogen content") +  # labels
+       title = "A — L ~ N content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -4944,21 +4952,21 @@ NcL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcL.qr # Display the plot
 
 NcL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "A — Light ~ Nitrogen content") +  # labels
+       title = "A — L ~ N content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -4989,7 +4997,7 @@ NcL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     label = "QR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -4998,7 +5006,7 @@ NcL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcL.qp  # Display the plot
@@ -5049,15 +5057,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NcL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "A — Light ~ Nitrogen content") +  # labels
+       title = "A — L ~ N content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -5085,7 +5093,7 @@ NcL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcL.scam2  # Display the plot
@@ -5137,16 +5145,16 @@ summary(q75, se = "boot", R = 1000) # -0.00046, p 0.04629
 summary(q90, se = "boot", R = 1000) # -0.00061, p 0.04951
 
 NcL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "A — Light ~ Nitrogen content") +  # labels
+       title = "A — L ~ N content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -5174,7 +5182,7 @@ NcL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcL.qr2 # Display the plot
@@ -5245,15 +5253,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NcN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "E — Nitrogen ~ Nitrogen content") +  # labels
+       title = "E — N ~ N content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -5282,7 +5290,7 @@ NcN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcN.scam  # Display the plot
@@ -5351,16 +5359,16 @@ summary(q75, se = "boot", R = 1000) # 0.00022, p 0.50087
 summary(q90, se = "boot", R = 1000) # 0.00051, p 0.30126
 
 NcN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "E — Nitrogen ~ Nitrogen content ") +  # labels
+       title = "E — N ~ N content ") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -5388,21 +5396,21 @@ NcN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcN.qr # Display the plot
 
 NcN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "E — Nitrogen ~ Nitrogen content") +  # labels
+       title = "E — N ~ N content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -5433,7 +5441,7 @@ NcN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     label = "QR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -5442,7 +5450,7 @@ NcN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcN.qp  # Display the plot
@@ -5493,15 +5501,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NcN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "E — Nitrogen ~ Nitrogen content") +  # labels
+       title = "E — N ~ N content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -5529,7 +5537,7 @@ NcN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcN.scam2  # Display the plot
@@ -5581,16 +5589,16 @@ summary(q75, se = "boot", R = 1000) # -0.00103, p 0.31630
 summary(q90, se = "boot", R = 1000) # -0.00133, p 0.17212
 
 NcN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "E — Nitrogen ~ Nitrogen content ") +  # labels
+       title = "E — N ~ N content ") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -5618,7 +5626,7 @@ NcN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcN.qr2 # Display the plot
@@ -5689,15 +5697,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NcP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "I — Phosphorous ~ Nitrogen content") +  # labels
+       title = "I — P ~ N content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -5726,7 +5734,7 @@ NcP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcP.scam  # Display the plot
@@ -5795,16 +5803,16 @@ summary(q75, se = "boot", R = 1000) # 0.00111, p 0.22943
 summary(q90, se = "boot", R = 1000) # 0.00372, p 0.03176
 
 NcP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "I — Phosphorous ~ Nitrogen content ") +  # labels
+       title = "I — P ~ N content ") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -5832,21 +5840,21 @@ NcP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcP.qr # Display the plot
 
 NcP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "I — Phosphorous ~ Nitrogen content") +  # labels
+       title = "I — P ~ N content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -5877,7 +5885,7 @@ NcP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     label = "QR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -5886,7 +5894,7 @@ NcP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcP.qp  # Display the plot
@@ -5937,15 +5945,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NcP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "I — Phosphorous ~ Nitrogen content") +  # labels
+       title = "I — P ~ N content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -5973,7 +5981,7 @@ NcP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcP.scam2  # Display the plot
@@ -6025,16 +6033,16 @@ summary(q75, se = "boot", R = 1000) # -0.00433, p 0.08163
 summary(q90, se = "boot", R = 1000) # -0.00277, p 0.51054
 
 NcP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "I — Phosphorous ~ Nitrogen content ") +  # labels
+       title = "I — P ~ N content ") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -6062,7 +6070,7 @@ NcP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcP.qr2 # Display the plot
@@ -6133,15 +6141,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NcS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "M — Salt ~ Nitrogen content") +  # labels
+       title = "M — S ~ N content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -6170,7 +6178,7 @@ NcS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcS.scam  # Display the plot
@@ -6239,16 +6247,16 @@ summary(q75, se = "boot", R = 1000) # 0.00982, p 0.02564
 summary(q90, se = "boot", R = 1000) # 0.00364, p 0.51458
 
 NcS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "M — Salt ~ Nitrogen content ") +  # labels
+       title = "M — S ~ N content ") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -6276,21 +6284,21 @@ NcS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcS.qr # Display the plot
 
 NcS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "M — Salt ~ Nitrogen content") +  # labels
+       title = "M — S ~ N content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -6321,7 +6329,7 @@ NcS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     label = "QR\nEvo",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -6330,7 +6338,7 @@ NcS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcS.qp  # Display the plot
@@ -6381,15 +6389,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NcS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "M — Salt ~ Nitrogen content") +  # labels
+       title = "M — S ~ N content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -6417,7 +6425,7 @@ NcS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcS.scam2  # Display the plot
@@ -6469,16 +6477,16 @@ summary(q75, se = "boot", R = 1000) # -0.00861, p 0.00160
 summary(q90, se = "boot", R = 1000) # -0.00652, p 0.52877
 
 NcS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "M — Salt ~ Nitrogen content ") +  # labels
+       title = "M — S ~ N content ") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -6506,7 +6514,7 @@ NcS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcS.qr2 # Display the plot
@@ -6576,15 +6584,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NcT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "Q — Temperature ~ Nitrogen content") +  # labels
+       title = "Q — T ~ N content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -6612,7 +6620,7 @@ NcT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcT.scam  # Display the plot
@@ -6681,16 +6689,16 @@ summary(q75, se = "boot", R = 1000) # -0.00016, p 0.86536
 summary(q90, se = "boot", R = 1000) # 0.00054, p 0.71248
 
 NcT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "Q — Temperature ~ Nitrogen content") +  # labels
+       title = "Q — T ~ N content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -6717,21 +6725,21 @@ NcT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcT.qr # Display the plot
 
 NcT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "Q — Temperature ~ Nitrogen content") +  # labels
+       title = "Q — T ~ N content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -6761,7 +6769,7 @@ NcT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     label = "QR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -6770,7 +6778,7 @@ NcT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcT.qp  # Display the plot
@@ -6787,15 +6795,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NcT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "Q — Temperature ~ Nitrogen content") +  # labels
+       title = "Q — T ~ N content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -6822,7 +6830,7 @@ NcT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcT.scam2  # Display the plot
@@ -6874,16 +6882,16 @@ summary(q75, se = "boot", R = 1000) # -0.00372, p 0.01446
 summary(q90, se = "boot", R = 1000) # -0.00135, p 0.78521
 
 NcT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Nitrogen content (µg/L)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "Q — Temperature ~ Nitrogen content") +  # labels
+       title = "Q — T ~ N content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -6910,7 +6918,7 @@ NcT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 NcT.qr2 # Display the plot
@@ -6983,15 +6991,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PcL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "B — Light ~ Phosphorous content") +  # labels
+       title = "B — L ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -7020,7 +7028,7 @@ PcL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcL.scam  # Display the plot
@@ -7089,16 +7097,16 @@ summary(q75, se = "boot", R = 1000) # 0.00034, p 0.01331
 summary(q90, se = "boot", R = 1000) # 0.00039, p 0.15525
 
 PcL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "B — Light ~ Phosphorous content") +  # labels
+       title = "B — L ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -7126,21 +7134,21 @@ PcL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcL.qr # Display the plot
 
 PcL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "black") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "black") +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "B — Light ~ Phosphorous content") +  # labels
+       title = "B — L ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -7169,7 +7177,7 @@ PcL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcL.qp  # Display the plot
@@ -7220,15 +7228,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PcL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "B — Light ~ Phosphorous content") +  # labels
+       title = "B — L ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -7256,7 +7264,7 @@ PcL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcL.scam2  # Display the plot
@@ -7308,16 +7316,16 @@ summary(q75, se = "boot", R = 1000) # -0.00057, p 0.46649
 summary(q90, se = "boot", R = 1000) # -0.00122, p 0.14541
 
 PcL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "B — Light ~ Phosphorous content") +  # labels
+       title = "B — L ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -7345,7 +7353,7 @@ PcL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcL.qr2 # Display the plot
@@ -7416,15 +7424,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PcN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "F — Nitrogen ~ Phosphorous content") +  # labels
+       title = "F — N ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -7453,7 +7461,7 @@ PcN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcN.scam  # Display the plot
@@ -7522,16 +7530,16 @@ summary(q75, se = "boot", R = 1000) # 0.00225, p 0.03009
 summary(q90, se = "boot", R = 1000) # 0.00166, p 0.45654
 
 PcN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "F — Nitrogen ~ Phosphorous content") +  # labels
+       title = "F — N ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -7559,21 +7567,21 @@ PcN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcN.qr # Display the plot
 
 PcN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "F — Nitrogen ~ Phosphorous content") +  # labels
+       title = "F — N ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -7604,7 +7612,7 @@ PcN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     label = "QR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -7613,7 +7621,7 @@ PcN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcN.qp  # Display the plot
@@ -7664,15 +7672,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PcN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "F — Nitrogen ~ Phosphorous content") +  # labels
+       title = "F — N ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -7700,7 +7708,7 @@ PcN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcN.scam2  # Display the plot
@@ -7752,16 +7760,16 @@ summary(q75, se = "boot", R = 1000) # -0.00237, p 0.36629
 summary(q90, se = "boot", R = 1000) # -0.00420, p 0.04351
 
 PcN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "F — Nitrogen ~ Phosphorous content") +  # labels
+       title = "F — N ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -7789,7 +7797,7 @@ PcN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcN.qr2 # Display the plot
@@ -7860,15 +7868,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PcP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "J — Phosphorous ~ Phosphorous content") +  # labels
+       title = "J — P ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -7897,7 +7905,7 @@ PcP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcP.scam  # Display the plot
@@ -7966,16 +7974,16 @@ summary(q75, se = "boot", R = 1000) # 0.00836, p 0.03873
 summary(q90, se = "boot", R = 1000) # 0.01521, p 0.02417
 
 PcP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "J — Phosphorous ~ Phosphorous content ") +  # labels
+       title = "J — P ~ P content ") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -8003,21 +8011,21 @@ PcP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcP.qr # Display the plot
 
 PcP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "J — Phosphorous ~ Phosphorous content") +  # labels
+       title = "J — P ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -8048,7 +8056,7 @@ PcP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     label = "Evo",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -8057,7 +8065,7 @@ PcP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcP.qp  # Display the plot
@@ -8108,15 +8116,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PcP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "J — Phosphorous ~ Phosphorous content") +  # labels
+       title = "J — P ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -8144,7 +8152,7 @@ PcP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcP.scam2  # Display the plot
@@ -8196,16 +8204,16 @@ summary(q75, se = "boot", R = 1000) # 0.00106, p 0.89316
 summary(q90, se = "boot", R = 1000) # -0.00445, p 0.77422
 
 PcP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "J — Phosphorous ~ Phosphorous content ") +  # labels
+       title = "J — P ~ P content ") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -8233,7 +8241,7 @@ PcP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcP.qr2 # Display the plot
@@ -8304,15 +8312,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PcS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "N — Salt ~ Phosphorous content") +  # labels
+       title = "N — S ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -8341,7 +8349,7 @@ PcS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcS.scam  # Display the plot
@@ -8410,16 +8418,16 @@ summary(q75, se = "boot", R = 1000) # 0.04268, p 0.03941
 summary(q90, se = "boot", R = 1000) # 0.01528, p 0.38908
 
 PcS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "N — Salt ~ Phosphorous content ") +  # labels
+       title = "N — S ~ P content ") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -8447,21 +8455,21 @@ PcS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcS.qr # Display the plot
 
 PcS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "N — Salt ~ Phosphorous content") +  # labels
+       title = "N — S ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -8492,7 +8500,7 @@ PcS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     label = "PF\nQR\nEvo",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -8501,7 +8509,7 @@ PcS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcS.qp  # Display the plot
@@ -8552,15 +8560,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PcS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "N — Salt ~ Phosphorous content") +  # labels
+       title = "N — S ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -8588,7 +8596,7 @@ PcS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcS.scam2  # Display the plot
@@ -8640,16 +8648,16 @@ summary(q75, se = "boot", R = 1000) # -0.03374, p 0.02828
 summary(q90, se = "boot", R = 1000) # -0.02828, p 0.37493
 
 PcS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "N — Salt ~ Phosphorous content ") +  # labels
+       title = "N — S ~ P content ") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -8677,7 +8685,7 @@ PcS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcS.qr2 # Display the plot
@@ -8747,15 +8755,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PcT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "R — Temperature ~ Phosphorous content") +  # labels
+       title = "R — T ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -8783,7 +8791,7 @@ PcT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcT.scam  # Display the plot
@@ -8852,16 +8860,16 @@ summary(q75, se = "boot", R = 1000) # -0.00093, p 0.71606
 summary(q90, se = "boot", R = 1000) # -0.00324, p 0.47270
 
 PcT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "R — Temperature ~ Phosphorous content") +  # labels
+       title = "R — T ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -8888,21 +8896,21 @@ PcT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcT.qr # Display the plot
 
 PcT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "R — Temperature ~ Phosphorous content") +  # labels
+       title = "R — T ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -8932,7 +8940,7 @@ PcT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     label = "PF\nQR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -8941,7 +8949,7 @@ PcT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcT.qp  # Display the plot
@@ -8958,15 +8966,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PcT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "R — Temperature ~ Phosphorous content") +  # labels
+       title = "R — T ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -8993,7 +9001,7 @@ PcT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcT.scam2  # Display the plot
@@ -9045,16 +9053,16 @@ summary(q75, se = "boot", R = 1000) # -0.01267, p 0.00001
 summary(q90, se = "boot", R = 1000) # -0.01785, p 0.03259
 
 PcT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Phosphorous content (µg/L)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "R — Temperature ~ Phosphorous content") +  # labels
+       title = "R — T ~ P content") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -9081,7 +9089,7 @@ PcT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PcT.qr2 # Display the plot
@@ -9154,15 +9162,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PigL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "C — Light ~ Pigmentation") +  # labels
+       title = "C — L ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -9191,7 +9199,7 @@ PigL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigL.scam  # Display the plot
@@ -9260,16 +9268,16 @@ summary(q75, se = "boot", R = 1000) # -0.00275, p 0.47986
 summary(q90, se = "boot", R = 1000) # -0.01291, p 0.27035
 
 PigL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "C — Light ~ Pigmentation") +  # labels
+       title = "C — L ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -9297,21 +9305,21 @@ PigL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigL.qr # Display the plot
 
 PigL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "C — Light ~ Pigmentation") +  # labels
+       title = "C — L ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -9342,7 +9350,7 @@ PigL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     label = "PF\nQR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -9351,7 +9359,7 @@ PigL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigL.qp  # Display the plot
@@ -9402,15 +9410,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PigL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "C — Light ~ Pigmentation") +  # labels
+       title = "C — L ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -9438,7 +9446,7 @@ PigL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = e
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigL.scam2  # Display the plot
@@ -9490,16 +9498,16 @@ summary(q75, se = "boot", R = 1000) # -0.04935, p 0.00006
 summary(q90, se = "boot", R = 1000) # -0.04757, p 0.01455
 
 PigL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "C — Light ~ Pigmentation") +  # labels
+       title = "C — L ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -9527,7 +9535,7 @@ PigL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigL.qr2 # Display the plot
@@ -9598,15 +9606,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PigN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "G — Nitrogen ~ Pigmentation") +  # labels
+       title = "G — N ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -9635,7 +9643,7 @@ PigN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigN.scam  # Display the plot
@@ -9704,16 +9712,16 @@ summary(q75, se = "boot", R = 1000) # -0.01505, p 0.28507
 summary(q90, se = "boot", R = 1000) # -0.00865, p 0.80663
 
 PigN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "G — Nitrogen ~ Pigmentation") +  # labels
+       title = "G — N ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -9741,21 +9749,21 @@ PigN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigN.qr # Display the plot
 
 PigN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "G — Nitrogen ~ Pigmentation") +  # labels
+       title = "G — N ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -9786,7 +9794,7 @@ PigN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     label = "PF\nQR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -9795,7 +9803,7 @@ PigN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigN.qp # Display the plot
@@ -9846,15 +9854,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PigN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "G — Nitrogen ~ Pigmentation") +  # labels
+       title = "G — N ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -9882,7 +9890,7 @@ PigN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = e
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigN.scam2  # Display the plot
@@ -9934,16 +9942,16 @@ summary(q75, se = "boot", R = 1000) # -0.13787, p 0.00305
 summary(q90, se = "boot", R = 1000) # -0.14665, p 0.02946
 
 PigN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "G — Nitrogen ~ Pigmentation") +  # labels
+       title = "G — N ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -9971,7 +9979,7 @@ PigN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigN.qr2 # Display the plot
@@ -10042,15 +10050,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PigP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "K — Phosphorous ~ Pigmentation") +  # labels
+       title = "K — P ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -10079,7 +10087,7 @@ PigP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigP.scam  # Display the plot
@@ -10148,16 +10156,16 @@ summary(q75, se = "boot", R = 1000) # -0.06936, p 0.29569
 summary(q90, se = "boot", R = 1000) # 0.16533, p 0.35863
 
 PigP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "K — Phosphorous ~ Pigmentation") +  # labels
+       title = "K — P ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -10185,21 +10193,21 @@ PigP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigP.qr # Display the plot
 
 PigP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "K — Phosphorous ~ Pigmentation") +  # labels
+       title = "K — P ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -10230,7 +10238,7 @@ PigP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     label = "QR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -10239,7 +10247,7 @@ PigP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigP.qp  # Display the plot
@@ -10290,15 +10298,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PigP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "K — Phosphorous ~ Pigmentation") +  # labels
+       title = "K — P ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -10326,7 +10334,7 @@ PigP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = e
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigP.scam2  # Display the plot
@@ -10378,16 +10386,16 @@ summary(q75, se = "boot", R = 1000) # -0.55311, p 0.00005
 summary(q90, se = "boot", R = 1000) # -0.21914, p 0.47361
 
 PigP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "K — Phosphorous ~ Pigmentation") +  # labels
+       title = "K — P ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -10415,7 +10423,7 @@ PigP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigP.qr2 # Display the plot
@@ -10486,15 +10494,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PigS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "O — Salt ~ Pigmentation") +  # labels
+       title = "O — S ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -10523,7 +10531,7 @@ PigS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigS.scam  # Display the plot
@@ -10592,16 +10600,16 @@ summary(q75, se = "boot", R = 1000) # -0.10218, p 0.75565
 summary(q90, se = "boot", R = 1000) # 0.29134, p 0.64177
 
 PigS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "O — Salt ~ Pigmentation") +  # labels
+       title = "O — S ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -10629,21 +10637,21 @@ PigS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigS.qr # Display the plot
 
 PigS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "O — Salt ~ Pigmentation") +  # labels
+       title = "O — S ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -10674,7 +10682,7 @@ PigS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     label = "PF\nQR\nEvo",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -10683,7 +10691,7 @@ PigS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigS.qp  # Display the plot
@@ -10734,15 +10742,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PigS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "O — Salt ~ Pigmentation") +  # labels
+       title = "O — S ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -10770,7 +10778,7 @@ PigS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = e
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigS.scam2  # Display the plot
@@ -10822,16 +10830,16 @@ summary(q75, se = "boot", R = 1000) # -1.06833, p 0.00000
 summary(q90, se = "boot", R = 1000) # -0.50327, p 0.46718
 
 PigS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "O — Salt ~ Pigmentation") +  # labels
+       title = "O — S ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -10859,7 +10867,7 @@ PigS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigS.qr2 # Display the plot
@@ -10929,15 +10937,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PigT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "S — Temperature ~ Pigmentation") +  # labels
+       title = "S — T ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -10965,7 +10973,7 @@ PigT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigT.scam  # Display the plot
@@ -11034,16 +11042,16 @@ summary(q75, se = "boot", R = 1000) # 0.18932, p 0.02285
 summary(q90, se = "boot", R = 1000) # 0.16959, p 0.23742
 
 PigT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "S — Temperature ~ Pigmentation") +  # labels
+       title = "S — T ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -11070,21 +11078,21 @@ PigT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigT.qr # Display the plot
 
 PigT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "S — Temperature ~ Pigmentation") +  # labels
+       title = "S — T ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -11114,7 +11122,7 @@ PigT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     label = "PF\nQR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -11123,7 +11131,7 @@ PigT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigT.qp  # Display the plot
@@ -11140,15 +11148,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PigT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "S — Temperature ~ Pigmentation") +  # labels
+       title = "S — T ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -11175,7 +11183,7 @@ PigT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = e
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigT.scam2  # Display the plot
@@ -11227,16 +11235,16 @@ summary(q75, se = "boot", R = 1000) # -0.20899, p 0.06843
 summary(q90, se = "boot", R = 1000) # -0.08127, p 0.69250
 
 PigT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Pigmentation (PC1)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "S — Temperature ~ Pigmentation") +  # labels
+       title = "S — T ~ Pigmentation") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -11263,7 +11271,7 @@ PigT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 PigT.qr2 # Display the plot
@@ -11336,15 +11344,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 BvL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Biovolume",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "D — Light ~ Biovolume") +  # labels
+       title = "D — L ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -11373,7 +11381,7 @@ BvL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvL.scam  # Display the plot
@@ -11442,16 +11450,16 @@ summary(q75, se = "boot", R = 1000) # -0.00047, p 0.00033
 summary(q90, se = "boot", R = 1000) # -0.00062, p 0.04025
 
 BvL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Biovolume",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "D — Light ~ Biovolume") +  # labels
+       title = "D — L ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -11479,21 +11487,21 @@ BvL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvL.qr # Display the plot
 
 BvL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
   
   labs(x = "Biovolume",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "D — Light ~ Biovolume") +  # labels
+       title = "D — L ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -11524,7 +11532,7 @@ BvL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     label = "PF\nQR\nEvo",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -11533,7 +11541,7 @@ BvL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvL.qp  # Display the plot
@@ -11584,15 +11592,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 BvL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Biovolume",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "D — Light ~ Biovolume") +  # labels
+       title = "D — L ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -11620,7 +11628,7 @@ BvL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvL.scam2  # Display the plot
@@ -11672,16 +11680,16 @@ summary(q75, se = "boot", R = 1000) # -0.00101, p 0.01775
 summary(q90, se = "boot", R = 1000) # -0.00169, p 0.00024
 
 BvL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Biovolume",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
-       title = "D — Light ~ Biovolume") +  # labels
+       title = "D — L ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -11709,7 +11717,7 @@ BvL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvL.qr2 # Display the plot
@@ -11780,15 +11788,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 BvN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Biovolume",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "H — Nitrogen ~ Biovolume") +  # labels
+       title = "H — N ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -11817,7 +11825,7 @@ BvN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvN.scam  # Display the plot
@@ -11886,16 +11894,16 @@ summary(q75, se = "boot", R = 1000) # -0.00161, p 0.00005
 summary(q90, se = "boot", R = 1000) # -0.00282, p 0.00085
 
 BvN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Biovolume",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "H — Nitrogen ~ Biovolume") +  # labels
+       title = "H — N ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -11923,21 +11931,21 @@ BvN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvN.qr # Display the plot
 
 BvN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
   
   labs(x = "Biovolume",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "H — Nitrogen ~ Biovolume") +  # labels
+       title = "H — N ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -11968,7 +11976,7 @@ BvN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     label = "PF\nQR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -11977,7 +11985,7 @@ BvN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvN.qp  # Display the plot
@@ -12028,15 +12036,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 BvN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Biovolume",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "H — Nitrogen ~ Biovolume") +  # labels
+       title = "H — N ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12064,7 +12072,7 @@ BvN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvN.scam2  # Display the plot
@@ -12116,16 +12124,16 @@ summary(q75, se = "boot", R = 1000) # -0.00581, p 0.00001
 summary(q90, se = "boot", R = 1000) # -0.00530, p 0.00045
 
 BvN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Biovolume",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
-       title = "H — Nitrogen ~ Biovolume") +  # labels
+       title = "H — N ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12153,7 +12161,7 @@ BvN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvN.qr2 # Display the plot
@@ -12224,15 +12232,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 BvP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Biovolume",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "L — Phosphorous ~ Biovolume") +  # labels
+       title = "L — P ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12261,7 +12269,7 @@ BvP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvP.scam  # Display the plot
@@ -12330,16 +12338,16 @@ summary(q75, se = "boot", R = 1000) # -0.00352, p 0.03869
 summary(q90, se = "boot", R = 1000) # -0.00484, p 0.37283
 
 BvP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Biovolume",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "L — Phosphorous ~ Biovolume") +  # labels
+       title = "L — P ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12367,21 +12375,21 @@ BvP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvP.qr # Display the plot
 
 BvP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
   
   labs(x = "Biovolume",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "L — Phosphorous ~ Biovolume") +  # labels
+       title = "L — P ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12412,7 +12420,7 @@ BvP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     label = "QR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -12421,7 +12429,7 @@ BvP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvP.qp  # Display the plot
@@ -12472,15 +12480,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 BvP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Biovolume",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "L — Phosphorous ~ Biovolume") +  # labels
+       title = "L — P ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12508,7 +12516,7 @@ BvP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvP.scam2  # Display the plot
@@ -12560,16 +12568,16 @@ summary(q75, se = "boot", R = 1000) # -0.01767, p 0.00000
 summary(q90, se = "boot", R = 1000) # -0.02611, p 0.01542
 
 BvP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Biovolume",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
-       title = "L — Phosphorous ~ Biovolume") +  # labels
+       title = "L — P ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12597,7 +12605,7 @@ BvP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvP.qr2 # Display the plot
@@ -12668,15 +12676,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 BvS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Biovolume",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "P — Salt ~ Biovolume") +  # labels
+       title = "P — S ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12705,7 +12713,7 @@ BvS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvS.scam  # Display the plot
@@ -12774,16 +12782,16 @@ summary(q75, se = "boot", R = 1000) # 0.00776, p 0.12510
 summary(q90, se = "boot", R = 1000) # 0.00512, p 0.72937
 
 BvS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Biovolume",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "P — Salt ~ Biovolume") +  # labels
+       title = "P — S ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12811,21 +12819,21 @@ BvS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvS.qr # Display the plot
 
 BvS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
   
   labs(x = "Biovolume",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "P — Salt ~ Biovolume") +  # labels
+       title = "P — S ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12856,7 +12864,7 @@ BvS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     label = "PF\nQR\nEvo",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -12865,7 +12873,7 @@ BvS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvS.qp  # Display the plot
@@ -12916,15 +12924,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 BvS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Biovolume",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "O — Salt ~ Biovolume") +  # labels
+       title = "O — S ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -12952,7 +12960,7 @@ BvS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvS.scam2  # Display the plot
@@ -13004,16 +13012,16 @@ summary(q75, se = "boot", R = 1000) # -0.05217, p 0.00000
 summary(q90, se = "boot", R = 1000) # -0.02876, p 0.00994
 
 BvS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Biovolume",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
-       title = "P — Salt ~ Biovolume") +  # labels
+       title = "P — S ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -13041,7 +13049,7 @@ BvS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvS.qr2 # Display the plot
@@ -13111,15 +13119,15 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 BvT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Biovolume",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "T — Temperature ~ Biovolume") +  # labels
+       title = "T — T ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -13147,7 +13155,7 @@ BvT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvT.scam  # Display the plot
@@ -13216,16 +13224,16 @@ summary(q75, se = "boot", R = 1000) # -0.00106, p 0.69709
 summary(q90, se = "boot", R = 1000) # -0.00864, p 0.07157
 
 BvT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Biovolume",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "T — Temperature ~ Biovolume") +  # labels
+       title = "T — T ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -13252,21 +13260,21 @@ BvT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvT.qr # Display the plot
 
 BvT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dashed", colour = "grey75") +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
   
   labs(x = "Biovolume",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "T — Temperature ~ Biovolume") +  # labels
+       title = "T — T ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -13296,7 +13304,7 @@ BvT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     label = "PF\nQR",
     hjust = 0,
     vjust = 1,
-    size = 3.5,
+    size = 2.4,
     fontface = "bold"
   ) +
   
@@ -13305,7 +13313,7 @@ BvT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvT.qp  # Display the plot
@@ -13322,15 +13330,15 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 BvT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 1.1, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 1.1, linetype = "dashed", inherit.aes = FALSE) +
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
   labs(x = "Biovolume",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "T — Temperature ~ Biovolume") +  # labels
+       title = "T — T ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -13357,7 +13365,7 @@ BvT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvT.scam2  # Display the plot
@@ -13409,16 +13417,16 @@ summary(q75, se = "boot", R = 1000) # -0.01678, p 0.00157
 summary(q90, se = "boot", R = 1000) # -0.02035, p 0.00012
 
 BvT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 3, stroke = 1.5) +  # Scatter plot of raw data
+  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
-  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 1.1) +
-  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 1.1, linetype = "dashed") +
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 1.1, linetype = "dotted") +
+  geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
+  geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
   labs(x = "Biovolume",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
-       title = "T — Temperature ~ Biovolume") +  # labels
+       title = "T — T ~ Biovolume") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -13445,7 +13453,7 @@ BvT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
 
 BvT.qr2 # Display the plot
@@ -13463,7 +13471,7 @@ extra_toffs <- plot_grid(
   axis = "tblr"
 )
 
-ggsave("figures-supplemental/07_fig_s7_extra_inter-gradient_toffs.jpeg", extra_toffs, width = 15, height = 20)
+ggsave("figures-supplemental/07_fig_s7_extra_inter-gradient_toffs.jpeg", extra_toffs, width = 10, height = 12.5)
 
 extra_toffs2 <- plot_grid(
   NcL.scam2, PcL.scam2, PigL.scam2, BvL.scam2,
@@ -13476,7 +13484,7 @@ extra_toffs2 <- plot_grid(
   axis = "tblr"
 )
 
-ggsave("figures-misc/03_fig_s7_extra_inter-gradient_toffs_33.jpeg", extra_toffs2, width = 15, height = 20)
+ggsave("figures-misc/03_fig_s7_extra_inter-gradient_toffs_33.jpeg", extra_toffs2, width = 10, height = 12.5)
 
 extra_qrs <- plot_grid(
   NcL.qr, PcL.qr, PigL.qr, BvL.qr,
@@ -13489,7 +13497,7 @@ extra_qrs <- plot_grid(
   axis = "tblr"
 )
 
-ggsave("figures-supplemental/08_fig_s8_extra_inter-gradient_toffs_qrs.jpeg", extra_qrs, width = 15, height = 20)
+ggsave("figures-supplemental/08_fig_s8_extra_inter-gradient_toffs_qrs.jpeg", extra_qrs, width = 10, height = 12.5)
 
 extra_qrs2 <- plot_grid(
   NcL.qr2, PcL.qr2, PigL.qr2, BvL.qr2,
@@ -13502,4 +13510,4 @@ extra_qrs2 <- plot_grid(
   axis = "tblr"
 )
 
-ggsave("figures-supplemental/09_fig_s9_extra_inter-gradient_toffs_qrs_33.jpeg", extra_qrs2, width = 15, height = 20)
+ggsave("figures-supplemental/09_fig_s9_extra_inter-gradient_toffs_qrs_33.jpeg", extra_qrs2, width = 10, height = 12.5)

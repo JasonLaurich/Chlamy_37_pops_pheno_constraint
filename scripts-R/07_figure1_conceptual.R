@@ -38,27 +38,27 @@ p.A <- ggplot(df.A, aes(x = x, y = y)) +
   theme_classic() +
   
   geom_segment(
-    aes(x = 5.1, y = 5.1, xend = 11.9, yend = 11.9),
-    inherit.aes = FALSE,
-    colour = "red3", linewidth = 1.5,
-    arrow = arrow(length = unit(2.1, "mm"), ends = "both", type = "closed")) +
-  
-  geom_segment(
     x = 15,  y = 9,
     xend = 9,   yend = 15,
-    colour = "goldenrod2", linewidth = 1.5) +
+    colour = "goldenrod2", linewidth = 0.75) +
   
-  geom_point(size= 3) +
+  geom_segment(
+    aes(x = 5.1, y = 5.1, xend = 11.9, yend = 11.9),
+    inherit.aes = FALSE,
+    colour = "red3", linewidth = 0.75,
+    arrow = arrow(length = unit(0.9, "mm"), ends = "both", type = "closed")) +
   
-  labs(x = "Trait 1 (e.g. maximum growth rate)",    
+  geom_point(size= 1) +
+  
+  labs(x = "Trait 1 (e.g. growth rate)",    
        y = "Trait 2 (e.g. stress tolerance)", 
-       title = "A — genotypic variation") +  # labels
+       title = "A — genotypes") +  # labels
   
   theme(
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   ) +
   
   coord_cartesian(xlim = c(5,18), ylim = c(5,18), expand = FALSE) 
@@ -86,30 +86,30 @@ p.B <- ggplot(df.B, aes(x = x, y = y)) +
   geom_segment(
     x = 15,  y = 9,
     xend = 9,   yend = 15,
-    colour = "goldenrod2", linewidth = 1.5) +
+    colour = "goldenrod2", linewidth = 0.75) +
   
   geom_segment(
     x = 17,  y = 10,
     xend = 10,   yend = 17,
-    colour = "goldenrod2", linewidth = 1.5) +
+    colour = "goldenrod2", linewidth = 0.75) +
   
   geom_segment(
     aes(x = 5.1, y = 5.1, xend = 13.4, yend = 13.4),
     inherit.aes = FALSE,
-    colour = "red3", linewidth = 1.5,
-    arrow = arrow(length = unit(2.1, "mm"), ends = "both", type = "closed")) +
+    colour = "red3", linewidth = 0.75,
+    arrow = arrow(length = unit(0.9, "mm"), ends = "both", type = "closed")) +
   
-  geom_point(size= 3) +
+  geom_point(size= 1) +
   
-  labs(x = "Trait 1 (e.g. maximum growth rate)",    
+  labs(x = "Trait 1 (e.g. growth rate)",    
        y = "Trait 2 (e.g. stress tolerance)",  
-       title = "B — genotypic variation") +  # labels
+       title = "B — genotypes") +  # labels
   
   theme(
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   ) +
   
   # annotate("text", x = 14, y = 14, label = "Pareto fronts", size = 5.1, fontface = "bold", colour = "goldenrod2", angle = -45) +
@@ -148,16 +148,17 @@ df.C2 <- df.C2 %>%
 df.C <- rbind(df.C, df.C2)
 
 p.C <- ggplot(df.C, aes(x = x, y = y)) +
-  geom_point(size= 3) +
   
   geom_polygon(data = poly.band.C, aes(x, y),
                fill = "grey60", alpha = 0.3, colour = NA,
                inherit.aes = FALSE) +
   
+  geom_point(size= 1) +
+  
   geom_segment(
     x = 20,  y = 9.5,
     xend = 9.5,   yend = 20,
-    colour = "goldenrod2", linewidth = 1.5) +
+    colour = "goldenrod2", linewidth = 0.75) +
   
   scale_y_continuous(limits = c(0, 21), breaks = c(0, 5, 10, 15, 20)) +
   scale_x_continuous(limits = c(0, 21), breaks = c(0, 5, 10, 15, 20)) +
@@ -168,9 +169,9 @@ p.C <- ggplot(df.C, aes(x = x, y = y)) +
   geom_spoke(aes(angle = -pi/4,       radius = x.ci), linewidth = 0.6) +
   geom_spoke(aes(angle = -pi/4 + pi,  radius = x.ci), linewidth = 0.6) +
   
-  labs(x = "Trait 1 (e.g. maximum growth rate)",    
+  labs(x = "Trait 1 (e.g. growth rate)",    
        y = "Trait 2 (e.g. stress tolerance)", 
-       title = "C — variation among species") +  # labels
+       title = "C — species") +  # labels
   
   theme_classic() +
   
@@ -178,7 +179,7 @@ p.C <- ggplot(df.C, aes(x = x, y = y)) +
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   ) +
   
   coord_cartesian(xlim = c(0,21), ylim = c(0,21), expand = FALSE) 
@@ -201,9 +202,9 @@ p.D <- ggplot(df.D, aes(x = x, y = y)) +
   geom_segment(
     x = 20,  y = 9.5,
     xend = 9.5,   yend = 20,
-    colour = "goldenrod2", linewidth = 1.5) +
+    colour = "goldenrod2", linewidth = 0.75) +
   
-  geom_point(size= 3) +
+  geom_point(size= 1) +
   
   scale_y_continuous(limits = c(0, 21), breaks = c(0, 5, 10, 15, 20)) +
   scale_x_continuous(limits = c(0, 21), breaks = c(0, 5, 10, 15, 20)) +
@@ -214,9 +215,9 @@ p.D <- ggplot(df.D, aes(x = x, y = y)) +
   geom_spoke(aes(angle = -pi/4,       radius = x.ci), linewidth = 0.6) +
   geom_spoke(aes(angle = -pi/4 + pi,  radius = x.ci), linewidth = 0.6) +
   
-  labs(x = "Trait 1 (e.g. maximum growth rate)",    
+  labs(x = "Trait 1 (e.g. growth rate)",    
        y = "Trait 2 (e.g. stress tolerance)",  
-       title = "D — variation among species") +  # labels
+       title = "D — species") +  # labels
   
   theme_classic() +
   
@@ -224,7 +225,7 @@ p.D <- ggplot(df.D, aes(x = x, y = y)) +
     legend.position = "none",  
     axis.title = element_text(size = 12, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 14, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   ) +
   
   # annotate("text", x = 15.25, y = 15.25, label = "Pareto front", size = 5.1, fontface = "bold", colour = "goldenrod2", angle = -45) +
@@ -238,4 +239,4 @@ p.D
 p <- (p.A | p.B) / (p.C | p.D)
 p
 
-ggsave("figures-main/01_conceptual_figure.jpeg", p, width = 15, height = 15)
+ggsave("figures-main/01_conceptual_figure.jpeg", p, width = 5.5, height = 5.5) # aiming for ~ 2/3 of a page in width
