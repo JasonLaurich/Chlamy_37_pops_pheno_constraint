@@ -178,6 +178,10 @@ df.arc2 <- df.arc2 %>%
 
 r = 0.06
 
+x.leg <- -1.5
+y.leg <- 0.6
+dy <- 0.18
+
 p.A <- ggplot(df.arc2) +
   
   geom_arc_bar(
@@ -233,7 +237,32 @@ p.A <- ggplot(df.arc2) +
   
   annotate("text", x = -1.5, y = 3.3, label = "Trade-off", size = 4, fontface = "bold") +
   
-  annotate("text", x = 0.75, y = 3.3, label = "Pareto constraint", size = 4, fontface = "bold")
+  annotate("text", x = 0.75, y = 3.3, label = "Pareto constraint", size = 4, fontface = "bold") +
+  
+  annotate("point", x = x.leg, y = y.leg,     colour = "gold", size = 3) +
+  annotate("point", x = x.leg, y = y.leg-dy,  colour = "magenta3", size = 3) +
+  annotate("point", x = x.leg, y = y.leg-2*dy,colour = "firebrick", size = 3) +
+  annotate("point", x = x.leg, y = y.leg-3*dy,colour = "blue", size = 3) +
+  annotate("point", x = x.leg, y = y.leg-4*dy,colour = "black", size = 3) +
+  
+  annotate("text", x = x.leg + 0.1, y = y.leg,     
+           label = "Light", hjust = 0, size = 3) +
+  
+  annotate("text", x = x.leg + 0.1, y = y.leg-dy,  
+           label = "Nitrogen", hjust = 0, size = 3) +
+  
+  annotate("text", x = x.leg + 0.1, y = y.leg-2*dy,
+           label = "Phosphorus", hjust = 0, size = 3) +
+  
+  annotate("text", x = x.leg + 0.1, y = y.leg-3*dy,
+           label = "Salt", hjust = 0, size = 3) +
+  
+  annotate("text", x = x.leg + 0.1, y = y.leg-4*dy,
+           label = "Temperature", hjust = 0, size = 3) +
+  
+  annotate("text", x = x.leg, y = y.leg + 0.18,
+           label = "Selection environment",
+           hjust = 0, fontface = "bold", size = 3)
 
 p.A
 
