@@ -118,7 +118,7 @@ loadings$var.y <- loadings$PC2 + adjust.y
 
 # Create PCA plot with arrows
 pca_plot_arrows <- ggplot(df.pca.res, aes(x = PC1, y = PC2, color = Evolution)) +
-  geom_point(size = 1) +
+  geom_point(size = 2) +
   theme_classic() +
   labs(x = paste("PC 1 (", round(pca.result$sdev[1]^2 / sum(pca.result$sdev^2) * 100, 2), "%)", sep = ""),
        y = paste("PC 2 (", round(pca.result$sdev[2]^2 / sum(pca.result$sdev^2) * 100, 2), "%)", sep = "")) +
@@ -202,7 +202,7 @@ rda_species_evol$var.y <- rda_species_evol$RDA2 + adjust.y.rda1
 
 # Create evolutionary environment RDA plot with arrows
 rda_evol_plot_arrows <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, color = Evolution)) +
-  geom_point(size = 1) +
+  geom_point(size = 2) +
   theme_classic() +
   labs(x = paste0("RDA 1 (", round(rda_var_explained[1], 2), "%)"),
        y = paste0("RDA 2 (", round(rda_var_explained[2], 2), "%)"),
@@ -283,7 +283,7 @@ rda_species_evol$var.y <- rda_species_evol$RDA2 + adjust.y.rda1
 
 # Create evolutionary environment RDA plot with arrows
 rda_evol_plot_arrows_no_NP <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, color = Evolution)) +
-  geom_point(size = 1) +
+  geom_point(size = 2) +
   theme_classic() +
   labs(x = paste("RDA 1 (", round(summary(rda_result_evol)$cont$importance[2, 1] * 100, 2), "%)", sep = ""),
        y = paste("RDA 2 (", round(summary(rda_result_evol)$cont$importance[2, 2] * 100, 2), "%)", sep = ""),
@@ -371,7 +371,7 @@ rda_species_anc$var.y <- rda_species_anc$RDA2 + adjust.y.rda2
 
 # Create evolutionary environment RDA plot with arrows
 rda_anc_plot_arrows <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color = Ancestry)) +
-  geom_point(size = 3) +
+  geom_point(size = 2) +
   theme_classic() +
   labs(x = paste("RDA 1 (", round(summary(rda_result_anc)$cont$importance[2, 1] * 100, 2), "%)", sep = ""),
        y = paste("RDA 2 (", round(summary(rda_result_anc)$cont$importance[2, 2] * 100, 2), "%)", sep = ""),
@@ -449,7 +449,7 @@ rda_species_anc$var.y <- rda_species_anc$RDA2 + adjust.y.rda2
 
 # Create evolutionary environment RDA plot with arrows
 rda_anc_plot_arrows_no_NP <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color = Ancestry)) +
-  geom_point(size = 1) +
+  geom_point(size = 2) +
   theme_classic() +
   labs(x = paste("RDA 1 (", round(summary(rda_result_anc)$cont$importance[2, 1] * 100, 2), "%)", sep = ""),
        y = paste("RDA 2 (", round(summary(rda_result_anc)$cont$importance[2, 2] * 100, 2), "%)", sep = ""),

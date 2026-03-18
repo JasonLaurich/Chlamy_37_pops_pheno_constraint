@@ -644,7 +644,7 @@ tri.poly <- data.frame(
 )
 
 p.l <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
-  geom_point(size = 1) +
+  geom_point(size = 1.5) +
   
   labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),
        y = "Competitive ability (1/I*)", 
@@ -666,10 +666,10 @@ p.l <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
     "text",
     x = -0.3 + 0.85 * (3 - -0.3),
     y = -0.1 + 0.95 * (3.25 - -0.1),
-    label = "Tri\nPF\nQR",
+    label = "Tri\nPF", # Removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -928,7 +928,8 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 I.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -961,7 +962,7 @@ I.scam  # Display the plot
 p.l3 <- p.l + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE)  # Adding scam PF fits
 p.l3
 
-p.l4 <- p.l3 + geom_point(data = df.cr, aes(x = I.µ.max, y = I.comp), size = 1, shape = 8, inherit.aes = FALSE)
+p.l4 <- p.l3 + geom_point(data = df.cr, aes(x = I.µ.max, y = I.comp), size = 1.5, shape = 8, inherit.aes = FALSE)
 p.l4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -1028,7 +1029,8 @@ summary(q75, se = "boot", R = 1000) # -0.03627, p 0.79385
 summary(q90, se = "boot", R = 1000) # 0.24586, p 0.42630 
 
 I.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -1067,7 +1069,8 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 I.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -1144,7 +1147,8 @@ summary(q75, se = "boot", R = 1000) # -1.11815, p 0.00153
 summary(q90, se = "boot", R = 1000) # -1.41332, p 0.00027
 
 I.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -1381,7 +1385,8 @@ tri.poly <- data.frame(
 )
 
 p.ln <- ggplot(df.filt, aes(z.x, z.y)) +
-  geom_point(size = 1) +
+  
+  geom_point(size = 1.5) +
   
   labs(x = "Competitive ability (1/N*)",    
        y = "Competitive ability (1/I*)", 
@@ -1406,7 +1411,7 @@ p.ln <- ggplot(df.filt, aes(z.x, z.y)) +
     label = "Tri\nPF",
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -1658,7 +1663,8 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 LN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -1683,7 +1689,7 @@ LN.scam  # Display the plot
 p.ln3 <- p.ln  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE)  # Adding scam PF fits
 p.ln3
 
-p.ln4 <- p.ln3 + geom_point(data = df.cr, aes(x = N.comp, y = I.comp), size = 1, shape = 8, inherit.aes = FALSE)
+p.ln4 <- p.ln3 + geom_point(data = df.cr, aes(x = N.comp, y = I.comp), size = 1.5, shape = 8, inherit.aes = FALSE)
 p.ln4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -1750,7 +1756,8 @@ summary(q75, se = "boot", R = 1000) # -0.00073, p 0.97499
 summary(q90, se = "boot", R = 1000) # -0.03021, p 0.46629
 
 LN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -1781,7 +1788,8 @@ df.filt3 <- df.filt.x %>%
   select(-distance)
 
 LN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -1850,7 +1858,8 @@ summary(q75, se = "boot", R = 1000) # -0.03021, p 0.19789
 summary(q90, se = "boot", R = 1000) # -0.03298, p 0.19928
 
 LN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -2104,7 +2113,7 @@ p.lp <- ggplot(df.filt, aes(z.x, z.y)) +
     label = "PF",
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -2355,7 +2364,8 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 LP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -2380,7 +2390,7 @@ LP.scam  # Display the plot
 p.lp3 <- p.lp  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) # Adding scam PF fits
 p.lp3
 
-p.lp4 <- p.lp3 + geom_point(data = df.cr, aes(x = P.comp, y = I.comp), size = 1, shape = 8, inherit.aes = FALSE)
+p.lp4 <- p.lp3 + geom_point(data = df.cr, aes(x = P.comp, y = I.comp), size = 1.5, shape = 8, inherit.aes = FALSE)
 p.lp4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -2447,7 +2457,8 @@ summary(q75, se = "boot", R = 1000) # -0.00162, p 0.48585
 summary(q90, se = "boot", R = 1000) # -0.00368, p 0.23022
 
 LP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -2478,7 +2489,8 @@ df.filt3 <- df.filt.x %>%
   select(-distance)
 
 LP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -2547,7 +2559,8 @@ summary(q75, se = "boot", R = 1000) # -0.00400, p 0.15171
 summary(q90, se = "boot", R = 1000) # -0.00620, p 0.07802
 
 LP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -2776,7 +2789,8 @@ tri.poly <- data.frame(
 )
 
 p.lt <- ggplot(df.filt, aes(z.x, z.y)) +
-  geom_point(size = 1) +
+  
+  geom_point(size = 1.5) +
   
   labs(x = "Thermal breadth (°C)",    
        y = "Competitive ability (1/I*)", 
@@ -2798,10 +2812,10 @@ p.lt <- ggplot(df.filt, aes(z.x, z.y)) +
     "text",
     x = 5 + 0.85 * (32 - 5),
     y = 0 + 0.95 * (2.1 - 0),
-    label = "PF\nQR",
+    label = "PF", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -3052,7 +3066,8 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 LT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -3077,7 +3092,7 @@ LT.scam  # Display the plot
 p.lt3 <- p.lt  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) # Adding scam PF fits
 p.lt3
 
-p.lt4 <- p.lt3 + geom_point(data = df.cr, aes(x = T.br, y = I.comp), size = 1, shape = 8, inherit.aes = FALSE)
+p.lt4 <- p.lt3 + geom_point(data = df.cr, aes(x = T.br, y = I.comp), size = 1.5, shape = 8, inherit.aes = FALSE)
 p.lt4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -3144,7 +3159,8 @@ summary(q75, se = "boot", R = 1000) # -0.01195, p 0.60494
 summary(q90, se = "boot", R = 1000) # -0.03679, p 0.16686 
 
 LT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -3175,7 +3191,8 @@ df.filt3 <- df.filt.x %>%
   select(-distance)
 
 LT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -3243,7 +3260,8 @@ summary(q75, se = "boot", R = 1000) # -0.04874, p 0.13643
 summary(q90, se = "boot", R = 1000) # -0.10666, p 0.02034
 
 LT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -3464,7 +3482,8 @@ tri.poly <- data.frame(
 )
 
 p.n <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
-  geom_point(size = 1) +
+  
+  geom_point(size = 1.5) +
   
   labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"), 
        y = "Competitive ability (1/N*)", 
@@ -3737,7 +3756,8 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 N.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -3769,7 +3789,7 @@ N.scam  # Display the plot
 p.n3 <- p.n  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) # Adding scam PF fits
 p.n3
 
-p.n4 <- p.n3 + geom_point(data = df.cr, aes(x = N.µ.max, y = N.comp), size = 1, shape = 8, inherit.aes = FALSE)
+p.n4 <- p.n3 + geom_point(data = df.cr, aes(x = N.µ.max, y = N.comp), size = 1.5, shape = 8, inherit.aes = FALSE)
 p.n4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -3836,7 +3856,8 @@ summary(q75, se = "boot", R = 1000) # 12.10420, p 0.00495
 summary(q90, se = "boot", R = 1000) # 26.00688, p 0.00542 
 
 N.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -3874,7 +3895,8 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 N.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -3950,7 +3972,8 @@ summary(q75, se = "boot", R = 1000) # -10.59224, p 0.43187
 summary(q90, se = "boot", R = 1000) # -13.60864, p 0.28216
 
 N.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -4179,7 +4202,8 @@ tri.poly <- data.frame(
 )
 
 p.np <- ggplot(df.filt, aes(z.x, z.y)) +
-  geom_point(size = 1) +
+  
+  geom_point(size = 1.5) +
   
   labs(x = "Competitive ability (1/P*)", 
        y = "Competitive ability (1/N*)", 
@@ -4446,7 +4470,8 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -4471,7 +4496,7 @@ NP.scam  # Display the plot
 p.np3 <- p.np  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) # Adding scam PF fits
 p.np3
 
-p.np4 <- p.np3 + geom_point(data = df.cr, aes(x = P.comp, y = N.comp), size = 1, shape = 8, inherit.aes = FALSE)
+p.np4 <- p.np3 + geom_point(data = df.cr, aes(x = P.comp, y = N.comp), size = 1.5, shape = 8, inherit.aes = FALSE)
 p.np4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -4538,7 +4563,8 @@ summary(q75, se = "boot", R = 1000) # -0.03540, p 0.87148
 summary(q90, se = "boot", R = 1000) # 0.23716, p 0.35713
 
 NP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -4569,7 +4595,8 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -4638,7 +4665,8 @@ summary(q75, se = "boot", R = 1000) # -0.22174, p 0.30668
 summary(q90, se = "boot", R = 1000) # 0.10430, p 0.71859
 
 NP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -4860,7 +4888,8 @@ tri.poly <- data.frame(
 )
 
 p.nt <- ggplot(df.filt, aes(z.x, z.y)) +
-  geom_point(size = 1) +
+  
+  geom_point(size = 1.5) +
   
   labs(x = "Thermal breadth (°C)", 
        y = "Competitive ability (1/N*)", 
@@ -4882,10 +4911,10 @@ p.nt <- ggplot(df.filt, aes(z.x, z.y)) +
     "text",
     x = 12 + 0.85 * (28.5 - 12),
     y = -1 + 0.95 * (45 - -1),
-    label = "Tri\nPF\nQR",
+    label = "Tri\nPF", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -5136,7 +5165,8 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -5161,7 +5191,7 @@ NT.scam  # Display the plot
 p.nt3 <- p.nt  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) # Adding scam PF fits
 p.nt3
 
-p.nt4 <- p.nt3 + geom_point(data = df.cr, aes(x = T.br, y = N.comp), size = 1, shape = 8, inherit.aes = FALSE)
+p.nt4 <- p.nt3 + geom_point(data = df.cr, aes(x = T.br, y = N.comp), size = 1.5, shape = 8, inherit.aes = FALSE)
 p.nt4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -5228,7 +5258,8 @@ summary(q75, se = "boot", R = 1000) # -1.32741, p 0.28479
 summary(q90, se = "boot", R = 1000) # -2.63843, p 0.15974
 
 NT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -5259,7 +5290,8 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -5328,7 +5360,8 @@ summary(q75, se = "boot", R = 1000) # -2.63843, p 0.10835
 summary(q90, se = "boot", R = 1000) # -3.28776, p 0.04782
 
 NT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -5550,7 +5583,8 @@ tri.poly <- data.frame(
 )
 
 p.p <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
-  geom_point(size = 1) +
+  
+  geom_point(size = 1.5) +
   
   labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/P*)", 
@@ -5572,10 +5606,10 @@ p.p <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
     "text",
     x = 0 + 0.85 * (2.4 - 0),
     y = -0.1 + 0.95 * (340 - -0.1),
-    label = "Tri\nPF\nQR",
+    label = "Tri\nPF", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -5834,7 +5868,8 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 P.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -5867,7 +5902,7 @@ P.scam  # Display the plot
 p.p3 <- p.p  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) # Adding scam PF fits
 p.p3
 
-p.p4 <- p.p3 + geom_point(data = df.cr, aes(x = P.µ.max, y = P.comp), size = 1, shape = 8, inherit.aes = FALSE)
+p.p4 <- p.p3 + geom_point(data = df.cr, aes(x = P.µ.max, y = P.comp), size = 1.5, shape = 8, inherit.aes = FALSE)
 p.p4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -5934,7 +5969,8 @@ summary(q75, se = "boot", R = 1000) # -77.86779, p 0.00031
 summary(q90, se = "boot", R = 1000) # -114.21657, p 0.00002 
 
 P.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -5973,7 +6009,8 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 P.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -6050,7 +6087,8 @@ summary(q75, se = "boot", R = 1000) # -173.05897, p 0.00000
 summary(q90, se = "boot", R = 1000) # -149.80227, p 0.00000
 
 P.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -6288,7 +6326,8 @@ tri.poly <- data.frame(
 )
 
 p.pt <- ggplot(df.filt, aes(z.x, z.y)) +
-  geom_point(size = 1) +
+  
+  geom_point(size = 1.5) +
   
   labs(x = "Thermal breadth (°C)", 
        y = "Competitive ability (1/P*)", 
@@ -6554,7 +6593,8 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -6579,7 +6619,7 @@ PT.scam  # Display the plot
 p.pt3 <- p.pt + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) # Adding scam PF fits
 p.pt3
 
-p.pt4 <- p.pt3 + geom_point(data = df.cr, aes(x = T.br, y = P.comp), size = 1, shape = 8, inherit.aes = FALSE)
+p.pt4 <- p.pt3 + geom_point(data = df.cr, aes(x = T.br, y = P.comp), size = 1.5, shape = 8, inherit.aes = FALSE)
 p.pt4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -6646,7 +6686,8 @@ summary(q75, se = "boot", R = 1000) # 5.76372, p 0.36896
 summary(q90, se = "boot", R = 1000) # 13.68815, p 0.32776
 
 PT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -6677,7 +6718,8 @@ df.filt3 <- df.filt.x %>%
   select(-distance)
 
 PT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -6746,7 +6788,8 @@ summary(q75, se = "boot", R = 1000) # -16.40869, p 0.50140
 summary(q90, se = "boot", R = 1000) # -15.45442, p 0.56041
 
 PT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -6968,7 +7011,8 @@ tri.poly <- data.frame(
 )
 
 p.t <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
-  geom_point(size = 1) +
+  
+  geom_point(size = 1.5) +
   
   labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),  
        y = "Thermal breadth (°C)", 
@@ -6990,10 +7034,10 @@ p.t <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
     "text",
     x = -0.05 + 0.85 * (3.6 - 0.05),
     y = -1 + 0.95 * (47 - -1),
-    label = "PF\nQR",
+    label = "PF", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -7253,7 +7297,8 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 T.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -7287,7 +7332,7 @@ T.scam  # Display the plot
 p.t3 <- p.t  + geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) # Adding scam PF fits
 p.t3
 
-p.t4 <- p.t3 + geom_point(data = df.cr, aes(x = T.µ.max, y = T.br), size = 1, shape = 8, inherit.aes = FALSE)
+p.t4 <- p.t3 + geom_point(data = df.cr, aes(x = T.µ.max, y = T.br), size = 1.5, shape = 8, inherit.aes = FALSE)
 p.t4
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
@@ -7354,7 +7399,8 @@ summary(q75, se = "boot", R = 1000) # 1.07406, p 0.26978
 summary(q90, se = "boot", R = 1000) # -0.24125, p 0.90881 
 
 T.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -7394,7 +7440,8 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 T.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -7472,7 +7519,8 @@ summary(q75, se = "boot", R = 1000) # -5.21847, p 0.00000
 summary(q90, se = "boot", R = 1000) # -4.66452, p 0.00840
 
 T.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
