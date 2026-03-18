@@ -105,6 +105,16 @@ df.arc2 <- bind_rows(
     mutate(start = pi, end = 2*pi, fill = colour.y)
 )
 
+x.mid <- mean(range(df.arc$qrs, na.rm = TRUE))
+y.mid <- mean(range(df.arc$p.par, na.rm = TRUE))
+
+x.span <- diff(range(df.arc$qrs, na.rm = TRUE))
+y.span <- diff(range(df.arc$p.par, na.rm = TRUE))
+
+span <- max(x.span, y.span)
+pad  <- 0.05 * span
+span <- span + 2 * pad
+
 p.A <- ggplot(df.arc2) +
   
   geom_arc_bar(
@@ -216,10 +226,14 @@ p.A <- ggplot(df.arc2) +
   scale_fill_identity() +
   
   labs(
-    x = "Standardized 50th quantile regression slope",
-    y = expression("Pareto front significance: " -log[10](italic("P"))),
+    x = "Trait correlation (median QR slope)",
+    y = expression("Strength of Pareto front (" -log[10](italic("P)"))),
     title = "A"
-  )
+  ) +
+  
+  annotate("text", x = -1.5, y = 3.3, label = "Trade-off", size = 4, fontface = "bold") +
+  
+  annotate("text", x = 0.75, y = 3.3, label = "Pareto constraint", size = 4, fontface = "bold")
 
 p.A
 
@@ -297,10 +311,14 @@ p.B <- ggplot(df.arc3) +
   scale_fill_identity() +
   
   labs(
-    x = "Standardized 50th quantile regression slope",
-    y = expression("Evolutionary optimization significance: " -log[10](italic("P"))),
+    x = "Trait correlation (median QR slope)",
+    y = expression("Strength of evolutionary shift (" -log[10](italic("P)"))),
     title = "B"
-  )
+  )+
+  
+  annotate("text", x = -1.4, y = 3.3, label = "Modularity", size = 4, fontface = "bold") +
+  
+  annotate("text", x = 0.95, y = 3.3, label = "Facilitation", size = 4, fontface = "bold")
 
 p.B
 
@@ -324,224 +342,7 @@ df.C <- df.sum2 %>%
 
 grad.order <- c("I", "N", "P", "T")
 
-df.C <- df.C %>%
-  mutate(
-    grad.x = factor(grad.x, levels = grad.order),
-    grad.y = factor(grad.y, levels = rev(grad.order))
-  )
-
-df.C.long <- df.C %>%
-  pivot_longer(
-    cols = c(micro, macro),
-    names_to = "scale",
-    values_to = "sig"
-  ) %>%
-  mutate(
-    x.num = as.numeric(grad.x),
-    y.num = as.numeric(grad.y),
-    y.plot = ifelse(scale == "micro", y.num + 0.25, y.num - 0.25)
-  )
-
-p.C <- ggplot(df.C.long) +
-  
-  geom_tile(
-    aes(
-      x = x.num,
-      y = y.plot,
-      fill = factor(sig)
-    ),
-    width = 0.9,
-    height = 0.45,
-    color = "black",
-    linewidth = 0.4
-  ) +
-  
-  scale_fill_manual(
-    values = c("0" = "white", "1" = "black")
-  ) +
-  
-  scale_x_continuous(
-    breaks = seq_along(grad.order),
-    labels = grad.order,
-    expand = c(0, 0)
-  ) +
-  
-  scale_y_continuous(
-    breaks = seq_along(rev(grad.order)),
-    labels = rev(grad.order),
-    expand = c(0, 0)
-  ) +
-  
-  coord_fixed() +
-  
-  theme_classic() +
-  theme(
-    legend.position = "none",
-    axis.title = element_blank(),
-    axis.text = element_text(size = 12),
-    axis.ticks = element_blank()
-  )
-
-df.C <- df.sum2 %>%
-  mutate(
-    grad.x = sub("\\..*$", "", trait.x),
-    grad.y = sub("\\..*$", "", trait.y)
-  ) %>%
-  select(grad.x, grad.y, micro, macro) %>%
-  mutate(
-    grad.x = factor(grad.x, levels = grad.order),
-    grad.y = factor(grad.y, levels = rev(grad.order)),
-    x = as.numeric(grad.x),
-    y = as.numeric(grad.y)
-  )
-
-tri.micro <- df.C %>%
-  rowwise() %>%
-  do({
-    tibble(
-      grad.x = .$grad.x,
-      grad.y = .$grad.y,
-      x = .$x,
-      y = .$y,
-      sig = .$micro,
-      part = "micro",
-      px = c(.$x - 0.45, .$x - 0.45, .$x + 0.45),
-      py = c(.$y + 0.45, .$y - 0.45, .$y + 0.45)
-    )
-  }) %>%
-  ungroup()
-
-tri.macro <- df.C %>%
-  rowwise() %>%
-  do({
-    tibble(
-      grad.x = .$grad.x,
-      grad.y = .$grad.y,
-      x = .$x,
-      y = .$y,
-      sig = .$macro,
-      part = "macro",
-      px = c(.$x + 0.45, .$x - 0.45, .$x + 0.45),
-      py = c(.$y - 0.45, .$y - 0.45, .$y + 0.45)
-    )
-  }) %>%
-  ungroup()
-
-tri.C <- bind_rows(tri.micro, tri.macro) %>%
-  mutate(
-    fill = case_when(
-      part == "micro" & sig == 1 ~ "firebrick",
-      part == "macro" & sig == 1 ~ "dodgerblue3",
-      TRUE ~ "white"
-    ),
-    id = paste(grad.x, grad.y, part, row_number(), sep = "_")
-  )
-
-square.C <- df.C
-
-p.C <- ggplot() +
-  
-  geom_tile(
-    data = square.C,
-    aes(x = x, y = y),
-    width = 0.9,
-    height = 0.9,
-    fill = NA,
-    color = "black",
-    linewidth = 0.6
-  ) +
-  
-  geom_polygon(
-    data = tri.C,
-    aes(px, py, group = id, fill = fill),
-    color = "black",
-    linewidth = 0.4
-  ) +
-  
-  scale_fill_identity() +
-  
-  scale_x_continuous(
-    breaks = seq_along(grad.order),
-    labels = grad.order,
-    expand = c(0, 0)
-  ) +
-  
-  scale_y_continuous(
-    breaks = seq_along(rev(grad.order)),
-    labels = rev(grad.order),
-    expand = c(0, 0)
-  ) +
-  
-  coord_fixed() +
-  
-  theme_classic() +
-  theme(
-    axis.title = element_blank(),
-    axis.text = element_text(size = 12),
-    axis.ticks = element_blank(),
-    legend.position = "none"
-  )
-
-p.C
-
-df.C <- df.sum2 %>%
-  mutate(
-    grad.x = sub("\\..*$", "", trait.x),
-    grad.y = sub("\\..*$", "", trait.y)
-  ) %>%
-  select(grad.x, grad.y, micro, macro) %>%
-  mutate(
-    grad.x = factor(grad.x, levels = grad.order),
-    grad.y = factor(grad.y, levels = rev(grad.order)),
-    x = as.numeric(grad.x),
-    y = as.numeric(grad.y),
-    cell.id = paste(grad.x, grad.y, sep = "_")
-  )
-
-tri.micro <- df.C %>%
-  rowwise() %>%
-  do({
-    tibble(
-      grad.x = .$grad.x,
-      grad.y = .$grad.y,
-      x = .$x,
-      y = .$y,
-      sig = .$micro,
-      part = "micro",
-      poly.id = paste(.$cell.id, "micro", sep = "_"),
-      px = c(.$x - 0.45, .$x - 0.45, .$x + 0.45),
-      py = c(.$y + 0.45, .$y - 0.45, .$y + 0.45)
-    )
-  }) %>%
-  ungroup()
-
-tri.macro <- df.C %>%
-  rowwise() %>%
-  do({
-    tibble(
-      grad.x = .$grad.x,
-      grad.y = .$grad.y,
-      x = .$x,
-      y = .$y,
-      sig = .$macro,
-      part = "macro",
-      poly.id = paste(.$cell.id, "macro", sep = "_"),
-      px = c(.$x + 0.45, .$x - 0.45, .$x + 0.45),
-      py = c(.$y - 0.45, .$y - 0.45, .$y + 0.45)
-    )
-  }) %>%
-  ungroup()
-
-tri.C <- bind_rows(tri.micro, tri.macro) %>%
-  mutate(
-    fill = case_when(
-      part == "micro" & sig == 1 ~ "firebrick",
-      part == "macro" & sig == 1 ~ "dodgerblue3",
-      TRUE ~ "white"
-    )
-  )
-
-square.C <- df.C
+grad.labels <- c("Light", "Nitro.", "Phos.", "Temp.")
 
 p.C <- ggplot() +
   
@@ -566,13 +367,13 @@ p.C <- ggplot() +
   
   scale_x_continuous(
     breaks = seq_along(grad.order),
-    labels = grad.order,
+    labels = grad.labels,
     expand = c(0, 0)
-  ) +
+    ) +
   
   scale_y_continuous(
     breaks = seq_along(rev(grad.order)),
-    labels = rev(grad.order),
+    labels = rev(grad.labels),
     expand = c(0, 0)
   ) +
   
@@ -591,13 +392,52 @@ p.C <- ggplot() +
     x = "Niche axis 1",
     y = "Niche axis 2",
     title = "C"
+  ) +
+  
+  annotate(
+    "polygon",
+    x = c(0.75, 0.75, 1.05),
+    y = c(1.45, 1.15, 1.45),
+    fill = "firebrick",
+    color = "black",
+    linewidth = 0.3
+  ) +
+  
+  # blue legend triangle
+  annotate(
+    "polygon",
+    x = c(1.05, 0.75, 1.05),
+    y = c(0.95, 0.95, 1.25),
+    fill = "dodgerblue3",
+    color = "black",
+    linewidth = 0.3
+  ) +
+  
+  # red legend text
+  annotate(
+    "text",
+    x = 1.15,
+    y = 1.4,
+    label = "Chlamydomonas reinhardtii",
+    hjust = 0,
+    size = 3.5,
+    fontface = "italic"
+  ) +
+  
+  # blue legend text
+  annotate(
+    "text",
+    x = 1.15,
+    y = 1.05,
+    label = "Phytoplankton synthesis",
+    hjust = 0,
+    size = 3.5
   )
 
 p.C
 
-summ.fig <- plot_grid(
-  p.A, p.B, p.C,
-  ncol = 3,
-  align = "hv",
-  axis = "tblr"
-)
+# Compile the figure ------------------------------------------------------
+
+summ.fig <- plot_grid(p.A, p.B, p.C, ncol = 1)
+
+ggsave("figures-main/05_fig_5_summary.jpeg", summ.fig, width = 5, height = 15)
