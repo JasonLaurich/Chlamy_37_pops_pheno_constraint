@@ -1,0 +1,16 @@
+﻿trait.x,trait.y,P.pareto,P.evol
+I.µ.max,I.comp,0.001,0.246
+N.µ.max,N.comp,0.001,0.604
+P.µ.max,P.comp,0.001,0.366
+S.µ.max,S.c,0.004,0.001
+T.µ.max,T.br,0.001,NA
+N.comp,I.comp,0.524,0.252
+P.comp,I.comp,0.022,0.015
+S.c,I.comp,0.509,0.001
+T.br,I.comp,0.001,0.77
+P.comp,N.comp,0.048,0.001
+S.c,N.comp,0.001,0.001
+T.br,N.comp,0.571,0.037
+S.c,P.comp,0.041,0.001
+T.br,P.comp,0.075,0.292
+T.br,S.c,0.001,0.001
