@@ -28,9 +28,9 @@ poly.band <- data.frame(
 
 p.A <- ggplot(df.A, aes(x = x, y = y)) +
   
-  geom_polygon(data = poly.band, aes(x, y),
-               fill = "grey60", alpha = 0.3, colour = NA,
-               inherit.aes = FALSE) +
+#  geom_polygon(data = poly.band, aes(x, y),
+#               fill = "grey60", alpha = 0.3, colour = NA,
+#               inherit.aes = FALSE) +
   
   scale_y_continuous(limits = c(5, 18), breaks = c(5, 10, 15)) +
   scale_x_continuous(limits = c(5, 18), breaks = c(5, 10, 15)) +
@@ -52,7 +52,7 @@ p.A <- ggplot(df.A, aes(x = x, y = y)) +
   
   labs(x = "Trait 1 (e.g. growth rate)",    
        y = "Trait 2 (e.g. stress tolerance)", 
-       title = "A — genotypes") +  # labels
+       title = "A — ancestral genotypes") +  # labels
   
   theme(
     legend.position = "none",  
@@ -74,9 +74,9 @@ df.B <- data.frame(
 
 p.B <- ggplot(df.B, aes(x = x, y = y)) +
   
-  geom_polygon(data = poly.band, aes(x, y),
-               fill = "grey60", alpha = 0.3, colour = NA,
-               inherit.aes = FALSE) +
+#  geom_polygon(data = poly.band, aes(x, y),
+#               fill = "grey60", alpha = 0.3, colour = NA,
+#               inherit.aes = FALSE) +
   
   scale_y_continuous(limits = c(5, 18), breaks = c(5, 10, 15)) +
   scale_x_continuous(limits = c(5, 18), breaks = c(5, 10, 15)) +
@@ -103,7 +103,7 @@ p.B <- ggplot(df.B, aes(x = x, y = y)) +
   
   labs(x = "Trait 1 (e.g. growth rate)",    
        y = "Trait 2 (e.g. stress tolerance)",  
-       title = "B — genotypes") +  # labels
+       title = "B — evolved genotypes") +  # labels
   
   theme(
     legend.position = "none",  
@@ -171,7 +171,7 @@ p.C <- ggplot(df.C, aes(x = x, y = y)) +
   
   labs(x = "Trait 1 (e.g. growth rate)",    
        y = "Trait 2 (e.g. stress tolerance)", 
-       title = "C — species") +  # labels
+       title = "C — species, trade-off optimization") +  # labels
   
   theme_classic() +
   
@@ -217,7 +217,7 @@ p.D <- ggplot(df.D, aes(x = x, y = y)) +
   
   labs(x = "Trait 1 (e.g. growth rate)",    
        y = "Trait 2 (e.g. stress tolerance)",  
-       title = "D — species") +  # labels
+       title = "D — species, constraint envelope") +  # labels
   
   theme_classic() +
   
@@ -239,4 +239,4 @@ p.D
 p <- (p.A | p.B) / (p.C | p.D)
 p
 
-ggsave("figures-main/01_conceptual_figure.jpeg", p, width = 5.5, height = 5.5) # aiming for ~ 2/3 of a page in width
+ggsave("figures-main/01_conceptual_figure.jpeg", p, width = 7, height = 7) # aiming for ~ 2/3 of a page in width

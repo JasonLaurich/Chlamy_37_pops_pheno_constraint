@@ -133,7 +133,17 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 LN.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3,
+      "light" =3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -240,7 +250,17 @@ summary(q75, se = "boot", R = 1000) # 0.09192, p 0.19607
 summary(q90, se = "boot", R = 1000) # 0.30813, p 0.01439
 
 LN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3,
+      "light" =3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -284,7 +304,17 @@ LN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
 LN.qr # Display the plot
 
 LN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3,
+      "light" =3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
@@ -373,7 +403,17 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 LN.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3,
+      "light" =3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -462,7 +502,17 @@ summary(q75, se = "boot", R = 1000) # -0.02992, p 0.64586
 summary(q90, se = "boot", R = 1000) # 0.24567, p 0.11803
 
 LN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3,
+      "light" =3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -571,7 +621,17 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 LP.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3,
+      "light" =3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -678,7 +738,17 @@ summary(q75, se = "boot", R = 1000) # 0.03210, p 0.00050
 summary(q90, se = "boot", R = 1000) # 0.02415, p 0.33480
 
 LP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3,
+      "light" =3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -722,7 +792,17 @@ LP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
 LP.qr # Display the plot
 
 LP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3,
+      "light" =3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
@@ -759,10 +839,10 @@ LP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     "text",
     x = 0 + 0.85 * (6 - 0),
     y = 0 + 0.95 * (0.6 - 0),
-    label = "PF\nQR\nEvo",
+    label = "PF\nEvo", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -822,7 +902,17 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 LP.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3,
+      "light" =3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -911,7 +1001,17 @@ summary(q75, se = "boot", R = 1000) # -0.01812, p 0.06452
 summary(q90, se = "boot", R = 1000) # -0.04438, p 0.02535
 
 LP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3,
+      "light" =3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -1020,7 +1120,17 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 LS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3,
+      "light" =3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -1127,7 +1237,17 @@ summary(q75, se = "boot", R = 1000) # 0.00260, p 0.38334
 summary(q90, se = "boot", R = 1000) # -0.00028, p 0.95135
 
 LS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3,
+      "light" =3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -1171,7 +1291,17 @@ LS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
 LS.qr # Display the plot
 
 LS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3,
+      "light" =3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -1208,10 +1338,10 @@ LS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     "text",
     x = 1 + 0.85 * (9.5 - 1),
     y = 0 + 0.95 * (0.6 - 0),
-    label = "QR\nEvo",
+    label = "Evo", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -1271,7 +1401,17 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 LS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3,
+      "light" =3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -1360,7 +1500,17 @@ summary(q75, se = "boot", R = 1000) # -0.01298, p 0.15615
 summary(q90, se = "boot", R = 1000) # -0.03065, p 0.03394
 
 LS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3,
+      "light" =3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -1469,7 +1619,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 LT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" =3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -1575,7 +1734,16 @@ summary(q75, se = "boot", R = 1000) # -0.00547, p 0.40499
 summary(q90, se = "boot", R = 1000) # -0.01590, p 0.14033
 
 LT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" =3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -1618,7 +1786,16 @@ LT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
 LT.qr # Display the plot
 
 LT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" =3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour ="grey75") +
@@ -1654,10 +1831,10 @@ LT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     "text",
     x = 14 + 0.85 * (22 - 14),
     y = 0 + 0.95 * (0.6 - 0),
-    label = "PF\nQR",
+    label = "PF", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -1717,7 +1894,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 LT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" =3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -1805,7 +1991,16 @@ summary(q75, se = "boot", R = 1000) # -0.06586, p 0.02414
 summary(q90, se = "boot", R = 1000) # -0.04010, p 0.26075
 
 LT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" =3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -1915,7 +2110,17 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NP.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3,
+      "phos" =3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -2022,7 +2227,17 @@ summary(q75, se = "boot", R = 1000) # 0.09402, p 0.00166
 summary(q90, se = "boot", R = 1000) # 0.22667, p 0.00119
 
 NP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3,
+      "phos" =3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -2066,7 +2281,17 @@ NP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
 NP.qr # Display the plot
 
 NP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3,
+      "phos" =3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
@@ -2106,7 +2331,7 @@ NP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     label = "PF\nEvo",
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -2166,7 +2391,17 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NP.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3,
+      "phos" =3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -2255,7 +2490,17 @@ summary(q75, se = "boot", R = 1000) # -0.06268, p 0.10995
 summary(q90, se = "boot", R = 1000) # -0.17067, p 0.07251
 
 NP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3,
+      "phos" =3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -2364,7 +2609,17 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3,
+      "salt" =3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -2471,7 +2726,17 @@ summary(q75, se = "boot", R = 1000) # -0.02768, p 0.00147
 summary(q90, se = "boot", R = 1000) # -0.06527, p 0.00000
 
 NS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3,
+      "salt" =3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -2515,7 +2780,17 @@ NS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
 NS.qr # Display the plot
 
 NS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3,
+      "salt" =3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
@@ -2552,10 +2827,10 @@ NS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     "text",
     x = 1 + 0.85 * (9.5 - 1),
     y = 0 + 0.95 * (1.35 - 0),
-    label = "PF\nQR\nEvo",
+    label = "PF\nEvo", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -2615,7 +2890,17 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3,
+      "salt" =3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -2704,7 +2989,17 @@ summary(q75, se = "boot", R = 1000) # -0.09032, p 0.00006
 summary(q90, se = "boot", R = 1000) # -0.13925, p 0.00000
 
 NS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3,
+      "salt" =3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -2813,7 +3108,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -2919,7 +3223,16 @@ summary(q75, se = "boot", R = 1000) # 0.00464, p 0.85017
 summary(q90, se = "boot", R = 1000) # -0.00888, p 0.91359
 
 NT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -2962,7 +3275,16 @@ NT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
 NT.qr # Display the plot
 
 NT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -2998,10 +3320,10 @@ NT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     "text",
     x = 14 + 0.85 * (22 - 14),
     y = 0 + 0.95 * (1.35 - 0),
-    label = "QR\nEvo",
+    label = "Evo", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -3061,7 +3383,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -3149,7 +3480,16 @@ summary(q75, se = "boot", R = 1000) # -0.16831, p 0.01299
 summary(q90, se = "boot", R = 1000) # -0.18959, p 0.03341
 
 NT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -3259,7 +3599,17 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3,
+      "salt" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -3366,7 +3716,17 @@ summary(q75, se = "boot", R = 1000) # -0.05791, p 0.34517
 summary(q90, se = "boot", R = 1000) # 0.00233, p 0.98237
 
 PS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3,
+      "salt" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -3410,7 +3770,17 @@ PS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
 PS.qr # Display the plot
 
 PS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3,
+      "salt" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -3447,10 +3817,10 @@ PS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     "text",
     x = 1 + 0.85 * (9.5 - 1),
     y = 0 + 0.95 * (6 - 0),
-    label = "PF\nQR\nEvo",
+    label = "PF\nEvo", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -3510,7 +3880,17 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3,
+      "salt" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -3599,7 +3979,17 @@ summary(q75, se = "boot", R = 1000) # -0.32403, p 0.00012
 summary(q90, se = "boot", R = 1000) # -0.50261, p 0.00124
 
 PS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3,
+      "salt" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -3707,7 +4097,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -3813,7 +4212,16 @@ summary(q75, se = "boot", R = 1000) # -0.11350, p 0.08494
 summary(q90, se = "boot", R = 1000) # -0.00321, p 0.99148
 
 PT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -3856,7 +4264,16 @@ PT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
 PT.qr # Display the plot
 
 PT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
@@ -3888,16 +4305,7 @@ PT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   ylim(0, 6) +
   xlim(14, 22) +
   
-  annotate(
-    "text",
-    x = 14 + 0.85 * (22 - 14),
-    y = 0 + 0.95 * (6 - 0),
-    label = "QR",
-    hjust = 0,
-    vjust = 1,
-    size = 2.4,
-    fontface = "bold"
-  ) +
+# removed QR
   
   theme_classic() +
   theme(
@@ -3955,7 +4363,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -4043,7 +4460,16 @@ summary(q75, se = "boot", R = 1000) # -0.55033, p 0.01965
 summary(q90, se = "boot", R = 1000) # -0.60035, p 0.05660
 
 PT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -4153,7 +4579,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 ST.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -4259,7 +4694,16 @@ summary(q75, se = "boot", R = 1000) # 0.73870, p 0.02432
 summary(q90, se = "boot", R = 1000) # -0.05454, p 0.91506
 
 ST.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -4302,7 +4746,16 @@ ST.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
 ST.qr # Display the plot
 
 ST.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -4338,10 +4791,10 @@ ST.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
     "text",
     x = 14 + 0.85 * (22 - 14),
     y = 1 + 0.95 * (9.5 - 1),
-    label = "PF\nQR\nEvo",
+    label = "PF\nEvo", # QR removed
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -4402,7 +4855,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 ST.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -4490,7 +4952,16 @@ summary(q75, se = "boot", R = 1000) # -1.40537, p 0.00035
 summary(q90, se = "boot", R = 1000) # -1.54548, p 0.00000
 
 ST.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -4809,7 +5280,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NcL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -4915,7 +5395,16 @@ summary(q75, se = "boot", R = 1000) # 0.00009, p 0.04977
 summary(q90, se = "boot", R = 1000) # 0.00008, p 0.44367
 
 NcL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -4958,7 +5447,16 @@ NcL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
 NcL.qr # Display the plot
 
 NcL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -4990,16 +5488,7 @@ NcL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   ylim(0, 0.6) +
   xlim(145, 635) +
   
-  annotate(
-    "text",
-    x = 145 + 0.85 * (635 - 145),
-    y = 0 + 0.95 * (0.6 - 0),
-    label = "QR",
-    hjust = 0,
-    vjust = 1,
-    size = 2.4,
-    fontface = "bold"
-  ) +
+# removed QR
   
   theme_classic() +
   theme(
@@ -5057,7 +5546,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NcL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -5145,7 +5643,16 @@ summary(q75, se = "boot", R = 1000) # -0.00046, p 0.04629
 summary(q90, se = "boot", R = 1000) # -0.00061, p 0.04951
 
 NcL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -5253,7 +5760,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NcN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -5359,7 +5875,16 @@ summary(q75, se = "boot", R = 1000) # 0.00022, p 0.50087
 summary(q90, se = "boot", R = 1000) # 0.00051, p 0.30126
 
 NcN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -5402,7 +5927,16 @@ NcN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
 NcN.qr # Display the plot
 
 NcN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -5434,16 +5968,7 @@ NcN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   ylim(0, 1.35) +
   xlim(145, 635) +
   
-  annotate(
-    "text",
-    x = 145 + 0.85 * (635 - 145),
-    y = 0 + 0.95 * (1.35 - 0),
-    label = "QR",
-    hjust = 0,
-    vjust = 1,
-    size = 2.4,
-    fontface = "bold"
-  ) +
+  # removed QR
   
   theme_classic() +
   theme(
@@ -5501,7 +6026,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NcN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -5589,7 +6123,16 @@ summary(q75, se = "boot", R = 1000) # -0.00103, p 0.31630
 summary(q90, se = "boot", R = 1000) # -0.00133, p 0.17212
 
 NcN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -5697,7 +6240,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NcP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -5803,7 +6355,16 @@ summary(q75, se = "boot", R = 1000) # 0.00111, p 0.22943
 summary(q90, se = "boot", R = 1000) # 0.00372, p 0.03176
 
 NcP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -5846,7 +6407,16 @@ NcP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
 NcP.qr # Display the plot
 
 NcP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -5878,16 +6448,7 @@ NcP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   ylim(0, 6) +
   xlim(145, 635) +
   
-  annotate(
-    "text",
-    x = 145 + 0.85 * (635 - 145),
-    y = 0 + 0.95 * (6 - 0),
-    label = "QR",
-    hjust = 0,
-    vjust = 1,
-    size = 2.4,
-    fontface = "bold"
-  ) +
+  # removed QR
   
   theme_classic() +
   theme(
@@ -5945,7 +6506,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NcP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -6033,7 +6603,16 @@ summary(q75, se = "boot", R = 1000) # -0.00433, p 0.08163
 summary(q90, se = "boot", R = 1000) # -0.00277, p 0.51054
 
 NcP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -6141,7 +6720,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NcS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -6247,7 +6835,16 @@ summary(q75, se = "boot", R = 1000) # 0.00982, p 0.02564
 summary(q90, se = "boot", R = 1000) # 0.00364, p 0.51458
 
 NcS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -6290,7 +6887,16 @@ NcS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
 NcS.qr # Display the plot
 
 NcS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -6326,10 +6932,10 @@ NcS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     "text",
     x = 145 + 0.85 * (635 - 145),
     y = 1 + 0.95 * (9.5 - 1),
-    label = "QR\nEvo",
+    label = "Evo", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -6389,7 +6995,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NcS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -6477,7 +7092,16 @@ summary(q75, se = "boot", R = 1000) # -0.00861, p 0.00160
 summary(q90, se = "boot", R = 1000) # -0.00652, p 0.52877
 
 NcS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -6584,7 +7208,7 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NcT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -6689,7 +7313,8 @@ summary(q75, se = "boot", R = 1000) # -0.00016, p 0.86536
 summary(q90, se = "boot", R = 1000) # 0.00054, p 0.71248
 
 NcT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -6731,7 +7356,8 @@ NcT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
 NcT.qr # Display the plot
 
 NcT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -6762,16 +7388,7 @@ NcT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   ylim(14, 22) +
   xlim(145, 635) +
   
-  annotate(
-    "text",
-    x = 145 + 0.85 * (635 - 145),
-    y = 14 + 0.95 * (22 - 14),
-    label = "QR",
-    hjust = 0,
-    vjust = 1,
-    size = 2.4,
-    fontface = "bold"
-  ) +
+  # removed QR
   
   theme_classic() +
   theme(
@@ -6795,7 +7412,8 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 NcT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -6882,7 +7500,8 @@ summary(q75, se = "boot", R = 1000) # -0.00372, p 0.01446
 summary(q90, se = "boot", R = 1000) # -0.00135, p 0.78521
 
 NcT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -6991,7 +7610,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PcL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -7097,7 +7725,16 @@ summary(q75, se = "boot", R = 1000) # 0.00034, p 0.01331
 summary(q90, se = "boot", R = 1000) # 0.00039, p 0.15525
 
 PcL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -7140,7 +7777,16 @@ PcL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
 PcL.qr # Display the plot
 
 PcL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "black") +
@@ -7228,7 +7874,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PcL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -7316,7 +7971,16 @@ summary(q75, se = "boot", R = 1000) # -0.00057, p 0.46649
 summary(q90, se = "boot", R = 1000) # -0.00122, p 0.14541
 
 PcL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -7424,7 +8088,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PcN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -7530,7 +8203,16 @@ summary(q75, se = "boot", R = 1000) # 0.00225, p 0.03009
 summary(q90, se = "boot", R = 1000) # 0.00166, p 0.45654
 
 PcN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -7573,7 +8255,16 @@ PcN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
 PcN.qr # Display the plot
 
 PcN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -7605,16 +8296,7 @@ PcN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   ylim(0, 1.35) +
   xlim(30, 175) +
   
-  annotate(
-    "text",
-    x = 30 + 0.85 * (175 - 30),
-    y = 0 + 0.95 * (1.35 - 0),
-    label = "QR",
-    hjust = 0,
-    vjust = 1,
-    size = 2.4,
-    fontface = "bold"
-  ) +
+  # removed QR
   
   theme_classic() +
   theme(
@@ -7672,7 +8354,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PcN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -7760,7 +8451,16 @@ summary(q75, se = "boot", R = 1000) # -0.00237, p 0.36629
 summary(q90, se = "boot", R = 1000) # -0.00420, p 0.04351
 
 PcN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -7868,7 +8568,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PcP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -7974,7 +8683,16 @@ summary(q75, se = "boot", R = 1000) # 0.00836, p 0.03873
 summary(q90, se = "boot", R = 1000) # 0.01521, p 0.02417
 
 PcP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -8017,7 +8735,16 @@ PcP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
 PcP.qr # Display the plot
 
 PcP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
@@ -8056,7 +8783,7 @@ PcP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     label = "Evo",
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -8116,7 +8843,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PcP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -8204,7 +8940,16 @@ summary(q75, se = "boot", R = 1000) # 0.00106, p 0.89316
 summary(q90, se = "boot", R = 1000) # -0.00445, p 0.77422
 
 PcP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -8312,7 +9057,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PcS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -8418,7 +9172,16 @@ summary(q75, se = "boot", R = 1000) # 0.04268, p 0.03941
 summary(q90, se = "boot", R = 1000) # 0.01528, p 0.38908
 
 PcS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -8461,7 +9224,16 @@ PcS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
 PcS.qr # Display the plot
 
 PcS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
@@ -8497,10 +9269,10 @@ PcS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     "text",
     x = 30 + 0.85 * (175 - 30),
     y = 1 + 0.95 * (9.5 - 1),
-    label = "PF\nQR\nEvo",
+    label = "PF\nEvo", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -8560,7 +9332,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PcS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -8648,8 +9429,16 @@ summary(q75, se = "boot", R = 1000) # -0.03374, p 0.02828
 summary(q90, se = "boot", R = 1000) # -0.02828, p 0.37493
 
 PcS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
   
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +  
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
@@ -8755,7 +9544,8 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PcT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -8860,7 +9650,8 @@ summary(q75, se = "boot", R = 1000) # -0.00093, p 0.71606
 summary(q90, se = "boot", R = 1000) # -0.00324, p 0.47270
 
 PcT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -8902,7 +9693,8 @@ PcT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
 PcT.qr # Display the plot
 
 PcT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -8937,10 +9729,10 @@ PcT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     "text",
     x = 30 + 0.85 * (175 - 30),
     y = 14 + 0.95 * (22 - 14),
-    label = "PF\nQR",
+    label = "PF", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -8966,7 +9758,8 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PcT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -9053,7 +9846,8 @@ summary(q75, se = "boot", R = 1000) # -0.01267, p 0.00001
 summary(q90, se = "boot", R = 1000) # -0.01785, p 0.03259
 
 PcT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -9162,7 +9956,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PigL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -9268,7 +10071,16 @@ summary(q75, se = "boot", R = 1000) # -0.00275, p 0.47986
 summary(q90, se = "boot", R = 1000) # -0.01291, p 0.27035
 
 PigL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -9311,7 +10123,16 @@ PigL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
 PigL.qr # Display the plot
 
 PigL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -9347,10 +10168,10 @@ PigL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     "text",
     x = -3.6 + 0.85 * (3.3 - -3.6),
     y = 0 + 0.95 * (0.6 - 0),
-    label = "PF\nQR",
+    label = "PF", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -9410,7 +10231,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PigL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -9498,7 +10328,16 @@ summary(q75, se = "boot", R = 1000) # -0.04935, p 0.00006
 summary(q90, se = "boot", R = 1000) # -0.04757, p 0.01455
 
 PigL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -9606,7 +10445,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PigN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -9712,7 +10560,16 @@ summary(q75, se = "boot", R = 1000) # -0.01505, p 0.28507
 summary(q90, se = "boot", R = 1000) # -0.00865, p 0.80663
 
 PigN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -9755,7 +10612,16 @@ PigN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
 PigN.qr # Display the plot
 
 PigN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -9791,10 +10657,10 @@ PigN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     "text",
     x = -3.6 + 0.85 * (3.3 - -3.6),
     y = 0 + 0.95 * (1.35 - 0),
-    label = "PF\nQR",
+    label = "PF", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -9854,7 +10720,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PigN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -9942,7 +10817,16 @@ summary(q75, se = "boot", R = 1000) # -0.13787, p 0.00305
 summary(q90, se = "boot", R = 1000) # -0.14665, p 0.02946
 
 PigN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -10050,7 +10934,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PigP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -10156,7 +11049,16 @@ summary(q75, se = "boot", R = 1000) # -0.06936, p 0.29569
 summary(q90, se = "boot", R = 1000) # 0.16533, p 0.35863
 
 PigP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -10199,7 +11101,16 @@ PigP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
 PigP.qr # Display the plot
 
 PigP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
@@ -10231,16 +11142,7 @@ PigP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   ylim(0, 6) +
   xlim(-3.6, 3.3) +
   
-  annotate(
-    "text",
-    x = -3.6 + 0.85 * (3.3 - -3.6),
-    y = 0 + 0.95 * (6 - 0),
-    label = "QR",
-    hjust = 0,
-    vjust = 1,
-    size = 2.4,
-    fontface = "bold"
-  ) +
+  # removed QR
   
   theme_classic() +
   theme(
@@ -10298,7 +11200,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PigP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -10386,7 +11297,16 @@ summary(q75, se = "boot", R = 1000) # -0.55311, p 0.00005
 summary(q90, se = "boot", R = 1000) # -0.21914, p 0.47361
 
 PigP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -10494,7 +11414,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PigS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -10600,7 +11529,16 @@ summary(q75, se = "boot", R = 1000) # -0.10218, p 0.75565
 summary(q90, se = "boot", R = 1000) # 0.29134, p 0.64177
 
 PigS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -10643,7 +11581,16 @@ PigS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
 PigS.qr # Display the plot
 
 PigS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -10679,10 +11626,10 @@ PigS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     "text",
     x = -3.6 + 0.85 * (3.3 - -3.6),
     y = 1 + 0.95 * (9.5 - 1),
-    label = "PF\nQR\nEvo",
+    label = "PF\nEvo", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -10742,7 +11689,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PigS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -10830,7 +11786,16 @@ summary(q75, se = "boot", R = 1000) # -1.06833, p 0.00000
 summary(q90, se = "boot", R = 1000) # -0.50327, p 0.46718
 
 PigS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -10937,7 +11902,7 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PigT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -11042,7 +12007,8 @@ summary(q75, se = "boot", R = 1000) # 0.18932, p 0.02285
 summary(q90, se = "boot", R = 1000) # 0.16959, p 0.23742
 
 PigT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -11084,7 +12050,8 @@ PigT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
 PigT.qr # Display the plot
 
 PigT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
@@ -11119,10 +12086,10 @@ PigT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
     "text",
     x = -3.6 + 0.85 * (3.3 - -3.6),
     y = 14 + 0.95 * (22 - 14),
-    label = "PF\nQR",
+    label = "PF", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -11148,7 +12115,8 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 PigT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -11235,7 +12203,8 @@ summary(q75, se = "boot", R = 1000) # -0.20899, p 0.06843
 summary(q90, se = "boot", R = 1000) # -0.08127, p 0.69250
 
 PigT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -11344,7 +12313,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 BvL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -11450,7 +12428,16 @@ summary(q75, se = "boot", R = 1000) # -0.00047, p 0.00033
 summary(q90, se = "boot", R = 1000) # -0.00062, p 0.04025
 
 BvL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -11493,7 +12480,16 @@ BvL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
 BvL.qr # Display the plot
 
 BvL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
@@ -11529,10 +12525,10 @@ BvL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     "text",
     x = 230 + 0.85 * (545 - 230),
     y = 0 + 0.95 * (0.6 - 0),
-    label = "PF\nQR\nEvo",
+    label = "PF\nEvo", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -11592,7 +12588,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 BvL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -11680,7 +12685,16 @@ summary(q75, se = "boot", R = 1000) # -0.00101, p 0.01775
 summary(q90, se = "boot", R = 1000) # -0.00169, p 0.00024
 
 BvL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "light" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -11788,7 +12802,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 BvN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -11894,7 +12917,16 @@ summary(q75, se = "boot", R = 1000) # -0.00161, p 0.00005
 summary(q90, se = "boot", R = 1000) # -0.00282, p 0.00085
 
 BvN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -11937,7 +12969,16 @@ BvN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
 BvN.qr # Display the plot
 
 BvN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
@@ -11973,10 +13014,10 @@ BvN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     "text",
     x = 230 + 0.85 * (545 - 230),
     y = 0 + 0.95 * (1.35 - 0),
-    label = "PF\nQR",
+    label = "PF", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -12036,7 +13077,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 BvN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -12124,7 +13174,16 @@ summary(q75, se = "boot", R = 1000) # -0.00581, p 0.00001
 summary(q90, se = "boot", R = 1000) # -0.00530, p 0.00045
 
 BvN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "nit" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -12232,7 +13291,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 BvP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -12338,7 +13406,16 @@ summary(q75, se = "boot", R = 1000) # -0.00352, p 0.03869
 summary(q90, se = "boot", R = 1000) # -0.00484, p 0.37283
 
 BvP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -12381,7 +13458,16 @@ BvP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
 BvP.qr # Display the plot
 
 BvP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
@@ -12413,16 +13499,7 @@ BvP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   ylim(0, 6) +
   xlim(230, 545) +
   
-  annotate(
-    "text",
-    x = 230 + 0.85 * (545 - 230),
-    y = 0 + 0.95 * (6 - 0),
-    label = "QR",
-    hjust = 0,
-    vjust = 1,
-    size = 2.4,
-    fontface = "bold"
-  ) +
+  # removed QR
   
   theme_classic() +
   theme(
@@ -12480,7 +13557,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 BvP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -12568,7 +13654,16 @@ summary(q75, se = "boot", R = 1000) # -0.01767, p 0.00000
 summary(q90, se = "boot", R = 1000) # -0.02611, p 0.01542
 
 BvP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "phos" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -12676,7 +13771,16 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 BvS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -12782,7 +13886,16 @@ summary(q75, se = "boot", R = 1000) # 0.00776, p 0.12510
 summary(q90, se = "boot", R = 1000) # 0.00512, p 0.72937
 
 BvS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -12825,7 +13938,16 @@ BvS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
 BvS.qr # Display the plot
 
 BvS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -12861,10 +13983,10 @@ BvS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     "text",
     x = 230 + 0.85 * (545 - 230),
     y = 1 + 0.95 * (9.5 - 1),
-    label = "PF\nQR\nEvo",
+    label = "PF\nEvo", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -12924,7 +14046,16 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 BvS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -13012,7 +14143,16 @@ summary(q75, se = "boot", R = 1000) # -0.05217, p 0.00000
 summary(q90, se = "boot", R = 1000) # -0.02876, p 0.00994
 
 BvS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  
+  scale_size_manual(
+    values = c(
+      "other" = 1.5,
+      "ancestral" = 1.5,
+      "salt" = 3
+    )
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -13119,7 +14259,8 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 BvT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -13224,7 +14365,8 @@ summary(q75, se = "boot", R = 1000) # -0.00106, p 0.69709
 summary(q90, se = "boot", R = 1000) # -0.00864, p 0.07157
 
 BvT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -13266,7 +14408,8 @@ BvT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
 BvT.qr # Display the plot
 
 BvT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -13301,10 +14444,10 @@ BvT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     "text",
     x = 230 + 0.85 * (545 - 230),
     y = 14 + 0.95 * (22 - 14),
-    label = "PF\nQR",
+    label = "PF", # removed QR
     hjust = 0,
     vjust = 1,
-    size = 2.4,
+    size = 3,
     fontface = "bold"
   ) +
   
@@ -13330,7 +14473,8 @@ df.filt3 <- df.filt %>%
   select(-distance)
 
 BvT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -13417,7 +14561,8 @@ summary(q75, se = "boot", R = 1000) # -0.01678, p 0.00157
 summary(q90, se = "boot", R = 1000) # -0.02035, p 0.00012
 
 BvT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
