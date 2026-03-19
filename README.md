@@ -1,4 +1,4 @@
-# Widespread Pareto fronts constrain the evolution of ecological limits in phytoplankton
+# Pareto fronts reveal constraints on the evolution of niche-determining traits in phytoplankton
 
 Code and data repository for Laurich et al., 2026 (PNAS submission, manuscript ID - )
 
@@ -43,7 +43,7 @@ repository/
 ├── R2jags-models/         Folder for storing R2 jags models (not uploaded to github due to size constraints)
 │
 ├── figures-main/          Main text figures
-│   └── figures 01-04
+│   └── figures 01-05
 │
 ├── figures-supp/          Supporting text figures
 │   └── figures 01-15
@@ -85,6 +85,7 @@ scam
 sp
 tidyverse
 vegan
+ggforce
 
 ## Author contact information
 Jason R. Laurich

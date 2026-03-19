@@ -362,16 +362,70 @@ df.sum2 <- df.sum %>%  # Filter out salt data (not present in macro)
 
 df.sum2$macro <- c(1,0,1,1, 1,1,1, 0,1, 0)
 
-df.C <- df.sum2 %>%
-  mutate(
-    grad.x = sub("\\..*$", "", trait.x),
-    grad.y = sub("\\..*$", "", trait.y)
-  ) %>%
-  select(grad.x, grad.y, micro, macro)
-
 grad.order <- c("I", "N", "P", "T")
 
 grad.labels <- c("Light", "Nitro.", "Phos.", "Temp.")
+
+df.C <- df.sum2 %>%
+  mutate(
+    grad.x = sub("\\..*$", "", trait.x),
+    grad.y.raw = sub("\\..*$", "", trait.y),
+    x.index = match(grad.x, grad.order),
+    y.index = match(grad.y.raw, grad.order)
+  ) %>%
+  mutate(
+    grad.x = factor(grad.x, levels = grad.order),
+    grad.y = factor(grad.y.raw, levels = rev(grad.order)),
+    x = as.numeric(grad.x),
+    y = as.numeric(grad.y),
+    cell.id = paste(grad.x, grad.y.raw, sep = "_")
+  ) %>%
+  select(grad.x, grad.y, grad.y.raw, x, y, cell.id, micro, macro)
+
+tri.micro <- df.C %>%
+  rowwise() %>%
+  do({
+    tibble(
+      grad.x  = .$grad.x,
+      grad.y  = .$grad.y,
+      x       = .$x,
+      y       = .$y,
+      sig     = .$micro,
+      part    = "micro",
+      poly.id = paste(.$cell.id, "micro", sep = "_"),
+      px      = c(.$x - 0.45, .$x - 0.45, .$x + 0.45),
+      py      = c(.$y + 0.45, .$y - 0.45, .$y + 0.45)
+    )
+  }) %>%
+  ungroup()
+
+tri.macro <- df.C %>%
+  rowwise() %>%
+  do({
+    tibble(
+      grad.x  = .$grad.x,
+      grad.y  = .$grad.y,
+      x       = .$x,
+      y       = .$y,
+      sig     = .$macro,
+      part    = "macro",
+      poly.id = paste(.$cell.id, "macro", sep = "_"),
+      px      = c(.$x + 0.45, .$x - 0.45, .$x + 0.45),
+      py      = c(.$y - 0.45, .$y - 0.45, .$y + 0.45)
+    )
+  }) %>%
+  ungroup()
+
+tri.C <- bind_rows(tri.micro, tri.macro) %>%
+  mutate(
+    fill = case_when(
+      part == "micro" & sig == 1 ~ "firebrick",
+      part == "macro" & sig == 1 ~ "dodgerblue3",
+      TRUE ~ "white"
+    )
+  )
+
+square.C <- df.C
 
 p.C <- ggplot() +
   
@@ -447,10 +501,10 @@ p.C <- ggplot() +
     "text",
     x = 1.15,
     y = 1.4,
-    label = "Chlamydomonas reinhardtii",
+    label = "Microevolutionary scale",
     hjust = 0,
     size = 3.5,
-    fontface = "italic"
+    fontface = "bold"
   ) +
   
   # blue legend text
@@ -458,9 +512,10 @@ p.C <- ggplot() +
     "text",
     x = 1.15,
     y = 1.05,
-    label = "Phytoplankton synthesis",
+    label = "Macroevolutionary scale",
     hjust = 0,
-    size = 3.5
+    size = 3.5,
+    fontface = "bold"
   )
 
 p.C
