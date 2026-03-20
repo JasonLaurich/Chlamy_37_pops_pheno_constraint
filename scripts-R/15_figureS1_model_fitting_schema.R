@@ -4,7 +4,7 @@
 
 # Here I am going to going to create figure S1, which illustrates the models we are fitting and how we extract parameters from them.
 
-# Inputs: 27_summary_table.csv, 02_µ_estimates_temp.csv, 15_µ_estimates_phosphorous.csv, 19_µ_estimates_salt.csv
+# Inputs: 27_summary_table.csv, 02_µ_estimates_temp.csv, 15_µ_estimates_phosphorus.csv, 19_µ_estimates_salt.csv
 # Outputs: in figures-supplemental : 01_fig_s1_model_fitting.jpeg
 
 # Packages & Functions ----------------------------------------------------
@@ -44,7 +44,7 @@ head(df.t.mu)
 df.t.mu <- df.t.mu %>%
   mutate(rep.id = str_c(population, str_sub(well.ID, 1, 3), sep = ".")) # Need to create a unique replicate ID
 
-# Phosphorous
+# Phosphorus
 
 df %>%
   slice_min(P.comp, n = 1) %>%                                          # lowest T.br
@@ -53,7 +53,7 @@ df %>%
   select(population, rep.ID, P.comp, P.µ.max) %>% 
   print()                                                               # rep.IDs 22.D03, 35.D07, 32.D07
 
-df.p.mu <- read.csv('processed-data/15_µ_estimates_phosphorous.csv') # Growth data, phosphorous
+df.p.mu <- read.csv('processed-data/15_µ_estimates_phosphorus.csv') # Growth data, phosphorus
 head(df.p.mu)
 
 df.p.mu <- df.p.mu %>%
@@ -179,7 +179,7 @@ p.t3 <- ggplot(df[df$rep.ID %in% c("2.E04", "4.B03", "27.C07"),], aes(x = T.µ.m
 
 p.t3
 
-###### Phosphorous ######
+###### Phosphorus ######
 
 # Panel D
 
@@ -200,9 +200,9 @@ p.p1 <- ggplot(df.p.mu[df.p.mu$rep.id == "32.D07",], aes(x = phos, y = µ)) +
   
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray40", size = 0.6) +
   
-  labs(x = "Phosphorous concentration (µM)", 
+  labs(x = "Phosphorus concentration (µM)", 
        y = "Exponential growth rate (µ)",
-       title = "D - Phosphorous") +
+       title = "D - Phosphorus") +
   
   theme_classic() +
   theme(
@@ -247,9 +247,9 @@ p.p2 <- ggplot(df.p.mu[df.p.mu$rep.id == "35.D07",], aes(x = phos, y = µ, colou
   geom_line(data = curve.med.p, aes(x = res, y= rate), colour = "forestgreen", size = 0.6) +
   geom_line(data = curve.max.p, aes(x = res, y= rate), colour = "darkorange1", size = 0.6) +
   
-  labs(x = "Phosphorous concentration (µM)", 
+  labs(x = "Phosphorus concentration (µM)", 
        y = "Exponential growth rate (µ)",
-       title = "E - Phosphorous") +
+       title = "E - Phosphorus") +
   
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray40", size = 0.6) +
   
@@ -271,7 +271,7 @@ p.p3 <- ggplot(df[df$rep.ID %in% c("22.D03", "35.D07", "32.D07"),], aes(x = P.µ
   
   labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/P*)",
-       title = "F - Phosphorous") +
+       title = "F - Phosphorus") +
   
   theme_classic() +
   theme(

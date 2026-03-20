@@ -51,7 +51,7 @@ df$Evol.plt <- factor(df$Evol,   # Create nicer labels for plotting
                       labels = c("Ancestral",
                                  "Light limitation",
                                  "Nitrogen limitation", 
-                                 "Phosphorous limitation", 
+                                 "Phosphorus limitation", 
                                  "Salt stress", 
                                  "Biotic depletion", 
                                  "Biotic depletion x Salt", 
@@ -161,7 +161,7 @@ LN.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -279,7 +279,7 @@ LN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -332,7 +332,7 @@ LN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -431,7 +431,7 @@ LN.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -531,7 +531,7 @@ LN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -555,7 +555,7 @@ LN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
 
 LN.qr2 # Display the plot
 
-# Light v phosphorous -----------------------------------------------------
+# Light v phosphorus -----------------------------------------------------
 
 df$evol.bin <- ifelse(df$Evol == "none", 'ancestral', 
                       ifelse(df$Evol == "L", 'light', ifelse(df$Evol == 'P', 'phos', 'other'))) # for testing.
@@ -649,7 +649,7 @@ LP.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -767,7 +767,7 @@ LP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -820,7 +820,7 @@ LP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -930,7 +930,7 @@ LP.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -1030,7 +1030,7 @@ LP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -1148,7 +1148,7 @@ LS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -1266,7 +1266,7 @@ LS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -1319,7 +1319,7 @@ LS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -1429,7 +1429,7 @@ LS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -1529,7 +1529,7 @@ LS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -1646,7 +1646,7 @@ LT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -1762,7 +1762,7 @@ LT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -1813,7 +1813,7 @@ LT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -1921,7 +1921,7 @@ LT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -2019,7 +2019,7 @@ LT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -2044,7 +2044,7 @@ LT.qr2 # Display the plot
 
 # Nitrogen comparisons ----------------------------------------------------
 
-# Nitrogen v phosphorous --------------------------------------------------
+# Nitrogen v phosphorus --------------------------------------------------
 
 df$evol.bin <- ifelse(df$Evol == "none", 'ancestral', 
                       ifelse(df$Evol == "N", 'nit', ifelse(df$Evol == 'P', 'phos', 'other'))) # for testing.
@@ -2138,7 +2138,7 @@ NP.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -2256,7 +2256,7 @@ NP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -2309,7 +2309,7 @@ NP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -2419,7 +2419,7 @@ NP.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -2519,7 +2519,7 @@ NP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -2637,7 +2637,7 @@ NS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -2755,7 +2755,7 @@ NS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -2808,7 +2808,7 @@ NS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -2918,7 +2918,7 @@ NS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -3018,7 +3018,7 @@ NS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -3135,7 +3135,7 @@ NT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -3251,7 +3251,7 @@ NT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -3302,7 +3302,7 @@ NT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -3410,7 +3410,7 @@ NT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -3508,7 +3508,7 @@ NT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -3531,9 +3531,9 @@ NT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
 
 NT.qr2 # Display the plot
 
-# Phosphorous comparisons -------------------------------------------------
+# Phosphorus comparisons -------------------------------------------------
 
-# Phosphorous v salt ------------------------------------------------------
+# Phosphorus v salt ------------------------------------------------------
 
 df$evol.bin <- ifelse(df$Evol == "none", 'ancestral', 
                       ifelse(df$Evol == "P", 'phos', ifelse(df$Evol %in% c("S", "BS"), 'salt', 'other'))) # for testing.
@@ -3627,7 +3627,7 @@ PS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -3745,7 +3745,7 @@ PS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -3798,7 +3798,7 @@ PS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -3908,7 +3908,7 @@ PS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -4008,7 +4008,7 @@ PS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -4032,7 +4032,7 @@ PS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
 
 PS.qr2 # Display the plot
 
-# Phosphorous v temperature -----------------------------------------------
+# Phosphorus v temperature -----------------------------------------------
 
 df$evol.bin <- ifelse(df$Evol == "none", 'ancestral', 
                       ifelse(df$Evol == "P", 'phos', 'other')) # for testing.
@@ -4124,7 +4124,7 @@ PT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -4240,7 +4240,7 @@ PT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -4291,7 +4291,7 @@ PT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -4390,7 +4390,7 @@ PT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -4488,7 +4488,7 @@ PT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -4606,7 +4606,7 @@ ST.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -4722,7 +4722,7 @@ ST.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -4773,7 +4773,7 @@ ST.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -4807,7 +4807,6 @@ ST.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   )
 
 ST.qp  # Display the plot
-
 
 ###### 75th quantile PF testing ######
 
@@ -4882,7 +4881,7 @@ ST.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -4980,7 +4979,7 @@ ST.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -5009,7 +5008,7 @@ legend_df <- data.frame(
   x = c(1, 2, 1, 2, 1, 2, 1, 2),
   y = c(1, 1, 2, 2, 1, 1, 2, 2),
   Group = factor(c("Ancestral", "Other", "Matching", "Matching", "Ancestral", "Other", "Matching", "Matching")),
-  Group2 = factor(c("Biotic depletion", "Biotic depletion x Salt", "Control", "Light limitation", "Nitrogen limitation", "Ancestral", "Phosphorous limitation", "Salt stress")),
+  Group2 = factor(c("Biotic depletion", "Biotic depletion x Salt", "Control", "Light limitation", "Nitrogen limitation", "Ancestral", "Phosphorus limitation", "Salt stress")),
   LineType = factor(c("Outer", "Inner (75%)", "Outer", "Inner (75%)", "Outer", "Inner (75%)", "Outer", "Inner (75%)"))
 )
 
@@ -5028,7 +5027,7 @@ legend_plot <- ggplot(legend_df, aes(x = x, y = y)) +
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -5076,7 +5075,7 @@ legend_df2 <- data.frame(
   x = c(1, 2, 1, 2, 1, 2, 1, 2),
   y = c(1, 1, 2, 2, 1, 1, 2, 2),
   Group = factor(c("Ancestral", "Other", "Matching", "Matching", "Ancestral", "Other", "Matching", "Matching")),
-  Group2 = factor(c("Biotic depletion", "Biotic depletion x Salt", "Control", "Light limitation", "Nitrogen limitation", "Ancestral", "Phosphorous limitation", "Salt stress")),
+  Group2 = factor(c("Biotic depletion", "Biotic depletion x Salt", "Control", "Light limitation", "Nitrogen limitation", "Ancestral", "Phosphorus limitation", "Salt stress")),
   LineType = factor(c("50th", "75th", "90th", "50th", "75th", "90th", "50th", "75th"))
 )
 
@@ -5095,7 +5094,7 @@ legend_plot2 <- ggplot(legend_df2, aes(x = x, y = y)) +
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -5147,7 +5146,7 @@ legend_df3 <- data.frame(
   x = c(1, 2, 1, 2, 1, 2, 1, 2),
   y = c(1, 1, 2, 2, 1, 1, 2, 2),
   Group = factor(c("Ancestral", "Other", "Matching", "Matching", "Ancestral", "Other", "Matching", "Matching")),
-  Group2 = factor(c("Biotic depletion", "Biotic depletion x Salt", "Control", "Light limitation", "Nitrogen limitation", "Ancestral", "Phosphorous limitation", "Salt stress")),
+  Group2 = factor(c("Biotic depletion", "Biotic depletion x Salt", "Control", "Light limitation", "Nitrogen limitation", "Ancestral", "Phosphorus limitation", "Salt stress")),
   LineType = factor(c("Pareto front", "50th quantile regression", "Pareto front", "50th quantile regression", "Pareto front", "50th quantile regression", "Pareto front", "50th quantile regression"))
 )
 
@@ -5167,7 +5166,7 @@ legend_plot3 <- ggplot(legend_df3, aes(x = x, y = y)) +
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -5307,7 +5306,7 @@ NcL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -5423,7 +5422,7 @@ NcL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -5474,7 +5473,7 @@ NcL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -5573,7 +5572,7 @@ NcL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -5671,7 +5670,7 @@ NcL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -5787,7 +5786,7 @@ NcN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -5903,7 +5902,7 @@ NcN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -5954,7 +5953,7 @@ NcN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -6053,7 +6052,7 @@ NcN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -6151,7 +6150,7 @@ NcN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -6174,7 +6173,7 @@ NcN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
 
 NcN.qr2 # Display the plot
 
-# N content v phosphorous -------------------------------------------------
+# N content v phosphorus -------------------------------------------------
 
 df$evol.bin <- ifelse(df$Evol == "none", 'ancestral', 
                       ifelse(df$Evol == "P", 'phos', 'other')) # For binning into evolutionary treatments for plotting purposes.
@@ -6267,7 +6266,7 @@ NcP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -6383,7 +6382,7 @@ NcP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -6434,7 +6433,7 @@ NcP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -6533,7 +6532,7 @@ NcP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -6631,7 +6630,7 @@ NcP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -6747,7 +6746,7 @@ NcS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -6863,7 +6862,7 @@ NcS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -6914,7 +6913,7 @@ NcS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -7022,7 +7021,7 @@ NcS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -7120,7 +7119,7 @@ NcS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -7226,7 +7225,7 @@ NcT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -7333,7 +7332,7 @@ NcT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -7375,7 +7374,7 @@ NcT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -7431,7 +7430,7 @@ NcT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -7520,7 +7519,7 @@ NcT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -7624,7 +7623,7 @@ PcL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
        title = "B — L ~ P content") +  # labels
@@ -7637,7 +7636,7 @@ PcL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -7740,7 +7739,7 @@ PcL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
        title = "B — L ~ P content") +  # labels
@@ -7753,7 +7752,7 @@ PcL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -7791,7 +7790,7 @@ PcL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "black") +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
        title = "B — L ~ P content") +  # labels
@@ -7804,7 +7803,7 @@ PcL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -7888,7 +7887,7 @@ PcL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
        title = "B — L ~ P content") +  # labels
@@ -7901,7 +7900,7 @@ PcL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -7986,7 +7985,7 @@ PcL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Competitive ability (1/I*)", 
        color = "Evolutionary History",
        title = "B — L ~ P content") +  # labels
@@ -7999,7 +7998,7 @@ PcL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -8102,7 +8101,7 @@ PcN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
        title = "F — N ~ P content") +  # labels
@@ -8115,7 +8114,7 @@ PcN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -8218,7 +8217,7 @@ PcN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
        title = "F — N ~ P content") +  # labels
@@ -8231,7 +8230,7 @@ PcN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -8269,7 +8268,7 @@ PcN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
        title = "F — N ~ P content") +  # labels
@@ -8282,7 +8281,7 @@ PcN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -8368,7 +8367,7 @@ PcN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
        title = "F — N ~ P content") +  # labels
@@ -8381,7 +8380,7 @@ PcN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -8466,7 +8465,7 @@ PcN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Competitive ability (1/N*)", 
        color = "Evolutionary History",
        title = "F — N ~ P content") +  # labels
@@ -8479,7 +8478,7 @@ PcN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -8502,7 +8501,7 @@ PcN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
 
 PcN.qr2 # Display the plot
 
-# P content v phosphorous -------------------------------------------------
+# P content v phosphorus -------------------------------------------------
 
 df$evol.bin <- ifelse(df$Evol == "none", 'ancestral', 
                       ifelse(df$Evol == "P", 'phos', 'other')) # For binning into evolutionary treatments for plotting purposes.
@@ -8582,7 +8581,7 @@ PcP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
        title = "J — P ~ P content") +  # labels
@@ -8595,7 +8594,7 @@ PcP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -8698,7 +8697,7 @@ PcP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
        title = "J — P ~ P content ") +  # labels
@@ -8711,7 +8710,7 @@ PcP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -8749,7 +8748,7 @@ PcP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
        title = "J — P ~ P content") +  # labels
@@ -8762,7 +8761,7 @@ PcP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -8857,7 +8856,7 @@ PcP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
        title = "J — P ~ P content") +  # labels
@@ -8870,7 +8869,7 @@ PcP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -8955,7 +8954,7 @@ PcP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Competitive ability (1/P*)", 
        color = "Evolutionary History",
        title = "J — P ~ P content ") +  # labels
@@ -8968,7 +8967,7 @@ PcP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -9071,7 +9070,7 @@ PcS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
        title = "N — S ~ P content") +  # labels
@@ -9084,7 +9083,7 @@ PcS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -9187,7 +9186,7 @@ PcS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
        title = "N — S ~ P content ") +  # labels
@@ -9200,7 +9199,7 @@ PcS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -9238,7 +9237,7 @@ PcS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
        title = "N — S ~ P content") +  # labels
@@ -9251,7 +9250,7 @@ PcS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -9346,7 +9345,7 @@ PcS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
        title = "N — S ~ P content") +  # labels
@@ -9359,7 +9358,7 @@ PcS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -9443,7 +9442,7 @@ PcS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Salt tolerance (c)", 
        color = "Evolutionary History",
        title = "N — S ~ P content ") +  # labels
@@ -9456,7 +9455,7 @@ PcS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -9550,7 +9549,7 @@ PcT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
        title = "R — T ~ P content") +  # labels
@@ -9563,7 +9562,7 @@ PcT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -9657,7 +9656,7 @@ PcT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
        title = "R — T ~ P content") +  # labels
@@ -9670,7 +9669,7 @@ PcT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -9699,7 +9698,7 @@ PcT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
        title = "R — T ~ P content") +  # labels
@@ -9712,7 +9711,7 @@ PcT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -9764,7 +9763,7 @@ PcT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
        title = "R — T ~ P content") +  # labels
@@ -9777,7 +9776,7 @@ PcT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -9853,7 +9852,7 @@ PcT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = "Phosphorous content (µg/L)",    
+  labs(x = "Phosphorus content (µg/L)",    
        y = "Thermal breadth (°C)", 
        color = "Evolutionary History",
        title = "R — T ~ P content") +  # labels
@@ -9866,7 +9865,7 @@ PcT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -9983,7 +9982,7 @@ PigL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -10099,7 +10098,7 @@ PigL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -10150,7 +10149,7 @@ PigL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -10258,7 +10257,7 @@ PigL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = e
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -10356,7 +10355,7 @@ PigL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -10472,7 +10471,7 @@ PigN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -10588,7 +10587,7 @@ PigN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -10639,7 +10638,7 @@ PigN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -10747,7 +10746,7 @@ PigN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = e
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -10845,7 +10844,7 @@ PigN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -10868,7 +10867,7 @@ PigN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
 
 PigN.qr2 # Display the plot
 
-# Pigmentation v phosphorous ----------------------------------------------------
+# Pigmentation v phosphorus ----------------------------------------------------
 
 df$evol.bin <- ifelse(df$Evol == "none", 'ancestral', 
                       ifelse(df$Evol == "P", 'phos', 'other')) # For binning into evolutionary treatments for plotting purposes.
@@ -10961,7 +10960,7 @@ PigP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -11077,7 +11076,7 @@ PigP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -11128,7 +11127,7 @@ PigP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -11227,7 +11226,7 @@ PigP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = e
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -11325,7 +11324,7 @@ PigP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -11441,7 +11440,7 @@ PigS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -11557,7 +11556,7 @@ PigS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -11608,7 +11607,7 @@ PigS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -11716,7 +11715,7 @@ PigS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = e
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -11814,7 +11813,7 @@ PigS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -11920,7 +11919,7 @@ PigT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -12027,7 +12026,7 @@ PigT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -12069,7 +12068,7 @@ PigT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -12134,7 +12133,7 @@ PigT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = e
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -12223,7 +12222,7 @@ PigT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -12340,7 +12339,7 @@ BvL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -12456,7 +12455,7 @@ BvL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -12507,7 +12506,7 @@ BvL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -12615,7 +12614,7 @@ BvL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -12713,7 +12712,7 @@ BvL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -12829,7 +12828,7 @@ BvN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -12945,7 +12944,7 @@ BvN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -12996,7 +12995,7 @@ BvN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -13104,7 +13103,7 @@ BvN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -13202,7 +13201,7 @@ BvN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -13225,7 +13224,7 @@ BvN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
 
 BvN.qr2 # Display the plot
 
-# Biovolume v phosphorous ----------------------------------------------------
+# Biovolume v phosphorus ----------------------------------------------------
 
 df$evol.bin <- ifelse(df$Evol == "none", 'ancestral', 
                       ifelse(df$Evol == "P", 'phos', 'other')) # For binning into evolutionary treatments for plotting purposes.
@@ -13318,7 +13317,7 @@ BvP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -13434,7 +13433,7 @@ BvP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -13485,7 +13484,7 @@ BvP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -13584,7 +13583,7 @@ BvP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -13682,7 +13681,7 @@ BvP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -13798,7 +13797,7 @@ BvS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -13914,7 +13913,7 @@ BvS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -13965,7 +13964,7 @@ BvS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -14073,7 +14072,7 @@ BvS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -14171,7 +14170,7 @@ BvS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -14278,7 +14277,7 @@ BvT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -14385,7 +14384,7 @@ BvT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -14427,7 +14426,7 @@ BvT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -14492,7 +14491,7 @@ BvT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -14581,7 +14580,7 @@ BvT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   

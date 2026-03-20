@@ -3,7 +3,7 @@
 # February 11th, 2026
 
 # Here I am going to import the various datasets that contain synthesis data for phytoplankton growth across
-  # light, nitrogen, phosphorous, and temperature gradients.
+  # light, nitrogen, phosphorus, and temperature gradients.
 
 # I will then apply analyses based on Shoval 2012 (Science) to calculate the triangularity of our data and compare this 
   # estimate to null randomizations. I will further integrate the Pareto front analyses I have been employing elsewhere
@@ -193,7 +193,7 @@ df.n <- df.n %>%
 
 write.csv(df.n, "processed-data/69_nit_metadata.csv") # Summary
 
-###### Phosphorous synthesis data ######
+###### Phosphorus synthesis data ######
 
 # Bestion 2018
 
@@ -376,7 +376,7 @@ head(df.n)
 length(unique(df.n$Sp.name)) #30 species
 sort(unique(df.n$Sp.name))
 
-# Phosphorous 
+# Phosphorus 
 
 df.p <- read.csv("processed-data/70a_phos_metadata_sp.csv")
 head(df.p)
@@ -1882,7 +1882,7 @@ LN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
 
 LN.qr2 # Display the plot
 
-# Light v Phosphorous -------------------------------------------------------------------
+# Light v Phosphorus -------------------------------------------------------------------
 
 df.filt <- df %>% 
   mutate(
@@ -4003,7 +4003,7 @@ N.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
 
 N.qr2 # Display the plot
 
-# Nitrogen v Phosphorous -------------------------------------------------------------------
+# Nitrogen v Phosphorus -------------------------------------------------------------------
 
 df.filt <- df %>% 
   mutate(
@@ -5384,7 +5384,7 @@ NT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y)) +  # We'll lay out the PFs ont
 
 NT.qr2 # Display the plot
 
-# Phosphorous v Phosphorous -------------------------------------------------------------------
+# Phosphorus v Phosphorus -------------------------------------------------------------------
 
 df.filt <- df.p %>% 
   mutate(
@@ -5588,7 +5588,7 @@ p.p <- ggplot(df.filt, aes(z.x, z.y, colour = dataset)) +
   
   labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/P*)", 
-       title = "H — Phosphorous") +  # labels
+       title = "H — Phosphorus") +  # labels
   
   geom_polygon(
     data = tri.poly,
@@ -5876,7 +5876,7 @@ P.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
   
   labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),  
        y = "Competitive ability (1/P*)", 
-       title = "H — Phosphorous") +  # labels
+       title = "H — Phosphorus") +  # labels
   
   ylim(-0.10, 300) +
   #xlim(-0.25, 3) +
@@ -5978,7 +5978,7 @@ P.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll lay 
   
   labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/P*)", 
-       title = "H — Phosphorous") +  # labels
+       title = "H — Phosphorus") +  # labels
   
   ylim(-0.10, 300) +
   #xlim(-0.25, 3) +
@@ -6017,7 +6017,7 @@ P.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll 
   
   labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/P*)", 
-       title = "H — Phosphorous") +  # labels
+       title = "H — Phosphorus") +  # labels
   
   ylim(-0.10, 300) +
   #xlim(-0.25, 3) +
@@ -6096,7 +6096,7 @@ P.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
   
   labs(x = expression("Maximum growth rate (" * italic(mu)[max] * ")"),   
        y = "Competitive ability (1/P*)", 
-       title = "H — Phosphorous") +  # labels
+       title = "H — Phosphorus") +  # labels
   
   ylim(-0.10, 300) +
   #xlim(-0.25, 3) +
@@ -6120,7 +6120,7 @@ P.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, colour = dataset)) +  # We'll la
 
 P.qr2 # Display the plot
 
-# Phosphorous v Temperature -------------------------------------------------------------------
+# Phosphorus v Temperature -------------------------------------------------------------------
 
 df.filt <- df %>% 
   mutate(

@@ -22,7 +22,7 @@ df$Evol.plt <- factor(df$Evol,
                       labels = c("Ancestral",
                                  "Light limitation",
                                  "Nitrogen limitation", 
-                                 "Phosphorous limitation", 
+                                 "Phosphorus limitation", 
                                  "Salt stress", 
                                  "Biotic depletion", 
                                  "Biotic depletion x Salt", 
@@ -73,7 +73,7 @@ PCA <- ggplot(df.pca.res, aes(x = PC1, y = PC2, color = evol.pca)) +  # PCA bipl
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   )
 
@@ -130,7 +130,7 @@ pca_plot_arrows <- ggplot(df.pca.res, aes(x = PC1, y = PC2, color = Evolution)) 
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) + 
   
@@ -216,7 +216,7 @@ rda_evol_plot_arrows <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, color = E
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   
@@ -296,7 +296,7 @@ rda_evol_plot_arrows_no_NP <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, col
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +  # Use your custom colors
   # Add arrows for variable contributions
@@ -484,7 +484,7 @@ df.evol.dummy.leg <- data.frame( # dummy df for making an extractable legend
   RDA2 = rep(0, 8),
   Evolution = factor(c("Biotic depletion", "Biotic depletion x Salt", "Control",
                        "Light limitation", "Nitrogen limitation", "Ancestral",
-                       "Phosphorous limitation", "Salt stress"))
+                       "Phosphorus limitation", "Salt stress"))
 )
 
 legend_evol <- ggplot(df.evol.dummy.leg, aes(x = RDA1, y = RDA2, color = Evolution)) +
@@ -497,7 +497,7 @@ legend_evol <- ggplot(df.evol.dummy.leg, aes(x = RDA1, y = RDA2, color = Evoluti
                "Light limitation" = "gold",
                "Nitrogen limitation" = "magenta3",
                "Ancestral" = "black",
-               "Phosphorous limitation" = "firebrick",  
+               "Phosphorus limitation" = "firebrick",  
                "Salt stress" = "blue")
   ) +
   theme_void() +

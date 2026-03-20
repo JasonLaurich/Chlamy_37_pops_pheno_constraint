@@ -176,9 +176,9 @@ stretch <- 2.4
 df.arc2 <- df.arc2 %>%
   mutate(qrs.plot = qrs * stretch)
 
-r = 0.06
+r = 0.075
 
-x.leg <- -1.5
+x.leg <- -1.65
 y.leg <- 0.6
 dy <- 0.18
 
@@ -235,9 +235,9 @@ p.A <- ggplot(df.arc2) +
     title = "A"
   ) +
   
-  annotate("text", x = -1.5, y = 3.3, label = "Trade-off", size = 4, fontface = "bold") +
+  annotate("text", x = -1.4, y = 3.3, label = "Trade-off", size = 4, fontface = "bold") +
   
-  annotate("text", x = 0.75, y = 3.3, label = "Pareto constraint", size = 4, fontface = "bold") +
+  annotate("text", x = 0.75, y = 3.2, label = "Pareto \nconstraint", size = 4, fontface = "bold") +
   
   annotate("point", x = x.leg, y = y.leg,     colour = "gold", size = 3) +
   annotate("point", x = x.leg, y = y.leg-dy,  colour = "magenta3", size = 3) +
@@ -347,7 +347,7 @@ p.B <- ggplot(df.arc3) +
   
   annotate("text", x = -1.4, y = 3.3, label = "Modularity", size = 4, fontface = "bold") +
   
-  annotate("text", x = 0.95, y = 3.3, label = "Facilitation", size = 4, fontface = "bold")
+  annotate("text", x = 0.85, y = 3.3, label = "Facilitation", size = 4, fontface = "bold")
 
 p.B
 
@@ -524,4 +524,4 @@ p.C
 
 summ.fig <- plot_grid(p.A, p.B, p.C, ncol = 1)
 
-ggsave("figures-main/05_fig_5_summary.jpeg", summ.fig, width = 5, height = 15)
+ggsave("figures-main/05_fig_5_summary.jpeg", summ.fig, width = 4, height = 12)
