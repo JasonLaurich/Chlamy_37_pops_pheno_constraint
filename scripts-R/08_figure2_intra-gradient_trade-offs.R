@@ -131,16 +131,19 @@ pred.curve.2 <- data.frame( # predicted data frame
 T.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt, evol.bin %in% c("evolved", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
     alpha = 0.5
   ) +
   
-  scale_size_manual(
-    values = c(
-      "evolved" = 2,
-      "ancestral" = 2
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -161,12 +164,6 @@ T.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Ancestral" = "black",
                "Phosphorus limitation" = "brown4",  
                "Salt stress" = "navyblue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 16,  # filled circle
-               "ancestral" = 5) # diamond
   ) +
   
   ylim(14, 22) +
@@ -248,16 +245,19 @@ summary(q90, se = "boot", R = 1000) # -1.53971, p 0.00000
 T.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt, evol.bin %in% c("evolved", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
     alpha = 0.5
   ) +
   
-  scale_size_manual(
-    values = c(
-      "evolved" = 2,
-      "ancestral" = 2
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -281,12 +281,6 @@ T.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
                "Salt stress" = "navyblue")
   ) +
   
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 16,  # filled circle
-               "ancestral" = 5) # diamond
-  ) +
-  
   ylim(14,22) +
   
   theme_classic() +
@@ -302,16 +296,19 @@ T.qr # Display the plot
 T.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt, evol.bin %in% c("evolved", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
     alpha = 0.5
   ) +
   
-  scale_size_manual(
-    values = c(
-      "evolved" = 2,
-      "ancestral" = 2
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
@@ -332,12 +329,6 @@ T.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
                "Ancestral" = "black",
                "Phosphorus limitation" = "brown4",  
                "Salt stress" = "navyblue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 16,  # filled circle
-               "ancestral" = 5) # diamond
   ) +
   
   ylim(14, 22) +
@@ -378,16 +369,19 @@ df.filt3 <- df.filt %>%
 T.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt3, evol.bin %in% c("evolved", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt3, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
     alpha = 0.5
   ) +
   
-  scale_size_manual(
-    values = c(
-      "evolved" = 2,
-      "ancestral" = 2
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -408,12 +402,6 @@ T.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Ancestral" = "black",
                "Phosphorus limitation" = "brown4",  
                "Salt stress" = "navyblue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 16,  # filled circle
-               "ancestral" = 5) # diamond
   ) +
   
   ylim(14,22) +
@@ -477,16 +465,19 @@ summary(q90, se = "boot", R = 1000) # -1.94895, p 0.00000
 T.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt3, evol.bin %in% c("evolved", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt3, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
     alpha = 0.5
   ) +
   
-  scale_size_manual(
-    values = c(
-      "evolved" = 2,
-      "ancestral" = 2
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -508,12 +499,6 @@ T.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Ancestral" = "black",
                "Phosphorus limitation" = "brown4",  
                "Salt stress" = "navyblue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 16,  # filled circle
-               "ancestral" = 5) # diamond
   ) +
   
   ylim(14,22) +
@@ -596,26 +581,27 @@ pred.curve.2 <- data.frame( # predicted data frame
 I.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt, evol.bin %in% c("other", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
     alpha = 0.5
   ) +
   
   geom_point(
-    data = subset(df.filt, evol.bin == "light"),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
     colour = "black",
-    fill = "goldenrod2",
-    shape = 21,
-    size = 3
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 2,
-      "ancestral" = 2,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -636,13 +622,6 @@ I.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Ancestral" = "black",
                "Phosphorus limitation" = "brown4",  
                "Salt stress" = "navyblue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 16,  # filled circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
   ) +
   
   ylim(0, 0.6) +
@@ -724,26 +703,27 @@ summary(q90, se = "boot", R = 1000) # -0.19118, p 0.00004
 I.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt, evol.bin %in% c("other", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
     alpha = 0.5
   ) +
   
   geom_point(
-    data = subset(df.filt, evol.bin == "light"),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
     colour = "black",
-    fill = "goldenrod2",
-    shape = 21,
-    size = 3
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 2,
-      "ancestral" = 2,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -767,13 +747,6 @@ I.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
                "Salt stress" = "navyblue")
   ) +
   
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 16,  # filled circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
-  ) +
-  
   ylim(0, 0.6) +
   
   theme_classic() +
@@ -789,26 +762,27 @@ I.qr # Display the plot
 I.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt, evol.bin %in% c("other", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
     alpha = 0.5
   ) +
   
   geom_point(
-    data = subset(df.filt, evol.bin == "light"),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
     colour = "black",
-    fill = "goldenrod2",
-    shape = 21,
-    size = 3
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 2,
-      "ancestral" = 2,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -829,13 +803,6 @@ I.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
                "Ancestral" = "black",
                "Phosphorus limitation" = "brown4",  
                "Salt stress" = "navyblue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 16,  # filled circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
   ) +
   
   ylim(0, 0.6) +
@@ -910,26 +877,27 @@ df.filt3 <- df.filt %>%
 I.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt3, evol.bin %in% c("other", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
     alpha = 0.5
   ) +
   
   geom_point(
-    data = subset(df.filt3, evol.bin == "light"),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
     colour = "black",
-    fill = "goldenrod2",
-    shape = 21,
-    size = 3
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 2,
-      "ancestral" = 2,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -950,13 +918,6 @@ I.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Ancestral" = "black",
                "Phosphorus limitation" = "brown4",  
                "Salt stress" = "navyblue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 16,  # filled circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
   ) +
   
   ylim(0, 0.6) +
@@ -1020,26 +981,27 @@ summary(q90, se = "boot", R = 1000) # -0.41216, p 0.03140
 I.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt3, evol.bin %in% c("other", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
     alpha = 0.5
   ) +
   
   geom_point(
-    data = subset(df.filt3, evol.bin == "light"),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
     colour = "black",
-    fill = "goldenrod2",
-    shape = 21,
-    size = 3
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 2,
-      "ancestral" = 2,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -1063,13 +1025,6 @@ I.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Salt stress" = "navyblue")
   ) +
   
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 16,  # filled circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
-  ) +
-  
   ylim(0, 0.6) +
   
   theme_classic() +
@@ -1085,7 +1040,7 @@ I.qr2 # Display the plot
 # Nitrogen ----------------------------------------------------------------
 
 df$evol.bin <- ifelse(df$Evol == "none", 'ancestral', 
-                      ifelse(df$Evol == "N", 'nitrogen', 'other')) # for testing significance of matching evolutionary conditions.
+                      ifelse(df$Evol == "N", 'nit', 'other')) # for testing significance of matching evolutionary conditions.
 
 df.filt <- df %>% 
   mutate(
@@ -1150,27 +1105,28 @@ pred.curve.2 <- data.frame( # predicted data frame
 N.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt, evol.bin %in% c("other", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
     alpha = 0.5
   ) +
   
   geom_point(
-    data = subset(df.filt, evol.bin == "nitrogen"),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
     colour = "black",
-    fill = "plum3",
-    shape = 21,
-    size = 3
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 2,
-      "ancestral" = 2,
-      "nitrogen" = 3
-    )
-  ) +
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) + 
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -1190,13 +1146,6 @@ N.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Ancestral" = "black",
                "Phosphorus limitation" = "brown4",  
                "Salt stress" = "navyblue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 16,  # filled circle
-               "ancestral" = 5, # diamond
-               "nitrogen" = 16)  # filled circle
   ) +
   
   ylim(0, 1.35) +
@@ -1278,27 +1227,28 @@ summary(q90, se = "boot", R = 1000) # -1.13655, p 0.00336
 N.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt, evol.bin %in% c("other", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
     alpha = 0.5
   ) +
   
   geom_point(
-    data = subset(df.filt, evol.bin == "nitrogen"),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
     colour = "black",
-    fill = "plum3",
-    shape = 21,
-    size = 3
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 2,
-      "ancestral" = 2,
-      "nitrogen" = 3
-    )
-  ) +
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) + 
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -1321,13 +1271,6 @@ N.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
                "Salt stress" = "navyblue")
   ) +
   
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 16,  # filled circle
-               "ancestral" = 5, # diamond
-               "nitrogen" = 16)  # filled circle
-  ) +
-  
   ylim(0, 1.35) +
   
   theme_classic() +
@@ -1343,27 +1286,28 @@ N.qr # Display the plot
 N.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt, evol.bin %in% c("other", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
     alpha = 0.5
   ) +
   
   geom_point(
-    data = subset(df.filt, evol.bin == "nitrogen"),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
     colour = "black",
-    fill = "plum3",
-    shape = 21,
-    size = 3
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 2,
-      "ancestral" = 2,
-      "nitrogen" = 3
-    )
-  ) +
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) + 
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
@@ -1384,14 +1328,7 @@ N.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
                "Phosphorus limitation" = "brown4",  
                "Salt stress" = "navyblue")
   ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 16,  # filled circle
-               "ancestral" = 5, # diamond
-               "nitrogen" = 16)  # filled circle
-  ) +
-  
+
   ylim(0, 1.35) +
   xlim(1.275, 1.95) +
   
@@ -1464,27 +1401,28 @@ df.filt3 <- df.filt %>%
 N.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt3, evol.bin %in% c("other", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
     alpha = 0.5
   ) +
   
   geom_point(
-    data = subset(df.filt3, evol.bin == "nitrogen"),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
     colour = "black",
-    fill = "plum3",
-    shape = 21,
-    size = 3
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 2,
-      "ancestral" = 2,
-      "nitrogen" = 3
-    )
-  ) +
+  geom_point(
+    data = subset(df.filt3, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) + 
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -1504,13 +1442,6 @@ N.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Ancestral" = "black",
                "Phosphorus limitation" = "brown4",  
                "Salt stress" = "navyblue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 16,  # filled circle
-               "ancestral" = 5, # diamond
-               "nitrogen" = 16)  # filled circle
   ) +
   
   ylim(0, 1.35) +
@@ -1574,27 +1505,28 @@ summary(q90, se = "boot", R = 1000) # -2.33776, p 0.00000
 N.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt3, evol.bin %in% c("other", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
     alpha = 0.5
   ) +
   
   geom_point(
-    data = subset(df.filt3, evol.bin == "nitrogen"),
-    aes(shape = evol.bin, size = evol.bin),
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
     colour = "black",
-    fill = "plum3",
-    shape = 21,
-    size = 3
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 2,
-      "ancestral" = 2,
-      "nitrogen" = 3
-    )
-  ) +
+  geom_point(
+    data = subset(df.filt3, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) + 
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -1617,13 +1549,6 @@ N.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Salt stress" = "navyblue")
   ) +
   
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 16,  # filled circle
-               "ancestral" = 5, # diamond
-               "nitrogen" = 16)  # filled circle
-  ) +
-  
   ylim(0, 1.35) +
   
   theme_classic() +
@@ -1639,7 +1564,7 @@ N.qr2 # Display the plot
 # Phosphorus -------------------------------------------------------------
 
 df$evol.bin <- ifelse(df$Evol == "none", 'ancestral', 
-                      ifelse(df$Evol == "P", 'phosphorus', 'other')) # For binning into evolutionary treatments for plotting purposes.
+                      ifelse(df$Evol == "P", 'phos', 'other')) # For binning into evolutionary treatments for plotting purposes.
 
 df.filt <- df %>% 
   mutate(
@@ -1715,11 +1640,12 @@ P.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt)) +  # We'll la
     shape = 5, 
     size = 2,
     colour = "black",
-    stroke = 0.9
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
   geom_point(
-    data = subset(df.filt, evol.bin == "phosphorus"),
+    data = subset(df.filt, evol.bin == "phos"),
     shape = 21, 
     size = 3,
     colour = "black",
@@ -1836,23 +1762,16 @@ P.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     shape = 5, 
     size = 2,
     colour = "black",
-    stroke = 0.9
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
   geom_point(
-    data = subset(df.filt, evol.bin == "phosphorus"),
+    data = subset(df.filt, evol.bin == "phos"),
     shape = 21, 
     size = 3,
     colour = "black",
     fill = "brown4"
-  ) +
-  
-  scale_size_manual(
-    values = c(
-      "other" = 2,
-      "ancestral" = 2,
-      "phosphorus" = 3
-    )
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -1902,23 +1821,16 @@ P.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     shape = 5, 
     size = 2,
     colour = "black",
-    stroke = 0.9
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
   geom_point(
-    data = subset(df.filt, evol.bin == "phosphorus"),
+    data = subset(df.filt, evol.bin == "phos"),
     shape = 21, 
     size = 3,
     colour = "black",
     fill = "brown4"
-  ) +
-  
-  scale_size_manual(
-    values = c(
-      "other" = 2,
-      "ancestral" = 2,
-      "phosphorus" = 3
-    )
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -2024,23 +1936,16 @@ P.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     shape = 5, 
     size = 2,
     colour = "black",
-    stroke = 0.9
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
   geom_point(
-    data = subset(df.filt3, evol.bin == "phosphorus"),
+    data = subset(df.filt3, evol.bin == "phos"),
     shape = 21, 
     size = 3,
     colour = "black",
     fill = "brown4"
-  ) +
-  
-  scale_size_manual(
-    values = c(
-      "other" = 2,
-      "ancestral" = 2,
-      "phosphorus" = 3
-    )
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -2135,23 +2040,16 @@ P.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     shape = 5, 
     size = 2,
     colour = "black",
-    stroke = 0.9
+    stroke = 0.9,
+    alpha = 0.6
   ) +
   
   geom_point(
-    data = subset(df.filt3, evol.bin == "phosphorus"),
+    data = subset(df.filt3, evol.bin == "phos"),
     shape = 21, 
     size = 3,
     colour = "black",
     fill = "brown4"
-  ) +
-  
-  scale_size_manual(
-    values = c(
-      "other" = 2,
-      "ancestral" = 2,
-      "phosphorus" = 3
-    )
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -2173,13 +2071,6 @@ P.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Ancestral" = "black",
                "Phosphorus limitation" = "brown4",  
                "Salt stress" = "navyblue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 16,  # filled circle
-               "ancestral" = 5, # diamond
-               "phosphorus" = 16)  # filled circle
   ) +
   
   ylim(0, 6) +
@@ -2262,9 +2153,19 @@ pred.curve.2 <- data.frame( # predicted data frame
 S.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt, evol.bin %in% c("other", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
-    alpha = 0.18
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
   ) +
   
   geom_point(
@@ -2285,14 +2186,6 @@ S.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     size = 3
   ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 2,
-      "ancestral" = 2,
-      "salt" = 3
-    )
-  ) +
-  
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
@@ -2311,13 +2204,6 @@ S.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Ancestral" = "black",
                "Phosphorus limitation" = "brown4",  
                "Salt stress" = "navyblue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 16,  # filled circle
-               "ancestral" = 5, # diamond
-               "salt" = 21)  # filled circle
   ) +
   
   ylim(1, 9.5) +
@@ -2399,9 +2285,19 @@ summary(q90, se = "boot", R = 1000) # -1.07525, p 0.63378
 S.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt, evol.bin %in% c("other", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
-    alpha = 0.18
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
   ) +
   
   geom_point(
@@ -2422,13 +2318,6 @@ S.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     size = 3
   ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 2,
-      "ancestral" = 2,
-      "salt" = 3
-    )
-  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -2451,13 +2340,6 @@ S.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
                "Salt stress" = "navyblue")
   ) +
   
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 16,  # filled circle
-               "ancestral" = 5, # diamond
-               "salt" = 21)  # filled circle
-  ) +
-  
   ylim(1,9.5) +
   
   theme_classic() +
@@ -2473,9 +2355,19 @@ S.qr # Display the plot
 S.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt, evol.bin %in% c("other", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
-    alpha = 0.18
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
   ) +
   
   geom_point(
@@ -2496,14 +2388,6 @@ S.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     size = 3
   ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 2,
-      "ancestral" = 2,
-      "salt" = 3
-    )
-  ) +
-  
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
   
@@ -2522,13 +2406,6 @@ S.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
                "Ancestral" = "black",
                "Phosphorus limitation" = "brown4",  
                "Salt stress" = "navyblue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 16,  # filled circle
-               "ancestral" = 5, # diamond
-               "salt" = 21)  # filled circle
   ) +
   
   ylim(1, 9.5) +
@@ -2603,9 +2480,19 @@ df.filt3 <- df.filt %>%
 S.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt3, evol.bin %in% c("other", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
-    alpha = 0.18
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
   ) +
   
   geom_point(
@@ -2626,14 +2513,6 @@ S.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
     size = 3
   ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 2,
-      "ancestral" = 2,
-      "salt" = 3
-    )
-  ) +
-  
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
   
@@ -2652,13 +2531,6 @@ S.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
                "Ancestral" = "black",
                "Phosphorus limitation" = "brown4",  
                "Salt stress" = "navyblue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 16,  # filled circle
-               "ancestral" = 5, # diamond
-               "salt" = 21)  # filled circle
   ) +
   
   ylim(1,9.5) +
@@ -2722,9 +2594,19 @@ summary(q90, se = "boot", R = 1000) # -6.64584, p 0.00000
 S.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt3, evol.bin %in% c("other", "ancestral")),
-    aes(shape = evol.bin, size = evol.bin),
-    alpha = 0.18
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
   ) +
   
   geom_point(
@@ -2743,14 +2625,6 @@ S.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     fill = "navyblue",
     shape = 21,
     size = 3
-  ) +
-  
-  scale_size_manual(
-    values = c(
-      "other" = 2,
-      "ancestral" = 2,
-      "salt" = 3
-    )
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -2772,13 +2646,6 @@ S.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
                "Ancestral" = "black",
                "Phosphorus limitation" = "brown4",  
                "Salt stress" = "navyblue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 16,  # filled circle
-               "ancestral" = 5, # diamond
-               "salt" = 21)  # filled circle
   ) +
   
   ylim(1,9.5) +
@@ -2809,9 +2676,7 @@ legend_plot <- ggplot(legend_df, aes(x = x, y = y)) +
   geom_point(aes(shape = Group, colour = Group2), size = 1, stroke = 1) +
   geom_line(aes(linetype = LineType), size = 0.6) +
   scale_shape_manual(name = NULL,
-                     values = c("Ancestral" = 5, 
-                                "Other" = 1, 
-                                "Matching" = 16)) +
+                     values = c("Ancestral" = 5)) +
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -2820,7 +2685,6 @@ legend_plot <- ggplot(legend_df, aes(x = x, y = y)) +
                "Control" = "olivedrab4",
                "Light limitation" = "goldenrod2",
                "Nitrogen limitation" = "plum3",
-               "Ancestral" = "black",
                "Phosphorus limitation" = "brown4",  
                "Salt stress" = "navyblue")
   ) +
@@ -2875,19 +2739,17 @@ legend_plot2 <- ggplot(legend_df2, aes(x = x, y = y)) +
   geom_point(aes(shape = Group, colour = Group2), size = 1, stroke = 1) +
   geom_line(aes(linetype = LineType), size = 0.6) +
   scale_shape_manual(name = NULL,
-                     values = c("Ancestral" = 5, 
-                                "Other" = 1, 
-                                "Matching" = 16)) +
+                     values = c("Ancestral" = 5)) +
   
   scale_color_manual(
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
-               "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   scale_linetype_manual(values = c("50th" = "dotted", "75th" = "dashed", "90th" = "solid"),
@@ -2944,19 +2806,7 @@ legend_plot3 <- ggplot(legend_df3, aes(x = x, y = y)) +
   geom_line(aes(linetype = LineType), size = 0.6) +
   
   scale_shape_manual(name = NULL,
-                     values = c("Ancestral" = 5
-                                # , 
-                                # "Other" = 16, 
-                                # "Matching" = 16
-                     )
-  ) +
-  scale_alpha_manual(
-    values = c(
-      "Other" = 0.4,
-      "Ancestral" = 0.6,
-      "Matching" = 1
-    )
-  ) +
+                     values = c("Ancestral" = 5)) +
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -2968,7 +2818,6 @@ legend_plot3 <- ggplot(legend_df3, aes(x = x, y = y)) +
                "Phosphorus limitation" = "brown4",  
                "Salt stress" = "navyblue")
   ) +
-  
   
   scale_linetype_manual(
     name = "Line",
