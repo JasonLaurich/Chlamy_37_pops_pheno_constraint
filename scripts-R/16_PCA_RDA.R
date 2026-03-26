@@ -118,21 +118,25 @@ loadings$var.y <- loadings$PC2 + adjust.y
 
 # Create PCA plot with arrows
 pca_plot_arrows <- ggplot(df.pca.res, aes(x = PC1, y = PC2, color = Evolution)) +
-  geom_point(size = 2) +
+  
+  geom_point(size = 3) +
+  
   theme_classic() +
+  
   labs(x = paste("PC 1 (", round(pca.result$sdev[1]^2 / sum(pca.result$sdev^2) * 100, 2), "%)", sep = ""),
        y = paste("PC 2 (", round(pca.result$sdev[2]^2 / sum(pca.result$sdev^2) * 100, 2), "%)", sep = "")) +
+  
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) + 
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
+  ) +
   
   geom_segment(data = loadings, aes(x = 0, y = 0, xend = PC1, yend = PC2),
                arrow = arrow(length = unit(0.1, "cm")), color = "black", size = 0.6) + # Add arrows for variable contributions
@@ -202,7 +206,7 @@ rda_species_evol$var.y <- rda_species_evol$RDA2 + adjust.y.rda1
 
 # Create evolutionary environment RDA plot with arrows
 rda_evol_plot_arrows <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, color = Evolution)) +
-  geom_point(size = 2) +
+  geom_point(size = 2.5) +
   theme_classic() +
   labs(x = paste0("RDA 1 (", round(rda_var_explained[1], 2), "%)"),
        y = paste0("RDA 2 (", round(rda_var_explained[2], 2), "%)"),
@@ -210,14 +214,14 @@ rda_evol_plot_arrows <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, color = E
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   geom_segment(data = rda_species_evol, aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
@@ -283,22 +287,26 @@ rda_species_evol$var.y <- rda_species_evol$RDA2 + adjust.y.rda1
 
 # Create evolutionary environment RDA plot with arrows
 rda_evol_plot_arrows_no_NP <- ggplot(rda_sites_evol, aes(x = RDA1, y = RDA2, color = Evolution)) +
-  geom_point(size = 2) +
+  geom_point(size = 2.5) +
+  
   theme_classic() +
+  
   labs(x = paste("RDA 1 (", round(summary(rda_result_evol)$cont$importance[2, 1] * 100, 2), "%)", sep = ""),
        y = paste("RDA 2 (", round(summary(rda_result_evol)$cont$importance[2, 2] * 100, 2), "%)", sep = ""),
        title = "B") +
+  
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +  # Use your custom colors
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
+  ) +
+  
   # Add arrows for variable contributions
   geom_segment(data = rda_species_evol, aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
                arrow = arrow(length = unit(0.1, "cm")), color = "black", size = 0.6) +
@@ -371,11 +379,15 @@ rda_species_anc$var.y <- rda_species_anc$RDA2 + adjust.y.rda2
 
 # Create evolutionary environment RDA plot with arrows
 rda_anc_plot_arrows <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color = Ancestry)) +
-  geom_point(size = 2) +
+  
+  geom_point(size = 2.5) +
+  
   theme_classic() +
+  
   labs(x = paste("RDA 1 (", round(summary(rda_result_anc)$cont$importance[2, 1] * 100, 2), "%)", sep = ""),
        y = paste("RDA 2 (", round(summary(rda_result_anc)$cont$importance[2, 2] * 100, 2), "%)", sep = ""),
        title = "C") +
+  
   scale_color_manual(
     name = "Ancestry",  # Update the legend title
     values = c("Ancestor 2" = "darkorange",
@@ -384,6 +396,7 @@ rda_anc_plot_arrows <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color = Anc
                "Ancestor 5" = "gold",
                "Mixed ancestry" = "magenta3")
   ) +  # Use custom colors
+  
   # Add arrows for variable contributions
   geom_segment(data = rda_species_anc, aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
                arrow = arrow(length = unit(0.1, "cm")), color = "black", size = 0.6) +
@@ -449,11 +462,15 @@ rda_species_anc$var.y <- rda_species_anc$RDA2 + adjust.y.rda2
 
 # Create evolutionary environment RDA plot with arrows
 rda_anc_plot_arrows_no_NP <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color = Ancestry)) +
-  geom_point(size = 2) +
+  
+  geom_point(size = 2.5) +
+  
   theme_classic() +
+  
   labs(x = paste("RDA 1 (", round(summary(rda_result_anc)$cont$importance[2, 1] * 100, 2), "%)", sep = ""),
        y = paste("RDA 2 (", round(summary(rda_result_anc)$cont$importance[2, 2] * 100, 2), "%)", sep = ""),
        title = "D") +
+  
   scale_color_manual(
     name = "Ancestry",  # Update the legend title
     values = c("Ancestor 2" = "darkorange",
@@ -462,6 +479,7 @@ rda_anc_plot_arrows_no_NP <- ggplot(rda_sites_anc, aes(x = RDA1, y = RDA2, color
                "Ancestor 5" = "gold",
                "Mixed ancestry" = "magenta3")
   ) +  # Use custom colors
+  
   # Add arrows for variable contributions
   geom_segment(data = rda_species_anc, aes(x = 0, y = 0, xend = RDA1*10, yend = RDA2*10),
                arrow = arrow(length = unit(0.1, "cm")), color = "black", size = 0.6) +
@@ -488,18 +506,21 @@ df.evol.dummy.leg <- data.frame( # dummy df for making an extractable legend
 )
 
 legend_evol <- ggplot(df.evol.dummy.leg, aes(x = RDA1, y = RDA2, color = Evolution)) +
+  
   geom_point() +
+  
   scale_color_manual(
-    name = "Evolution environment",
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
+  
   theme_void() +
   theme(legend.position = "right",
         legend.title = element_text(size = 10, face = "bold"),
