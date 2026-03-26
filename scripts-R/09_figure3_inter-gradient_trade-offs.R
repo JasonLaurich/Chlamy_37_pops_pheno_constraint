@@ -134,15 +134,36 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 LN.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -155,22 +176,14 @@ LN.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16,
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -251,15 +264,36 @@ summary(q90, se = "boot", R = 1000) # 0.30813, p 0.01439
 
 LN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -273,22 +307,14 @@ LN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16,
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -305,15 +331,36 @@ LN.qr # Display the plot
 
 LN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -326,22 +373,14 @@ LN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16,
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -404,15 +443,36 @@ df.filt3 <- df.filt %>%
 
 LN.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -425,22 +485,14 @@ LN.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16,
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -503,15 +555,36 @@ summary(q90, se = "boot", R = 1000) # 0.24567, p 0.11803
 
 LN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -525,22 +598,14 @@ LN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16,
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -622,15 +687,36 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 LP.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -643,22 +729,14 @@ LP.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16,
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -739,15 +817,36 @@ summary(q90, se = "boot", R = 1000) # 0.02415, p 0.33480
 
 LP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -761,22 +860,14 @@ LP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16,
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -793,15 +884,36 @@ LP.qr # Display the plot
 
 LP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -814,22 +926,14 @@ LP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16,
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -903,15 +1007,36 @@ df.filt3 <- df.filt %>%
 
 LP.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -924,22 +1049,14 @@ LP.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16,
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -1002,15 +1119,36 @@ summary(q90, se = "boot", R = 1000) # -0.04438, p 0.02535
 
 LP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -1024,22 +1162,14 @@ LP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16,
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -1121,15 +1251,46 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 LS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -1142,22 +1303,14 @@ LS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16,
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -1238,15 +1391,46 @@ summary(q90, se = "boot", R = 1000) # -0.00028, p 0.95135
 
 LS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -1260,22 +1444,14 @@ LS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16,
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -1292,15 +1468,46 @@ LS.qr # Display the plot
 
 LS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -1313,22 +1520,14 @@ LS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16,
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -1402,15 +1601,46 @@ df.filt3 <- df.filt %>%
 
 LS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -1423,22 +1653,14 @@ LS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16,
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -1501,15 +1723,46 @@ summary(q90, se = "boot", R = 1000) # -0.03065, p 0.03394
 
 LS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -1523,22 +1776,14 @@ LS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16,
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -1620,14 +1865,28 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 LT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -1640,21 +1899,14 @@ LT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -1735,14 +1987,28 @@ summary(q90, se = "boot", R = 1000) # -0.01590, p 0.14033
 
 LT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -1756,21 +2022,14 @@ LT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -1787,14 +2046,28 @@ LT.qr # Display the plot
 
 LT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -1807,21 +2080,14 @@ LT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -1895,14 +2161,28 @@ df.filt3 <- df.filt %>%
 
 LT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -1915,21 +2195,14 @@ LT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -1992,14 +2265,28 @@ summary(q90, se = "boot", R = 1000) # -0.04010, p 0.26075
 
 LT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" =3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -2013,21 +2300,14 @@ LT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -2111,15 +2391,36 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 NP.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3,
-      "phos" =3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -2132,22 +2433,14 @@ NP.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16,
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -2228,15 +2521,36 @@ summary(q90, se = "boot", R = 1000) # 0.22667, p 0.00119
 
 NP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3,
-      "phos" =3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -2250,22 +2564,14 @@ NP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16,
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -2282,15 +2588,36 @@ NP.qr # Display the plot
 
 NP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3,
-      "phos" =3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -2303,22 +2630,14 @@ NP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16,
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -2392,15 +2711,36 @@ df.filt3 <- df.filt %>%
 
 NP.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3,
-      "phos" =3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -2413,22 +2753,14 @@ NP.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16,
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -2491,15 +2823,36 @@ summary(q90, se = "boot", R = 1000) # -0.17067, p 0.07251
 
 NP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3,
-      "phos" =3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -2513,22 +2866,14 @@ NP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16,
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -2610,15 +2955,46 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 NS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3,
-      "salt" =3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -2631,22 +3007,14 @@ NS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16,
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -2727,15 +3095,46 @@ summary(q90, se = "boot", R = 1000) # -0.06527, p 0.00000
 
 NS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3,
-      "salt" =3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -2749,22 +3148,14 @@ NS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16,
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -2781,15 +3172,46 @@ NS.qr # Display the plot
 
 NS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3,
-      "salt" =3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -2802,22 +3224,14 @@ NS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16,
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -2891,15 +3305,46 @@ df.filt3 <- df.filt %>%
 
 NS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3,
-      "salt" =3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -2912,22 +3357,14 @@ NS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16,
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -2990,15 +3427,46 @@ summary(q90, se = "boot", R = 1000) # -0.13925, p 0.00000
 
 NS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3,
-      "salt" =3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -3012,22 +3480,14 @@ NS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16,
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -3109,14 +3569,28 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 NT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -3129,21 +3603,14 @@ NT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -3224,14 +3691,28 @@ summary(q90, se = "boot", R = 1000) # -0.00888, p 0.91359
 
 NT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -3245,21 +3726,14 @@ NT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -3276,14 +3750,28 @@ NT.qr # Display the plot
 
 NT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -3296,21 +3784,14 @@ NT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -3384,14 +3865,28 @@ df.filt3 <- df.filt %>%
 
 NT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -3404,21 +3899,14 @@ NT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -3481,14 +3969,28 @@ summary(q90, se = "boot", R = 1000) # -0.18959, p 0.03341
 
 NT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -3502,21 +4004,14 @@ NT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -3600,15 +4095,46 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 PS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -3621,22 +4147,14 @@ PS.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16,
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -3717,15 +4235,46 @@ summary(q90, se = "boot", R = 1000) # 0.00233, p 0.98237
 
 PS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -3739,22 +4288,14 @@ PS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16,
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -3771,15 +4312,46 @@ PS.qr # Display the plot
 
 PS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -3792,22 +4364,14 @@ PS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16,
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -3881,15 +4445,46 @@ df.filt3 <- df.filt %>%
 
 PS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -3902,22 +4497,14 @@ PS.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16,
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -3980,15 +4567,46 @@ summary(q90, se = "boot", R = 1000) # -0.50261, p 0.00124
 
 PS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -4002,22 +4620,14 @@ PS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16,
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -4098,14 +4708,28 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 PT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -4118,21 +4742,14 @@ PT.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -4213,14 +4830,28 @@ summary(q90, se = "boot", R = 1000) # -0.00321, p 0.99148
 
 PT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -4234,21 +4865,14 @@ PT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -4265,14 +4889,28 @@ PT.qr # Display the plot
 
 PT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -4285,21 +4923,14 @@ PT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -4364,14 +4995,28 @@ df.filt3 <- df.filt %>%
 
 PT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -4384,21 +5029,14 @@ PT.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -4461,14 +5099,28 @@ summary(q90, se = "boot", R = 1000) # -0.60035, p 0.05660
 
 PT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -4482,21 +5134,14 @@ PT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -4580,14 +5225,38 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 ST.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -4600,21 +5269,14 @@ ST.scam.PF <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -4695,14 +5357,38 @@ summary(q90, se = "boot", R = 1000) # -0.05454, p 0.91506
 
 ST.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -4716,21 +5402,14 @@ ST.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -4747,14 +5426,38 @@ ST.qr # Display the plot
 
 ST.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -4767,21 +5470,14 @@ ST.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bi
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -4855,14 +5551,38 @@ df.filt3 <- df.filt %>%
 
 ST.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -4875,21 +5595,14 @@ ST.scam.PF2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = 
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1,9.5) +
@@ -4952,14 +5665,38 @@ summary(q90, se = "boot", R = 1000) # -1.54548, p 0.00000
 
 ST.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -4973,21 +5710,14 @@ ST.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1,9.5) +
@@ -5016,19 +5746,17 @@ legend_plot <- ggplot(legend_df, aes(x = x, y = y)) +
   geom_point(aes(shape = Group, colour = Group2), size = 1, stroke = 1) +
   geom_line(aes(linetype = LineType), size = 0.6) +
   scale_shape_manual(name = NULL,
-                     values = c("Ancestral" = 5, 
-                                "Other" = 1, 
-                                "Matching" = 16)) +
+                     values = c("Ancestral" = 5)) +
   
   scale_color_manual(
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
-               "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   scale_linetype_manual(values = c("Outer" = "dashed", "Inner (75%)" = "solid"),
@@ -5083,19 +5811,17 @@ legend_plot2 <- ggplot(legend_df2, aes(x = x, y = y)) +
   geom_point(aes(shape = Group, colour = Group2), size = 1, stroke = 1) +
   geom_line(aes(linetype = LineType), size = 0.6) +
   scale_shape_manual(name = NULL,
-                     values = c("Ancestral" = 5, 
-                                "Other" = 1, 
-                                "Matching" = 16)) +
+                     values = c("Ancestral" = 5)) +
   
   scale_color_manual(
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
-               "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   scale_linetype_manual(values = c("50th" = "dotted", "75th" = "dashed", "90th" = "solid"),
@@ -5155,19 +5881,17 @@ legend_plot3 <- ggplot(legend_df3, aes(x = x, y = y)) +
   geom_line(aes(linetype = LineType), size = 0.6) +
   
   scale_shape_manual(name = NULL,
-                     values = c("Ancestral" = 5, 
-                                "Other" = 1, 
-                                "Matching" = 16)) +
+                     values = c("Ancestral" = 5)) +
   
   scale_color_manual(
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
-               "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   scale_linetype_manual(
@@ -5280,14 +6004,28 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 NcL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -5300,21 +6038,14 @@ NcL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -5395,14 +6126,28 @@ summary(q90, se = "boot", R = 1000) # 0.00008, p 0.44367
 
 NcL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -5416,21 +6161,14 @@ NcL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -5447,14 +6185,28 @@ NcL.qr # Display the plot
 
 NcL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -5467,21 +6219,14 @@ NcL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -5546,14 +6291,28 @@ df.filt3 <- df.filt %>%
 
 NcL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -5566,21 +6325,14 @@ NcL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -5643,14 +6395,28 @@ summary(q90, se = "boot", R = 1000) # -0.00061, p 0.04951
 
 NcL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -5664,21 +6430,14 @@ NcL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -5760,14 +6519,28 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 NcN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -5780,21 +6553,14 @@ NcN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -5875,14 +6641,28 @@ summary(q90, se = "boot", R = 1000) # 0.00051, p 0.30126
 
 NcN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -5896,21 +6676,14 @@ NcN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0,1.35) +
@@ -5927,14 +6700,28 @@ NcN.qr # Display the plot
 
 NcN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -5947,21 +6734,14 @@ NcN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -6026,14 +6806,28 @@ df.filt3 <- df.filt %>%
 
 NcN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -6046,21 +6840,14 @@ NcN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -6123,14 +6910,28 @@ summary(q90, se = "boot", R = 1000) # -0.00133, p 0.17212
 
 NcN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -6144,21 +6945,14 @@ NcN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -6240,14 +7034,28 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 NcP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -6260,21 +7068,14 @@ NcP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -6355,14 +7156,28 @@ summary(q90, se = "boot", R = 1000) # 0.00372, p 0.03176
 
 NcP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -6376,21 +7191,14 @@ NcP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -6407,14 +7215,28 @@ NcP.qr # Display the plot
 
 NcP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -6427,21 +7249,14 @@ NcP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -6506,14 +7321,28 @@ df.filt3 <- df.filt %>%
 
 NcP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -6526,21 +7355,14 @@ NcP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -6603,14 +7425,28 @@ summary(q90, se = "boot", R = 1000) # -0.00277, p 0.51054
 
 NcP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -6624,21 +7460,14 @@ NcP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -6720,14 +7549,38 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 NcS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -6740,21 +7593,14 @@ NcS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -6835,14 +7681,38 @@ summary(q90, se = "boot", R = 1000) # 0.00364, p 0.51458
 
 NcS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -6856,21 +7726,14 @@ NcS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1,9.5) +
@@ -6887,14 +7750,38 @@ NcS.qr # Display the plot
 
 NcS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -6907,21 +7794,14 @@ NcS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -6995,14 +7875,38 @@ df.filt3 <- df.filt %>%
 
 NcS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -7015,21 +7919,14 @@ NcS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1,9.5) +
@@ -7092,14 +7989,38 @@ summary(q90, se = "boot", R = 1000) # -0.00652, p 0.52877
 
 NcS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -7113,21 +8034,14 @@ NcS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1,9.5) +
@@ -7207,7 +8121,22 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 NcT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -7219,20 +8148,14 @@ NcT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5)  # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14, 22) +
@@ -7313,7 +8236,21 @@ summary(q90, se = "boot", R = 1000) # 0.00054, p 0.71248
 
 NcT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  geom_point(
+    data = subset(df.filt, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -7326,20 +8263,14 @@ NcT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5)  # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14,22) +
@@ -7356,7 +8287,21 @@ NcT.qr # Display the plot
 
 NcT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  geom_point(
+    data = subset(df.filt, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -7368,20 +8313,14 @@ NcT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5)  # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14, 22) +
@@ -7412,7 +8351,21 @@ df.filt3 <- df.filt %>%
 
 NcT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  geom_point(
+    data = subset(df.filt3, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -7424,20 +8377,14 @@ NcT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5)  # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14,22) +
@@ -7500,7 +8447,21 @@ summary(q90, se = "boot", R = 1000) # -0.00135, p 0.78521
 
 NcT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  geom_point(
+    data = subset(df.filt3, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -7513,20 +8474,14 @@ NcT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5)  # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14,22) +
@@ -7610,14 +8565,28 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 PcL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -7630,21 +8599,14 @@ PcL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -7725,15 +8687,29 @@ summary(q90, se = "boot", R = 1000) # 0.00039, p 0.15525
 
 PcL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
-  
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
   ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
+  ) +  
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -7746,21 +8722,14 @@ PcL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -7777,15 +8746,29 @@ PcL.qr # Display the plot
 
 PcL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
-  
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
   ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
+  ) +  
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "black") +
@@ -7797,21 +8780,14 @@ PcL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -7874,15 +8850,29 @@ df.filt3 <- df.filt %>%
 
 PcL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
-  
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
   ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
+  ) +  
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -7894,21 +8884,14 @@ PcL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -7971,15 +8954,29 @@ summary(q90, se = "boot", R = 1000) # -0.00122, p 0.14541
 
 PcL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
-  
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
   ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
+  ) +  
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -7992,21 +8989,14 @@ PcL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -8088,15 +9078,29 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 PcN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
-  
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
   ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +  
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -8108,21 +9112,14 @@ PcN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -8203,15 +9200,29 @@ summary(q90, se = "boot", R = 1000) # 0.00166, p 0.45654
 
 PcN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
-  
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
   ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +  
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -8224,21 +9235,14 @@ PcN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -8255,15 +9259,29 @@ PcN.qr # Display the plot
 
 PcN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
-  
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
   ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +  
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -8275,21 +9293,14 @@ PcN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -8354,15 +9365,29 @@ df.filt3 <- df.filt %>%
 
 PcN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
-  
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
   ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +  
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -8374,21 +9399,14 @@ PcN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -8451,15 +9469,29 @@ summary(q90, se = "boot", R = 1000) # -0.00420, p 0.04351
 
 PcN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
-  
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
   ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +  
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -8472,21 +9504,14 @@ PcN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -8568,14 +9593,28 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 PcP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -8588,21 +9627,14 @@ PcP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -8683,14 +9715,28 @@ summary(q90, se = "boot", R = 1000) # 0.01521, p 0.02417
 
 PcP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -8704,21 +9750,14 @@ PcP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -8735,14 +9774,28 @@ PcP.qr # Display the plot
 
 PcP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -8755,21 +9808,14 @@ PcP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -8843,14 +9889,28 @@ df.filt3 <- df.filt %>%
 
 PcP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -8863,21 +9923,14 @@ PcP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -8940,14 +9993,28 @@ summary(q90, se = "boot", R = 1000) # -0.00445, p 0.77422
 
 PcP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -8961,21 +10028,14 @@ PcP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -9057,14 +10117,38 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 PcS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -9077,21 +10161,14 @@ PcS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -9172,14 +10249,38 @@ summary(q90, se = "boot", R = 1000) # 0.01528, p 0.38908
 
 PcS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -9193,21 +10294,14 @@ PcS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -9224,14 +10318,38 @@ PcS.qr # Display the plot
 
 PcS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -9244,21 +10362,14 @@ PcS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -9332,14 +10443,38 @@ df.filt3 <- df.filt %>%
 
 PcS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -9352,21 +10487,14 @@ PcS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -9429,15 +10557,40 @@ summary(q90, se = "boot", R = 1000) # -0.02828, p 0.37493
 
 PcS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
-  ) +  
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
@@ -9449,21 +10602,14 @@ PcS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -9544,7 +10690,21 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 PcT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  geom_point(
+    data = subset(df.filt, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -9556,20 +10716,14 @@ PcT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5)  # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14, 22) +
@@ -9650,7 +10804,21 @@ summary(q90, se = "boot", R = 1000) # -0.00324, p 0.47270
 
 PcT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  geom_point(
+    data = subset(df.filt, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -9663,20 +10831,14 @@ PcT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5)  # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14, 22) +
@@ -9693,7 +10855,21 @@ PcT.qr # Display the plot
 
 PcT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  geom_point(
+    data = subset(df.filt, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -9705,20 +10881,14 @@ PcT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5)  # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14, 22) +
@@ -9758,7 +10928,21 @@ df.filt3 <- df.filt %>%
 
 PcT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  geom_point(
+    data = subset(df.filt3, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -9770,20 +10954,14 @@ PcT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5)  # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14, 22) +
@@ -9846,7 +11024,21 @@ summary(q90, se = "boot", R = 1000) # -0.01785, p 0.03259
 
 PcT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  geom_point(
+    data = subset(df.filt3, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -9859,20 +11051,14 @@ PcT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5)  # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14, 22) +
@@ -9956,14 +11142,28 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 PigL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -9976,21 +11176,14 @@ PigL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -10071,14 +11264,28 @@ summary(q90, se = "boot", R = 1000) # -0.01291, p 0.27035
 
 PigL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -10092,21 +11299,14 @@ PigL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -10123,14 +11323,28 @@ PigL.qr # Display the plot
 
 PigL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -10143,21 +11357,14 @@ PigL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -10231,14 +11438,28 @@ df.filt3 <- df.filt %>%
 
 PigL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -10251,21 +11472,14 @@ PigL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = e
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -10328,14 +11542,28 @@ summary(q90, se = "boot", R = 1000) # -0.04757, p 0.01455
 
 PigL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -10349,21 +11577,14 @@ PigL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -10445,15 +11666,29 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 PigN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
-  
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
   ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +  
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -10465,21 +11700,14 @@ PigN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -10560,15 +11788,29 @@ summary(q90, se = "boot", R = 1000) # -0.00865, p 0.80663
 
 PigN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
-  
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
   ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +  
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -10581,21 +11823,14 @@ PigN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -10612,15 +11847,29 @@ PigN.qr # Display the plot
 
 PigN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
-  
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
   ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +  
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -10632,21 +11881,14 @@ PigN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -10720,15 +11962,29 @@ df.filt3 <- df.filt %>%
 
 PigN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
-  
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
   ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +  
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -10740,21 +11996,14 @@ PigN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = e
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -10817,15 +12066,29 @@ summary(q90, se = "boot", R = 1000) # -0.14665, p 0.02946
 
 PigN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
-  
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
   ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +  
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -10838,21 +12101,14 @@ PigN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -10934,14 +12190,28 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 PigP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -10954,21 +12224,14 @@ PigP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -11049,14 +12312,28 @@ summary(q90, se = "boot", R = 1000) # 0.16533, p 0.35863
 
 PigP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -11070,21 +12347,14 @@ PigP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -11101,14 +12371,28 @@ PigP.qr # Display the plot
 
 PigP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -11121,21 +12405,14 @@ PigP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -11200,14 +12477,28 @@ df.filt3 <- df.filt %>%
 
 PigP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -11220,21 +12511,14 @@ PigP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = e
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -11297,14 +12581,28 @@ summary(q90, se = "boot", R = 1000) # -0.21914, p 0.47361
 
 PigP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -11318,21 +12616,14 @@ PigP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -11414,14 +12705,38 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 PigS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -11434,21 +12749,14 @@ PigS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -11529,14 +12837,38 @@ summary(q90, se = "boot", R = 1000) # 0.29134, p 0.64177
 
 PigS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -11550,21 +12882,14 @@ PigS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -11581,14 +12906,38 @@ PigS.qr # Display the plot
 
 PigS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -11601,21 +12950,14 @@ PigS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -11689,14 +13031,38 @@ df.filt3 <- df.filt %>%
 
 PigS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -11709,21 +13075,14 @@ PigS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = e
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -11786,14 +13145,38 @@ summary(q90, se = "boot", R = 1000) # -0.50327, p 0.46718
 
 PigS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -11807,21 +13190,14 @@ PigS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -11901,7 +13277,22 @@ pred.curve.2 <- data.frame( # predicted data frame
 )
 
 PigT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -11913,20 +13304,14 @@ PigT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5)  # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14, 22) +
@@ -12007,7 +13392,21 @@ summary(q90, se = "boot", R = 1000) # 0.16959, p 0.23742
 
 PigT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  geom_point(
+    data = subset(df.filt, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -12020,20 +13419,14 @@ PigT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5)  # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14, 22) +
@@ -12050,7 +13443,21 @@ PigT.qr # Display the plot
 
 PigT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  geom_point(
+    data = subset(df.filt, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
@@ -12062,20 +13469,14 @@ PigT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5)  # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14, 22) +
@@ -12115,7 +13516,21 @@ df.filt3 <- df.filt %>%
 
 PigT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  geom_point(
+    data = subset(df.filt3, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -12127,20 +13542,14 @@ PigT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = e
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5) # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14, 22) +
@@ -12203,7 +13612,21 @@ summary(q90, se = "boot", R = 1000) # -0.08127, p 0.69250
 
 PigT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  geom_point(
+    data = subset(df.filt3, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -12216,20 +13639,14 @@ PigT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evo
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5) # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14, 22) +
@@ -12313,14 +13730,28 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 BvL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -12333,21 +13764,14 @@ BvL.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -12428,14 +13852,28 @@ summary(q90, se = "boot", R = 1000) # -0.00062, p 0.04025
 
 BvL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -12449,21 +13887,14 @@ BvL.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -12480,14 +13911,28 @@ BvL.qr # Display the plot
 
 BvL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -12500,21 +13945,14 @@ BvL.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -12588,14 +14026,28 @@ df.filt3 <- df.filt %>%
 
 BvL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -12608,21 +14060,14 @@ BvL.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -12685,14 +14130,28 @@ summary(q90, se = "boot", R = 1000) # -0.00169, p 0.00024
 
 BvL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "light" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "light"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "goldenrod2"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -12706,21 +14165,14 @@ BvL.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "light" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 0.6) +
@@ -12802,15 +14254,29 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 BvN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
-  
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
   ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +  
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -12822,21 +14288,14 @@ BvN.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -12917,15 +14376,29 @@ summary(q90, se = "boot", R = 1000) # -0.00282, p 0.00085
 
 BvN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
-  
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
   ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +  
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -12938,21 +14411,14 @@ BvN.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -12969,15 +14435,29 @@ BvN.qr # Display the plot
 
 BvN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
-  
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
   ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +  
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
@@ -12989,21 +14469,14 @@ BvN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -13077,15 +14550,29 @@ df.filt3 <- df.filt %>%
 
 BvN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
-  
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
   ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +  
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -13097,21 +14584,14 @@ BvN.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -13174,15 +14654,29 @@ summary(q90, se = "boot", R = 1000) # -0.00530, p 0.00045
 
 BvN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
-  
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "nit" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
   ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "nit"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "plum3"
+  ) +  
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -13195,21 +14689,14 @@ BvN.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "nit" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 1.35) +
@@ -13291,14 +14778,28 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 BvP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -13311,21 +14812,14 @@ BvP.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -13406,14 +14900,28 @@ summary(q90, se = "boot", R = 1000) # -0.00484, p 0.37283
 
 BvP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -13427,21 +14935,14 @@ BvP.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -13458,14 +14959,28 @@ BvP.qr # Display the plot
 
 BvP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "grey75", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -13478,21 +14993,14 @@ BvP.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -13557,14 +15065,28 @@ df.filt3 <- df.filt %>%
 
 BvP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -13577,21 +15099,14 @@ BvP.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -13654,14 +15169,28 @@ summary(q90, se = "boot", R = 1000) # -0.02611, p 0.01542
 
 BvP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "phos" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin == "phos"),
+    shape = 21, 
+    size = 3,
+    colour = "black",
+    fill = "brown4"
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -13675,21 +15204,14 @@ BvP.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "phos" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(0, 6) +
@@ -13771,14 +15293,38 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 BvS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -13791,21 +15337,14 @@ BvS.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -13886,14 +15425,38 @@ summary(q90, se = "boot", R = 1000) # 0.00512, p 0.72937
 
 BvS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -13907,21 +15470,14 @@ BvS.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -13938,14 +15494,38 @@ BvS.qr # Display the plot
 
 BvS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -13958,21 +15538,14 @@ BvS.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -14046,14 +15619,38 @@ df.filt3 <- df.filt %>%
 
 BvS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
@@ -14066,21 +15663,14 @@ BvS.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -14143,14 +15733,38 @@ summary(q90, se = "boot", R = 1000) # -0.02876, p 0.00994
 
 BvS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(aes(size = evol.bin), stroke = 1) + # custom scaling of point size
+  geom_point(
+    data = subset(df.filt3, evol.bin =="other"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.15
+  ) +
   
-  scale_size_manual(
-    values = c(
-      "other" = 1.5,
-      "ancestral" = 1.5,
-      "salt" = 3
-    )
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.21
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Biotic depletion x Salt"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "skyblue",
+    shape = 21,
+    size = 3
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, Evol.plt == "Salt stress"),
+    aes(shape = evol.bin, size = evol.bin),
+    colour = "black",
+    fill = "navyblue",
+    shape = 21,
+    size = 3
   ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
@@ -14164,21 +15778,14 @@ BvS.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("other" = 1,  # open circle
-               "ancestral" = 5, # diamond
-               "salt" = 16)  # filled circle
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(1, 9.5) +
@@ -14259,7 +15866,21 @@ pred.curve.2 <- data.frame( # predicted data frame
 
 BvT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  geom_point(
+    data = subset(df.filt, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -14271,20 +15892,14 @@ BvT.scam <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5)  # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14, 22) +
@@ -14365,7 +15980,21 @@ summary(q90, se = "boot", R = 1000) # -0.00864, p 0.07157
 
 BvT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  geom_point(
+    data = subset(df.filt, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -14378,20 +16007,14 @@ BvT.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5)  # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14, 22) +
@@ -14408,7 +16031,21 @@ BvT.qr # Display the plot
 
 BvT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  geom_point(
+    data = subset(df.filt, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", colour = "grey75") +
@@ -14420,20 +16057,14 @@ BvT.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5)  # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14, 22) +
@@ -14473,7 +16104,21 @@ df.filt3 <- df.filt %>%
 
 BvT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  geom_point(
+    data = subset(df.filt3, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   geom_line(data = pred.curve.2, aes(x = z.x, y = z.y), color = "black", size = 0.6, linetype = "dashed", inherit.aes = FALSE) +
@@ -14485,20 +16130,14 @@ BvT.scam2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = ev
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5) # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14, 22) +
@@ -14561,7 +16200,21 @@ summary(q90, se = "boot", R = 1000) # -0.02035, p 0.00012
 
 BvT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
-  geom_point(size = 1.5, stroke = 1) +  # Scatter plot of raw data
+  geom_point(
+    data = subset(df.filt3, evol.bin =="evolved"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.5
+  ) +
+  
+  geom_point(
+    data = subset(df.filt3, evol.bin =="ancestral"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 0.9,
+    alpha = 0.6
+  ) +
   
   geom_abline(intercept = coef(q90)[1], slope = coef(q90)[2], lwd = 0.6) +
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
@@ -14574,20 +16227,14 @@ BvT.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
-    values = c("Biotic depletion" = "darkorange",
-               "Biotic depletion x Salt" = "deepskyblue1",
-               "Control" = "forestgreen",
-               "Light limitation" = "gold",
-               "Nitrogen limitation" = "magenta3",
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
                "Ancestral" = "black",
-               "Phosphorus limitation" = "firebrick",  
-               "Salt stress" = "blue")
-  ) +
-  
-  scale_shape_manual(
-    name = "Evolutionary status",
-    values = c("evolved" = 1,  # open circle
-               "ancestral" = 5) # diamond
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
   ) +
   
   ylim(14, 22) +
