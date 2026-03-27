@@ -58,8 +58,8 @@ df.sum <- cbind(df.sum, qrs)
 
 # Plotting ----------------------------------------------------------------
 
-df.sum$colour.x <- c("gold", "magenta3", "firebrick", "blue", "black", "magenta3", "firebrick", "blue", "black", "firebrick", "blue", "black", "blue", "black", "black")
-df.sum$colour.y <- c("gold", "magenta3", "firebrick", "blue", "black", "gold", "gold", "gold", "gold", "magenta3", "magenta3", "magenta3", "firebrick", "firebrick", "blue")
+df.sum$colour.x <- c("goldenrod2", "plum3", "brown4", "navyblue", "black", "plum3", "brown4", "navyblue", "black", "brown4", "navyblue", "black", "navyblue", "black", "black")
+df.sum$colour.y <- c("goldenrod2", "plum3", "brown4", "navyblue", "black", "goldenrod2", "goldenrod2", "goldenrod2", "goldenrod2", "plum3", "plum3", "plum3", "brown4", "brown4", "navyblue")
 
 # scale the p values
 
@@ -239,10 +239,10 @@ p.A <- ggplot(df.arc2) +
   
   annotate("text", x = 0.75, y = 3.2, label = "Pareto \nconstraint", size = 4, fontface = "bold") +
   
-  annotate("point", x = x.leg, y = y.leg,     colour = "gold", size = 3) +
-  annotate("point", x = x.leg, y = y.leg-dy,  colour = "magenta3", size = 3) +
-  annotate("point", x = x.leg, y = y.leg-2*dy,colour = "firebrick", size = 3) +
-  annotate("point", x = x.leg, y = y.leg-3*dy,colour = "blue", size = 3) +
+  annotate("point", x = x.leg, y = y.leg,     colour = "goldenrod2", size = 3) +
+  annotate("point", x = x.leg, y = y.leg-dy,  colour = "plum3", size = 3) +
+  annotate("point", x = x.leg, y = y.leg-2*dy,colour = "brown4", size = 3) +
+  annotate("point", x = x.leg, y = y.leg-3*dy,colour = "navyblue", size = 3) +
   annotate("point", x = x.leg, y = y.leg-4*dy,colour = "black", size = 3) +
   
   annotate("text", x = x.leg + 0.1, y = y.leg,     
@@ -261,7 +261,7 @@ p.A <- ggplot(df.arc2) +
            label = "Temperature", hjust = 0, size = 3) +
   
   annotate("text", x = x.leg, y = y.leg + 0.18,
-           label = "Selection environment",
+           label = "Niche axis",
            hjust = 0, fontface = "bold", size = 3)
 
 p.A
@@ -292,6 +292,17 @@ df.arc3 <- bind_rows(
 
 df.arc3 <- df.arc3 %>%
   mutate(qrs.plot = qrs * stretch)
+
+# Need to bump down nitrogen v phos a little, so the label fits in
+
+df.arc3 <- df.arc3 %>%
+  mutate(
+    p.evol.jit = ifelse(
+      trait.x == "P.comp" & trait.y == "N.comp",
+      p.evol.jit - 0.2,
+      p.evol.jit
+    )
+  )
 
 p.B <- ggplot(df.arc3) +
   
@@ -347,7 +358,7 @@ p.B <- ggplot(df.arc3) +
   
   annotate("text", x = -1.4, y = 3.3, label = "Modularity", size = 4, fontface = "bold") +
   
-  annotate("text", x = 0.85, y = 3.3, label = "Facilitation", size = 4, fontface = "bold")
+  annotate("text", x = 0.75, y = 3.2, label = "Correlated \nevolution", size = 4, fontface = "bold") 
 
 p.B
 
