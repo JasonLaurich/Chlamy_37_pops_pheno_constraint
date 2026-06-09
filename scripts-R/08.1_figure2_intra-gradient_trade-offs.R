@@ -35,6 +35,45 @@ par_frt <- function(df, xvar, yvar) { # Simple Pareto front function / convex hu
   return(pareto_points)
 }
 
+closest_on_segment <- function(px, py, ax, ay, bx, by) { # find the pf front segment closest to each point
+  
+  apx <- px - ax
+  apy <- py - ay
+  abx <- bx - ax
+  aby <- by - ay
+  
+  ab2 <- abx^2 + aby^2
+  
+  t <- (apx * abx + apy * aby) / ab2
+  t <- pmax(0, pmin(1, t))  # constrain to segment
+  
+  x.closest <- ax + t * abx
+  y.closest <- ay + t * aby
+  
+  dist <- sqrt((px - x.closest)^2 + (py - y.closest)^2)
+  
+  data.frame(
+    x.pf = x.closest,
+    y.pf = y.closest,
+    dist.to.pf = dist
+  )
+}
+
+nearest_pf_segment <- function(px, py) { # calculate distance to closest point on nearest pf segment. 
+  
+  df.pf.segments %>%
+    rowwise() %>%
+    mutate(
+      closest = list(
+        closest_on_segment(px, py, ax, ay, bx, by)
+      )
+    ) %>%
+    tidyr::unnest(closest) %>%
+    ungroup() %>%
+    slice_min(dist.to.pf, n = 1, with_ties = FALSE) %>%
+    select(x.pf, y.pf, dist.to.pf)
+}
+
 # Load & examine the data -------------------------------------------------
 
 df <- read.csv("processed-data/27_summary_table.csv") # Summary file
@@ -148,8 +187,10 @@ T.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum growth rate, " * italic("\u03bc")[italic(max)] * " (" * day^{-1} * ")"),   
-       y = expression("Thermal breadth, " * italic("T")[italic(br)] * " (°C)"), 
+  labs(x = expression(atop("Maximum growth rate",
+                           italic("\u03bc")[italic(max)] ~ (day^-1))),
+       y = expression(atop("Thermal breadth",
+                           italic("T")[italic(br)] * " (°C)")),
        color = "Evolutionary History",
        title = "E — Temperature") +  # labels
   
@@ -380,8 +421,10 @@ T.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum growth rate, " * italic("\u03bc")[italic(max)] * " (" * day^{-1} * ")"),   
-       y = expression("Thermal breadth, " * italic("T")[italic(br)] * " (°C)"), 
+  labs(x = expression(atop("Maximum growth rate",
+                           italic("\u03bc")[italic(max)] ~ (day^-1))),
+       y = expression(atop("Thermal breadth",
+                           italic("T")[italic(br)] * " (°C)")),
        color = "Evolutionary History",
        title = "E — Temperature") +  # labels
   
@@ -509,8 +552,10 @@ I.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum growth rate, " * italic("\u03bc")[italic(max)] * " (" * day^{-1} * ")"),   
-       y = expression("Low-L tolerance, 1/" * italic(L) * "* (" * mu * mol ~ m^{-2} ~ s^{-1} * ")"), 
+  labs(x = expression(atop("Maximum growth rate",
+                           italic("\u03bc")[italic(max)] ~ (day^-1))),
+       y = expression(atop("Low-L tolerance",
+                           1/italic(L)^"*" ~ (mu*mol^-1 ~ m^2 ~ s))),
        color = "Evolutionary History",
        title = "A — Light") +  # labels
   
@@ -596,7 +641,7 @@ I.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
   labs(x = expression(atop("Maximum growth rate",
                            italic("\u03bc")[italic(max)] ~ (day^-1))),
        y = expression(atop("Low-L tolerance",
-                           1/italic(L)^"*" ~ (mu*mol ~ m^-2 ~ s^-1))),
+                           1/italic(L)^"*" ~ (mu*mol^-1 ~ m^2 ~ s))),
        color = "Evolutionary History",
        title = "A — Light") +  # labels
   
@@ -691,71 +736,28 @@ mean(null.df$a.emp.n >= a.emp) # p-value 0.000
 
 ###### Evolutionary optimization test ######
 
-mean.dist <- df.filt %>% 
-  filter(evol.bin == 'light') %>% 
-  summarise(mean.dist = mean(distance)) %>%
-  pull(mean.dist)
-
-null_counts <- numeric(1000)
-
-for (i in 1:1000) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
-  shuffled.df <- df.filt %>%
-    
-    mutate(
-      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
-      
-      z.y.sim = sample(df.filt$z.y, replace = FALSE)     # Seperately reassign y
-    ) %>% 
-    
-    mutate(z.y.sim2 = scale(z.y.sim)[, 1],
-           z.x.sim2 = scale(z.x.sim)[, 1]) %>% 
-    
-    mutate(distance.sim = sqrt((z.x.sim2 - x.ref)^2 + (z.y.sim2 - y.ref)^2))
-  
-  null_counts[i] <- shuffled.df %>%
-    filter(evol.bin == "light") %>%
-    summarise(sim.dist = mean(distance.sim)) %>%
-    pull(sim.dist)
-}
-
-mean(null_counts>= mean.dist) # p = 0.029
-
-null_counts2 <- numeric(1000)
-
-for (i in 1:1000) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
-  shuffled.df <- df.filt %>%
-    
-    mutate(distance.sim = sample(df.filt$distance, replace = FALSE))
-  
-  null_counts2[i] <- shuffled.df %>%
-    filter(evol.bin == "light") %>%
-    summarise(sim.dist = mean(distance.sim)) %>%
-    pull(sim.dist)
-}
-
-mean(null_counts2>= mean.dist) # p = 0.041
-
-mod <- lm(distance~evol.bin, data = df.filt)
-anova(mod) # P 0.15820
-summary(mod) # light v anc: 0.37150, P 0.22
+df.pf.segments <- par.res.1 %>%
+  arrange(z.x2) %>%
+  transmute(
+    ax = z.x2,
+    ay = z.y2,
+    bx = lead(z.x2),
+    by = lead(z.y2)
+  ) %>%
+  filter(!is.na(bx), !is.na(by))
 
 df.filt <- df.filt %>%
+  rowwise() %>%
   mutate(
-    evol.bin2 = if_else(
-      evol.bin == "light",
-      "matching",
-      "background"
-    )
-  )
+    nearest = list(nearest_pf_segment(z.x2, z.y2))
+  ) %>%
+  tidyr::unnest(nearest) %>%
+  ungroup()
 
-mod2 <- lm(distance ~ evol.bin2, data = df.filt)
+mod <- lm(dist.to.pf ~ Evol.plt, data = df.filt)
 
-anova(mod2) # P 0.05814
-
-mod3 <- lm(distance ~ Evol.plt, data = df.filt)
-
-anova(mod3) # P 0.03902
-summary(mod3)
+anova(mod) # P 0.8783
+summary(mod) # v anc: -0.12158 (0.298)
 
 ###### top 33% of data ######
 
@@ -841,8 +843,10 @@ I.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum growth rate, " * italic("\u03bc")[italic(max)] * " (" * day^{-1} * ")"),   
-       y = expression("Low-L tolerance, 1/" * italic(L) * "* (" * mu * mol ~ m^{-2} ~ s^{-1} * ")"),  
+  labs(x = expression(atop("Maximum growth rate",
+                           italic("\u03bc")[italic(max)] ~ (day^-1))),
+       y = expression(atop("Low-L tolerance",
+                           1/italic(L)^"*" ~ (mu*mol^-1 ~ m^2 ~ s))),
        color = "Evolutionary History",
        title = "A — Light") +  # labels
   
