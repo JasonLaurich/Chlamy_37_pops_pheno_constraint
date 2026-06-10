@@ -20,6 +20,8 @@ library(sp) # For the point.in.polygon function
 library(scam)
 library(pracma) # For calculating polygon area
 library(cowplot)
+library(lme4)
+library(emmeans)
 
 par_frt <- function(df, xvar, yvar) { # Simple Pareto front function / convex hull algorithm (one sided)
   
@@ -754,10 +756,13 @@ df.filt <- df.filt %>%
   tidyr::unnest(nearest) %>%
   ungroup()
 
-mod <- lm(dist.to.pf ~ Evol.plt, data = df.filt)
+mod <- lmer(dist.to.pf ~ Evol.plt + (1|Anc), data = df.filt)
 
-anova(mod) # P 0.8783
-summary(mod) # v anc: -0.12158 (0.298)
+em  <- emmeans(mod, ~ Evol.plt)
+
+pairs(em, adjust = 'none') # light v anc: - 0.121581 (0.2972)
+
+0.2972/2 # 0.1486 
 
 ###### top 33% of data ######
 
@@ -974,8 +979,10 @@ N.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum growth rate, " * italic("\u03bc")[italic(max)] * " (" * day^{-1} * ")"),   
-       y = expression("Low-N tolerance, 1/" * italic(N) * "* (" * mu * mol^{-1} * ")"),  
+  labs(x = expression(atop("Maximum growth rate",
+                           italic("\u03bc")[italic(max)] ~ (day^-1))),
+       y = expression(atop("Low-N tolerance",
+                           1/italic(N)^"*" ~ (mu*mol^-1))),
        color = "Evolutionary History",
        title = "B — Nitrogen") +  # labels
   
@@ -1084,7 +1091,7 @@ N.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     "text",
     x = 1.275 + 0.85 * (1.95 - 1.275),
     y = 0.0 + 0.95 * (1.35 - 0.0),
-    label = "PF\nEvo", # removed QR
+    label = "PF", # removed QR
     hjust = 0,
     vjust = 1,
     size = 3,
@@ -1100,7 +1107,6 @@ N.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
   )
 
 N.qp  # Display the plot
-
 
 ###### Polygonal empty space analysis (Li et al 2019) ######
 
@@ -1157,71 +1163,31 @@ mean(null.df$a.emp.n >= a.emp) # p-value 0.003
 
 ###### Evolutionary optimization test ######
 
-mean.dist <- df.filt %>% 
-  filter(evol.bin == 'nit') %>% 
-  summarise(mean.dist = mean(distance)) %>%
-  pull(mean.dist)
-
-null_counts <- numeric(1000)
-
-for (i in 1:1000) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
-  shuffled.df <- df.filt %>%
-    
-    mutate(
-      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
-      
-      z.y.sim = sample(df.filt$z.y, replace = FALSE)     # Seperately reassign y
-    ) %>% 
-    
-    mutate(z.y.sim2 = scale(z.y.sim)[, 1],
-           z.x.sim2 = scale(z.x.sim)[, 1]) %>% 
-    
-    mutate(distance.sim = sqrt((z.x.sim2 - x.ref)^2 + (z.y.sim2 - y.ref)^2))
-  
-  null_counts[i] <- shuffled.df %>%
-    filter(evol.bin == "nit") %>%
-    summarise(sim.dist = mean(distance.sim)) %>%
-    pull(sim.dist)
-}
-
-mean(null_counts>= mean.dist) # p = 0.044
-
-null_counts2 <- numeric(1000)
-
-for (i in 1:1000) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
-  shuffled.df <- df.filt %>%
-    
-    mutate(distance.sim = sample(df.filt$distance, replace = FALSE))
-  
-  null_counts2[i] <- shuffled.df %>%
-    filter(evol.bin == "nit") %>%
-    summarise(sim.dist = mean(distance.sim)) %>%
-    pull(sim.dist)
-}
-
-mean(null_counts2>= mean.dist) # p = 0.048
-
-mod <- lm(distance~evol.bin, data = df.filt)
-anova(mod) # P 0.02639
-summary(mod) # nit v anc: 0.8405, P 0.00795
+df.pf.segments <- par.res.1 %>%
+  arrange(z.x2) %>%
+  transmute(
+    ax = z.x2,
+    ay = z.y2,
+    bx = lead(z.x2),
+    by = lead(z.y2)
+  ) %>%
+  filter(!is.na(bx), !is.na(by))
 
 df.filt <- df.filt %>%
+  rowwise() %>%
   mutate(
-    evol.bin2 = if_else(
-      evol.bin == "nit",
-      "matching",
-      "background"
-    )
-  )
+    nearest = list(nearest_pf_segment(z.x2, z.y2))
+  ) %>%
+  tidyr::unnest(nearest) %>%
+  ungroup()
 
-mod2 <- lm(distance ~ evol.bin2, data = df.filt)
+mod <- lmer(dist.to.pf ~ Evol.plt + (1|Anc), data = df.filt)
 
-anova(mod2) # P 0.08609
+em  <- emmeans(mod, ~ Evol.plt)
 
-mod3 <- lm(distance ~ Evol.plt, data = df.filt)
+pairs(em, adjust = 'none') # light v anc: - 0.46647 (0.0615)
 
-anova(mod3) # P 0.03902
-summary(mod3)
+0.0615/2 # 0.03075
 
 ###### top 33% of data ######
 
@@ -1307,8 +1273,10 @@ N.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum growth rate, " * italic("\u03bc")[italic(max)] * " (" * day^{-1} * ")"),   
-       y = expression("Low-N tolerance, 1/" * italic(N) * "* (" * mu * mol^{-1} * ")"), 
+  labs(x = expression(atop("Maximum growth rate",
+                           italic("\u03bc")[italic(max)] ~ (day^-1))),
+       y = expression(atop("Low-N tolerance",
+                           1/italic(N)^"*" ~ (mu*mol^-1))),
        color = "Evolutionary History",
        title = "B — Nitrogen") +  # labels
   
@@ -1436,8 +1404,10 @@ P.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum growth rate, " * italic("\u03bc")[italic(max)] * " (" * day^{-1} * ")"),   
-       y = expression("Low-P tolerance, 1/" * italic(P) * "* (" * mu * mol^{-1} * ")"),   
+  labs(x = expression(atop("Maximum growth rate",
+                           italic("\u03bc")[italic(max)] ~ (day^-1))),
+       y = expression(atop("Low-P tolerance",
+                           1/italic(P)^"*" ~ (mu*mol^-1))),
        color = "Evolutionary History",
        title = "C — Phosphorus") +  # labels
   
@@ -1616,73 +1586,461 @@ for (i in 1:1000){
 
 mean(null.df$a.emp.n >= a.emp) # p-value 0!
 
+
+
+P.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="other" & pareto.opt == "N"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="other" & pareto.opt == "Y"),
+    shape = 16, 
+    size = 4,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral" & pareto.opt == "N"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 1,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral" & pareto.opt == "Y"),
+    shape = 5, 
+    size = 4,
+    colour = "black",
+    stroke = 1,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos" & pareto.opt == "N"),
+    shape = 21, 
+    size = 2,
+    stroke = 1.5,
+    colour = "black",
+    fill = scales::alpha("brown4", 0.6)
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos" & pareto.opt == "Y"),
+    shape = 21, 
+    size = 4,
+    stroke = 1.5,
+    colour = "black",
+    fill = scales::alpha("brown4", 0.6)
+  ) +
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
+  
+  labs(x = expression(atop("Maximum growth rate",
+                           italic("\u03bc")[italic(max)] ~ (day^-1))),
+       y = expression(atop("Low-P tolerance",
+                           1/italic(P)^"*" ~ (mu*mol^-1))),
+       color = "Evolutionary History",
+       title = "C — Phosphorus") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
+               "Ancestral" = "black",
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
+  ) +
+  
+  ylim(0, 6) +
+  xlim(1.2, 1.8) +
+  
+  annotate(
+    "text",
+    x = 1.2 + 0.85 * (1.8 - 1.2),
+    y = 0.0 + 0.95 * (6 - 0.0),
+    label = "PF\nEvo", # removed QR
+    hjust = 0,
+    vjust = 1,
+    size = 3,
+    fontface = "bold"
+  ) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 10, face = "plain"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
+  )
+
+P.qp  # Display the plot
+
 ###### Evolutionary optimization test ######
 
-mean.dist <- df.filt %>% 
-  filter(evol.bin == 'phos') %>% 
-  summarise(mean.dist = mean(distance)) %>%
-  pull(mean.dist)
+df.pf.segments <- par.res.1 %>%
+  arrange(z.x2) %>%
+  transmute(
+    ax = z.x2,
+    ay = z.y2,
+    bx = lead(z.x2),
+    by = lead(z.y2)
+  ) %>%
+  filter(!is.na(bx), !is.na(by))
 
-null_counts <- numeric(1000)
+df.filt <- df.filt %>%
+  rowwise() %>%
+  mutate(
+    nearest = list(nearest_pf_segment(z.x2, z.y2))
+  ) %>%
+  tidyr::unnest(nearest) %>%
+  ungroup()
 
-for (i in 1:1000) { # Now we'll randomize and see how many phos points should fall above the 75th qr by chance alone
-  shuffled.df <- df.filt %>%
-    
-    mutate(
-      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
-      
-      z.y.sim = sample(df.filt$z.y, replace = FALSE)     # Seperately reassign y
-    ) %>% 
-    
-    mutate(z.y.sim2 = scale(z.y.sim)[, 1],
-           z.x.sim2 = scale(z.x.sim)[, 1]) %>% 
-    
-    mutate(distance.sim = sqrt((z.x.sim2 - x.ref)^2 + (z.y.sim2 - y.ref)^2))
+mod <- lmer(dist.to.pf ~ Evol.plt + (1|Anc), data = df.filt)
+
+em  <- emmeans(mod, ~ Evol.plt)
+
+pairs(em, adjust = 'none') # phos v anc: - 0.92738 (<0.0001)
+
+# Supplemental figure 2, panel A: full data with Pareto front
+
+supp2a <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  
   
-  null_counts[i] <- shuffled.df %>%
-    filter(evol.bin == "phos") %>%
-    summarise(sim.dist = mean(distance.sim)) %>%
-    pull(sim.dist)
-}
-
-mean(null_counts>= mean.dist) # p = 0.092
-
-null_counts2 <- numeric(1000)
-
-for (i in 1:1000) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
-  shuffled.df <- df.filt %>%
-    
-    mutate(distance.sim = sample(df.filt$distance, replace = FALSE))
+  geom_point(
+    data = subset(df.filt, evol.bin =="other" & pareto.opt == "N"),
+    shape = 16, 
+    size = 2,
+    alpha = 0.6
+  ) +
   
-  null_counts2[i] <- shuffled.df %>%
-    filter(evol.bin == "phos") %>%
-    summarise(sim.dist = mean(distance.sim)) %>%
-    pull(sim.dist)
-}
+  geom_point(
+    data = subset(df.filt, evol.bin =="other" & pareto.opt == "Y"),
+    shape = 16, 
+    size = 4,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral" & pareto.opt == "N"),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 1,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral" & pareto.opt == "Y"),
+    shape = 5, 
+    size = 4,
+    colour = "black",
+    stroke = 1,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos" & pareto.opt == "N"),
+    shape = 21, 
+    size = 2,
+    stroke = 1.5,
+    colour = "black",
+    fill = scales::alpha("brown4", 0.6)
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos" & pareto.opt == "Y"),
+    shape = 21, 
+    size = 4,
+    stroke = 1.5,
+    colour = "black",
+    fill = scales::alpha("brown4", 0.6)
+  ) +
+  
+  geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
+  
+  labs(x = expression("Maximum growth rate, " * italic("\u03bc")[italic(max)] * " (day"^-1 * ")"),
+       y = expression("Low-P tolerance, 1/" * italic(P) * "* (" * mu * "mol"^-1 * ")"),
+       color = "Evolutionary History",
+       title = "A — Pareto front with full data") +  # labels
+  
+  scale_color_manual(
+    name = "Evolution environment",  # Update the legend title
+    values = c("Biotic depletion" = "chocolate3",
+               "Biotic depletion x Salt" = "skyblue",
+               "Control" = "olivedrab4",
+               "Light limitation" = "goldenrod2",
+               "Nitrogen limitation" = "plum3",
+               "Ancestral" = "black",
+               "Phosphorus limitation" = "brown4",  
+               "Salt stress" = "navyblue")
+  ) +
+  
+  ylim(0, 6) +
+  xlim(1.2, 1.8) +
+  
+  annotate(
+    "text",
+    x = 1.2 + 0.85 * (1.8 - 1.2),
+    y = 0.0 + 0.95 * (6 - 0.0),
+    label = "PF\nEvo", # removed QR
+    hjust = 0,
+    vjust = 1,
+    size = 3,
+    fontface = "bold"
+  ) +
+  
+  theme_classic() +
+  theme(
+    legend.position = "none",  
+    axis.title = element_text(size = 10, face = "plain"),  
+    axis.text = element_text(size = 10, face ="plain"),
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
+  )
 
-mean(null_counts2>= mean.dist) # p = 0.099
+supp2a  # Display the plot
 
-mod <- lm(distance~evol.bin, data = df.filt)
-anova(mod) # P 0.007761
-summary(mod) # phos v anc: 0.8536, P 0.00465
+# Supplement figure 2, panel B
+
+df.B <- df.filt %>%
+  filter(evol.bin %in% c("ancestral", "phos"))
+
+pf.pts <- par.res.1 %>% 
+  arrange(z.x2) %>%
+  select(z.x2, z.y2) # PF line in z-score space (piecewise linear)
+
+supp2b <- ggplot() +
+  
+  geom_line(data = pf.pts,       # Piecewise linear Pareto front
+            aes(x = z.x2, y = z.y2),
+            color = "goldenrod2", 
+            linewidth = 1,
+            linetype = "31") +
+  
+  geom_segment(data = df.B, # Connecting lines from each point to its nearest location on the PF
+               aes(x = z.x2, y = z.y2,
+                   xend = x.pf, yend = y.pf,
+                   color = evol.bin),
+               linewidth = 0.8,
+               linetype = "31",
+               alpha = 0.6) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos" & pareto.opt == "N"),
+    aes(x = z.x2, y = z.y2),
+    shape = 21, 
+    size = 2,
+    stroke = 1.5,
+    colour = "black",
+    fill = scales::alpha("brown4", 0.6)
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin == "phos" & pareto.opt == "Y"),
+    aes(x = z.x2, y = z.y2),
+    shape = 21, 
+    size = 4,
+    stroke = 1.5,
+    colour = "black",
+    fill = scales::alpha("brown4", 0.6)
+  ) +
+
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral" & pareto.opt == "N"),
+    aes(x = z.x2, y = z.y2),
+    shape = 5, 
+    size = 2,
+    colour = "black",
+    stroke = 1,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.filt, evol.bin =="ancestral" & pareto.opt == "Y"),
+    aes(x = z.x2, y = z.y2),
+    shape = 5, 
+    size = 4,
+    colour = "black",
+    stroke = 1,
+    alpha = 0.6
+  ) +
+  
+  scale_color_manual(values = c("ancestral" = "black", "phos" = "brown4"),
+                     guide = "none") +
+  
+  labs(x = expression("Maximum growth rate, " * italic("\u03bc")[italic(max)] * " (z-score)"),
+       y = expression("Low-P tolerance, 1/" * italic(P) * "* (z-score)"),
+       title = "B — distances to Pareto front") +
+  
+  theme_classic() +
+  theme(
+    axis.title = element_text(size = 10),
+    axis.text  = element_text(size = 10),
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)
+  )
+
+supp2b
+
+x_min <- -1.5; x_max <- 1.5
+y_min <- -0.25; y_max <- 2.75
+
+df.B.inset <- df.B %>%
+  filter(z.x2 >= x_min, z.x2 <= x_max,
+         z.y2 >= y_min, z.y2 <= y_max)
+
+inset <- ggplot() +
+  
+  geom_line(data = pf.pts,
+            aes(x = z.x2, y = z.y2),
+            color = "goldenrod2",
+            linewidth = 1,
+            linetype = "31") +
+  
+  geom_segment(data = df.B.inset,
+               aes(x = z.x2, y = z.y2,
+                   xend = x.pf, yend = y.pf,
+                   color = evol.bin),
+               linewidth = 0.6,
+               linetype = "31",
+               alpha = 0.8) +
+  
+  geom_point(
+    data = subset(df.B.inset, evol.bin == "phos" & pareto.opt == "N"),
+    aes(x = z.x2, y = z.y2),
+    shape = 21, size = 1.5, stroke = 1,
+    colour = "black", fill = scales::alpha("brown4", 0.6)
+  ) +
+  
+  geom_point(
+    data = subset(df.B.inset, evol.bin == "phos" & pareto.opt == "Y"),
+    aes(x = z.x2, y = z.y2),
+    shape = 21, size = 3, stroke = 1,
+    colour = "black", fill = scales::alpha("brown4", 0.6)
+  ) +
+  
+  geom_point(
+    data = subset(df.B.inset, evol.bin == "ancestral" & pareto.opt == "N"),
+    aes(x = z.x2, y = z.y2),
+    shape = 5, size = 1.5, stroke = 0.8,
+    colour = "black", alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = subset(df.B.inset, evol.bin == "ancestral" & pareto.opt == "Y"),
+    aes(x = z.x2, y = z.y2),
+    shape = 5, size = 3, stroke = 0.8,
+    colour = "black", alpha = 0.6
+  ) +
+  
+  scale_color_manual(values = c("ancestral" = "black", "phos" = "brown4"),
+                     guide = "none") +
+  
+  coord_fixed(ratio = 1, xlim = c(x_min, x_max), ylim = c(y_min, y_max)) +
+  
+  theme_classic() +
+  theme(
+    axis.title       = element_blank(),
+    axis.text        = element_text(size = 6),
+    plot.background  = element_rect(color = "black", linewidth = 0.5, fill = "white"),
+    panel.background = element_rect(fill = "white")
+  )
+
+inset
+
+panel.B.inset <- ggdraw(supp2b) +
+  draw_plot(inset, x = 0.54, y = 0.54, width = 0.39, height = 0.39)
+
+panel.B.inset
+
+# Supplement figure 2, panel C
+
+evol_order <- c("Ancestral", "Phosphorus limitation",
+                "Light limitation", "Nitrogen limitation", "Salt stress",
+                "Biotic depletion x Salt", "Biotic depletion",
+                "Control"
+                )
 
 df.filt <- df.filt %>%
   mutate(
-    evol.bin2 = if_else(
-      evol.bin == "phos",
-      "matching",
-      "background"
-    )
+    Evol.plt  = factor(Evol.plt, levels = evol_order),
+    highlight = ifelse(evol.bin %in% c("ancestral", "phos"), "yes", "no")
   )
 
-mod2 <- lm(distance ~ evol.bin2, data = df.filt)
+# Set bracket height just above max dist.to.pf
+y.max  <- max(df.filt$dist.to.pf, na.rm = TRUE)
+y.br   <- y.max * 1.05   # bracket height
+y.text <- y.max * 1.10   # p-value text height
 
-anova(mod2) # P 0.2026
+supp2c <- ggplot(df.filt, aes(x = Evol.plt, y = dist.to.pf,
+                              fill = Evol.plt, alpha = highlight)) +
+  
+  geom_boxplot(outlier.shape = NA, colour = "grey30") +
+  
+  geom_jitter(aes(colour = Evol.plt, alpha = highlight),
+              width = 0.2, size = 1.5, shape = 16) +
+  
+  # p-value bracket between Ancestral (x=1) and Phosphorus limitation (x=2)
+  annotate("segment", x = 1, xend = 2, y = y.br, yend = y.br,
+           colour = "black", linewidth = 0.5) +
+  annotate("segment", x = 1, xend = 1, y = y.br, yend = y.br * 0.97,
+           colour = "black", linewidth = 0.5) +
+  annotate("segment", x = 2, xend = 2, y = y.br, yend = y.br * 0.97,
+           colour = "black", linewidth = 0.5) +
+  annotate("text", x = 1.5, y = y.text,
+           label = expression(italic(P) * " < 0.001"), size = 3.5) +
+  
+  scale_fill_manual(values = c(
+    "Ancestral"               = "grey40",
+    "Phosphorus limitation"   = "brown4",
+    "Biotic depletion"        = "chocolate3",
+    "Biotic depletion x Salt" = "skyblue",
+    "Control"                 = "olivedrab4",
+    "Light limitation"        = "goldenrod2",
+    "Nitrogen limitation"     = "plum3",
+    "Salt stress"             = "navyblue"
+  ), guide = "none") +
+  
+  scale_colour_manual(values = c(
+    "Ancestral"               = "grey40",
+    "Phosphorus limitation"   = "brown4",
+    "Biotic depletion"        = "chocolate3",
+    "Biotic depletion x Salt" = "skyblue",
+    "Control"                 = "olivedrab4",
+    "Light limitation"        = "goldenrod2",
+    "Nitrogen limitation"     = "plum3",
+    "Salt stress"             = "navyblue"
+  ), guide = "none") +
+  
+  scale_alpha_manual(values = c("yes" = 0.6, "no" = 0.30), guide = "none") +
+  
+  labs(x = NULL,
+       y = "Distance to Pareto front (z-score)",
+       title = "C — evolutionary optimization test") +
+  
+  theme_classic() +
+  theme(
+    axis.text.x  = element_text(angle = 45, hjust = 1, size = 9),
+    axis.title.y = element_text(size = 10),
+    axis.text.y  = element_text(size = 10),
+    plot.title   = element_text(size = 12, face = "bold", hjust = 0.03)
+  )
 
-mod3 <- lm(distance ~ Evol.plt, data = df.filt)
+supp2c
 
-anova(mod3) # P 0.001419
-summary(mod3) # phos v anc: 0.8536 (0.00358)
+supp2 <- plot_grid(supp2a, panel.B.inset, supp2c, 
+                   nrow = 1,
+                   rel_widths = c(1, 1, 1))
+
+ggsave("figures-supplemental/02.1_fig_s2_evol_opt_test.jpeg", supp2, width = 12, height = 5)
 
 ###### top 33% of data ######
 
@@ -1768,8 +2126,10 @@ P.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum growth rate, " * italic("\u03bc")[italic(max)] * " (" * day^{-1} * ")"),   
-       y = expression("Low-P tolerance, 1/" * italic(P) * "* (" * mu * mol^{-1} * ")"),   
+  labs(x = expression(atop("Maximum growth rate",
+                           italic("\u03bc")[italic(max)] ~ (day^-1))),
+       y = expression(atop("Low-P tolerance",
+                           1/italic(P)^"*" ~ (mu*mol^-1))),
        color = "Evolutionary History",
        title = "C — Phosphorus") +  # labels
   
@@ -1790,7 +2150,7 @@ P.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   theme_classic() +
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 12, face = "plain"),  
+    axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
     plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
   )
@@ -1907,8 +2267,10 @@ S.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum growth rate, " * italic("\u03bc")[italic(max)] * " (" * day^{-1} * ")"),   
-       y = expression("Salt tolerance, " * italic(c) * " (g/L)"),  
+  labs(x = expression(atop("Maximum growth rate",
+                           italic("\u03bc")[italic(max)] ~ (day^-1))),
+       y = expression(atop("Salt tolerance",
+                           italic(c) ~ " (g/L)")),
        color = "Evolutionary History",
        title = "D — Salt") +  # labels
   
@@ -2107,80 +2469,36 @@ mean(null.df$a.emp.n >= a.emp) # p-value 0.046
 
 ###### Evolutionary optimization test ######
 
-mean.dist <- df.filt %>% 
-  filter(evol.bin == 'salt') %>% 
-  summarise(mean.dist = mean(distance)) %>%
-  pull(mean.dist)
-
-null_counts <- numeric(1000)
-
-for (i in 1:1000) { # Now we'll randomize and see how many salt points should fall above the 75th qr by chance alone
-  shuffled.df <- df.filt %>%
-    
-    mutate(
-      z.x.sim = sample(df.filt$z.x, replace = FALSE),     # Randomly assign x
-      
-      z.y.sim = sample(df.filt$z.y, replace = FALSE)     # Seperately reassign y
-    ) %>% 
-    
-    mutate(z.y.sim2 = scale(z.y.sim)[, 1],
-           z.x.sim2 = scale(z.x.sim)[, 1]) %>% 
-    
-    mutate(distance.sim = sqrt((z.x.sim2 - x.ref)^2 + (z.y.sim2 - y.ref)^2))
-  
-  null_counts[i] <- shuffled.df %>%
-    filter(evol.bin == "salt") %>%
-    summarise(sim.dist = mean(distance.sim)) %>%
-    pull(sim.dist)
-}
-
-mean(null_counts>= mean.dist) # p = 0
-
-null_counts2 <- numeric(1000)
-
-for (i in 1:1000) { # Now we'll randomize and see how many light points should fall above the 75th qr by chance alone
-  shuffled.df <- df.filt %>%
-    
-    mutate(distance.sim = sample(df.filt$distance, replace = FALSE))
-  
-  null_counts2[i] <- shuffled.df %>%
-    filter(evol.bin == "salt") %>%
-    summarise(sim.dist = mean(distance.sim)) %>%
-    pull(sim.dist)
-}
-
-mean(null_counts2>= mean.dist) # p = 0
-
-mod <- lm(distance~evol.bin, data = df.filt)
-anova(mod) # P < 0.001
-summary(mod) # salt v anc: 1.43497, P < 0.001
+df.pf.segments <- par.res.1 %>%
+  arrange(z.x2) %>%
+  transmute(
+    ax = z.x2,
+    ay = z.y2,
+    bx = lead(z.x2),
+    by = lead(z.y2)
+  ) %>%
+  filter(!is.na(bx), !is.na(by))
 
 df.filt <- df.filt %>%
+  rowwise() %>%
   mutate(
-    evol.bin2 = if_else(
-      evol.bin == "salt",
-      "matching",
-      "background"
-    )
-  )
-
-mod2 <- lm(distance ~ evol.bin2, data = df.filt)
-
-anova(mod2) # P < 0.001
+    nearest = list(nearest_pf_segment(z.x2, z.y2))
+  ) %>%
+  tidyr::unnest(nearest) %>%
+  ungroup()
 
 df.filt <- df.filt %>%
-  mutate(
-    Evol.plt2 = if_else(
-      evol.bin == "salt",
-      "Salt",
-      Evol.plt
-    )
-  )
+  mutate(Evol.plt2 = as.character(Evol.plt),
+         Evol.plt2 = ifelse(Evol.plt2 %in% c("Salt stress", "Biotic depletion x Salt"), 
+                            "match", 
+                            Evol.plt2),
+         Evol.plt2 = factor(Evol.plt2))
 
-mod3 <- lm(distance ~ Evol.plt2, data = df.filt)
+mod <- lmer(dist.to.pf ~ Evol.plt2 + (1|Anc), data = df.filt)
 
-anova(mod3) # P < 0.001
-summary(mod3) # salt v anc: 1.43497 (< 0.001)
+em  <- emmeans(mod, ~ Evol.plt2)
+
+pairs(em, adjust = 'none') # salt v anc: - 0.9950 (<0.0001)
 
 ###### top 33% of data ######
 
@@ -2238,14 +2556,14 @@ summary(q90, se = "boot", R = 1000) # -6.64584, p 0.00000
 S.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
   geom_point(
-    data = subset(df.filt, evol.bin =="other"),
+    data = subset(df.filt3, evol.bin =="other"),
     shape = 16, 
     size = 2,
     alpha = 0.21
   ) +
   
   geom_point(
-    data = subset(df.filt, evol.bin =="ancestral"),
+    data = subset(df.filt3, evol.bin =="ancestral"),
     shape = 5, 
     size = 2,
     colour = "black",
@@ -2254,7 +2572,7 @@ S.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   ) +
   
   geom_point(
-    data = subset(df.filt, Evol.plt == "Biotic depletion x Salt"),
+    data = subset(df.filt3, Evol.plt == "Biotic depletion x Salt"),
     aes(shape = evol.bin, size = evol.bin),
     colour = "black",
     fill = "skyblue",
@@ -2264,7 +2582,7 @@ S.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   ) +
   
   geom_point(
-    data = subset(df.filt, Evol.plt == "Salt stress"),
+    data = subset(df.filt3, Evol.plt == "Salt stress"),
     aes(shape = evol.bin, size = evol.bin),
     colour = "black",
     fill = "navyblue",
@@ -2277,8 +2595,10 @@ S.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   geom_abline(intercept = coef(q75)[1], slope = coef(q75)[2], lwd = 0.6, linetype = "dashed") +
   geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dotted") +
   
-  labs(x = expression("Maximum growth rate, " * italic("\u03bc")[italic(max)] * " (" * day^{-1} * ")"),   
-       y = expression("Salt tolerance, " * italic(c) * " (g/L)"),
+  labs(x = expression(atop("Maximum growth rate",
+                           italic("\u03bc")[italic(max)] ~ (day^-1))),
+       y = expression(atop("Salt tolerance",
+                           italic(c) ~ " (g/L)")),
        color = "Evolutionary History",
        title = "D — Salt") +  # labels
   
@@ -2321,8 +2641,26 @@ legend_df2 <- data.frame(
 )
 
 legend_plot2 <- ggplot(legend_df2, aes(x = x, y = y)) +
-  geom_point(aes(shape = Group, colour = Group2), size = 1, stroke = 1, alpha = 0.6) +
+  
+  geom_point(
+    data = legend_df2,
+    aes(x = x, y = y, colour = Group2),
+    shape = 16,
+    size = 2,
+    alpha = 0.6
+  ) +
+  
+  geom_point(
+    data = data.frame(x = 1, y = 1, Group = "Ancestral"),
+    aes(x = x, y = y, shape = Group),
+    colour = "black",
+    size = 2,
+    stroke = 1,
+    alpha = 0.6
+  ) +
+  
   geom_line(aes(linetype = LineType), size = 0.6) +
+  
   scale_shape_manual(name = NULL,
                      values = c("Ancestral" = 5)) +
   
@@ -2362,7 +2700,7 @@ qr_toffs <- plot_grid(plotlist = all_plots_qr,
                       ncol = 2,
                       align = "hv")
 
-ggsave("figures-supplemental/02.1_fig_s2_intra-gradient_tradeoffs_qr.jpeg", qr_toffs, width = 5.5, height = 8.25)
+ggsave("figures-supplemental/03.1_fig_s3_intra-gradient_tradeoffs_qr.jpeg", qr_toffs, width = 5.5, height = 8.25)
 
 plots.qr2 <- list(I.qr2, N.qr2, P.qr2, S.qr2, T.qr2)
 
@@ -2372,7 +2710,7 @@ qr_toffs2 <- plot_grid(plotlist = all_plots_qr2,
                        ncol = 2,
                        align = "hv")
 
-ggsave("figures-supplemental/03.1_fig_s3_intra-gradient_tradeoffs_qr_0.33.jpeg", qr_toffs2, width = 5.5, height = 8.25)
+ggsave("figures-supplemental/04.1_fig_s4_intra-gradient_tradeoffs_qr_0.33.jpeg", qr_toffs2, width = 5.5, height = 8.25)
 
 ###### Figure 2 ######
 
@@ -2392,7 +2730,7 @@ legend_plot3 <- ggplot() +
     data = legend_df3,
     aes(x = x, y = y, colour = Group2),
     shape = 16,
-    size = 3,
+    size = 2,
     alpha = 0.6
   ) +
   
