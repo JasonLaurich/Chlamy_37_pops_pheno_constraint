@@ -18,6 +18,7 @@
 # in figures-supp: 02.1_fig_s2_evol_opt_test.jpeg, 03.1_fig_s3_intra-gradient_tradeoffs_qr.jpeg, 
   # 04.1_fig_s4_intra-gradient_tradeoffs_qr_0.33.jpeg
 
+# adding new correlational stuff
 
 # Packages & Functions ----------------------------------------------------
 

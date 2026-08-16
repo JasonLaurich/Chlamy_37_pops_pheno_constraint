@@ -14,6 +14,7 @@ library(tidyverse)
 library(cowplot)
 library(patchwork)
 library(scam)
+library(smatr)
 
 nearest_pf <- function(x0, y0){ # calculate closest point on the pf
   
@@ -95,6 +96,16 @@ df.A <- data.frame(
 
 df.A.all <- bind_rows(df.pf, df.A)
 
+sma.A <- sma(y ~ x, data = df.A.all, method = "SMA")
+
+xr <- range(df.A.all$x, na.rm = TRUE)
+seg.A <- data.frame(
+  x    = xr[1],
+  xend = xr[2],
+  y    = coef(sma.A)[1] + coef(sma.A)[2] * xr[1],
+  yend = coef(sma.A)[1] + coef(sma.A)[2] * xr[2]
+)
+
 p.A <- ggplot() +
   
   geom_point(
@@ -116,14 +127,10 @@ p.A <- ggplot() +
     linewidth = 1
   ) +
   
-  geom_smooth(
-    data = df.A.all,
-    aes(x = x, y = y),
-    method = "lm",
-    se = FALSE,
-    colour = "red3",
-    linewidth = 0.75,
-    linetype = "solid"
+  geom_segment(
+    data = seg.A,
+    aes(x = x, y = y, xend = xend, yend = yend),
+    colour = "red3", linewidth = 0.75
   ) +
   
   scale_x_continuous(limits = c(5, 18), breaks = c(5, 10, 15)) +
@@ -132,16 +139,16 @@ p.A <- ggplot() +
   labs(
     x = "Trait 1 (e.g. growth rate)",    
     y = "Trait 2 (e.g. stress tolerance)", 
-    title = "A — classical trade-off"
+    title = "A) Classical trade-off"
   ) +
   
   theme_classic() +
   
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 11, face = "plain"),  
+    axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face = "plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)
   ) +
   
   coord_cartesian(xlim = c(5, 15.5), ylim = c(5, 15.5), expand = FALSE)
@@ -177,6 +184,16 @@ df.B <- data.frame(
 
 df.B.all <- bind_rows(df.pf, df.B)
 
+sma.B <- sma(y ~ x, data = df.B.all, method = "SMA")
+
+xr <- range(df.B.all$x, na.rm = TRUE)
+seg.B <- data.frame(
+  x    = xr[1],
+  xend = xr[2],
+  y    = coef(sma.B)[1] + coef(sma.B)[2] * xr[1],
+  yend = coef(sma.B)[1] + coef(sma.B)[2] * xr[2]
+)
+
 p.B <- ggplot() +
   
   geom_point(
@@ -198,14 +215,10 @@ p.B <- ggplot() +
     linewidth = 1
   ) +
   
-  geom_smooth(
-    data = df.B.all,
-    aes(x = x, y = y),
-    method = "lm",
-    se = FALSE,
-    colour = "red3",
-    linewidth = 0.75,
-    linetype = "solid"
+  geom_segment(
+    data = seg.B,
+    aes(x = x, y = y, xend = xend, yend = yend),
+    colour = "red3", linewidth = 0.75
   ) +
   
   scale_x_continuous(limits = c(5, 18), breaks = c(5, 10, 15)) +
@@ -214,16 +227,16 @@ p.B <- ggplot() +
   labs(
     x = "Trait 1 (e.g. growth rate)",    
     y = "Trait 2 (e.g. stress tolerance)", 
-    title = "B — masked trade-off"
+    title = "B) Masked trade-off"
   ) +
   
   theme_classic() +
   
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 11, face = "plain"),  
+    axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face = "plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)
   ) +
   
   coord_cartesian(xlim = c(5, 15.5), ylim = c(5, 15.5), expand = FALSE)
@@ -356,7 +369,8 @@ p.C <- ggplot() +
     aes(x = x, y = y,
         xend = x.pf,
         yend = y.pf),
-    colour = "red3",
+    colour = "black",
+    alpha = 0.6,
     linewidth = 0.8,
     linetype = "31"
   ) +
@@ -367,6 +381,7 @@ p.C <- ggplot() +
         xend = x.pf,
         yend = y.pf),
     colour = "blue3",
+    alpha = 0.6,
     linewidth = 0.8,
     linetype = "31"
   ) +
@@ -385,7 +400,7 @@ p.C <- ggplot() +
     shape = 21,
     size = 4,
     stroke = 1.5,
-    fill = "white"
+    fill = scales::alpha("blue3", 0.6)
   ) +
   
   geom_point(
@@ -394,7 +409,7 @@ p.C <- ggplot() +
     shape = 21,
     size = 2,
     stroke = 1.5,
-    fill = "white"
+    fill = scales::alpha("blue3", 0.6)
   ) +
   
   geom_point(
@@ -429,16 +444,16 @@ p.C <- ggplot() +
   labs(
     x = "Trait 1 (e.g. growth rate)",    
     y = "Trait 2 (e.g. stress tolerance)", 
-    title = "C — evolution towards Pareto fronts"
+    title = "C) Evolution towards Pareto fronts"
   ) +
   
   theme_classic() +
   
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 11, face = "plain"),  
+    axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face = "plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)
   ) +
   
   coord_cartesian(xlim = c(5, 15.5), ylim = c(5, 15.5), expand = FALSE)
@@ -447,57 +462,89 @@ p.C
 
 # Create panel D - interspecific variation (broad, positive)---------------------------------------
 
-poly.band.D <- data.frame(
-  x = c(2, 20, 9.5),
-  y = c(2, 9.5, 20)
-)
-
 df.D <- data.frame(
-  x = c(3.30, 4.7, 7.5, 4.8, 12.2, 11.2, 6.6, 7.3, 10.2, 13.1, 15.1, 16.7, 7.7, 12.8, 10.3, 9.7, 14.2, 19.5, 10.1),
-  y = c(2.75, 8.1, 4.9, 5.1, 12.4, 6.5, 12.0, 9.5, 8.80, 6.70, 11.9, 9.3, 14.3, 9.70, 12.8, 16.6, 14.6, 9.6, 19.3)
+  x = c(6.8, 7.2, 7.5, 7.8, 8.0, 8.4, 8.8, 9.1, 9.5,
+        9.8, 10.2, 10.6, 11.0, 11.5, 12.0, 12.4, 12.8, 13.2,
+        8.2, 9.1, 5.9, 6.6, 11),
+  y = c(13.8, 11.2, 10.8, 13.0, 9.5, 11.5, 13.2, 10.2, 9.8,
+        8.9, 11.2, 9.4, 10.8, 8.5, 9.1, 7.8, 8.6, 7.4,
+        7.5, 6.6, 5.7, 8.6, 7.5)
 )
 
-df.D <- df.D %>% 
-  mutate(x.ci = runif(n(),0.2,2.5), y.ci = runif(n(),0.2,2)) # Randomly assign spread values representing variation in ellipse shape and orientation
+df.pf.D <- data.frame(   # PF anchor points — should sit at/near the outer edge of df.D
+  x = c(7.2, 8.8, 9.8, 11.0, 13.2, 14.5, 13.5),
+  y = c(14.0, 13.5, 13.1, 11.5, 8.7, 6.1, 8.5)
+)
+
+ggplot() +
+  geom_point(data = df.D, aes(x, y), size = 1.5, alpha = 0.6, colour = "black") +
+  geom_point(data = df.pf.D, aes(x, y), colour = "goldenrod2", size = 3) +
+  scale_x_continuous(limits = c(5, 15)) +
+  scale_y_continuous(limits = c(5, 15)) +
+  theme_classic()
+
+x.max <- max(df.pf.D$x)
+y.max <- max(df.pf.D$y)
+
+pf.approx.D <- with( # Dense version of actual segmented PF
+  df.pf.D %>% arrange(x),
+  approx(x = x, y = y, xout = seq(min(x), max(x), length.out = 1000))
+)
+
+df.pf.dense <- data.frame(
+  x = pf.approx.D$x,
+  y = pf.approx.D$y
+)
+
+df.inaccessible <- bind_rows(
+  data.frame(x = min(df.pf.dense$x), y = y.max),
+  data.frame(x = x.max, y = y.max),
+  data.frame(x = x.max, y = df.pf.dense$y[df.pf.dense$x == max(df.pf.dense$x)]),
+  df.pf.dense %>%
+    arrange(desc(x))
+)
+
+sma.D <- sma(y ~ x, data = df.D, method = "SMA")
+
+xr <- range(df.D$x, na.rm = TRUE)
+seg.D <- data.frame(
+  x    = xr[1],
+  xend = xr[2],
+  y    = coef(sma.D)[1] + coef(sma.D)[2] * xr[1],
+  yend = coef(sma.D)[1] + coef(sma.D)[2] * xr[2]
+)
 
 p.D <- ggplot(df.D, aes(x = x, y = y)) +
   
-  geom_polygon(data = poly.band.D, aes(x, y),
-               fill = "grey60", alpha = 0.3, colour = NA,
+  geom_polygon(data = df.inaccessible, aes(x, y),
+               fill = "grey60", colour = NA,
                inherit.aes = FALSE) +
   
-  geom_segment(
-    x = 20,  y = 9.5,
-    xend = 9.5,   yend = 20,
-    colour = "goldenrod2", linewidth = 0.75) +
+  geom_path(data = df.pf.dense, aes(x = x, y = y),
+            colour = "goldenrod2", linewidth = 0.75,
+            inherit.aes = FALSE) +
   
-  geom_point(size= 2) +
+  geom_point(size = 1.5, alpha = 0.6, colour = "black") +
+  
+  geom_point(data = df.pf.D, 
+             size = 1.5, alpha =0.6, colour = "black") +
   
   scale_y_continuous(limits = c(0, 21), breaks = c(0, 5, 10, 15, 20)) +
   scale_x_continuous(limits = c(0, 21), breaks = c(0, 5, 10, 15, 20)) +
   
-  geom_spoke(aes(angle = pi/4,        radius = y.ci), linewidth = 0.6) +
-  geom_spoke(aes(angle = pi/4 + pi,   radius = y.ci), linewidth = 0.6) +
-  
-  geom_spoke(aes(angle = -pi/4,       radius = x.ci), linewidth = 0.6) +
-  geom_spoke(aes(angle = -pi/4 + pi,  radius = x.ci), linewidth = 0.6) +
-  
   labs(x = "Trait 1 (e.g. growth rate)",    
        y = "Trait 2 (e.g. stress tolerance)",  
-       title = "D — species-level Pareto constraints") +  # labels
+       title = "D) Species-level Pareto fronts") +
   
   theme_classic() +
-  
   theme(
     legend.position = "none",  
-    axis.title = element_text(size = 11, face = "plain"),  
-    axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
+    axis.title = element_text(size = 10, face = "plain"),  
+    axis.text  = element_text(size = 10, face = "plain"),
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)
   ) +
   
-  # annotate("text", x = 15.25, y = 15.25, label = "Pareto front", size = 5.1, fontface = "bold", colour = "goldenrod2", angle = -45) +
-  
-  coord_cartesian(xlim = c(0,21), ylim = c(0,21), expand = FALSE)
+  coord_cartesian(xlim = c(3.5, 15), ylim = c(3.5, 15), expand = FALSE)
 
 p.D
 
@@ -506,4 +553,4 @@ p.D
 p <- plot_grid(p.A, p.B, p.C, p.D, nrow = 2, align ='hv')
 p
 
-ggsave("figures-main/01.1_conceptual_figure.jpeg", p, width = 7, height = 7) # aiming for ~ 2/3 of a page in width
+ggsave("figures-main/01.3_conceptual_figure.jpeg", p, width = 7, height = 7) # aiming for ~ 2/3 of a page in width

@@ -13,6 +13,8 @@
 
 # AND test drive some new figure looks. 
 
+# Doing the smatr stuff here now (RMA slopes)
+
 # Inputs: 27_summary_table.csv
 # Outputs: in figures-main : 02_fig_2_intra-gradient_tradeoffs.jpeg
 # in figures-supp: 02.1_fig_s2_evol_opt_test.jpeg, 03.1_fig_s3_intra-gradient_tradeoffs_qr.jpeg, 
@@ -203,7 +205,7 @@ T.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
        y = expression(atop("Thermal breadth",
                            italic("T")[italic(br)] * " (°C)")),
        color = "Evolutionary History",
-       title = "E — Temperature") +  # labels
+       title = "E) Temperature") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -224,10 +226,16 @@ T.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)# theme stuff
   )
 
 T.qr # Display the plot
+
+cor.test(df.filt$z.y, df.filt$z.x, method = "pearson")   # Temp: r -0.6641438, p < 2.2e-16
+
+sma.T <- sma(z.y ~ z.x, data = df.filt, method = "SMA") # RMA / SMA line for plotting (both axes error-prone, scale-invariant)
+summary(sma.T)      # slope -2.677501
+coef(sma.T)      
 
 T.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
@@ -254,7 +262,9 @@ T.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     alpha = 0.6
   ) +
   
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(sma.T)[1], slope = coef(sma.T)[2],
+              lwd = 0.6, linetype = "dashed") +
+  
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   
   labs(x = expression(atop("Maximum growth rate",
@@ -262,7 +272,7 @@ T.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
        y = expression(atop("Thermal breadth",
                            italic("T")[italic(br)] * " (°C)")),
        color = "Evolutionary History",
-       title = "E — Temperature") +  # labels
+       title = "E) Temperature") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -281,9 +291,9 @@ T.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
   
   annotate(
     "text",
-    x = 2.25 + 0.85 * (5.25 - 2.25),
+    x = 2.25 + 0.6 * (5.25 - 2.25),
     y = 14 + 0.95 * (22 - 14),
-    label = "PF",                          # removing QR
+    label = "PF\nr = -0.664*",                          # removing QR
     hjust = 0,
     vjust = 1,
     size = 3,
@@ -295,14 +305,29 @@ T.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)# theme stuff
   )
 
 T.qp # Display the plot
 
 ###### Evolutionary optimization test ######
 
-# Cannot do for temperature data, as no populations evolved under temperature stress
+df.pf.segments <- par.res.1 %>%
+  arrange(z.x2) %>%
+  transmute(ax = z.x2, ay = z.y2, bx = lead(z.x2), by = lead(z.y2)) %>%
+  filter(!is.na(bx), !is.na(by))
+
+df.filt <- df.filt %>%
+  rowwise() %>%
+  mutate(nearest = list(nearest_pf_segment(z.x2, z.y2))) %>%
+  tidyr::unnest(nearest) %>%
+  ungroup()
+
+mod <- lmer(dist.to.pf ~ Evol.plt + (1|Anc), data = df.filt)
+
+em  <- emmeans(mod, ~ Evol.plt)
+
+contrast(em, method = "trt.vs.ctrl", side = "<") 
 
 ###### top 33% of data ######
 
@@ -346,7 +371,7 @@ T.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
        y = expression(atop("Thermal breadth",
                            italic("T")[italic(br)] * " (°C)")),
        color = "Evolutionary History",
-       title = "E — Temperature") +  # labels
+       title = "E) Temperature") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -367,7 +392,7 @@ T.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)# theme stuff
   )
 
 T.qr2 # Display the plot
@@ -477,7 +502,7 @@ I.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
        y = expression(atop("Low-L tolerance",
                            1/italic(L)^"*" ~ (mu*mol^-1 ~ m^2 ~ s))),
        color = "Evolutionary History",
-       title = "A — Light") +  # labels
+       title = "A) Light") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -498,10 +523,16 @@ I.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)# theme stuff
   )
 
 I.qr # Display the plot
+
+cor.test(df.filt$z.y, df.filt$z.x, method = "pearson")   # Light: r -0.5029304, p 1.142e-11
+
+sma.L <- sma(z.y ~ z.x, data = df.filt, method = "SMA") # RMA / SMA line for plotting (both axes error-prone, scale-invariant)
+summary(sma.L)      # slope -0.3761067
+coef(sma.L)      
 
 I.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
@@ -555,7 +586,8 @@ I.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     fill = scales::alpha("goldenrod2", 0.6)
   ) +
   
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", inherit.aes = FALSE) +
+  geom_abline(intercept = coef(sma.L)[1], slope = coef(sma.L)[2], lwd = 0.6, linetype = "dashed", inherit.aes = FALSE) +
+  
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
   
   labs(x = expression(atop("Maximum growth rate",
@@ -563,7 +595,7 @@ I.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
        y = expression(atop("Low-L tolerance",
                            1/italic(L)^"*" ~ (mu*mol^-1 ~ m^2 ~ s))),
        color = "Evolutionary History",
-       title = "A — Light") +  # labels
+       title = "A) Light") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -582,9 +614,9 @@ I.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
   
   annotate(
     "text",
-    x = 1.4 + 0.85 * (2.35 - 1.4),
+    x = 1.4 + 0.6 * (2.35 - 1.4),
     y = 0.0 + 0.95 * (0.60 - 0.0),
-    label = "PF", # removed QR
+    label = "PF\nr = -0.503*", # removed QR
     hjust = 0,
     vjust = 1,
     size = 3,
@@ -596,7 +628,7 @@ I.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)# theme stuff
   )
 
 I.qp # Display the plot
@@ -625,7 +657,7 @@ mod <- lmer(dist.to.pf ~ Evol.plt + (1|Anc), data = df.filt)
 
 em  <- emmeans(mod, ~ Evol.plt)
 
-pairs(em, adjust = 'none') # light v anc: - 0.121581 (0.2972)
+contrast(em, method = "trt.vs.ctrl", side = "<") # light v anc: -0.1216 (0.676)
 
 ###### top 33% of data ######
 
@@ -678,7 +710,7 @@ I.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
        y = expression(atop("Low-L tolerance",
                            1/italic(L)^"*" ~ (mu*mol^-1 ~ m^2 ~ s))),
        color = "Evolutionary History",
-       title = "A — Light") +  # labels
+       title = "A) Light") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -699,7 +731,7 @@ I.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)# theme stuff
   )
 
 I.qr2 # Display the plot
@@ -809,7 +841,7 @@ N.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
        y = expression(atop("Low-N tolerance",
                            1/italic(N)^"*" ~ (mu*mol^-1))),
        color = "Evolutionary History",
-       title = "B — Nitrogen") +  # labels
+       title = "B) Nitrogen") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -830,10 +862,16 @@ N.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)# theme stuff
   )
 
 N.qr # Display the plot
+
+cor.test(df.filt$z.y, df.filt$z.x, method = "pearson")   # nit: r -0.3169419, p 8.682e-05
+
+sma.N <- sma(z.y ~ z.x, data = df.filt, method = "SMA") # RMA / SMA line for plotting (both axes error-prone, scale-invariant)
+summary(sma.N)      # slope -1.754382,
+coef(sma.N)         
 
 N.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
@@ -888,14 +926,14 @@ N.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
+  geom_abline(intercept = coef(sma.N)[1], slope = coef(sma.N)[2], lwd = 0.6, linetype = "dashed") +
   
   labs(x = expression(atop("Maximum growth rate",
                            italic("\u03bc")[italic(max)] ~ (day^-1))),
        y = expression(atop("Low-N tolerance",
                            1/italic(N)^"*" ~ (mu*mol^-1))),
        color = "Evolutionary History",
-       title = "B — Nitrogen") +  # labels
+       title = "B) Nitrogen") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -914,9 +952,9 @@ N.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
   
   annotate(
     "text",
-    x = 1.275 + 0.85 * (1.95 - 1.275),
+    x = 1.275 + 0.6 * (1.95 - 1.275),
     y = 0.0 + 0.95 * (1.35 - 0.0),
-    label = "PF", # removed QR
+    label = "PF\nr = -0.317*", # removed QR
     hjust = 0,
     vjust = 1,
     size = 3,
@@ -928,7 +966,7 @@ N.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)# theme stuff
   )
 
 N.qp  # Display the plot
@@ -957,7 +995,7 @@ mod <- lmer(dist.to.pf ~ Evol.plt + (1|Anc), data = df.filt)
 
 em  <- emmeans(mod, ~ Evol.plt)
 
-pairs(em, adjust = 'none') # light v anc: - 0.46647 (0.0615)
+contrast(em, method = "trt.vs.ctrl", side = "<") # nit v anc: -0.466 (0.1965)
 
 ###### top 33% of data ######
 
@@ -1010,7 +1048,7 @@ N.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
        y = expression(atop("Low-N tolerance",
                            1/italic(N)^"*" ~ (mu*mol^-1))),
        color = "Evolutionary History",
-       title = "B — Nitrogen") +  # labels
+       title = "B) Nitrogen") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -1031,7 +1069,7 @@ N.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)# theme stuff
   )
 
 N.qr2 # Display the plot
@@ -1141,7 +1179,7 @@ P.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
        y = expression(atop("Low-P tolerance",
                            1/italic(P)^"*" ~ (mu*mol^-1))),
        color = "Evolutionary History",
-       title = "C — Phosphorus") +  # labels
+       title = "C) Phosphorus") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -1162,10 +1200,16 @@ P.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)# theme stuff
   )
 
 P.qr # Display the plot
+
+cor.test(df.filt$z.y, df.filt$z.x, method = "pearson")   # phos: r -0.2892904, p 0.0003623
+
+sma.P <- sma(z.y ~ z.x, data = df.filt, method = "SMA") # RMA / SMA line for plotting (both axes error-prone, scale-invariant)
+summary(sma.P)      # slope -9.269761
+coef(sma.P)        
 
 P.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
@@ -1220,14 +1264,15 @@ P.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
+  
+  geom_abline(intercept = coef(sma.P)[1], slope = coef(sma.P)[2], lwd = 0.6, linetype = "dashed") +
   
   labs(x = expression(atop("Maximum growth rate",
                            italic("\u03bc")[italic(max)] ~ (day^-1))),
        y = expression(atop("Low-P tolerance",
                            1/italic(P)^"*" ~ (mu*mol^-1))),
        color = "Evolutionary History",
-       title = "C — Phosphorus") +  # labels
+       title = "C) Phosphorus") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -1246,9 +1291,9 @@ P.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
   
   annotate(
     "text",
-    x = 1.2 + 0.85 * (1.8 - 1.2),
+    x = 1.2 + 0.6 * (1.8 - 1.2),
     y = 0.0 + 0.95 * (6 - 0.0),
-    label = "PF\nEvo", # removed QR
+    label = "PF\nEvo\nr = -0.289*", # removed QR
     hjust = 0,
     vjust = 1,
     size = 3,
@@ -1260,7 +1305,7 @@ P.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)# theme stuff
   )
 
 P.qp  # Display the plot
@@ -1289,7 +1334,7 @@ mod <- lmer(dist.to.pf ~ Evol.plt + (1|Anc), data = df.filt)
 
 em  <- emmeans(mod, ~ Evol.plt)
 
-pairs(em, adjust = 'none') # phos v anc: - 0.92738 (<0.0001)
+contrast(em, method = "trt.vs.ctrl", side = "<") # phos v anc: -0.927 (0.0001), SB -0.938 (0.0004)
 
 # Supplemental figure 2, panel A: full data with Pareto front
 
@@ -1350,7 +1395,7 @@ supp2a <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   labs(x = expression("Maximum growth rate, " * italic("\u03bc")[italic(max)] * " (day"^-1 * ")"),
        y = expression("Low-P tolerance, 1/" * italic(P) * "* (" * mu * "mol"^-1 * ")"),
        color = "Evolutionary History",
-       title = "A — Pareto front with full data") +  # labels
+       title = "A) Pareto front with full data") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -1367,23 +1412,12 @@ supp2a <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
   ylim(0, 6) +
   xlim(1.2, 1.8) +
   
-  annotate(
-    "text",
-    x = 1.2 + 0.85 * (1.8 - 1.2),
-    y = 0.0 + 0.95 * (6 - 0.0),
-    label = "PF\nEvo", # removed QR
-    hjust = 0,
-    vjust = 1,
-    size = 3,
-    fontface = "bold"
-  ) +
-  
   theme_classic() +
   theme(
     legend.position = "none",  
     axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)# theme stuff
   )
 
 supp2a  # Display the plot
@@ -1458,13 +1492,13 @@ supp2b <- ggplot() +
   
   labs(x = expression("Maximum growth rate, " * italic("\u03bc")[italic(max)] * " (z-score)"),
        y = expression("Low-P tolerance, 1/" * italic(P) * "* (z-score)"),
-       title = "B — distances to Pareto front") +
+       title = "B) distances to Pareto front") +
   
   theme_classic() +
   theme(
     axis.title = element_text(size = 10),
     axis.text  = element_text(size = 10),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)
   )
 
 supp2b
@@ -1603,14 +1637,14 @@ supp2c <- ggplot(df.filt, aes(x = Evol.plt, y = dist.to.pf,
   
   labs(x = NULL,
        y = "Distance to Pareto front (z-score)",
-       title = "C — evolutionary optimization test") +
+       title = "C) evolutionary optimization test") +
   
   theme_classic() +
   theme(
     axis.text.x  = element_text(angle = 45, hjust = 1, size = 9),
     axis.title.y = element_text(size = 10),
     axis.text.y  = element_text(size = 10),
-    plot.title   = element_text(size = 12, face = "bold", hjust = 0.03)
+    plot.title   = element_text(size = 10, face = "bold", hjust = 0.03)
   )
 
 supp2c
@@ -1672,7 +1706,7 @@ P.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
        y = expression(atop("Low-P tolerance",
                            1/italic(P)^"*" ~ (mu*mol^-1))),
        color = "Evolutionary History",
-       title = "C — Phosphorus") +  # labels
+       title = "C) Phosphorus") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -1693,7 +1727,7 @@ P.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)# theme stuff
   )
 
 P.qr2 # Display the plot
@@ -1812,7 +1846,7 @@ S.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
        y = expression(atop("Salt tolerance",
                            italic(S) ~ " (g/L)")),
        color = "Evolutionary History",
-       title = "D — Salt") +  # labels
+       title = "D) Salt") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -1833,10 +1867,16 @@ S.qr <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)# theme stuff
   )
 
 S.qr # Display the plot
+
+cor.test(df.filt$z.y, df.filt$z.x, method = "pearson")   # salt: r -0.1751515, p 0.03324
+
+sma.S <- sma(z.y ~ z.x, data = df.filt, method = "SMA") # RMA / SMA line for plotting (both axes error-prone, scale-invariant)
+summary(sma.S)      # slope -9.198362
+coef(sma.S)         
 
 S.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin)) +  # We'll lay out the PFs onto our raw data
   
@@ -1909,14 +1949,15 @@ S.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
   ) +
   
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y), color = "black", size = 0.6, inherit.aes = FALSE) +  # Adding scam PF fits
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed") +
+  
+  geom_abline(intercept = coef(sma.S)[1], slope = coef(sma.S)[2], lwd = 0.6, linetype = "dashed") +
   
   labs(x = expression(atop("Maximum growth rate",
                            italic("\u03bc")[italic(max)] ~ (day^-1))),
        y = expression(atop("Salt tolerance",
                            italic(S) ~ " (g/L)")),
        color = "Evolutionary History",
-       title = "D — Salt") +  # labels
+       title = "D) Salt") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -1935,11 +1976,11 @@ S.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
   
   annotate(
     "text",
-    x = 0.85 + 0.85 * (1.75 - 0.85),
+    x = 0.72 + 0.85 * (1.75 - 0.85),
     y = 1 + 0.95 * (9.5 - 1),
-    label = "PF\nEvo", # removed QR
+    label = "PF\nEvo\nr = -0.175*", # removed QR
     hjust = 0,
-    vjust = 1,
+    vjust = 0.63,
     size = 3,
     fontface = "bold"
   ) +
@@ -1949,7 +1990,7 @@ S.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
     legend.position = "none",  
     axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)# theme stuff
   )
 
 S.qp  # Display the plot
@@ -1974,18 +2015,11 @@ df.filt <- df.filt %>%
   tidyr::unnest(nearest) %>%
   ungroup()
 
-df.filt <- df.filt %>%
-  mutate(Evol.plt2 = as.character(Evol.plt),
-         Evol.plt2 = ifelse(Evol.plt2 %in% c("Salt stress", "Biotic depletion x Salt"), 
-                            "match", 
-                            Evol.plt2),
-         Evol.plt2 = factor(Evol.plt2))
+mod <- lmer(dist.to.pf ~ Evol.plt + (1|Anc), data = df.filt)
 
-mod <- lmer(dist.to.pf ~ Evol.plt2 + (1|Anc), data = df.filt)
+em  <- emmeans(mod, ~ Evol.plt)
 
-em  <- emmeans(mod, ~ Evol.plt2)
-
-pairs(em, adjust = 'none') # salt v anc: - 0.9950 (<0.0001)
+contrast(em, method = "trt.vs.ctrl", side = "<") # salt v anc: -1.0371 (<0.0001), SB -0.9409 (<0.0001), ctl: -1.219 (<0.0001)
 
 ###### top 33% of data ######
 
@@ -2047,7 +2081,7 @@ S.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
        y = expression(atop("Salt tolerance",
                            italic(S) ~ " (g/L)")),
        color = "Evolutionary History",
-       title = "D — Salt") +  # labels
+       title = "D) Salt") +  # labels
   
   scale_color_manual(
     name = "Evolution environment",  # Update the legend title
@@ -2068,7 +2102,7 @@ S.qr2 <- ggplot(df.filt3, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.b
     legend.position = "none",  
     axis.title = element_text(size = 10, face = "plain"),  
     axis.text = element_text(size = 10, face ="plain"),
-    plot.title = element_text(size = 12, face = "bold", hjust = 0.03)# theme stuff
+    plot.title = element_text(size = 10, face = "bold", hjust = 0.03)# theme stuff
   )
 
 S.qr2 # Display the plot
@@ -2082,8 +2116,8 @@ plots.qr <- list(I.qr, N.qr, P.qr, S.qr, T.qr)
 legend_df2 <- data.frame(
   x = c(1, 2, 1, 2, 1, 2, 1, 2),
   y = c(1, 1, 2, 2, 1, 1, 2, 2),
-  Group = factor(c("Ancestral (N = 5)", "Other", "Matching", "Matching", "Ancestral (N = 5)", "Other", "Matching", "Matching")),
-  Group2 = factor(c("Biotic depletion (N = 5)", "Biotic depletion x Salt (N = 4)", "Control (N = 3)", "Light limitation (N = 5)", "Nitrogen limitation (N = 5)", "Ancestral (N = 5)", "Phosphorus limitation (N = 5)", "Salt stress (N = 5)")),
+  Group = factor(c("Ancestral", "Other", "Matching", "Matching", "Ancestral", "Other", "Matching", "Matching")),
+  Group2 = factor(c("Biotic depletion", "Biotic depletion x Salt", "Control", "Light limitation", "Nitrogen limitation", "Ancestral", "Phosphorus limitation", "Salt stress")),
   LineType = factor(c("50th", "75th", "90th", "50th", "75th", "90th", "50th", "75th"))
 )
 
@@ -2101,8 +2135,8 @@ legend_plot2 <- ggplot() +
     data = data.frame(
       x     = c(1, 1),
       y     = c(1, 1),
-      Group = factor(c("Ancestral (N = 5)", "Matching"),
-                     levels = c("Ancestral (N = 5)", "Matching"))
+      Group = factor(c("Ancestral", "Matching"),
+                     levels = c("Ancestral", "Matching"))
     ),
     aes(x = x, y = y, shape = Group),
     colour = "black",
@@ -2121,19 +2155,19 @@ legend_plot2 <- ggplot() +
   
   scale_shape_manual(
     name = NULL,
-    values = c("Ancestral (N = 5)" = 5, "Matching" = 21)
+    values = c("Ancestral" = 5, "Matching" = 21)
   ) +
   
   scale_color_manual(
     name = "Evolution environment",
     values = c(
-      "Biotic depletion (N = 5)"        = "chocolate3",
-      "Biotic depletion x Salt (N = 4)" = "skyblue",
-      "Control (N = 3)"                 = "olivedrab4",
-      "Light limitation (N = 5)"        = "goldenrod2",
-      "Nitrogen limitation (N = 5)"     = "plum3",
-      "Phosphorus limitation (N = 5)"   = "brown4",
-      "Salt stress (N = 5)"             = "navyblue"
+      "Biotic depletion"        = "chocolate3",
+      "Biotic depletion x Salt" = "skyblue",
+      "Control"                 = "olivedrab4",
+      "Light limitation"        = "goldenrod2",
+      "Nitrogen limitation"     = "plum3",
+      "Phosphorus limitation"   = "brown4",
+      "Salt stress"             = "navyblue"
     )
   ) +
   
@@ -2194,7 +2228,7 @@ qr_toffs <- plot_grid(plotlist = all_plots_qr,
                       ncol = 2,
                       align = "hv")
 
-ggsave("figures-supplemental/03.1_fig_s3_intra-gradient_tradeoffs_qr.jpeg", qr_toffs, width = 5.5, height = 8.25)
+ggsave("figures-supplemental/03.2_fig_s3_intra-gradient_tradeoffs_qr.jpeg", qr_toffs, width = 5.5, height = 8.25)
 
 plots.qr2 <- list(I.qr2, N.qr2, P.qr2, S.qr2, T.qr2)
 
@@ -2204,7 +2238,7 @@ qr_toffs2 <- plot_grid(plotlist = all_plots_qr2,
                        ncol = 2,
                        align = "hv")
 
-ggsave("figures-supplemental/04.1_fig_s4_intra-gradient_tradeoffs_qr_0.33.jpeg", qr_toffs2, width = 5.5, height = 8.25)
+ggsave("figures-supplemental/04.2_fig_s4_intra-gradient_tradeoffs_qr_0.33.jpeg", qr_toffs2, width = 5.5, height = 8.25)
 
 ###### Figure 2 ######
 
@@ -2213,9 +2247,9 @@ plots.qp <- list(I.qp, N.qp, P.qp, S.qp, T.qp)
 legend_df3 <- data.frame(
   x = c(1, 2, 1, 2, 1, 2, 1, 2),
   y = c(1, 1, 2, 2, 1, 1, 2, 2),
-  Group = factor(c("Ancestral (N = 5)", "Other", "Matching", "Matching", "Ancestral (N = 5)", "Other", "Matching", "Matching")),
-  Group2 = factor(c("Biotic depletion (N = 5)", "Biotic depletion x Salt (N = 4)", "Control (N = 3)", "Light limitation (N = 5)", "Nitrogen limitation (N = 5)", "Ancestral (N = 5)", "Phosphorus limitation (N = 5)", "Salt stress (N = 5)")),
-  LineType = factor(c("Pareto front", "50th quantile regression", "Pareto front", "50th quantile regression", "Pareto front", "50th quantile regression", "Pareto front", "50th quantile regression"))
+  Group = factor(c("Ancestral", "Other", "Matching", "Matching", "Ancestral", "Other", "Matching", "Matching")),
+  Group2 = factor(c("Biotic depletion", "Biotic depletion x Salt", "Control", "Light limitation", "Nitrogen limitation", "Ancestral", "Phosphorus limitation", "Salt stress")),
+  LineType = factor(c("Pareto front", "SMA regression", "Pareto front", "SMA regression", "Pareto front", "SMA regression", "Pareto front", "SMA regression"))
 )
 
 legend_plot3 <- ggplot() +
@@ -2233,8 +2267,8 @@ legend_plot3 <- ggplot() +
     data = data.frame(
       x     = c(1, 1, 1, 1),
       y     = c(1, 1, 1, 1),
-      Group = factor(c("Ancestral (N = 5)", "Matching", "Sub-optimal", "Pareto-optimal"),
-                     levels = c("Ancestral (N = 5)", "Matching", "Sub-optimal", "Pareto-optimal"))
+      Group = factor(c("Ancestral", "Matching", "Sub-optimal", "Pareto-optimal"),
+                     levels = c("Ancestral", "Matching", "Sub-optimal", "Pareto-optimal"))
     ),
     aes(x = x, y = y, shape = Group),
     colour = "black",
@@ -2253,19 +2287,19 @@ legend_plot3 <- ggplot() +
   
   scale_shape_manual(
     name = NULL,
-    values = c("Ancestral (N = 5)" = 5, "Matching" = 21, "Sub-optimal" = 21, "Pareto-optimal" = 21)
+    values = c("Ancestral" = 5, "Matching" = 21, "Sub-optimal" = 21, "Pareto-optimal" = 21)
   ) +
   
   scale_color_manual(
     name = "Evolution environment",
     values = c(
-      "Biotic depletion (N = 5)"        = "chocolate3",
-      "Biotic depletion x Salt (N = 4)" = "skyblue",
-      "Control (N = 3)"                 = "olivedrab4",
-      "Light limitation (N = 5)"        = "goldenrod2",
-      "Nitrogen limitation (N = 5)"     = "plum3",
-      "Phosphorus limitation (N = 5)"   = "brown4",
-      "Salt stress (N = 5)"             = "navyblue"
+      "Biotic depletion"        = "chocolate3",
+      "Biotic depletion x Salt" = "skyblue",
+      "Control"                 = "olivedrab4",
+      "Light limitation"        = "goldenrod2",
+      "Nitrogen limitation"     = "plum3",
+      "Phosphorus limitation"   = "brown4",
+      "Salt stress"             = "navyblue"
     )
   ) +
   
@@ -2273,13 +2307,11 @@ legend_plot3 <- ggplot() +
     name = "Line",
     values = c(
       "Pareto front" = "solid",
-      "50th quantile regression" = "dashed"
+      "SMA regression" = "dashed"
     ),
     labels = c(
       "Pareto front" = "Pareto front",
-      "50th quantile regression" =
-        expression(paste("Quantile regression (", tau, " = 0.5)"))
-    )
+      "SMA regression" = "SMA regression")
   ) +
   
   guides(
@@ -2331,4 +2363,4 @@ qp_toffs <- plot_grid(plotlist = all_plots_qp,
                       ncol = 2,
                       align = "hv")
 
-ggsave("figures-main/02.1_fig_2_intra-gradient_tradeoffs.jpeg", qp_toffs, width = 5.5, height = 8.25)
+ggsave("figures-main/02.2_fig_2_intra-gradient_tradeoffs.jpeg", qp_toffs, width = 5.5, height = 8.25)
