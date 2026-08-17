@@ -16,18 +16,9 @@ library(vegan)  # For PCA
 
 # Load & examine the data -------------------------------------------------
 
-# Temperature
-
-df.t <- read_csv("processed-data/04_TPC_summary.csv") # This file has the TPC data for each replicate.
-head(df.t)
-
-df.t <- df.t %>% 
-  mutate(T.br = T.br.max - T.br.min) %>% 
-  select(population, rep.ID, T.min, T.max, T.opt, r.max, T.br, T.br.min, T.br.max, a, b, tmax, d.t)
-
 # Light
 
-df.l <- read_csv("processed-data/08_light_monod_summary.csv") # This file has the light Monod curve data for each replicate.
+df.l <- read_csv("processed-data/03_light_monod_summary.csv") # This file has the light Monod curve data for each replicate.
 head(df.l)
 
 df.l <- df.l %>% 
@@ -36,7 +27,7 @@ df.l <- df.l %>%
 
 # Nitrogen
 
-df.n <- read_csv("processed-data/12_nit_monod_summary.csv") # This file has the nitrogen Monod curve data for each replicate.
+df.n <- read_csv("processed-data/07_nitrogen_monod_summary.csv") # This file has the nitrogen Monod curve data for each replicate.
 head(df.n)
 
 df.n <- df.n %>% 
@@ -45,7 +36,7 @@ df.n <- df.n %>%
 
 # Phosphorous
 
-df.p <- read_csv("processed-data/16_phos_monod_summary.csv") # This file has the phosphorous Monod curve data for each replicate.
+df.p <- read_csv("processed-data/11_phosphorus_monod_summary.csv") # This file has the phosphorous Monod curve data for each replicate.
 head(df.p)
 
 df.p <- df.p %>% 
@@ -54,7 +45,7 @@ df.p <- df.p %>%
 
 # Salt 
 
-df.s <- read_csv("processed-data/20_salt_tol_summary.csv") # This file has the salt tolerance curve data for each population. 
+df.s <- read_csv("processed-data/15_salt_tol_summary.csv") # This file has the salt tolerance curve data for each population. 
 head(df.s)
 
 df.s <- df.s %>% 
@@ -62,6 +53,15 @@ df.s <- df.s %>%
 
 df.s <- df.s %>%
   mutate(population = tolower(gsub(" ", "", population))) # Convert Anc x to ancx, so that it matches other data frames. 
+
+# Temperature
+
+df.t <- read_csv("processed-data/20_temperature_TPC_summary.csv") # This file has the TPC data for each replicate.
+head(df.t)
+
+df.t <- df.t %>% 
+  mutate(T.br = T.br.max - T.br.min) %>% 
+  select(population, rep.ID, T.min, T.max, T.opt, r.max, T.br, T.br.min, T.br.max, a, b, tmax, d.t)
 
 # Combine T, L, N, and P --------------------------------------------------
 
