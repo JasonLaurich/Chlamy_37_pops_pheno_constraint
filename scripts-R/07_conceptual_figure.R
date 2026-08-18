@@ -555,4 +555,4 @@ p.D
 p <- plot_grid(p.A, p.B, p.C, p.D, nrow = 2, align ='hv')
 p
 
-ggsave("figures-main/01_fig_1_conceptual_figure.pdf", p, width = 7, height = 7) # aiming for ~ 2/3 of a page in width
+ggsave("figures-main/01_fig_1_conceptual_figure.jpeg", p, width = 7, height = 7) # aiming for ~ 2/3 of a page in width
