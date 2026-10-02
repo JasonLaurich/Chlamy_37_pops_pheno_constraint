@@ -264,7 +264,7 @@ p.A <- ggplot(df.arc2) +
   
   labs(
     x = "Trait correlation (Pearson's r)",
-    y = expression("Strength of Pareto front (" -log[10](italic("P)"))),
+    y = expression("Significance of Pareto front (" -log[10](italic("P)"))),
     title = "A"
   ) +
   
@@ -412,7 +412,7 @@ p.B <- ggplot(df.arc3) +
   
   labs(
     x = "Trait correlation (Pearson's r)",
-    y = expression("Strength of evolutionary shift (" -log[10](italic("P)"))),
+    y = expression("Significance of evolutionary shift (" -log[10](italic("P)"))),
     title = "B"
   )+
   
