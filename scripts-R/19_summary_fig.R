@@ -435,7 +435,7 @@ df.sum2$macro <- c(1,0,1,1, 1,1,1, 0,1, 0)
 
 grad.order <- c("I", "N", "P", "T")
 
-grad.labels <- c("Light", "Nit", "Phos", "Temp")
+grad.labels <- c("Light", "Nitrogen", "Phosphorus", "Temperature")
 
 df.C <- df.sum2 %>%
   mutate(
@@ -538,7 +538,8 @@ p.C <- ggplot() +
   theme(
     legend.position = "none",  
     axis.title = element_text(size = 10, face = "plain"),  
-    axis.text = element_text(size = 10, face ="plain"),
+    axis.text = element_text(size = 10, face = "plain"),
+    axis.text.x = element_text(angle = 35, hjust = 1, vjust = 1),
     plot.title = element_text(size = 10, face = "bold", hjust = 0.03)# theme stuff
   ) +
   
