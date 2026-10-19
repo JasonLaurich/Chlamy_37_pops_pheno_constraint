@@ -1,11 +1,11 @@
-# Pareto fronts reveal constraints on the evolution of niche-determining traits in phytoplankton
+# Pareto fronts reveal constraints on the evolution of ecological niches
 
-Code and data repository for Laurich et al., 2026 (PNAS submission, manuscript ID - 2026-07212R)
+Code and data repository for Laurich et al., 2026 (PNAS submission, manuscript ID - 2026-07212RR)
 
 ## Project overview
 
-This repository contains the data, processing code, analytical code, figure generation scripts, and figures for the manuscript "Widespread Pareto fronts
-constrain the evolution of ecological limits in phytoplankton". This project investigates whether multivariate trade-offs among ecological traits generate 
+This repository contains the data, processing code, analytical code, figure generation scripts, and figures for the manuscript "Pareto fronts reveal 
+constraints on the evolution of ecological niches". This project investigates whether multivariate trade-offs among ecological traits generate 
 Pareto fronts that constrain the evolution of niche limits in phytoplankton.
 
 The study combines experimental evolution of *Chlamydomonas reinhardtii* populations across multiple environmental gradients (including temperature, nutrient
