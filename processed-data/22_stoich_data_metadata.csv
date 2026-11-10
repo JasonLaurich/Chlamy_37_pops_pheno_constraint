@@ -1,0 +1,4 @@
+Column name,Description,Units
+Name,Population name (corresponds to sample column in 23_id_mapping.csv),n/a
+N.µg.l,Cellular nitrogen content,µg L-1
+P.µg.l,Cellular phosphorus content,µg L-1

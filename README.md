@@ -22,6 +22,9 @@ All figures and analyses included in the manuscript can be reproduced from the s
 produced using Bayesian analysis in R2jags (TPCs, Monod curves, and salt tolerance curves) themselves due to memory constraints. However, the scripts necessary
 to create them and summary tables containing the relevant model outputs (required for analysis downstream) are included. 
 
+Raw data from the *C. reinhardtii* experiments are accompanied by metadata files describing each column and its units. Metadata files have the same
+names as their corresponding .csvs, with '_metadata' affixed to the end. A description of every data file is given in the [processed-data README](processed-data/README.md).
+
 ## Repository structure
 
 <pre>

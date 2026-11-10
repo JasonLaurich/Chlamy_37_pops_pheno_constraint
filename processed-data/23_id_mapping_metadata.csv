@@ -1,0 +1,3 @@
+Column name,Description,Units
+sample,machine run label (corresponds to Name in 22_stoich_data.csv),n/a
+population,"Population ID. 1-35 are evolved populations, anc2-anc5 are ancestral populations, and cc1690 is the mixed ancestral population",n/a

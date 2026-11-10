@@ -1,0 +1,6 @@
+Column name,Description,Units
+Proben?,Run number,unitless
+HPLC Nummer,Population name (corresponds to sample column in 23_id_mapping.csv),n/a
+chl.a,Chlorophyll a content,µg L-1
+chl.b,Chlorophyll b content,µg L-1
+luthein,Lutein content,µg L-1

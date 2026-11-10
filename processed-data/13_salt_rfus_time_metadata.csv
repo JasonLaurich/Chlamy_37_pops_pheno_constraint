@@ -1,0 +1,8 @@
+﻿Column name,Description,Units
+unique_id,Combination of well number and plate ID,unitless
+plate,Plate ID,unitless
+well,Well number,unitless
+RFU,"Relative fluorescence units for cholorphyll a, read in a Biotek Cytation 5 plate reader. Excitation: 435 nm, emission: 685 nm",unitless
+population,"Population ID. 1-35 are evolved populations, anc2-anc5 are ancestral populations, and cc1690 is the mixed ancestral population",n/a
+treatment,Salt level (number corresponds to salt concentration),g L-1
+time,Time elapsed since the beginning of the experiment (days),days

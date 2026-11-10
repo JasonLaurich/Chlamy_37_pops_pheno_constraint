@@ -1,0 +1,20 @@
+Column name,Description,Units
+file_name,Raw plate-reader export file (path in the original Bernhardt et al. project),n/a
+path,Path: read batch (file prefix identifying the read session),n/a
+well_plate,Combination of well number and plate ID,unitless
+well,Well number,unitless
+plate,Plate ID,unitless
+date_time,Date and time of data collection (plate reads). Formatted in ISO 8601 (local time),year-month-day T local time
+RFU,"Relative fluorescence units for cholorphyll a, read in a Biotek Cytation 5 plate reader. Excitation: 435 nm, emission: 685 nm",unitless
+plate_key,Unique plate randomization key (design),unitless
+population,"Population ID. 1-35 are evolved populations, anc2-anc5 are ancestral populations, and cc1690 is the mixed ancestral population",n/a
+plate_type,Single or repeat? We only used repeat-type plates (script 05),n/a
+temperature,Experimental temperature,°C
+round,Single or repeat? We only used repeat-type plates (script 05),n/a
+start_time,"Time of first read for this plate, in ISO 8601 format (local time). Days is calculated from this",year-month-day T local time
+days,Time elapsed since the beginning of the experiment (days),days
+ancestor_id,Population ancestor,n/a
+treatment,"Experimental evolution treatment (B: biotic depletion, BS: biotic depletion x salt, C: control, L: light limitation N: nitrogen limitation, P: phosphorus limitation, S: salt stress)",n/a
+note,Notes,n/a
+exponential,Data from the exponential phase? Y/N,y/n
+N0,Initial RFU count,unitless

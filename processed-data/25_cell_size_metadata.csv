@@ -1,0 +1,23 @@
+Column name,Description,Units
+ancestor_id,Population ancestor,n/a
+treatment,"Experimental evolution treatment (B: biotic depletion, BS: biotic depletion x salt, C: control, L: light limitation N: nitrogen limitation, P: phosphorus limitation, S: salt stress)",n/a
+population,"Population ID. 1-35 are evolved populations, anc2-anc5 are ancestral populations, and cc1690 is the mixed ancestral population",n/a
+p_star,Minimum resource requirement for phosphorus (P*),µM P
+n_star,Minimum resource requirement for nitrogen (N*),µM N
+i_star,Minimum resource requirement for light (L*),µmol photons m-2s-1
+p_umax,Maximum growth rate across a phosphorus gradient,day-1
+n_umax,Maximum growth rate across a nitrogen gradient,day-1
+light_umax,Maximum growth rate across a light gradient,day-1
+p_ks,Half saturation constant (phosphorus),µM P
+n_ks,Half saturation constant (nitrogen),µM N
+nitrate_biovolume,Biovolume (calculated based on length and assumption of sphericality) grown in nitrogen media,µm3
+phosphate_biovolume,Biovolume (calculated based on length and assumption of sphericality) grown in phosphorus media,µm3
+light_biovolume,Biovolume (calculated based on length and assumption of sphericality) grown in light media,µm3
+light_length,Cell length when grown in light media,µm
+light_area,Cell area when grown in light media,µm2
+phosphate_length,Cell length when grown in phosphorus media,µm
+phosphate_area,Cell area when grown in phosphorus media,µm2
+nitrate_length,Cell length when grown in nitrogen media,µm
+nitrate_area,Cell area when grown in nitrogen media,µm2
+note,notes,n/a
+bio.vol.mean,Mean biovolume across all 3 gradients,µm3
