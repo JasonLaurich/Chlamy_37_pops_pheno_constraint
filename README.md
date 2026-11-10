@@ -1,6 +1,8 @@
 # Pareto fronts reveal constraints on the evolution of ecological niches
 
-Code and data repository for Laurich et al., 2026 (PNAS submission, manuscript ID - 2026-07212RR)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19032401.svg)](https://doi.org/10.5281/zenodo.19032401)
+
+Code and data for Laurich, Narwani & Bernhardt (2026), *Proceedings of the National Academy of Sciences* (in press).
 
 ## Project overview
 
