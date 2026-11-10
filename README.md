@@ -24,43 +24,88 @@ to create them and summary tables containing the relevant model outputs (require
 
 ## Repository structure
 
-repository/
-├── README.md              README
-├── .gitignore
-├── lactin.txt             
-├── monod.light.txt
-├── monod.txt
-├── salt.tolerance.txt     .txt files for running R2jags models
+<pre>
+Chlamy_37_pops_pheno_constraint/
+├── <a href="README.md">README.md</a>
+├── <a href="CITATION.cff">CITATION.cff</a>                Citation metadata
+├── <a href="LICENSE">LICENSE</a>
+├── <a href="Chlamy_37_pops_pheno_constraint.Rproj">Chlamy_37_pops_pheno_constraint.Rproj</a>   Open first (sets file paths)
+├── <a href="renv.lock">renv.lock</a>                   Exact R package versions (see renv::restore())
+├── <a href="renv">renv/</a>                       renv environment files
+├── <a href="lactin.txt">lactin.txt</a>                  JAGS model files used by R2jags
+├── <a href="monod.txt">monod.txt</a>
+├── <a href="monod.light.txt">monod.light.txt</a>
+├── <a href="salt.tolerance.txt">salt.tolerance.txt</a>
 │
-├── scripts-R/             Analytical scripts
-│   └── scripts 00-21         Information on purpose of scripts, required files in metadata at the top. Master script (00) that runs the full analysis pipeline is included herein.
+├── <a href="scripts-R">scripts-R/</a>                  Analysis scripts (00–21; see Script → output map)
+│   └── <a href="scripts-R/00_master_script.R">00_master_script.R</a>      Runs the full pipeline
 │
-├── processed-data/        Data files (sourced from other publications, and processed data)
-│   ├── README.md             Detailed description of files
-│   └── files 01-79
+├── <a href="processed-data">processed-data/</a>             Data files (01–79): experimental data, model outputs,
+│   │                           and data compiled from published studies
+│   └── <a href="processed-data/README.md">README.md</a>               Description of each data file
 │
-├── Shiny-apps/            Shiny apps for confirming model fits to raw data (Chlamydomonas exp evolution and synthesis data)
-│   └── folders 01-05
+├── <a href="Shiny-apps">Shiny-apps/</a>                 Shiny apps for checking model fits against raw data
+│   ├── <a href="Shiny-apps/01_Chlamydomonas_exp_evol_model_quality_control">01_Chlamydomonas_exp_evol_model_quality_control/</a>
+│   ├── <a href="Shiny-apps/02_synthesis_light_monod_quality_control">02_synthesis_light_monod_quality_control/</a>
+│   ├── <a href="Shiny-apps/03_synthesis_nitrogen_monod_quality_control">03_synthesis_nitrogen_monod_quality_control/</a>
+│   ├── <a href="Shiny-apps/04_synthesis_phosphorous_monod_quality_control">04_synthesis_phosphorous_monod_quality_control/</a>
+│   └── <a href="Shiny-apps/05_synthesis_TPC_quality_control">05_synthesis_TPC_quality_control/</a>
 │
-├── R2jags-models/         Folder for storing R2 jags models (not uploaded to github due to size constraints)
+├── <a href="figures-main">figures-main/</a>               Main text figures (Figs. 1–5)
+├── <a href="figures-supplemental">figures-supplemental/</a>       Supporting figures (Figs. S1–S8)
+├── <a href="figures-misc">figures-misc/</a>               Additional figures from reviewer-requested analyses
 │
-├── figures-main/          Main text figures
-│   └── figures 01-05
-│
-├── figures-supp/          Supporting text figures
-│   └── figures 01-08
-│
-└── figures-misc/          Additional exploratory figures
-    └── figure 01
+└── R2jags-models/              Created locally when scripts 01–05 are run; R2jags model
+                                objects are not included in the repository (file size)
+</pre>
+
+## Script → output map
+
+All scripts are in [`scripts-R/`](scripts-R). [`00_master_script.R`](scripts-R/00_master_script.R) runs the full pipeline in order.
+
+### Main text figures
+
+| Figure | Script | Output |
+|---|---|---|
+| Fig. 1 | [`07_conceptual_figure.R`](scripts-R/07_conceptual_figure.R) | [`01_fig_1_conceptual_figure.jpeg`](figures-main/01_fig_1_conceptual_figure.jpeg) |
+| Fig. 2 | [`08_intra-gradient_trade-offs.R`](scripts-R/08_intra-gradient_trade-offs.R) | [`02_fig_2_intra-gradient_tradeoffs.pdf`](figures-main/02_fig_2_intra-gradient_tradeoffs.pdf) |
+| Fig. 3 | [`09_inter-gradient_trade-offs.R`](scripts-R/09_inter-gradient_trade-offs.R) | [`03_fig_3_inter-gradient_toffs.pdf`](figures-main/03_fig_3_inter-gradient_toffs.pdf) |
+| Fig. 4 | [`18_synthesis_pareto.R`](scripts-R/18_synthesis_pareto.R) | [`04_fig_4_synthesis_comps.pdf`](figures-main/04_fig_4_synthesis_comps.pdf) |
+| Fig. 5 | [`19_summary_fig.R`](scripts-R/19_summary_fig.R) | [`05_fig_5_summary.pdf`](figures-main/05_fig_5_summary.pdf) |
+
+### Supporting figures and tables
+
+| Figure/Table | Script | Output |
+|---|---|---|
+| Fig. S1 | [`20_model_fitting_schema.R`](scripts-R/20_model_fitting_schema.R) | [`01_fig_s1_model_fitting.pdf`](figures-supplemental/01_fig_s1_model_fitting.pdf) |
+| Fig. S2 | [`11_sensitivity_analysis.R`](scripts-R/11_sensitivity_analysis.R) | [`02_fig_s2_sensitivity.pdf`](figures-supplemental/02_fig_s2_sensitivity.pdf) |
+| Fig. S3 | [`08_intra-gradient_trade-offs.R`](scripts-R/08_intra-gradient_trade-offs.R) | [`03_fig_s3_evol_opt_test.pdf`](figures-supplemental/03_fig_s3_evol_opt_test.pdf) |
+| Fig. S4 | [`09_inter-gradient_trade-offs.R`](scripts-R/09_inter-gradient_trade-offs.R) | [`04_fig_s4_dist_to_pf.pdf`](figures-supplemental/04_fig_s4_dist_to_pf.pdf) |
+| Fig. S5 | [`13_PCA_RDA.R`](scripts-R/13_PCA_RDA.R) | [`05_fig_s5_RDAs.pdf`](figures-supplemental/05_fig_s5_RDAs.pdf) |
+| Fig. S6 | [`13_PCA_RDA.R`](scripts-R/13_PCA_RDA.R) | [`06_fig_s6_PCA.pdf`](figures-supplemental/06_fig_s6_PCA.pdf) |
+| Fig. S7 | [`10_secondary_trait_trade-offs.R`](scripts-R/10_secondary_trait_trade-offs.R) | [`07_fig_s7_extra_inter-gradient_toffs.pdf`](figures-supplemental/07_fig_s7_extra_inter-gradient_toffs.pdf) |
+| Fig. S8 | [`18_synthesis_pareto.R`](scripts-R/18_synthesis_pareto.R) | [`08_fig_s8_synthesis_with_Laurich_2026_data.pdf`](figures-supplemental/08_fig_s8_synthesis_with_Laurich_2026_data.pdf) |
+| Table S1 | [`11_sensitivity_analysis.R`](scripts-R/11_sensitivity_analysis.R) | [`29_sensitivity_grid_table.csv`](processed-data/29_sensitivity_grid_table.csv) |
+
+### Data processing and model fitting (no figures)
+
+| Scripts | Purpose | Key output |
+|---|---|---|
+| [`01`](scripts-R/01_light.R)–[`05`](scripts-R/05_temperature.R) | Estimate µ and fit Monod, salt tolerance and thermal performance curves (R2jags; computationally heavy) for *C. reinhardtii* | Summary tables in `processed-data/` (files 02–21) |
+| [`06_data_compilation.R`](scripts-R/06_data_compilation.R) | Compile all *C. reinhardtii* traits | [`27_summary_table.csv`](processed-data/27_summary_table.csv) (input to scripts 08–13, 19–21) |
+| [`17`](scripts-R/17_synthesis_temperature.R), then [`14`](scripts-R/14_synthesis_light.R)–[`16`](scripts-R/16_synthesis_phosphorus.R) | Fit TPCs, then Monod curves, to the phytoplankton synthesis data (run 17 first) | Files 37–67 in `processed-data/` |
+| [`12_evol_effects_modelling.R`](scripts-R/12_evol_effects_modelling.R) | Mixed models of evolutionary trait shifts | Statistics reported in text |
+| [`08b_figure2_log_intra-gradient_trade-offs.R`](scripts-R/08b_figure2_log_intra-gradient_trade-offs.R), [`21_reviewer3_data_scaling.R`](scripts-R/21_reviewer3_data_scaling.R) | Reviewer-requested checks on log-transformed and rescaled data | [`figures-misc/`](figures-misc) |
 
 ## Reproducing the analysis
 
 To reproduce the full analysis:
 
 1. Clone the repository
-2. Install required packages
-3. Run the master script. NOTE: currently the scripts that require heavy model-fitting are commented out. Remove the '#'s to run the whole pipeline.
-4. OR run the scripts in scripts-R in numerical order (01-21)
+2. Open Chlamy_37_pops_pheno_constraint.Rproj. All file paths are relative to the project root
+3. Install required packages (see below)
+4. Run the master script. NOTE: currently the scripts that require heavy model-fitting are commented out. Remove the '#'s to run the whole pipeline.
+5. OR run the scripts in scripts-R in numerical order (01-21)
 
 ## Software requirements
 
@@ -106,6 +151,14 @@ Require R packages include:
 | tidyr | 1.3.2 |
 | tidyverse | 2.0.0 |
 | vegan | 2.7-6 |
+
+# Citation
+
+If you use this code or data, please cite both the paper and the repository:
+
+**Paper:** Laurich, J. R., Narwani, A., & Bernhardt, J. R. (2026). Pareto fronts reveal constraints on the evolution of ecological niches. *Proceedings of the National Academy of Sciences*. (in press; DOI to be added)
+
+**Code and data:** Laurich, J. R., Narwani, A., & Bernhardt, J. R. (2026). Repository for "Pareto fronts reveal constraints on the evolution of ecological niches" (v2.1). Zenodo. https://doi.org/10.5281/zenodo.19032401
 
 ## Author contact information
 Jason R. Laurich
