@@ -30,7 +30,6 @@ library(minpack.lm)
 library(cowplot)
 
 library(R2jags)
-library(mcmcplots)
 library(bayestestR)
 
 # And R2jags settings

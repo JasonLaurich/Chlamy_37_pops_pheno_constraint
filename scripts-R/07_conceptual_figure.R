@@ -391,9 +391,7 @@ p.C <- ggplot() +
   geom_point(
     data = df.pf.other,
     aes(x = x, y = y),
-    size = 4,
-    shape = 16,
-    alpha = 0.6
+    size = 4
   ) +
   
   geom_point(
@@ -417,9 +415,7 @@ p.C <- ggplot() +
   geom_point(
     data = df.C.oth,
     aes(x = x, y = y),
-    size = 2,
-    shape = 16,
-    alpha = 0.6
+    size = 2
   ) +
   
   geom_point(
@@ -428,16 +424,14 @@ p.C <- ggplot() +
     shape = 5, 
     size = 2,
     colour = "black",
-    stroke = 1,
-    alpha = 0.6
+    stroke = 1
   ) +
   
   geom_path(
     data = df.pf,
     aes(x = x, y = y),
     colour = "goldenrod2",
-    linewidth = 0.8,
-    linetype = "31"
+    linewidth = 0.8
   ) +
   
   scale_x_continuous(limits = c(5, 18), breaks = c(5, 10, 15)) +
@@ -526,10 +520,10 @@ p.D <- ggplot(df.D, aes(x = x, y = y)) +
             colour = "goldenrod2", linewidth = 0.75,
             inherit.aes = FALSE) +
   
-  geom_point(size = 1.5, alpha = 0.6, colour = "black") +
+  geom_point(size = 2) +
   
   geom_point(data = df.pf.D, 
-             size = 1.5, alpha =0.6, colour = "black") +
+             size = 2) +
   
   scale_y_continuous(limits = c(0, 21), breaks = c(0, 5, 10, 15, 20)) +
   scale_x_continuous(limits = c(0, 21), breaks = c(0, 5, 10, 15, 20)) +

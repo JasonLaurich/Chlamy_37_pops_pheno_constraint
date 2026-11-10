@@ -27,6 +27,7 @@ library(cowplot)
 library(lme4)
 library(emmeans)
 library(smatr)
+library(svglite)
 
 par_frt <- function(df, xvar, yvar) {
   df <- df[order(-df[[xvar]], df[[yvar]]), ]
@@ -3141,3 +3142,5 @@ full_dist <- plot_grid(
 )
 
 ggsave("figures-supplemental/04_fig_s4_dist_to_pf.pdf", full_dist, width = 13.5, height = 13.5)
+
+ggsave("figures-supplemental/04_fig_s4_dist_to_pf.svg", plot = full_dist, device = svglite::svglite, width = 13.5, height = 13.5)

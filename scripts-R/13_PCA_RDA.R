@@ -15,6 +15,7 @@
 
 library(tidyverse)
 library(vegan)  # For PCA and RDA
+library(svglite)
 
 # Load & examine the data -------------------------------------------------
 
@@ -165,6 +166,8 @@ pca_plot_arrows <- ggplot(df.pca.res, aes(x = PC1, y = PC2, color = Evolution)) 
 pca_plot_arrows
 
 ggsave("figures-supplemental/06_fig_s6_PCA.pdf", pca_plot_arrows, width = 12, height = 9)
+
+ggsave("figures-supplemental/06_fig_s6_PCA.svg", plot = pca_plot_arrows, device = svglite::svglite, width = 12, height = 9)
 
 ###### Evolutionary history RDA #######
 
@@ -595,3 +598,6 @@ rdas <- plot_grid(rda_evol_plot_arrows, rda_evol_plot_arrows_no_NP, evol_legend,
                   nrow = 2)
 
 ggsave("figures-supplemental/05_fig_s5_RDAs.pdf", rdas, width = 10, height = 6.5)
+
+ggsave("figures-supplemental/05_fig_s5_RDAs.svg", plot = rdas, device = svglite::svglite, width = 10, height = 6.5)
+

@@ -16,6 +16,7 @@
 
 library(tidyverse)
 library(cowplot)
+library(svglite)
 
 pred_lact <- function(temp, a, b, delta_t, tmax) {
   exp(a * temp) - exp(a * tmax - ((tmax - temp) / delta_t)) + b
@@ -415,5 +416,7 @@ p.s3
 fig.S1 <- plot_grid(p.t1, p.t2, p.t3, p.p1, p.p2, p.p3, p.s1, p.s2, p.s3, nrow = 3, align='h', rel_widths = c(1,1,1))
 
 fig.S1
+
+ggsave("figures-supplemental/01_fig_s1_model_fitting.svg", fig.S1, device = svglite::svglite, width = 10, height = 10)
 
 ggsave("figures-supplemental/01_fig_s1_model_fitting.pdf", fig.S1, width = 10, height = 10)

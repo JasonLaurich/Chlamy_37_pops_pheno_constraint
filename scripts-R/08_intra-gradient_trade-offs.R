@@ -24,6 +24,7 @@ library(cowplot)
 library(lme4)
 library(emmeans)
 library(smatr)
+library(svglite)
 
 par_frt <- function(df, xvar, yvar) { # Simple Pareto front function / convex hull algorithm (one sided)
   
@@ -1148,11 +1149,14 @@ supp2c <- ggplot(df.filt, aes(x = Evol.plt, y = dist.to.pf,
 
 supp2c
 
-supp2 <- plot_grid(supp2a, panel.B.inset, supp2c, 
+supp3 <- plot_grid(supp2a, panel.B.inset, supp2c, 
                    nrow = 1,
                    rel_widths = c(1, 1, 1))
 
-ggsave("figures-supplemental/03_fig_s3_evol_opt_test.pdf", supp2, width = 12, height = 5)
+ggsave("figures-supplemental/03_fig_s3_evol_opt_test.pdf", supp3, width = 12, height = 5)
+
+ggsave("figures-supplemental/03_fig_s3_evol_opt_test.svg", plot = supp3, device = svglite::svglite, width = 12, height = 5)
+
 
 # Salt --------------------------------------------------------------------
 
@@ -1314,14 +1318,14 @@ S.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt, shape = evol.bin
                "Salt stress" = "navyblue")
   ) +
   
-  ylim(1, 9.5) +
-  xlim(0.85, 1.75) +
+  ylim(1, 10.5) +
+  xlim(0.85, 1.85) +
   
   annotate(
     "text",
-    x = 0.85 + 0.6 * (1.75 - 0.85),
-    y = 1 + 0.95 * (9.5 - 1),
-    label = "PF\nEvo\nr = -0.175*", # removed QR
+    x = 0.85 + 0.6 * (1.85 - 0.85),
+    y = 1 + 0.95 * (10.5 - 1),
+    label = "PF, Evo\nr = -0.175*", # removed QR
     hjust = 0,
     vjust = 0.63,
     size = 3,
@@ -1488,3 +1492,4 @@ qp_toffs <- plot_grid(plotlist = all_plots_qp,
                       align = "hv")
 
 ggsave("figures-main/02_fig_2_intra-gradient_tradeoffs.pdf", qp_toffs, width = 5.5, height = 8.25)
+

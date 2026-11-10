@@ -32,6 +32,7 @@ library(cowplot)
 library(sp) # For the point.in.polygon function
 library(scam)
 library(smatr)
+library(svglite)
 
 par_frt <- function(df, xvar, yvar) { # Simple Pareto front function / convex hull algorithm (one sided)
   
@@ -1851,3 +1852,7 @@ meta_cross_ourdata <- plot_grid(p.l4, p.ln4, p.lp4, p.lt4,
                                 ncol = 4, align = "hv", axis = "tblr")
 
 ggsave("figures-supplemental/08_fig_s8_synthesis_with_Laurich_2026_data.pdf", meta_cross_ourdata, width = 11.5, height = 11.5)
+
+ggsave("figures-supplemental/08_fig_s8_synthesis_with_Laurich_2026_data.svg", plot = meta_cross_ourdata, 
+       device = svglite::svglite, width = 11.5, height = 11.5)
+

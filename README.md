@@ -62,30 +62,48 @@ To reproduce the full analysis:
 
 ## Software requirements
 
-R version 4.4.1+
+- R version 4.4.1+
+- JAGS 4.3.x (required by R2jags; install separately from https://sourceforge.net/projects/mcmc-jags/ before installing the R packages)
 
-Required packages include:
-bayestestR
-boot
-car
-cowplot
-Deriv
-emmeans
-lme4
-minpack.lm
-MuMIn
-nls.multstart
-patchwork
-performance
-pracma
-rTPC
-R2jags
-scam
-smatr
-sp
-tidyverse
-vegan
-ggforce
+### R packages
+
+Exact versions of all packages (including dependencies) are recorded in [`renv.lock`](renv.lock). To recreate the package environment:
+
+    install.packages("renv")
+    renv::restore()
+
+Require R packages include:
+
+| Package | Version | 
+|---|---|
+| bayestestR | 0.19.0 |
+| boot | 1.3-32 |
+| car | 3.1-5 |
+| cowplot | 1.2.0 |
+| Deriv | 4.3.5 |
+| emmeans | 2.0.4 |
+| ggforce | 0.5.0 |
+| gridExtra | 2.3.1 |
+| lme4 | 2.0-6 |
+| minpack.lm | 1.2-4 |
+| MuMIn | 1.48.19 |
+| nls.multstart | 2.0.0 |
+| patchwork | 1.3.2 |
+| performance | 0.19.0 |
+| pracma | 2.4.6 |
+| quantreg | 6.1 |
+| R2jags | 0.8-9 |
+| rTPC | 1.1.0 |
+| scales | 1.4.0 |
+| scam | 1.2-23 |
+| shiny | 1.14.0 |
+| smatr | 3.5-2 |
+| sp | 2.2-4 |
+| svglite | 2.2.2 |
+| tibble | 3.3.1 |
+| tidyr | 1.3.2 |
+| tidyverse | 2.0.0 |
+| vegan | 2.7-6 |
 
 ## Author contact information
 Jason R. Laurich

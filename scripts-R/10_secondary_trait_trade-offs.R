@@ -25,6 +25,7 @@ library(cowplot)
 library(lme4)
 library(emmeans)
 library(smatr)
+library(svglite)
 
 par_frt <- function(df, xvar, yvar) {
   df <- df[order(-df[[xvar]], df[[yvar]]), ]
@@ -1831,8 +1832,6 @@ PigN.qp <- ggplot(df.filt, aes(x = z.x, y = z.y, color = Evol.plt)) +
   geom_line(data = pred.curve.1, aes(x = z.x, y = z.y),
             color = "black", linewidth = 0.6, inherit.aes = FALSE) +
   
-  geom_abline(intercept = coef(q50)[1], slope = coef(q50)[2], lwd = 0.6, linetype = "dashed", color = "grey75") +
-  
   annotate("text",
            x     = -3.6 + 0.6 * (3.3 - (-3.6)),
            y     = 0 + 0.95 * (1.35 - (0)),
@@ -3104,3 +3103,6 @@ extra_toffs <- plot_grid(
 
 ggsave("figures-supplemental/07_fig_s7_extra_inter-gradient_toffs.pdf",
        extra_toffs, width = 11, height = 13.75)
+
+ggsave("figures-supplemental/07_fig_s7_extra_inter-gradient_toffs.svg", plot = extra_toffs, 
+       device = svglite::svglite, width = 11, height = 13.75)

@@ -22,6 +22,7 @@
 library(tidyverse)
 library(pracma)    # polyarea()
 library(cowplot)
+library(svglite)
 
 par_frt <- function(df, xvar, yvar) {
   df <- df[order(-df[[xvar]], df[[yvar]]), ]
@@ -161,7 +162,6 @@ panels <- list(
 thresholds    <- c(1.0, 0.6667, 0.5, 0.3333, 0.25, 0.10)
 thresh_labels <- c("100%", "66.67%", "50%", "33.33%", "25%", "10%")
 
-
 # Run sensitivity analysis ---------------------------------------------------
 
 set.seed(123)
@@ -293,6 +293,8 @@ combined <- plot_grid(plotlist = grid_list, ncol = 5, align = "hv",
                       rel_heights = rep(1, 5))
 
 ggsave("figures-supplemental/02_fig_s2_sensitivity.pdf", plot = combined, width = 13, height = 13)
+
+ggsave("figures-supplemental/02_fig_s2_sensitivity.svg", plot = combined, device = svglite::svglite, width = 13, height = 13)
 
 # Grid table of P-values -----------------------------------------------------
 # Layout mirrors Table S3: rows = Gradient × Threshold, columns = L, N, P, S, T
