@@ -12,11 +12,11 @@ Pareto fronts that constrain the evolution of niche limits in phytoplankton.
 
 The study combines experimental evolution of *Chlamydomonas reinhardtii* populations across multiple environmental gradients (including temperature, nutrient
 availability, light limitation, and salinity) with comparative analyses of trait data compiled from published phytoplankton datasets. Growth rates, niche 
-breadths, and competitive ability were estimated for evolved and ancestral populations of *C. reinhardtii* (and for other species) and used to test for the 
+breadths, and low-resource tolerance abilities were estimated for evolved and ancestral populations of *C. reinhardtii* (and for other species) and used to test for the 
 presence of Pareto fronts using several complementary statistical approaches.
 
 The repository includes scripts for processing raw experimental data, estimating growth rates, fitting thermal performance curves, Monod curves, and salt
-tolerance curves, fitting and testing the significance of Pareto front models and quantile regressions, and generating the figures used in the manuscript.
+tolerance curves, fitting and testing the significance of Pareto front models and Pearson correlations, and generating the figures used in the manuscript.
 
 All figures and analyses included in the manuscript can be reproduced from the scripts contained in this repository. Note that we do not include here objects
 produced using Bayesian analysis in R2jags (TPCs, Monod curves, and salt tolerance curves) themselves due to memory constraints. However, the scripts necessary
@@ -159,18 +159,15 @@ If you use this code or data, please cite both the paper and the repository:
 **Code and data:** Laurich, J. R., Narwani, A., & Bernhardt, J. R. (2026). Repository for "Pareto fronts reveal constraints on the evolution of ecological niches" (v2.1). Zenodo. https://doi.org/10.5281/zenodo.19032401
 
 ## Author contact information
-Jason R. Laurich
-University of Guelph
-Department of Integrative Biology
-jlaurich@uoguelph.ca
-jason@laurich.ca
 
-Anita Narwani
-Eawag, Swiss Federal Institute of Aquatic Science and Technology
-Department of Aquatic Ecology
+**Jason R. Laurich**\
+Department of Integrative Biology, University of Guelph\
+jlaurich@uoguelph.ca | jason@laurich.ca
+
+**Anita Narwani**\
+Department of Aquatic Ecology, Eawag, Swiss Federal Institute of Aquatic Science and Technology\
 anita.narwani@eawag.ch
 
-Joanna (Joey) R. Bernhardt
-University of Guelph
-Department of Integrative Biology
+**Joanna (Joey) R. Bernhardt**\
+Department of Integrative Biology, University of Guelph\
 joey.bernhardt@uoguelph.ca
