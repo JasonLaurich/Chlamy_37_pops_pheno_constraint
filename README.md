@@ -27,8 +27,6 @@ to create them and summary tables containing the relevant model outputs (require
 <pre>
 Chlamy_37_pops_pheno_constraint/
 ├── <a href="README.md">README.md</a>
-├── <a href="CITATION.cff">CITATION.cff</a>                Citation metadata
-├── <a href="LICENSE">LICENSE</a>
 ├── <a href="Chlamy_37_pops_pheno_constraint.Rproj">Chlamy_37_pops_pheno_constraint.Rproj</a>   Open first (sets file paths)
 ├── <a href="renv.lock">renv.lock</a>                   Exact R package versions (see renv::restore())
 ├── <a href="renv">renv/</a>                       renv environment files
@@ -166,3 +164,13 @@ University of Guelph
 Department of Integrative Biology
 jlaurich@uoguelph.ca
 jason@laurich.ca
+
+Anita Narwani
+Eawag, Swiss Federal Institute of Aquatic Science and Technology
+Department of Aquatic Ecology
+anita.narwani@eawag.ch
+
+Joanna (Joey) R. Bernhardt
+University of Guelph
+Department of Integrative Biology
+joey.bernhardt@uoguelph.ca
