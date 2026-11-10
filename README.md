@@ -15,7 +15,7 @@ availability, light limitation, and salinity) with comparative analyses of trait
 breadths, and low-resource tolerance abilities were estimated for evolved and ancestral populations of *C. reinhardtii* (and for other species) and used to test for the 
 presence of Pareto fronts using several complementary statistical approaches.
 
-The repository includes scripts for processing raw experimental data, estimating growth rates, fitting thermal performance curves, Monod curves, and salt
+The repository includes scripts for processing experimental data, estimating growth rates, fitting thermal performance curves, Monod curves, and salt
 tolerance curves, fitting and testing the significance of Pareto front models and Pearson correlations, and generating the figures used in the manuscript.
 
 All figures and analyses included in the manuscript can be reproduced from the scripts contained in this repository. Note that we do not include here objects
@@ -65,7 +65,7 @@ All scripts are in [`scripts-R/`](scripts-R). [`00_master_script.R`](scripts-R/0
 
 | Figure | Script | Output |
 |---|---|---|
-| Fig. 1 | [`07_conceptual_figure.R`](scripts-R/07_conceptual_figure.R) | [`01_fig_1_conceptual_figure.jpeg`](figures-main/01_fig_1_conceptual_figure.jpeg) |
+| Fig. 1 | [`07_conceptual_figure.R`](scripts-R/07_conceptual_figure.R) | [`01_fig_1_conceptual_figure_final.pdf`](figures-main/01_fig_1_conceptual_figure.jpeg) |
 | Fig. 2 | [`08_intra-gradient_trade-offs.R`](scripts-R/08_intra-gradient_trade-offs.R) | [`02_fig_2_intra-gradient_tradeoffs.pdf`](figures-main/02_fig_2_intra-gradient_tradeoffs.pdf) |
 | Fig. 3 | [`09_inter-gradient_trade-offs.R`](scripts-R/09_inter-gradient_trade-offs.R) | [`03_fig_3_inter-gradient_toffs.pdf`](figures-main/03_fig_3_inter-gradient_toffs.pdf) |
 | Fig. 4 | [`18_synthesis_pareto.R`](scripts-R/18_synthesis_pareto.R) | [`04_fig_4_synthesis_comps.pdf`](figures-main/04_fig_4_synthesis_comps.pdf) |
@@ -108,7 +108,7 @@ To reproduce the full analysis:
 ## Software requirements
 
 - R version 4.4.1+
-- JAGS 4.3.x (required by R2jags; install separately from https://sourceforge.net/projects/mcmc-jags/ before installing the R packages)
+- JAGS 4.3.2 (required by R2jags; install separately from https://sourceforge.net/projects/mcmc-jags/ before installing the R packages)
 
 ### R packages
 
@@ -117,7 +117,7 @@ Exact versions of all packages (including dependencies) are recorded in [`renv.l
     install.packages("renv")
     renv::restore()
 
-Require R packages include:
+Require R packages:
 
 | Package | Version | 
 |---|---|
@@ -150,7 +150,7 @@ Require R packages include:
 | tidyverse | 2.0.0 |
 | vegan | 2.7-6 |
 
-# Citation
+## Citation
 
 If you use this code or data, please cite both the paper and the repository:
 

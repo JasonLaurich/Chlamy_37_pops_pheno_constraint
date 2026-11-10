@@ -12,6 +12,8 @@
 
 # To run these scripts in the master script, simply remove the '#' before their source commands
 
+# dir.create("R2jags-models", showWarnings = FALSE) # will create the directory for storing R2jags models. 
+
 # message("Running 01_light.R") 
 # source("scripts-R/01_light.R") # Light: growth rate estimation and Monod curve fitting
 
